@@ -344,7 +344,7 @@ export default function StaffDashboard() {
 
             <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
               <a
-                href={`/api/invitations/${viewingInv.id}/file`}
+                href={`/api/invitations/${viewingInv.id}/file?rev=${viewingInv.revisionCount || 0}&t=${viewingInv.updatedAt ? new Date(viewingInv.updatedAt).getTime() : Date.now()}`}
                 target="_blank"
                 rel="noreferrer"
                 className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-xl flex items-center gap-1.5 shadow"

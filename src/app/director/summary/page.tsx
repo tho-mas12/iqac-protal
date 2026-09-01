@@ -224,7 +224,7 @@ export default function DirectorSummaryPage() {
                         </td>
                         <td className="px-6 py-4 text-right">
                           <a
-                            href={`/api/invitations/${inv.id}/file`}
+                            href={`/api/invitations/${inv.id}/file?rev=${inv.revisionCount || 0}&t=${inv.updatedAt ? new Date(inv.updatedAt).getTime() : Date.now()}`}
                             target="_blank"
                             rel="noreferrer"
                             className="p-2 rounded-xl bg-purple-50 text-purple-700 hover:bg-purple-100 transition-colors inline-flex items-center gap-1 text-xs font-bold"

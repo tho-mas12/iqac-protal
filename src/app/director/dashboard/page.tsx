@@ -349,7 +349,7 @@ export default function DirectorDashboard() {
               <div className="lg:col-span-7 p-4 sm:p-6 bg-slate-900 flex flex-col items-center justify-center min-h-[400px] relative">
                 <div className="relative w-full max-h-[600px] flex items-center justify-center overflow-auto rounded-2xl border border-slate-800 shadow-2xl bg-slate-950/60 p-2 group">
                   <a
-                    href={`/api/invitations/${selectedInv.id}/file`}
+                    href={`/api/invitations/${selectedInv.id}/file?rev=${selectedInv.revisionCount || 0}&t=${selectedInv.updatedAt ? new Date(selectedInv.updatedAt).getTime() : Date.now()}`}
                     target="_blank"
                     rel="noreferrer"
                     title="Click to open full resolution image in new tab"
@@ -370,7 +370,7 @@ export default function DirectorDashboard() {
 
                 <div className="mt-4 flex items-center gap-3">
                   <a
-                    href={`/api/invitations/${selectedInv.id}/file`}
+                    href={`/api/invitations/${selectedInv.id}/file?rev=${selectedInv.revisionCount || 0}&t=${selectedInv.updatedAt ? new Date(selectedInv.updatedAt).getTime() : Date.now()}`}
                     target="_blank"
                     rel="noreferrer"
                     className="px-5 py-2.5 bg-[#6320ee] hover:bg-[#5215ce] text-white text-xs font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-purple-600/30 transition-all transform hover:-translate-y-0.5"

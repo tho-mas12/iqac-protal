@@ -263,7 +263,7 @@ export default function UploadInvitationPage() {
                           }}
                         />
                         <a
-                          href={`/api/invitations/${inv.id}/file`}
+                          href={`/api/invitations/${inv.id}/file?rev=${inv.revisionCount || 0}&t=${inv.updatedAt ? new Date(inv.updatedAt).getTime() : Date.now()}`}
                           target="_blank"
                           rel="noreferrer"
                           className="absolute inset-0 bg-purple-900/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
@@ -322,7 +322,7 @@ export default function UploadInvitationPage() {
                       )}
 
                       <a
-                        href={inv.driveViewLink || inv.localFilePath || '#'}
+                        href={`/api/invitations/${inv.id}/file?rev=${inv.revisionCount || 0}&t=${inv.updatedAt ? new Date(inv.updatedAt).getTime() : Date.now()}`}
                         target="_blank"
                         rel="noreferrer"
                         className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-purple-50 text-slate-700 hover:text-purple-700 text-xs font-semibold border border-slate-200 transition-colors flex items-center gap-1.5"
