@@ -13,10 +13,12 @@ import {
   MessageSquare,
   FileCheck2,
   RotateCw,
+  Clock,
+  ArrowRight,
   X,
   FileImage,
-  ArrowRight
 } from 'lucide-react';
+import { compressImageFile } from '@/lib/image-compression';
 
 export default function RemarksPage() {
   const [user, setUser] = useState<any>(null);
@@ -61,8 +63,8 @@ export default function RemarksPage() {
   };
 
   const handleReuploadSubmit = async (invitationId: string) => {
-    const file = uploadFiles[invitationId];
-    if (!file) {
+    const rawFile = uploadFiles[invitationId];
+    if (!rawFile) {
       setFeedback({ type: 'error', message: 'Please select a corrected invitation file to re-upload.' });
       return;
     }
@@ -71,8 +73,11 @@ export default function RemarksPage() {
     setFeedback(null);
 
     try {
+      // Compress large image client-side to prevent Vercel 4.5MB payload limits
+      const fileToUpload = await compressImageFile(rawFile);
+
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', fileToUpload);
       formData.append('notes', notes[invitationId] || 'Corrected invitation after Director remarks');
 
       const res = await fetch(`/api/invitations/${invitationId}/reupload`, {
@@ -80,7 +85,13 @@ export default function RemarksPage() {
         body: formData,
       });
 
-      const data = await res.json();
+      let data: any = {};
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error(`Upload failed (Server HTTP ${res.status}). Please try a smaller image file.`);
+      }
+
       if (!res.ok) {
         throw new Error(data.error || 'Failed to re-upload corrected invitation');
       }
@@ -92,6 +103,12 @@ export default function RemarksPage() {
 
       // Clear card input
       setUploadFiles((prev) => {
+        const copy = { ...prev };
+        delete copy[invitationId];
+        return copy;
+      });
+
+      setNotes((prev) => {
         const copy = { ...prev };
         delete copy[invitationId];
         return copy;

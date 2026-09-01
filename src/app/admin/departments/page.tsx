@@ -195,7 +195,7 @@ export default function AdminDepartmentsPage() {
                       <th className="px-6 py-4">Department Name</th>
                       <th className="px-4 py-4">Shift</th>
                       <th className="px-4 py-4">Login Username</th>
-                      <th className="px-4 py-4">Google Drive Folder</th>
+                      <th className="px-4 py-4">Department Identifier</th>
                       <th className="px-4 py-4">Total Submissions</th>
                       <th className="px-6 py-4 text-right">Actions</th>
                     </tr>
@@ -231,8 +231,8 @@ export default function AdminDepartmentsPage() {
                           </td>
                           <td className="px-4 py-4">
                             <div className="flex items-center gap-1.5 text-xs text-indigo-700 font-medium bg-indigo-50/80 px-2.5 py-1 rounded-lg border border-indigo-100 w-fit">
-                              <FolderOpen className="w-3.5 h-3.5" />
-                              <span className="font-mono truncate max-w-[140px]">{dept.driveFolderId || 'Provisioned'}</span>
+                              <Building2 className="w-3.5 h-3.5" />
+                              <span className="font-mono truncate max-w-[140px]">{dept.code}</span>
                             </div>
                           </td>
                           <td className="px-4 py-4">
@@ -341,12 +341,12 @@ export default function AdminDepartmentsPage() {
                   {submitting ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      <span>Creating Drive Folder...</span>
+                      <span>Registering Department...</span>
                     </>
                   ) : (
                     <>
                       <Sparkles className="w-4 h-4" />
-                      <span>Register & Create Drive Folder</span>
+                      <span>Register Department</span>
                     </>
                   )}
                 </button>

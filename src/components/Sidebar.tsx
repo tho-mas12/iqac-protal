@@ -12,7 +12,6 @@ import {
   Building2,
   KeyRound,
   ShieldCheck,
-  HardDrive,
   FileCheck2,
   ChevronLeft,
   ChevronRight,

@@ -158,10 +158,10 @@ export default function DepartmentInfoPage() {
                   <span className="font-bold text-slate-800">{user?.department?.code}</span>
                 </div>
                 <div>
-                  <span className="text-xs font-semibold text-slate-400 block uppercase tracking-wider">Google Drive Storage</span>
-                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-purple-700 bg-purple-50 px-2.5 py-1 rounded-lg border border-purple-200 mt-1">
-                    <FolderOpen className="w-3.5 h-3.5" />
-                    Dedicated Drive Folder Provisioned
+                  <span className="text-xs font-semibold text-slate-400 block uppercase tracking-wider">Portal Account Status</span>
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 mt-1">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    Verified & Active
                   </span>
                 </div>
                 <div>

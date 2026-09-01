@@ -113,7 +113,7 @@ export default function DepartmentDashboard() {
                 Upload & Track Event Invitations
               </h2>
               <p className="text-purple-200 text-xs sm:text-sm max-w-xl">
-                Submit program invitations directly for Director verification. All images are securely stored in your dedicated Google Drive folder.
+                Submit program invitations directly for Director verification. All images are securely stored and verified through the IQAC Portal.
               </p>
             </div>
 

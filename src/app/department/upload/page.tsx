@@ -15,8 +15,10 @@ import {
   Clock,
   ExternalLink,
   Trash2,
+  Eye,
   FileText
 } from 'lucide-react';
+import { compressImageFile } from '@/lib/image-compression';
 
 const CATEGORIES = [
   'Endowment Lecture',
@@ -120,6 +122,9 @@ export default function UploadInvitationPage() {
     setFeedback(null);
 
     try {
+      // Compress image client-side to prevent Vercel 4.5MB payload limits
+      const fileToUpload = await compressImageFile(selectedFile);
+
       const formData = new FormData();
       formData.append('programTitle', programTitle);
       formData.append('category', category);
@@ -129,14 +134,20 @@ export default function UploadInvitationPage() {
       formData.append('shift', user?.department?.shift || 'Shift I');
       formData.append('fromDate', fromDate);
       if (toDate) formData.append('toDate', toDate);
-      formData.append('file', selectedFile);
+      formData.append('file', fileToUpload);
 
       const res = await fetch('/api/invitations', {
         method: 'POST',
         body: formData,
       });
 
-      const data = await res.json();
+      let data: any = {};
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error(`Upload failed (Server HTTP ${res.status}). Please try a smaller image file.`);
+      }
+
       if (!res.ok) {
         throw new Error(data.error || 'Failed to submit invitation');
       }
