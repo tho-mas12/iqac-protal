@@ -1,0 +1,92 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { comparePassword, signToken, AUTH_COOKIE_NAME } from '@/lib/auth';
+
+export async function POST(req: NextRequest) {
+  try {
+    const { username, password } = await req.json();
+
+    if (!username || !password) {
+      return NextResponse.json(
+        { error: 'Username and password are required' },
+        { status: 400 }
+      );
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { username: username.trim().toLowerCase() },
+      include: { department: true },
+    });
+
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Invalid username or password' },
+        { status: 401 }
+      );
+    }
+
+    const isMatch = await comparePassword(password, user.password);
+    if (!isMatch) {
+      return NextResponse.json(
+        { error: 'Invalid username or password' },
+        { status: 401 }
+      );
+    }
+
+    const token = signToken({
+      userId: user.id,
+      username: user.username,
+      name: user.name,
+      role: user.role as any,
+      departmentId: user.departmentId,
+      shift: user.department?.shift || null,
+    });
+
+    // Determine redirect path based on role
+    let redirectUrl = '/login';
+    switch (user.role) {
+      case 'DEPARTMENT':
+        redirectUrl = '/department/dashboard';
+        break;
+      case 'DIRECTOR':
+        redirectUrl = '/director/dashboard';
+        break;
+      case 'STAFF':
+        redirectUrl = '/staff/dashboard';
+        break;
+      case 'ADMIN':
+        redirectUrl = '/admin/departments';
+        break;
+    }
+
+    const res = NextResponse.json({
+      success: true,
+      user: {
+        id: user.id,
+        username: user.username,
+        name: user.name,
+        role: user.role,
+        department: user.department,
+        isPasswordChanged: user.isPasswordChanged,
+      },
+      redirectUrl,
+    });
+
+    // Set secure HTTP-only cookie
+    res.cookies.set(AUTH_COOKIE_NAME, token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    });
+
+    return res;
+  } catch (error: any) {
+    console.error('Login error:', error);
+    return NextResponse.json(
+      { error: 'An unexpected server error occurred' },
+      { status: 500 }
+    );
+  }
+}
