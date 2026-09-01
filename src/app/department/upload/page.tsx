@@ -255,7 +255,7 @@ export default function UploadInvitationPage() {
                       {/* Thumbnail / Icon */}
                       <div className="w-16 h-20 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0 shadow-inner group relative">
                         <img
-                          src={`/api/invitations/${inv.id}/file`}
+                          src={`/api/invitations/${inv.id}/file?rev=${inv.revisionCount || 0}&t=${inv.updatedAt ? new Date(inv.updatedAt).getTime() : Date.now()}`}
                           alt={inv.programTitle}
                           className="w-full h-full object-cover"
                           onError={(e) => {

@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import fs from 'fs';
 import path from 'path';
@@ -40,7 +40,9 @@ export async function GET(
           headers: {
             'Content-Type': mimeType,
             'Content-Disposition': 'inline; filename="' + fileName + '"',
-            'Cache-Control': 'public, max-age=86400, immutable',
+            'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0',
           },
         });
       }
@@ -54,7 +56,9 @@ export async function GET(
           headers: {
             'Content-Type': mimeType,
             'Content-Disposition': 'inline; filename="' + fileName + '"',
-            'Cache-Control': 'public, max-age=86400, immutable',
+            'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0',
           },
         });
       } catch {}

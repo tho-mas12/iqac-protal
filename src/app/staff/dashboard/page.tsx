@@ -317,7 +317,7 @@ export default function StaffDashboard() {
             <div className="p-6 overflow-y-auto space-y-6">
               <div className="bg-slate-900 rounded-2xl p-4 flex items-center justify-center min-h-[300px]">
                 <img
-                  src={`/api/invitations/${viewingInv.id}/file`}
+                  src={`/api/invitations/${viewingInv.id}/file?rev=${viewingInv.revisionCount || 0}&t=${viewingInv.updatedAt ? new Date(viewingInv.updatedAt).getTime() : Date.now()}`}
                   alt={viewingInv.programTitle}
                   className="max-h-[400px] w-auto object-contain rounded-lg"
                   onError={(e) => {

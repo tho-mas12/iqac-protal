@@ -28,13 +28,16 @@ export async function uploadFileToDrive(
 ): Promise<DriveUploadResult> {
   const safeFolderName = `${departmentName}_${shift}`.replace(/[^a-zA-Z0-9_-]/g, '_');
   const uniqueFileName = `${Date.now()}_${fileName.replace(/[^a-zA-Z0-9_.-]/g, '_')}`;
+  const effectiveMime = mimeType || 'image/png';
+  const base64Data = buffer.toString('base64');
+  const dataUrl = `data:${effectiveMime};base64,${base64Data}`;
 
   // 1. If a PHP upload endpoint is configured, forward the file to cPanel PHP storage
   const phpUploadEndpoint = process.env.PHP_UPLOAD_URL;
   if (phpUploadEndpoint) {
     try {
       const formData = new FormData();
-      const blob = new Blob([new Uint8Array(buffer)], { type: mimeType || 'image/jpeg' });
+      const blob = new Blob([new Uint8Array(buffer)], { type: effectiveMime });
       formData.append('file', blob, uniqueFileName);
 
       const res = await fetch(phpUploadEndpoint, {
@@ -59,7 +62,7 @@ export async function uploadFileToDrive(
     }
   }
 
-  // 2. Try saving to local public folder if on local environment (try/catch to prevent Vercel ENOENT crash)
+  // 2. Try saving to local public folder if on local environment (safe fallback)
   try {
     const uploadDir = path.join(process.cwd(), 'public', 'uploads', safeFolderName);
     if (!fs.existsSync(uploadDir)) {
@@ -67,28 +70,15 @@ export async function uploadFileToDrive(
     }
     const filePath = path.join(uploadDir, uniqueFileName);
     fs.writeFileSync(filePath, buffer);
-    const publicUrl = `/uploads/${safeFolderName}/${uniqueFileName}`;
-    return {
-      isDrive: false,
-      fileId: uniqueFileName,
-      webViewLink: publicUrl,
-      downloadLink: publicUrl,
-      localPath: publicUrl,
-    };
-  } catch (fsErr) {
-    // 3. On Vercel / serverless (read-only filesystem), store directly as Base64 Data URL in database!
-    const effectiveMime = mimeType || 'image/png';
-    const base64Data = buffer.toString('base64');
-    const dataUrl = `data:${effectiveMime};base64,${base64Data}`;
+  } catch (e) {}
 
-    return {
-      isDrive: false,
-      fileId: uniqueFileName,
-      webViewLink: dataUrl,
-      downloadLink: dataUrl,
-      localPath: dataUrl,
-    };
-  }
+  return {
+    isDrive: false,
+    fileId: uniqueFileName,
+    webViewLink: dataUrl,
+    downloadLink: dataUrl,
+    localPath: dataUrl,
+  };
 }
 
 export async function testDriveConnection(): Promise<{

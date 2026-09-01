@@ -221,18 +221,14 @@ export default function DirectorDashboard() {
                     <div className="flex items-start gap-4 flex-1">
                       {/* Document / Image Thumbnail */}
                       <div className="w-16 h-20 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
-                        {inv.localFilePath || inv.driveViewLink ? (
-                          <img
-                            src={inv.localFilePath || inv.driveViewLink}
-                            alt={inv.programTitle}
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                              (e.target as HTMLElement).style.display = 'none';
-                            }}
-                          />
-                        ) : (
-                          <Layers className="w-6 h-6 text-slate-400" />
-                        )}
+                        <img
+                          src={`/api/invitations/${inv.id}/file?rev=${inv.revisionCount || 0}&t=${inv.updatedAt ? new Date(inv.updatedAt).getTime() : Date.now()}`}
+                          alt={inv.programTitle}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLElement).style.display = 'none';
+                          }}
+                        />
                       </div>
 
                       <div className="space-y-1.5 flex-1">
@@ -360,7 +356,7 @@ export default function DirectorDashboard() {
                     className="block cursor-zoom-in"
                   >
                     <img
-                      src={`/api/invitations/${selectedInv.id}/file`}
+                      src={`/api/invitations/${selectedInv.id}/file?rev=${selectedInv.revisionCount || 0}&t=${selectedInv.updatedAt ? new Date(selectedInv.updatedAt).getTime() : Date.now()}`}
                       alt={selectedInv.programTitle}
                       className="max-h-[560px] w-auto max-w-full object-contain rounded-lg shadow-lg hover:opacity-95 transition-opacity"
                       onError={(e) => {

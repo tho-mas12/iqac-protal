@@ -51,6 +51,8 @@ export async function POST(
 
     const nextRevision = invitation.revisionCount + 1;
     const fileUrl = uploadResult.webViewLink;
+    const origin = req.nextUrl.origin || process.env.NEXT_PUBLIC_APP_URL || '';
+    const fullPublicUrl = `${origin}/api/invitations/${id}/file`;
 
     const updated = await prisma.invitation.update({
       where: { id },
@@ -60,9 +62,9 @@ export async function POST(
         mimeType: file.type,
         driveFileId: uploadResult.fileId,
         fileData: fileUrl,
-        driveViewLink: `/api/invitations/${id}/file`,
-        driveDownloadLink: `/api/invitations/${id}/file`,
-        localFilePath: `/api/invitations/${id}/file`,
+        driveViewLink: fullPublicUrl,
+        driveDownloadLink: fullPublicUrl,
+        localFilePath: fullPublicUrl,
         status: 'PENDING', // Send back to pending for Director review
         revisionCount: nextRevision,
         history: {

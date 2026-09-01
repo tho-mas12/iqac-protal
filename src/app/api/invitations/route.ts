@@ -183,13 +183,17 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    // Construct absolute public link for database storage
+    const origin = req.nextUrl.origin || process.env.NEXT_PUBLIC_APP_URL || '';
+    const fullPublicUrl = `${origin}/api/invitations/${invitation.id}/file`;
+
     // Update with real ID in the link
     const updatedInvitation = await prisma.invitation.update({
       where: { id: invitation.id },
       data: {
-        driveViewLink: `/api/invitations/${invitation.id}/file`,
-        driveDownloadLink: `/api/invitations/${invitation.id}/file`,
-        localFilePath: `/api/invitations/${invitation.id}/file`,
+        driveViewLink: fullPublicUrl,
+        driveDownloadLink: fullPublicUrl,
+        localFilePath: fullPublicUrl,
       },
       include: {
         department: true,
