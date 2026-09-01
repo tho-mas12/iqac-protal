@@ -243,20 +243,16 @@ export default function UploadInvitationPage() {
                     <div className="flex items-start gap-4">
                       {/* Thumbnail / Icon */}
                       <div className="w-16 h-20 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0 shadow-inner group relative">
-                        {inv.localFilePath || inv.driveViewLink ? (
-                          <img
-                            src={inv.localFilePath || inv.driveViewLink}
-                            alt={inv.programTitle}
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                              (e.target as HTMLElement).style.display = 'none';
-                            }}
-                          />
-                        ) : (
-                          <FileText className="w-6 h-6 text-slate-400" />
-                        )}
+                        <img
+                          src={`/api/invitations/${inv.id}/file`}
+                          alt={inv.programTitle}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLElement).style.display = 'none';
+                          }}
+                        />
                         <a
-                          href={inv.driveViewLink || inv.localFilePath || '#'}
+                          href={`/api/invitations/${inv.id}/file`}
                           target="_blank"
                           rel="noreferrer"
                           className="absolute inset-0 bg-purple-900/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"

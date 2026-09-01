@@ -351,24 +351,23 @@ export default function DirectorDashboard() {
             <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-y-auto divide-y lg:divide-y-0 lg:divide-x divide-slate-200">
               {/* Left Column: Full Document Preview */}
               <div className="lg:col-span-7 p-6 bg-slate-900/95 flex flex-col items-center justify-center min-h-[350px] relative overflow-hidden">
-                {selectedInv.localFilePath || selectedInv.driveViewLink ? (
-                  <div className="relative max-h-[550px] overflow-auto rounded-xl border border-slate-700 shadow-2xl p-2 bg-slate-950/40">
-                    <img
-                      src={selectedInv.localFilePath || selectedInv.driveViewLink}
-                      alt={selectedInv.programTitle}
-                      className="max-h-[500px] w-auto object-contain rounded-lg"
-                    />
-                  </div>
-                ) : (
-                  <div className="text-slate-400 text-center">
-                    <Layers className="w-16 h-16 mx-auto mb-2 text-slate-600" />
-                    <p className="text-sm">Document stored in Portal</p>
-                  </div>
-                )}
+                <div className="relative max-h-[550px] overflow-auto rounded-xl border border-slate-700 shadow-2xl p-2 bg-slate-950/40">
+                  <img
+                    src={`/api/invitations/${selectedInv.id}/file`}
+                    alt={selectedInv.programTitle}
+                    className="max-h-[500px] w-auto object-contain rounded-lg"
+                    onError={(e) => {
+                      // Fallback if direct link exists
+                      if (selectedInv.driveViewLink && selectedInv.driveViewLink.startsWith('http')) {
+                        (e.target as HTMLImageElement).src = selectedInv.driveViewLink;
+                      }
+                    }}
+                  />
+                </div>
 
                 <div className="mt-4 flex items-center gap-3">
                   <a
-                    href={selectedInv.driveViewLink || selectedInv.localFilePath || '#'}
+                    href={`/api/invitations/${selectedInv.id}/file`}
                     target="_blank"
                     rel="noreferrer"
                     className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-xl flex items-center gap-2 shadow-lg transition-all"

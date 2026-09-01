@@ -236,7 +236,7 @@ export default function DirectorStatusPage() {
                         </div>
 
                         <a
-                          href={inv.driveViewLink || inv.localFilePath || '#'}
+                          href={`/api/invitations/${inv.id}/file`}
                           target="_blank"
                           rel="noreferrer"
                           className="px-3 py-1.5 bg-slate-50 hover:bg-purple-50 text-purple-700 text-xs font-semibold rounded-xl border border-purple-200 transition-colors flex items-center gap-1.5 self-start sm:self-center"
@@ -377,7 +377,7 @@ export default function DirectorStatusPage() {
                           </td>
                           <td className="px-6 py-4 text-right">
                             <a
-                              href={inv.driveViewLink || inv.localFilePath || '#'}
+                              href={`/api/invitations/${inv.id}/file`}
                               target="_blank"
                               rel="noreferrer"
                               className="p-2 rounded-xl bg-slate-100 hover:bg-purple-50 text-slate-600 hover:text-purple-700 transition-colors inline-flex items-center gap-1 text-xs font-semibold"

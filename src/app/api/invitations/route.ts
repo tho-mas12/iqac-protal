@@ -144,6 +144,10 @@ export async function POST(req: NextRequest) {
     const toDate = toDateStr ? new Date(toDateStr) : null;
 
     // Create Invitation in database
+    const fileUrl = uploadResult.webViewLink.startsWith('data:')
+      ? uploadResult.webViewLink
+      : uploadResult.webViewLink;
+
     const invitation = await prisma.invitation.create({
       data: {
         programTitle: programTitle.trim(),
@@ -157,9 +161,10 @@ export async function POST(req: NextRequest) {
         fileSize: file.size,
         mimeType: file.type,
         driveFileId: uploadResult.fileId,
-        driveViewLink: uploadResult.webViewLink,
-        driveDownloadLink: uploadResult.downloadLink,
-        localFilePath: uploadResult.localPath,
+        fileData: fileUrl,
+        driveViewLink: `/api/invitations/__ID__/file`,
+        driveDownloadLink: `/api/invitations/__ID__/file`,
+        localFilePath: `/api/invitations/__ID__/file`,
         status: 'PENDING',
         revisionCount: 0,
         history: {
@@ -169,6 +174,7 @@ export async function POST(req: NextRequest) {
             actorRole: session.role,
             notes: 'Initial invitation submission',
             driveFileId: uploadResult.fileId,
+            fileData: fileUrl,
           },
         },
       },
@@ -177,10 +183,23 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    // Update with real ID in the link
+    const updatedInvitation = await prisma.invitation.update({
+      where: { id: invitation.id },
+      data: {
+        driveViewLink: `/api/invitations/${invitation.id}/file`,
+        driveDownloadLink: `/api/invitations/${invitation.id}/file`,
+        localFilePath: `/api/invitations/${invitation.id}/file`,
+      },
+      include: {
+        department: true,
+      },
+    });
+
     return NextResponse.json({
       success: true,
-      message: 'Invitation uploaded successfully to Google Drive and submitted for IQAC review.',
-      invitation,
+      message: 'Invitation uploaded successfully and submitted for IQAC review.',
+      invitation: updatedInvitation,
     });
   } catch (error: any) {
     console.error('Error uploading invitation:', error);

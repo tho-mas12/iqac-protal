@@ -205,7 +205,7 @@ export default function RemarksPage() {
                       </div>
 
                       <a
-                        href={inv.driveViewLink || inv.localFilePath || '#'}
+                        href={`/api/invitations/${inv.id}/file`}
                         target="_blank"
                         rel="noreferrer"
                         className="px-3.5 py-2 bg-slate-50 hover:bg-purple-50 text-purple-700 text-xs font-bold rounded-xl border border-purple-200 transition-colors flex items-center gap-1.5 self-start sm:self-center"

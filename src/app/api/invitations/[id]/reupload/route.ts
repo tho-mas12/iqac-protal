@@ -50,6 +50,7 @@ export async function POST(
     );
 
     const nextRevision = invitation.revisionCount + 1;
+    const fileUrl = uploadResult.webViewLink;
 
     const updated = await prisma.invitation.update({
       where: { id },
@@ -58,9 +59,10 @@ export async function POST(
         fileSize: file.size,
         mimeType: file.type,
         driveFileId: uploadResult.fileId,
-        driveViewLink: uploadResult.webViewLink,
-        driveDownloadLink: uploadResult.downloadLink,
-        localFilePath: uploadResult.localPath,
+        fileData: fileUrl,
+        driveViewLink: `/api/invitations/${id}/file`,
+        driveDownloadLink: `/api/invitations/${id}/file`,
+        localFilePath: `/api/invitations/${id}/file`,
         status: 'PENDING', // Send back to pending for Director review
         revisionCount: nextRevision,
         history: {
@@ -70,6 +72,7 @@ export async function POST(
             actorRole: session.role,
             notes: `Revision #${nextRevision} submitted: ${correctionNotes}`,
             driveFileId: uploadResult.fileId,
+            fileData: fileUrl,
           },
         },
       },
@@ -80,7 +83,7 @@ export async function POST(
 
     return NextResponse.json({
       success: true,
-      message: `Corrected invitation (Revision #${nextRevision}) uploaded to Google Drive and re-sent to Director.`,
+      message: `Corrected invitation (Revision #${nextRevision}) uploaded and re-sent to Director.`,
       invitation: updated,
     });
   } catch (error: any) {
