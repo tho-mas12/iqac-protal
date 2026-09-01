@@ -51,7 +51,9 @@ export async function POST(
 
     const nextRevision = invitation.revisionCount + 1;
     const fileUrl = uploadResult.webViewLink;
-    const origin = req.nextUrl.origin || process.env.NEXT_PUBLIC_APP_URL || '';
+    const host = req.headers.get('x-forwarded-host') || req.headers.get('host') || req.nextUrl.host || 'iqac-protal.vercel.app';
+    const isLocal = host.includes('localhost') || host.includes('127.0.0.1');
+    const origin = isLocal ? `http://${host}` : `https://${host}`;
     const fullPublicUrl = `${origin}/api/invitations/${id}/file`;
 
     const updated = await prisma.invitation.update({

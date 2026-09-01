@@ -183,8 +183,10 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Construct absolute public link for database storage
-    const origin = req.nextUrl.origin || process.env.NEXT_PUBLIC_APP_URL || '';
+    // Construct absolute public HTTPS link for database storage
+    const host = req.headers.get('x-forwarded-host') || req.headers.get('host') || req.nextUrl.host || 'iqac-protal.vercel.app';
+    const isLocal = host.includes('localhost') || host.includes('127.0.0.1');
+    const origin = isLocal ? `http://${host}` : `https://${host}`;
     const fullPublicUrl = `${origin}/api/invitations/${invitation.id}/file`;
 
     // Update with real ID in the link

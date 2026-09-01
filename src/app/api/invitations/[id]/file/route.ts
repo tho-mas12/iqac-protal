@@ -64,9 +64,12 @@ export async function GET(
       } catch {}
     }
 
-    // 3. Check if it's an external HTTP URL (e.g. cPanel PHP URL)
-    if (dataCandidate && dataCandidate.startsWith('http')) {
-      return NextResponse.redirect(dataCandidate);
+    // 3. Check if it's an external URL (e.g. cPanel PHP URL)
+    if (dataCandidate && (dataCandidate.startsWith('http://') || dataCandidate.startsWith('https://'))) {
+      const secureUrl = dataCandidate.startsWith('http://') && !dataCandidate.includes('localhost')
+        ? dataCandidate.replace('http://', 'https://')
+        : dataCandidate;
+      return NextResponse.redirect(secureUrl);
     }
 
     // 4. Fallback to local filesystem if exists
