@@ -1,4 +1,6 @@
 import React from 'react';
+import Image from 'next/image';
+import sjcLogo from '../../public/sjc-logo.png';
 
 interface LogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -24,10 +26,11 @@ export default function Logo({
     <div className={`flex items-center gap-3 ${className}`}>
       {/* Official SJC College Emblem */}
       <div className={`relative flex items-center justify-center shrink-0 ${sizeClasses[size]}`}>
-        <img
-          src="/sjc-logo.png"
+        <Image
+          src={sjcLogo}
           alt="St. Joseph's College Logo"
           className="w-full h-full object-contain drop-shadow-md"
+          priority
         />
       </div>
       {showText && (

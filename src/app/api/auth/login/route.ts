@@ -84,8 +84,11 @@ export async function POST(req: NextRequest) {
     return res;
   } catch (error: any) {
     console.error('Login error:', error);
+    const errorMessage = error?.message?.includes('database') || error?.message?.includes('Authentication failed') || error?.message?.includes('connect')
+      ? `Database Connection Error: ${error.message}`
+      : 'An unexpected server error occurred';
     return NextResponse.json(
-      { error: 'An unexpected server error occurred' },
+      { error: errorMessage },
       { status: 500 }
     );
   }
