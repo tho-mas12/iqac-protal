@@ -350,19 +350,26 @@ export default function DirectorDashboard() {
             {/* Modal Body: Split View (Left: High-Res Viewer, Right: Checklist & Actions) */}
             <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-y-auto divide-y lg:divide-y-0 lg:divide-x divide-slate-200">
               {/* Left Column: Full Document Preview */}
-              <div className="lg:col-span-7 p-6 bg-slate-900/95 flex flex-col items-center justify-center min-h-[350px] relative overflow-hidden">
-                <div className="relative max-h-[550px] overflow-auto rounded-xl border border-slate-700 shadow-2xl p-2 bg-slate-950/40">
-                  <img
-                    src={`/api/invitations/${selectedInv.id}/file`}
-                    alt={selectedInv.programTitle}
-                    className="max-h-[500px] w-auto object-contain rounded-lg"
-                    onError={(e) => {
-                      // Fallback if direct link exists
-                      if (selectedInv.driveViewLink && selectedInv.driveViewLink.startsWith('http')) {
-                        (e.target as HTMLImageElement).src = selectedInv.driveViewLink;
-                      }
-                    }}
-                  />
+              <div className="lg:col-span-7 p-4 sm:p-6 bg-slate-900 flex flex-col items-center justify-center min-h-[400px] relative">
+                <div className="relative w-full max-h-[600px] flex items-center justify-center overflow-auto rounded-2xl border border-slate-800 shadow-2xl bg-slate-950/60 p-2 group">
+                  <a
+                    href={`/api/invitations/${selectedInv.id}/file`}
+                    target="_blank"
+                    rel="noreferrer"
+                    title="Click to open full resolution image in new tab"
+                    className="block cursor-zoom-in"
+                  >
+                    <img
+                      src={`/api/invitations/${selectedInv.id}/file`}
+                      alt={selectedInv.programTitle}
+                      className="max-h-[560px] w-auto max-w-full object-contain rounded-lg shadow-lg hover:opacity-95 transition-opacity"
+                      onError={(e) => {
+                        if (selectedInv.driveViewLink && selectedInv.driveViewLink.startsWith('http')) {
+                          (e.target as HTMLImageElement).src = selectedInv.driveViewLink;
+                        }
+                      }}
+                    />
+                  </a>
                 </div>
 
                 <div className="mt-4 flex items-center gap-3">
@@ -370,9 +377,9 @@ export default function DirectorDashboard() {
                     href={`/api/invitations/${selectedInv.id}/file`}
                     target="_blank"
                     rel="noreferrer"
-                    className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-xl flex items-center gap-2 shadow-lg transition-all"
+                    className="px-5 py-2.5 bg-[#6320ee] hover:bg-[#5215ce] text-white text-xs font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-purple-600/30 transition-all transform hover:-translate-y-0.5"
                   >
-                    <span>View Full Image / File</span>
+                    <span>Open High-Res Full Image</span>
                     <ExternalLink className="w-3.5 h-3.5" />
                   </a>
                 </div>
