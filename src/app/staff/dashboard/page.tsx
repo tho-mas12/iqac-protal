@@ -279,7 +279,7 @@ export default function StaffDashboard() {
                               target="_blank"
                               rel="noreferrer"
                               className="p-1.5 rounded-xl bg-slate-100 hover:bg-purple-50 text-slate-600 hover:text-purple-700 transition-colors"
-                              title="Open in Drive"
+                              title="Open Image Link"
                             >
                               <ExternalLink className="w-4 h-4" />
                             </a>
@@ -348,7 +348,7 @@ export default function StaffDashboard() {
                 rel="noreferrer"
                 className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-xl flex items-center gap-1.5 shadow"
               >
-                <span>Open in Google Drive</span>
+                <span>View Full Image / File</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
               <button

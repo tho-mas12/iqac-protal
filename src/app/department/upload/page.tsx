@@ -141,7 +141,7 @@ export default function UploadInvitationPage() {
         throw new Error(data.error || 'Failed to submit invitation');
       }
 
-      setFeedback({ type: 'success', message: 'Invitation successfully uploaded to Google Drive and submitted for IQAC review!' });
+      setFeedback({ type: 'success', message: 'Invitation successfully uploaded and submitted for IQAC review!' });
       resetForm();
       setIsModalOpen(false);
       fetchData();
@@ -197,7 +197,7 @@ export default function UploadInvitationPage() {
             <div>
               <h2 className="text-xl font-bold text-slate-900">Event Invitation Management</h2>
               <p className="text-xs text-slate-500 mt-1">
-                Upload your department invitations. Files are automatically saved to Google Drive in your department folder.
+                Upload your department invitations directly to the IQAC Portal database for verification.
               </p>
             </div>
 
@@ -320,7 +320,7 @@ export default function UploadInvitationPage() {
                         rel="noreferrer"
                         className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-purple-50 text-slate-700 hover:text-purple-700 text-xs font-semibold border border-slate-200 transition-colors flex items-center gap-1.5"
                       >
-                        <span>View in Drive</span>
+                        <span>View File</span>
                         <ExternalLink className="w-3.5 h-3.5" />
                       </a>
                     </div>
@@ -512,7 +512,7 @@ export default function UploadInvitationPage() {
                   {submitting ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      <span>Saving to Drive...</span>
+                      <span>Uploading File...</span>
                     </>
                   ) : (
                     <>

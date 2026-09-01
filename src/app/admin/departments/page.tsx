@@ -85,7 +85,7 @@ export default function AdminDepartmentsPage() {
 
       setFeedback({
         type: 'success',
-        message: `Department "${deptName} (${deptShift})" registered successfully! Dedicated Google Drive folder created with default password 'sjciqac'.`,
+        message: `Department "${deptName} (${deptShift})" registered successfully with default password 'sjciqac'.`,
       });
 
       setDeptName('');
@@ -118,7 +118,7 @@ export default function AdminDepartmentsPage() {
 
   return (
     <div className="flex min-h-screen bg-[#f8fafc]">
-      <Sidebar role="ADMIN" userName={user?.name || 'Administrator'} />
+      <Sidebar role="ADMIN" userName={user?.name || 'IQAC Administrator'} />
 
       <div className="flex-1 flex flex-col min-w-0">
         <Header
@@ -127,7 +127,7 @@ export default function AdminDepartmentsPage() {
           userRole="Admin"
         />
 
-        <main className="p-6 md:p-8 space-y-6 flex-1">
+        <main className="p-6 md:p-8 space-y-8 flex-1">
           {/* Feedback banner */}
           {feedback && (
             <div
@@ -152,7 +152,7 @@ export default function AdminDepartmentsPage() {
             <div>
               <h2 className="text-xl font-bold text-slate-900">Academic & Administrative Departments</h2>
               <p className="text-xs text-slate-500 mt-1">
-                Register departments to provision their isolated Google Drive folders and access credentials.
+                Register departments and configure their access credentials.
               </p>
             </div>
 

@@ -241,7 +241,7 @@ export default function DirectorStatusPage() {
                           rel="noreferrer"
                           className="px-3 py-1.5 bg-slate-50 hover:bg-purple-50 text-purple-700 text-xs font-semibold rounded-xl border border-purple-200 transition-colors flex items-center gap-1.5 self-start sm:self-center"
                         >
-                          <span>View Drive File</span>
+                          <span>View File</span>
                           <ExternalLink className="w-3.5 h-3.5" />
                         </a>
                       </div>
@@ -382,7 +382,7 @@ export default function DirectorStatusPage() {
                               rel="noreferrer"
                               className="p-2 rounded-xl bg-slate-100 hover:bg-purple-50 text-slate-600 hover:text-purple-700 transition-colors inline-flex items-center gap-1 text-xs font-semibold"
                             >
-                              <span>Drive</span>
+                              <span>View</span>
                               <ExternalLink className="w-3.5 h-3.5" />
                             </a>
                           </td>

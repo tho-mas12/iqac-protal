@@ -133,11 +133,11 @@ export default function DirectorSummaryPage() {
                 </div>
 
                 <div className="p-4 rounded-2xl bg-indigo-50/70 border border-indigo-100">
-                  <span className="text-xs font-semibold text-indigo-600 uppercase">Drive Storage</span>
-                  <p className="text-xs font-bold text-indigo-950 mt-1 font-mono truncate">
-                    {selectedDept.driveFolderId || 'Google Drive Folder Linked'}
+                  <span className="text-xs font-semibold text-indigo-600 uppercase">Department Code</span>
+                  <p className="text-base font-bold text-indigo-950 mt-0.5 font-mono truncate">
+                    {selectedDept.code}
                   </p>
-                  <span className="text-xs text-indigo-700 font-medium">Auto-isolated directory</span>
+                  <span className="text-xs text-indigo-700 font-medium">Registered Identifier</span>
                 </div>
 
                 <div className="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-100">
@@ -229,7 +229,7 @@ export default function DirectorSummaryPage() {
                             rel="noreferrer"
                             className="p-2 rounded-xl bg-purple-50 text-purple-700 hover:bg-purple-100 transition-colors inline-flex items-center gap-1 text-xs font-bold"
                           >
-                            <span>Drive</span>
+                            <span>View</span>
                             <ExternalLink className="w-3.5 h-3.5" />
                           </a>
                         </td>

@@ -362,7 +362,7 @@ export default function DirectorDashboard() {
                 ) : (
                   <div className="text-slate-400 text-center">
                     <Layers className="w-16 h-16 mx-auto mb-2 text-slate-600" />
-                    <p className="text-sm">Document stored in Google Drive</p>
+                    <p className="text-sm">Document stored in Portal</p>
                   </div>
                 )}
 
@@ -373,7 +373,7 @@ export default function DirectorDashboard() {
                     rel="noreferrer"
                     className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-xl flex items-center gap-2 shadow-lg transition-all"
                   >
-                    <span>Open in Google Drive</span>
+                    <span>View Full Image / File</span>
                     <ExternalLink className="w-3.5 h-3.5" />
                   </a>
                 </div>

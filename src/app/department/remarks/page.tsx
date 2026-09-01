@@ -87,7 +87,7 @@ export default function RemarksPage() {
 
       setFeedback({
         type: 'success',
-        message: data.message || 'Corrected invitation uploaded to Google Drive and re-sent to Director for review!',
+        message: data.message || 'Corrected invitation uploaded and re-sent to Director for review!',
       });
 
       // Clear card input
@@ -321,7 +321,7 @@ export default function RemarksPage() {
                           {isSubmitting ? (
                             <>
                               <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                              <span>Uploading to Drive...</span>
+                              <span>Uploading Revision...</span>
                             </>
                           ) : (
                             <>

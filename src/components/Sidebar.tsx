@@ -65,7 +65,6 @@ export default function Sidebar({ role, userName, departmentName, shift }: Sideb
           { label: 'Departments', href: '/admin/departments', icon: Building2 },
           { label: 'Access Department', href: '/admin/access-departments', icon: KeyRound },
           { label: 'Access Control', href: '/admin/access-control', icon: ShieldCheck },
-          { label: 'Drive Settings', href: '/admin/drive-settings', icon: HardDrive },
         ];
       default:
         return [];

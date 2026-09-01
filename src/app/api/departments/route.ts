@@ -64,16 +64,13 @@ export async function POST(req: NextRequest) {
       deptCode = `${deptCode}_${Date.now().toString().slice(-4)}`;
     }
 
-    // Automatically create a dedicated Google Drive folder for this department
-    const driveFolderId = await createDepartmentFolder(deptName, deptShift);
-
     // Create Department record
     const department = await prisma.department.create({
       data: {
         name: deptName,
         code: deptCode,
         shift: deptShift,
-        driveFolderId: driveFolderId || `local_${deptCode}`,
+        driveFolderId: `dept_${deptCode}`,
       },
     });
 
@@ -100,7 +97,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: 'Department registered successfully and Google Drive folder created.',
+      message: 'Department registered successfully!',
       department,
       user: {
         id: user.id,
