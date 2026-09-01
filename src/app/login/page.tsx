@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { User, Lock, ArrowRight, CheckCircle2, Shield, UserCheck, Briefcase } from 'lucide-react';
+import { User, Lock, ArrowRight } from 'lucide-react';
 import Logo from '@/components/Logo';
 
 export default function LoginPage() {
@@ -41,12 +41,6 @@ export default function LoginPage() {
       setError(err.message || 'Invalid username or password');
       setLoading(false);
     }
-  };
-
-  const handleQuickFill = (u: string, p: string) => {
-    setUsername(u);
-    setPassword(p);
-    setError(null);
   };
 
   return (
@@ -132,50 +126,6 @@ export default function LoginPage() {
             )}
           </button>
         </form>
-
-        {/* Demo Fast Login Buttons */}
-        <div className="mt-8 pt-6 border-t border-slate-100">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 text-center mb-3">
-            Quick Demo Logins
-          </p>
-          <div className="grid grid-cols-2 gap-2 text-xs">
-            <button
-              type="button"
-              onClick={() => handleQuickFill('cs_shift1', 'sjciqac')}
-              className="p-2 rounded-lg bg-purple-50/70 hover:bg-purple-100 text-purple-800 font-medium text-left border border-purple-100/80 transition-colors flex items-center gap-1.5"
-            >
-              <Briefcase className="w-3.5 h-3.5 text-purple-600 shrink-0" />
-              <span className="truncate">Dept (CS S1)</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => handleQuickFill('director', 'director123')}
-              className="p-2 rounded-lg bg-indigo-50/70 hover:bg-indigo-100 text-indigo-800 font-medium text-left border border-indigo-100/80 transition-colors flex items-center gap-1.5"
-            >
-              <Shield className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
-              <span className="truncate">Director</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => handleQuickFill('staff', 'staff123')}
-              className="p-2 rounded-lg bg-emerald-50/70 hover:bg-emerald-100 text-emerald-800 font-medium text-left border border-emerald-100/80 transition-colors flex items-center gap-1.5"
-            >
-              <UserCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span className="truncate">Staff</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => handleQuickFill('admin', 'admin123')}
-              className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-medium text-left border border-slate-200 transition-colors flex items-center gap-1.5"
-            >
-              <Lock className="w-3.5 h-3.5 text-slate-600 shrink-0" />
-              <span className="truncate">Admin</span>
-            </button>
-          </div>
-          <p className="text-[11px] text-slate-400 text-center mt-3">
-            Default Department Password: <code className="bg-slate-100 px-1.5 py-0.5 rounded text-purple-700 font-mono font-semibold">sjciqac</code>
-          </p>
-        </div>
       </div>
     </div>
   );
