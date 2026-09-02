@@ -23,6 +23,7 @@ export async function GET() {
           whatsappSenderNumber: '9626806328',
           whatsappReceiverNumber: '7418671366',
           whatsappEnabled: true,
+          whatsappProvider: 'ultramsg',
         },
       });
     }
@@ -36,6 +37,7 @@ export async function GET() {
           whatsappSenderNumber: '9626806328',
           whatsappReceiverNumber: '7418671366',
           whatsappEnabled: true,
+          whatsappProvider: 'ultramsg',
         },
       },
       { status: 200 }
@@ -53,7 +55,15 @@ export async function POST(req: NextRequest) {
     await autoSyncDatabaseColumns();
 
     const body = await req.json();
-    const { whatsappSenderNumber, whatsappReceiverNumber, whatsappEnabled } = body;
+    const {
+      whatsappSenderNumber,
+      whatsappReceiverNumber,
+      whatsappEnabled,
+      whatsappProvider,
+      whatsappInstanceId,
+      whatsappApiKey,
+      whatsappCustomWebhookUrl,
+    } = body;
 
     const updated = await prisma.systemSettings.upsert({
       where: { id: 'default' },
@@ -61,12 +71,20 @@ export async function POST(req: NextRequest) {
         whatsappSenderNumber: whatsappSenderNumber ? String(whatsappSenderNumber).replace(/\D/g, '') : '9626806328',
         whatsappReceiverNumber: whatsappReceiverNumber ? String(whatsappReceiverNumber).replace(/\D/g, '') : '7418671366',
         whatsappEnabled: whatsappEnabled !== undefined ? Boolean(whatsappEnabled) : true,
+        whatsappProvider: whatsappProvider || 'ultramsg',
+        whatsappInstanceId: whatsappInstanceId !== undefined ? String(whatsappInstanceId).trim() : null,
+        whatsappApiKey: whatsappApiKey !== undefined ? String(whatsappApiKey).trim() : null,
+        whatsappCustomWebhookUrl: whatsappCustomWebhookUrl !== undefined ? String(whatsappCustomWebhookUrl).trim() : null,
       },
       create: {
         id: 'default',
         whatsappSenderNumber: whatsappSenderNumber ? String(whatsappSenderNumber).replace(/\D/g, '') : '9626806328',
         whatsappReceiverNumber: whatsappReceiverNumber ? String(whatsappReceiverNumber).replace(/\D/g, '') : '7418671366',
         whatsappEnabled: whatsappEnabled !== undefined ? Boolean(whatsappEnabled) : true,
+        whatsappProvider: whatsappProvider || 'ultramsg',
+        whatsappInstanceId: whatsappInstanceId !== undefined ? String(whatsappInstanceId).trim() : null,
+        whatsappApiKey: whatsappApiKey !== undefined ? String(whatsappApiKey).trim() : null,
+        whatsappCustomWebhookUrl: whatsappCustomWebhookUrl !== undefined ? String(whatsappCustomWebhookUrl).trim() : null,
       },
     });
 

@@ -97,9 +97,13 @@ model InvitationHistory {
 }
 
 model SystemSettings {
-  id                     String   @id @default("default")
-  whatsappSenderNumber   String   @default("9626806328")
-  whatsappReceiverNumber String   @default("7418671366")
-  whatsappEnabled        Boolean  @default(true)
-  updatedAt              DateTime @updatedAt
+  id                        String   @id @default("default")
+  whatsappSenderNumber      String   @default("9626806328")
+  whatsappReceiverNumber    String   @default("7418671366")
+  whatsappEnabled           Boolean  @default(true)
+  whatsappProvider          String   @default("ultramsg") // "ultramsg", "greenapi", "custom_webhook"
+  whatsappInstanceId        String?
+  whatsappApiKey            String?
+  whatsappCustomWebhookUrl  String?
+  updatedAt                 DateTime @updatedAt
 }
