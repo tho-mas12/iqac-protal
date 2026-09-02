@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -18,6 +18,7 @@ import {
   LogOut,
   Layers,
   ClipboardList,
+  MessageSquare,
   X
 } from 'lucide-react';
 import Logo from './Logo';
@@ -84,6 +85,7 @@ export default function Sidebar({ role, userName, departmentName, shift }: Sideb
           { label: 'Departments', href: '/admin/departments', icon: Building2 },
           { label: 'Access Department', href: '/admin/access-departments', icon: KeyRound },
           { label: 'Access Control', href: '/admin/access-control', icon: ShieldCheck },
+          { label: 'WhatsApp Alerts', href: '/admin/notifications', icon: MessageSquare },
         ];
       default:
         return [];

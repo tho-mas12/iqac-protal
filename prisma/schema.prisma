@@ -95,3 +95,11 @@ model InvitationHistory {
   fileData     String?     @db.LongText
   timestamp    DateTime    @default(now())
 }
+
+model SystemSettings {
+  id                     String   @id @default("default")
+  whatsappSenderNumber   String   @default("9626806328")
+  whatsappReceiverNumber String   @default("7418671366")
+  whatsappEnabled        Boolean  @default(true)
+  updatedAt              DateTime @updatedAt
+}

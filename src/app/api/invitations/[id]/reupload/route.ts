@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
 import { uploadFileToDrive } from '@/lib/drive';
+import { sendWhatsAppNotification } from '@/lib/whatsapp';
 
 export async function POST(
   req: NextRequest,
@@ -84,6 +85,21 @@ export async function POST(
         department: true,
       },
     });
+
+    // Trigger automated WhatsApp notification to Director/IQAC receiver
+    try {
+      await sendWhatsAppNotification({
+        departmentName: updated.department?.name || 'Department',
+        shift: updated.shift || updated.department?.shift || 'Shift I',
+        programTitle: updated.programTitle,
+        fromDate: updated.fromDate,
+        toDate: updated.toDate,
+        status: `Pending Review (Correction Rev #${nextRevision})`,
+        invitationId: updated.id,
+      });
+    } catch (e) {
+      console.error('[WhatsApp Re-upload Warning]', e);
+    }
 
     return NextResponse.json({
       success: true,

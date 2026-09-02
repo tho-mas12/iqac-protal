@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
 import { uploadFileToDrive } from '@/lib/drive';
+import { sendWhatsAppNotification } from '@/lib/whatsapp';
 
 export async function GET(req: NextRequest) {
   try {
@@ -201,6 +202,21 @@ export async function POST(req: NextRequest) {
         department: true,
       },
     });
+
+    // Trigger automated WhatsApp notification to Director/IQAC receiver
+    try {
+      await sendWhatsAppNotification({
+        departmentName: updatedInvitation.department?.name || 'Department',
+        shift: updatedInvitation.shift || updatedInvitation.department?.shift || 'Shift I',
+        programTitle: updatedInvitation.programTitle,
+        fromDate: updatedInvitation.fromDate,
+        toDate: updatedInvitation.toDate,
+        status: 'Pending Review',
+        invitationId: updatedInvitation.id,
+      });
+    } catch (e) {
+      console.error('[WhatsApp Trigger Warning]', e);
+    }
 
     return NextResponse.json({
       success: true,
