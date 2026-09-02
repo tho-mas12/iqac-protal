@@ -172,8 +172,8 @@ export default function DepartmentDashboard() {
             </div>
           </div>
 
-          {/* Statistics Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {/* Statistics Grid (2 cols on mobile, 4 on desktop) */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
             <StatCard
               title="Total Uploaded"
               value={stats.total}

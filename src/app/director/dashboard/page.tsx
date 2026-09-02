@@ -145,9 +145,9 @@ export default function DirectorDashboard() {
           userRole="Director"
         />
 
-        <main className="p-6 md:p-8 space-y-8 flex-1">
-          {/* Top 4 Stat Widgets */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <main className="p-4 sm:p-6 md:p-8 space-y-6 flex-1 max-w-7xl mx-auto w-full">
+          {/* Top 4 Stat Widgets (2 cols on mobile, 4 on desktop) */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
             <StatCard
               title="Total Invitations"
               value={stats.total}

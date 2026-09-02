@@ -90,9 +90,9 @@ export default function DirectorSummaryPage() {
           userRole="Director"
         />
 
-        <main className="p-6 md:p-8 space-y-6 flex-1">
+        <main className="p-4 sm:p-6 md:p-8 space-y-6 flex-1 max-w-7xl mx-auto w-full">
           {/* Department Selector Control Card */}
-          <div className="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-sm space-y-4">
+          <div className="bg-white rounded-3xl border border-slate-200/80 p-5 sm:p-8 shadow-sm space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <h2 className="text-xl font-bold text-slate-900">Select Department to Inspect</h2>
@@ -125,7 +125,7 @@ export default function DirectorSummaryPage() {
 
             {/* Selected Department Overview Banner */}
             {selectedDept && (
-              <div className="pt-4 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="pt-4 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                 <div className="p-4 rounded-2xl bg-purple-50/70 border border-purple-100">
                   <span className="text-xs font-semibold text-purple-600 uppercase">Department</span>
                   <p className="text-base font-bold text-purple-950 mt-0.5">{selectedDept.name}</p>
@@ -150,7 +150,7 @@ export default function DirectorSummaryPage() {
 
           {/* Invitations Table for Selected Department */}
           <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
-            <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+            <div className="p-5 sm:p-6 border-b border-slate-100 flex items-center justify-between">
               <div>
                 <h3 className="font-bold text-slate-900 text-base">
                   All Invitations from {selectedDept?.name || 'Department'}
@@ -170,74 +170,127 @@ export default function DirectorSummaryPage() {
                 No invitations uploaded yet by this department.
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm">
-                  <thead className="bg-slate-50 text-slate-500 uppercase text-[11px] font-bold border-b border-slate-100">
-                    <tr>
-                      <th className="px-6 py-4">Program Title</th>
-                      <th className="px-4 py-4">Category</th>
-                      <th className="px-4 py-4">Event Date</th>
-                      <th className="px-4 py-4">Uploaded At</th>
-                      <th className="px-4 py-4">Status</th>
-                      <th className="px-4 py-4">Remarks / Notes</th>
-                      <th className="px-6 py-4 text-right">File Link</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
-                    {deptInvitations.map((inv) => (
-                      <tr key={inv.id} className="hover:bg-slate-50/80 transition-colors">
-                        <td className="px-6 py-4">
-                          <div className="font-semibold text-slate-900">{inv.programTitle}</div>
-                          <div className="text-xs text-slate-400 mt-0.5">{inv.fileName}</div>
-                        </td>
-                        <td className="px-4 py-4">
-                          <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold">
-                            {inv.category}
-                          </span>
-                        </td>
-                        <td className="px-4 py-4 text-xs text-slate-600">
-                          {new Date(inv.fromDate).toLocaleDateString()}
-                          {inv.toDate && ` - ${new Date(inv.toDate).toLocaleDateString()}`}
-                        </td>
-                        <td className="px-4 py-4 text-xs text-slate-500">
-                          {new Date(inv.createdAt).toLocaleString()}
-                        </td>
-                        <td className="px-4 py-4">
+              <>
+                {/* Desktop & Tablet Table */}
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full text-left text-sm">
+                    <thead className="bg-slate-50 text-slate-500 uppercase text-[11px] font-bold border-b border-slate-100">
+                      <tr>
+                        <th className="px-6 py-4">Program Title</th>
+                        <th className="px-4 py-4">Category</th>
+                        <th className="px-4 py-4">Event Date</th>
+                        <th className="px-4 py-4">Uploaded At</th>
+                        <th className="px-4 py-4">Status</th>
+                        <th className="px-4 py-4">Remarks / Notes</th>
+                        <th className="px-6 py-4 text-right">File Link</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
+                      {deptInvitations.map((inv) => (
+                        <tr key={inv.id} className="hover:bg-slate-50/80 transition-colors">
+                          <td className="px-6 py-4">
+                            <div className="font-semibold text-slate-900">{inv.programTitle}</div>
+                            <div className="text-xs text-slate-400 mt-0.5">{inv.fileName}</div>
+                          </td>
+                          <td className="px-4 py-4">
+                            <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold">
+                              {inv.category}
+                            </span>
+                          </td>
+                          <td className="px-4 py-4 text-xs text-slate-600">
+                            {new Date(inv.fromDate).toLocaleDateString()}
+                            {inv.toDate && ` - ${new Date(inv.toDate).toLocaleDateString()}`}
+                          </td>
+                          <td className="px-4 py-4 text-xs text-slate-500">
+                            {new Date(inv.createdAt).toLocaleString()}
+                          </td>
+                          <td className="px-4 py-4">
+                            {inv.status === 'APPROVED' && (
+                              <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                                <CheckCircle2 className="w-3 h-3" /> Approved
+                              </span>
+                            )}
+                            {inv.status === 'PENDING' && (
+                              <span className="inline-flex items-center gap-1 text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200">
+                                <Clock className="w-3 h-3" /> Pending
+                              </span>
+                            )}
+                            {inv.status === 'REMARKS' && (
+                              <span className="inline-flex items-center gap-1 text-xs font-bold text-rose-700 bg-rose-50 px-2.5 py-1 rounded-full border border-rose-200">
+                                <AlertTriangle className="w-3 h-3" /> Remarks
+                              </span>
+                            )}
+                          </td>
+                          <td className="px-4 py-4 text-xs text-slate-600 max-w-xs truncate">
+                            {inv.directorRemarks || '-'}
+                          </td>
+                          <td className="px-6 py-4 text-right">
+                            <a
+                              href={`/api/invitations/${inv.id}/file?rev=${inv.revisionCount || 0}&t=${inv.updatedAt ? new Date(inv.updatedAt).getTime() : Date.now()}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="p-2 rounded-xl bg-purple-50 text-purple-700 hover:bg-purple-100 transition-colors inline-flex items-center gap-1 text-xs font-bold"
+                            >
+                              <span>View</span>
+                              <ExternalLink className="w-3.5 h-3.5" />
+                            </a>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Mobile Responsive Cards */}
+                <div className="md:hidden divide-y divide-slate-100">
+                  {deptInvitations.map((inv) => (
+                    <div key={inv.id} className="p-4 space-y-2.5 bg-white">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <h4 className="font-bold text-slate-900 text-sm">{inv.programTitle}</h4>
+                          <span className="text-xs text-slate-500 font-medium">{inv.category}</span>
+                        </div>
+                        <div>
                           {inv.status === 'APPROVED' && (
-                            <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-                              <CheckCircle2 className="w-3 h-3" /> Approved
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                              Approved
                             </span>
                           )}
                           {inv.status === 'PENDING' && (
-                            <span className="inline-flex items-center gap-1 text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200">
-                              <Clock className="w-3 h-3" /> Pending
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">
+                              Pending
                             </span>
                           )}
                           {inv.status === 'REMARKS' && (
-                            <span className="inline-flex items-center gap-1 text-xs font-bold text-rose-700 bg-rose-50 px-2.5 py-1 rounded-full border border-rose-200">
-                              <AlertTriangle className="w-3 h-3" /> Remarks
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800">
+                              Remarks
                             </span>
                           )}
-                        </td>
-                        <td className="px-4 py-4 text-xs text-slate-600 max-w-xs truncate">
-                          {inv.directorRemarks || '-'}
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                          <a
-                            href={`/api/invitations/${inv.id}/file?rev=${inv.revisionCount || 0}&t=${inv.updatedAt ? new Date(inv.updatedAt).getTime() : Date.now()}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="p-2 rounded-xl bg-purple-50 text-purple-700 hover:bg-purple-100 transition-colors inline-flex items-center gap-1 text-xs font-bold"
-                          >
-                            <span>View</span>
-                            <ExternalLink className="w-3.5 h-3.5" />
-                          </a>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                        </div>
+                      </div>
+
+                      {inv.directorRemarks && (
+                        <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 font-medium">
+                          <strong>Remarks:</strong> {inv.directorRemarks}
+                        </div>
+                      )}
+
+                      <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs text-slate-500">
+                        <span>{new Date(inv.fromDate).toLocaleDateString()}</span>
+                        <a
+                          href={`/api/invitations/${inv.id}/file?rev=${inv.revisionCount || 0}&t=${inv.updatedAt ? new Date(inv.updatedAt).getTime() : Date.now()}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="px-3 py-1.5 bg-purple-50 text-purple-700 font-bold rounded-xl flex items-center gap-1"
+                        >
+                          <span>View File</span>
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
             )}
           </div>
         </main>

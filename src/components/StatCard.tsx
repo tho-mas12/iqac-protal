@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { LucideIcon } from 'lucide-react';
 
 interface StatCardProps {
@@ -46,15 +46,25 @@ export default function StatCard({ title, value, subtitle, icon: Icon, variant =
   const styles = variantStyles[variant];
 
   return (
-    <div className="bg-white rounded-2xl p-6 border border-slate-200/70 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow">
-      <div className="flex flex-col">
-        <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">{title}</span>
-        <span className="text-3xl font-extrabold text-slate-900 tracking-tight">{value}</span>
-        {subtitle && <span className="text-xs text-slate-400 mt-1 font-medium">{subtitle}</span>}
+    <div className="bg-white rounded-2xl p-3.5 sm:p-5 border border-slate-200/80 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow">
+      <div className="flex flex-col min-w-0 pr-2">
+        <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 mb-0.5 truncate">
+          {title}
+        </span>
+        <span className="text-xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          {value}
+        </span>
+        {subtitle && (
+          <span className="text-[10px] sm:text-xs text-slate-400 mt-0.5 font-medium truncate hidden xs:inline-block">
+            {subtitle}
+          </span>
+        )}
       </div>
 
-      <div className={`w-13 h-13 p-3.5 rounded-2xl flex items-center justify-center ${styles.iconBg} ${styles.iconColor} border ${styles.border} shadow-inner`}>
-        <Icon className="w-6 h-6" />
+      <div
+        className={`w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0 ${styles.iconBg} ${styles.iconColor} border ${styles.border} shadow-inner`}
+      >
+        <Icon className="w-4 h-4 sm:w-6 sm:h-6" />
       </div>
     </div>
   );
