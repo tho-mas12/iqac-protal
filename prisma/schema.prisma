@@ -72,6 +72,11 @@ model Invitation {
   hardCopyReceived   Boolean     @default(false)
   hardCopyReceivedAt DateTime?
   hardCopyStaffName  String?
+
+  // Staff ERP Mail Dispatch Status
+  mailSent           Boolean     @default(false)
+  mailSentAt         DateTime?
+  mailSentStaffName  String?
   
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt

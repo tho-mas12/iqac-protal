@@ -338,6 +338,7 @@ export default function DirectorStatusPage() {
                         <th className="px-4 py-4">Event Date</th>
                         <th className="px-4 py-4">Approved At</th>
                         <th className="px-4 py-4">Hard Copy Status</th>
+                        <th className="px-4 py-4">ERP Mail Sent</th>
                         <th className="px-6 py-4 text-right">View File</th>
                       </tr>
                     </thead>
@@ -371,6 +372,24 @@ export default function DirectorStatusPage() {
                             ) : (
                               <span className="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
                                 Pending Hard Copy
+                              </span>
+                            )}
+                          </td>
+                          <td className="px-4 py-4">
+                            {inv.mailSent ? (
+                              <div>
+                                <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                                  <CheckCircle2 className="w-3 h-3" /> Mail Sent ✓
+                                </span>
+                                {inv.mailSentAt && (
+                                  <span className="text-[10px] text-slate-500 font-medium block mt-0.5">
+                                    {new Date(inv.mailSentAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}
+                                  </span>
+                                )}
+                              </div>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                                Pending Mail
                               </span>
                             )}
                           </td>

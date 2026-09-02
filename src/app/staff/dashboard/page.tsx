@@ -127,6 +127,7 @@ export default function StaffDashboard() {
           isOpen={Boolean(mailingInv)}
           onClose={() => setMailingInv(null)}
           invitation={mailingInv}
+          onMailSentSuccess={fetchData}
         />
 
         <main className="p-4 sm:p-6 md:p-8 space-y-6 flex-1 max-w-7xl mx-auto w-full">
@@ -261,15 +262,34 @@ export default function StaffDashboard() {
                           </td>
                           {/* Send Mail to ERP Column */}
                           <td className="px-4 py-4">
-                            <button
-                              type="button"
-                              onClick={() => setMailingInv(inv)}
-                              className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
-                              title="Send publication request to erp@mail.sjctni.edu"
-                            >
-                              <Mail className="w-3.5 h-3.5 text-blue-600" />
-                              <span>Send Mail</span>
-                            </button>
+                            {inv.mailSent ? (
+                              <div className="flex flex-col items-start gap-1">
+                                <button
+                                  type="button"
+                                  onClick={() => setMailingInv(inv)}
+                                  className="px-3 py-1 rounded-full bg-emerald-100 hover:bg-emerald-200 text-emerald-900 border border-emerald-300 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                                  title="Click to view ERP email details or resend"
+                                >
+                                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+                                  <span>Mail Sent ✓</span>
+                                </button>
+                                {inv.mailSentAt && (
+                                  <span className="text-[10px] text-slate-500 font-medium pl-1">
+                                    {new Date(inv.mailSentAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}
+                                  </span>
+                                )}
+                              </div>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => setMailingInv(inv)}
+                                className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
+                                title="Send publication request to erp@mail.sjctni.edu"
+                              >
+                                <Mail className="w-3.5 h-3.5 text-blue-600" />
+                                <span>Send Mail</span>
+                              </button>
+                            )}
                           </td>
                           {/* Action Buttons */}
                           <td className="px-6 py-4 text-right">
@@ -326,14 +346,25 @@ export default function StaffDashboard() {
                       </div>
 
                       <div className="flex items-center justify-between pt-2 border-t border-slate-100 gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setMailingInv(inv)}
-                          className="px-3 py-1.5 bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold rounded-xl flex items-center gap-1 cursor-pointer"
-                        >
-                          <Mail className="w-3.5 h-3.5" />
-                          <span>Send Mail</span>
-                        </button>
+                        {inv.mailSent ? (
+                          <button
+                            type="button"
+                            onClick={() => setMailingInv(inv)}
+                            className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-bold flex items-center gap-1 cursor-pointer"
+                          >
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
+                            <span>Mail Sent ✓</span>
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => setMailingInv(inv)}
+                            className="px-3 py-1.5 bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold rounded-xl flex items-center gap-1 cursor-pointer"
+                          >
+                            <Mail className="w-3.5 h-3.5" />
+                            <span>Send Mail</span>
+                          </button>
+                        )}
 
                         <div className="flex items-center gap-1.5">
                           <button

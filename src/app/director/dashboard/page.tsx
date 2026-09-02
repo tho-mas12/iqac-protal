@@ -21,7 +21,11 @@ import {
   CheckSquare,
   Square,
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  ZoomIn,
+  ZoomOut,
+  RotateCcw,
+  Maximize2
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -39,6 +43,7 @@ export default function DirectorDashboard() {
 
   // Review Modal State
   const [selectedInv, setSelectedInv] = useState<any | null>(null);
+  const [zoom, setZoom] = useState(100);
   const [showRemarksBox, setShowRemarksBox] = useState(false);
   const [reviewAction, setReviewAction] = useState<'APPROVE' | 'REMARKS' | null>(null);
   const [remarksText, setRemarksText] = useState('');
@@ -80,6 +85,7 @@ export default function DirectorDashboard() {
   const openReviewModal = (inv: any) => {
     setSelectedInv(inv);
     setShowRemarksBox(false);
+    setZoom(100);
     setCheckLogo(inv.checkLogo || false);
     setCheckTitle(inv.checkTitle || false);
     setCheckHeaders(inv.checkHeaders || false);
@@ -345,35 +351,79 @@ export default function DirectorDashboard() {
 
             {/* Modal Body: Split View (Left: High-Res Viewer, Right: Checklist & Actions) */}
             <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-y-auto divide-y lg:divide-y-0 lg:divide-x divide-slate-200">
-              {/* Left Column: Full Document Preview */}
-              <div className="lg:col-span-7 p-4 sm:p-6 bg-slate-900 flex flex-col items-center justify-center min-h-[400px] relative">
-                <div className="relative w-full max-h-[600px] flex items-center justify-center overflow-auto rounded-2xl border border-slate-800 shadow-2xl bg-slate-950/60 p-2 group">
-                  <a
-                    href={`/api/invitations/${selectedInv.id}/file?rev=${selectedInv.revisionCount || 0}&t=${selectedInv.updatedAt ? new Date(selectedInv.updatedAt).getTime() : Date.now()}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    title="Click to open full resolution image in new tab"
-                    className="block cursor-zoom-in"
-                  >
-                    <img
-                      src={`/api/invitations/${selectedInv.id}/file?rev=${selectedInv.revisionCount || 0}&t=${selectedInv.updatedAt ? new Date(selectedInv.updatedAt).getTime() : Date.now()}`}
-                      alt={selectedInv.programTitle}
-                      className="max-h-[560px] w-auto max-w-full object-contain rounded-lg shadow-lg hover:opacity-95 transition-opacity"
-                      onError={(e) => {
-                        if (selectedInv.driveViewLink && selectedInv.driveViewLink.startsWith('http')) {
-                          (e.target as HTMLImageElement).src = selectedInv.driveViewLink;
-                        }
-                      }}
-                    />
-                  </a>
+              {/* Left Column: Full Document Preview with In-Page Zoom */}
+              <div className="lg:col-span-7 p-4 sm:p-5 bg-slate-900 flex flex-col justify-between gap-3 relative">
+                {/* Zoom Controls Bar */}
+                <div className="flex items-center justify-between bg-slate-950/90 border border-slate-800 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-300">
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => setZoom((z) => Math.max(z - 25, 50))}
+                      className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white transition-colors cursor-pointer"
+                      title="Zoom Out"
+                    >
+                      <ZoomOut className="w-3.5 h-3.5" />
+                    </button>
+                    <span className="px-2 py-0.5 font-mono text-purple-300 min-w-[50px] text-center font-bold">
+                      {zoom}%
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setZoom((z) => Math.min(z + 25, 300))}
+                      className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white transition-colors cursor-pointer"
+                      title="Zoom In"
+                    >
+                      <ZoomIn className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setZoom(100)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-bold transition-colors cursor-pointer flex items-center gap-1"
+                      title="Reset Zoom"
+                    >
+                      <RotateCcw className="w-3 h-3" />
+                      <span>Fit</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setZoom(150)}
+                      className="px-2.5 py-1 rounded-lg bg-purple-900/60 hover:bg-purple-800 text-purple-200 border border-purple-500/30 text-[11px] font-bold transition-colors cursor-pointer flex items-center gap-1"
+                      title="Enlarge width"
+                    >
+                      <Maximize2 className="w-3 h-3" />
+                      <span>Zoom 150%</span>
+                    </button>
+                  </div>
                 </div>
 
-                <div className="mt-4 flex items-center gap-3">
+                {/* Scrollable Document Canvas (Shows full poster top-to-bottom without cutting) */}
+                <div className="w-full h-[60vh] max-h-[620px] overflow-auto rounded-2xl border border-slate-800 shadow-2xl bg-slate-950/80 p-4 flex items-start justify-center">
+                  <img
+                    src={`/api/invitations/${selectedInv.id}/file?rev=${selectedInv.revisionCount || 0}&t=${selectedInv.updatedAt ? new Date(selectedInv.updatedAt).getTime() : Date.now()}`}
+                    alt={selectedInv.programTitle}
+                    style={{ width: `${zoom}%`, maxWidth: 'none' }}
+                    className="h-auto object-contain rounded-lg shadow-2xl transition-all duration-150 select-none"
+                    onError={(e) => {
+                      if (selectedInv.driveViewLink && selectedInv.driveViewLink.startsWith('http')) {
+                        (e.target as HTMLImageElement).src = selectedInv.driveViewLink;
+                      }
+                    }}
+                  />
+                </div>
+
+                {/* Bottom Bar: Dedicated Open Full Image in new tab button */}
+                <div className="flex items-center justify-between pt-1">
+                  <span className="text-[11px] text-slate-400">
+                    Scroll inside to view full poster length or use Zoom controls
+                  </span>
                   <a
                     href={`/api/invitations/${selectedInv.id}/file?rev=${selectedInv.revisionCount || 0}&t=${selectedInv.updatedAt ? new Date(selectedInv.updatedAt).getTime() : Date.now()}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="px-5 py-2.5 bg-[#6320ee] hover:bg-[#5215ce] text-white text-xs font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-purple-600/30 transition-all transform hover:-translate-y-0.5"
+                    className="px-4 py-2 bg-[#6320ee] hover:bg-[#5215ce] text-white text-xs font-bold rounded-xl flex items-center gap-1.5 shadow-lg shadow-purple-600/30 transition-all transform hover:-translate-y-0.5 cursor-pointer shrink-0"
                   >
                     <span>Open High-Res Full Image</span>
                     <ExternalLink className="w-3.5 h-3.5" />
