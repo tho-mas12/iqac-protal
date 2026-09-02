@@ -456,7 +456,6 @@ export default function DirectorDashboard() {
                         rows={3}
                         value={remarksText}
                         onChange={(e) => setRemarksText(e.target.value)}
-                        placeholder="Enter specific remarks or corrections for the department..."
                         className="w-full p-3 rounded-xl border-2 border-amber-400 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/20 bg-white"
                         autoFocus
                       />

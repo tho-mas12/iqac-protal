@@ -1,9 +1,11 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
 import StatCard from '@/components/StatCard';
+import MailComposerModal from '@/components/MailComposerModal';
+import Toast, { ToastMessage } from '@/components/Toast';
 import {
   Layers,
   Clock,
@@ -18,7 +20,10 @@ import {
   Search,
   Check,
   X,
-  FileText
+  FileText,
+  Mail,
+  Send,
+  Sparkles
 } from 'lucide-react';
 
 export default function StaffDashboard() {
@@ -33,10 +38,11 @@ export default function StaffDashboard() {
   });
   const [search, setSearch] = useState('');
   const [updatingId, setUpdatingId] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [toast, setToast] = useState<ToastMessage | null>(null);
 
-  // View Modal state
+  // View & Mail Modal states
   const [viewingInv, setViewingInv] = useState<any | null>(null);
+  const [mailingInv, setMailingInv] = useState<any | null>(null);
 
   const fetchData = async () => {
     try {
@@ -57,6 +63,7 @@ export default function StaffDashboard() {
       }
     } catch (err) {
       console.error(err);
+      setToast({ type: 'error', message: 'Failed to load approved invitations' });
     } finally {
       setLoading(false);
     }
@@ -68,7 +75,6 @@ export default function StaffDashboard() {
 
   const handleToggleHardCopy = async (invId: string, currentStatus: boolean) => {
     setUpdatingId(invId);
-    setFeedback(null);
 
     try {
       const res = await fetch(`/api/invitations/${invId}/hard-copy`, {
@@ -82,14 +88,14 @@ export default function StaffDashboard() {
         throw new Error(data.error || 'Failed to update hard copy status');
       }
 
-      setFeedback({
+      setToast({
         type: 'success',
         message: !currentStatus ? 'Hard copy marked as Received!' : 'Hard copy marked as Pending.',
       });
 
       fetchData();
     } catch (err: any) {
-      setFeedback({ type: 'error', message: err.message || 'Error updating status' });
+      setToast({ type: 'error', message: err.message || 'Error updating status' });
     } finally {
       setUpdatingId(null);
     }
@@ -113,26 +119,17 @@ export default function StaffDashboard() {
           userRole="Staff"
         />
 
-        <main className="p-6 md:p-8 space-y-8 flex-1">
-          {/* Feedback banner */}
-          {feedback && (
-            <div
-              className={`p-4 rounded-2xl border flex items-center justify-between shadow-sm animate-fadeIn ${
-                feedback.type === 'success'
-                  ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-                  : 'bg-rose-50 border-rose-200 text-rose-800'
-              }`}
-            >
-              <div className="flex items-center gap-2 text-sm font-semibold">
-                <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-                <span>{feedback.message}</span>
-              </div>
-              <button onClick={() => setFeedback(null)} className="text-slate-400 hover:text-slate-600">
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          )}
+        {/* Dynamic Top-Right Pop-up */}
+        <Toast toast={toast} onClose={() => setToast(null)} />
 
+        {/* Send Mail to ERP Modal */}
+        <MailComposerModal
+          isOpen={Boolean(mailingInv)}
+          onClose={() => setMailingInv(null)}
+          invitation={mailingInv}
+        />
+
+        <main className="p-4 sm:p-6 md:p-8 space-y-6 flex-1 max-w-7xl mx-auto w-full">
           {/* 4 Statistics Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             <StatCard
@@ -143,11 +140,11 @@ export default function StaffDashboard() {
               subtitle="All portal submissions"
             />
             <StatCard
-              title="Reports Received"
+              title="Approved Reports"
               value={stats.approved}
               icon={CheckCircle2}
               variant="green"
-              subtitle="Approved invitations"
+              subtitle="Director approved"
             />
             <StatCard
               title="Needs Correction"
@@ -161,34 +158,33 @@ export default function StaffDashboard() {
               value={stats.pending}
               icon={Clock}
               variant="purple"
-              subtitle="Awaiting Director check"
+              subtitle="Awaiting Director review"
             />
           </div>
 
           {/* Approved Invitations Table & Hard Copy Tracking */}
           <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
-            <div className="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="p-5 sm:p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <h3 className="font-bold text-slate-900 text-lg">Approved Invitations & Hard Copy Verification</h3>
                 <p className="text-xs text-slate-500 mt-0.5">
-                  Verify approved event details and record physical hard copies received from departments
+                  Verify approved event details, track hard copies, and notify the ERP team to publish
                 </p>
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="relative">
-                  <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                <div className="relative w-full sm:w-64">
+                  <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
-                    placeholder="Search approved..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="pl-9 pr-4 py-2 rounded-xl border border-slate-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-purple-600/30 focus:border-purple-600"
+                    className="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-purple-600/30 focus:border-purple-600"
                   />
                 </div>
                 <button
                   onClick={fetchData}
-                  className="p-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors"
+                  className="p-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors shrink-0 cursor-pointer"
                   title="Refresh"
                 >
                   <RotateCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -207,89 +203,159 @@ export default function StaffDashboard() {
                 No approved invitations found.
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm">
-                  <thead className="bg-slate-50 text-slate-500 uppercase text-[11px] font-bold border-b border-slate-100">
-                    <tr>
-                      <th className="px-6 py-4">Event Activities</th>
-                      <th className="px-4 py-4">Department & Shift</th>
-                      <th className="px-4 py-4">Category</th>
-                      <th className="px-4 py-4">Event Date</th>
-                      <th className="px-4 py-4">Approved Date</th>
-                      <th className="px-4 py-4">Hard Copy Received?</th>
-                      <th className="px-6 py-4 text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
-                    {filteredInvitations.map((inv) => (
-                      <tr key={inv.id} className="hover:bg-slate-50/80 transition-colors">
-                        <td className="px-6 py-4">
-                          <div className="font-semibold text-slate-900">{inv.programTitle}</div>
-                          <div className="text-xs text-slate-400 mt-0.5">{inv.fileName}</div>
-                        </td>
-                        <td className="px-4 py-4">
-                          <span className="font-bold text-slate-800 text-xs block">{inv.department?.name}</span>
-                          <span className="text-[11px] text-purple-700 font-semibold">{inv.shift}</span>
-                        </td>
-                        <td className="px-4 py-4">
-                          <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold">
-                            {inv.category}
-                          </span>
-                        </td>
-                        <td className="px-4 py-4 text-xs text-slate-600">
-                          {new Date(inv.fromDate).toLocaleDateString()}
-                          {inv.toDate && ` - ${new Date(inv.toDate).toLocaleDateString()}`}
-                        </td>
-                        <td className="px-4 py-4 text-xs text-slate-500">
-                          {inv.approvedAt ? new Date(inv.approvedAt).toLocaleDateString() : 'Approved'}
-                        </td>
-                        {/* Interactive Hard Copy Status Switch */}
-                        <td className="px-4 py-4">
-                          <button
-                            type="button"
-                            onClick={() => handleToggleHardCopy(inv.id, inv.hardCopyReceived)}
-                            disabled={updatingId === inv.id}
-                            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm ${
-                              inv.hardCopyReceived
-                                ? 'bg-emerald-100 hover:bg-emerald-200 text-emerald-900 border border-emerald-300'
-                                : 'bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-300'
-                            }`}
-                            title="Click to toggle hard copy status"
-                          >
-                            <span
-                              className={`w-2 h-2 rounded-full ${
-                                inv.hardCopyReceived ? 'bg-emerald-600' : 'bg-slate-400'
-                              }`}
-                            />
-                            <span>{inv.hardCopyReceived ? 'Hard Copy Received ✓' : 'Mark as Received'}</span>
-                          </button>
-                        </td>
-                        {/* Action Buttons */}
-                        <td className="px-6 py-4 text-right">
-                          <div className="flex items-center justify-end gap-2">
-                            <button
-                              onClick={() => setViewingInv(inv)}
-                              className="px-3 py-1.5 bg-[#6320ee] hover:bg-[#5215ce] text-white text-xs font-bold rounded-xl shadow transition-all flex items-center gap-1.5 cursor-pointer"
-                            >
-                              <Eye className="w-3.5 h-3.5" />
-                              <span>View</span>
-                            </button>
-                            <a
-                              href={inv.driveViewLink || inv.localFilePath || '#'}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="p-1.5 rounded-xl bg-slate-100 hover:bg-purple-50 text-slate-600 hover:text-purple-700 transition-colors"
-                              title="Open Image Link"
-                            >
-                              <ExternalLink className="w-4 h-4" />
-                            </a>
-                          </div>
-                        </td>
+              <>
+                {/* Desktop & Tablet Table */}
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full text-left text-sm">
+                    <thead className="bg-slate-50 text-slate-500 uppercase text-[11px] font-bold border-b border-slate-100">
+                      <tr>
+                        <th className="px-6 py-4">Event Activities</th>
+                        <th className="px-4 py-4">Department & Shift</th>
+                        <th className="px-4 py-4">Category</th>
+                        <th className="px-4 py-4">Event Date</th>
+                        <th className="px-4 py-4">Hard Copy Received?</th>
+                        <th className="px-4 py-4">Mail to ERP</th>
+                        <th className="px-6 py-4 text-right">Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
+                      {filteredInvitations.map((inv) => (
+                        <tr key={inv.id} className="hover:bg-slate-50/80 transition-colors">
+                          <td className="px-6 py-4">
+                            <div className="font-semibold text-slate-900">{inv.programTitle}</div>
+                            <div className="text-xs text-slate-400 mt-0.5">{inv.fileName}</div>
+                          </td>
+                          <td className="px-4 py-4">
+                            <span className="font-bold text-slate-800 text-xs block">{inv.department?.name}</span>
+                            <span className="text-[11px] text-purple-700 font-semibold">{inv.shift}</span>
+                          </td>
+                          <td className="px-4 py-4">
+                            <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold">
+                              {inv.category}
+                            </span>
+                          </td>
+                          <td className="px-4 py-4 text-xs text-slate-600">
+                            {new Date(inv.fromDate).toLocaleDateString()}
+                            {inv.toDate && ` - ${new Date(inv.toDate).toLocaleDateString()}`}
+                          </td>
+                          {/* Hard Copy Status Switch */}
+                          <td className="px-4 py-4">
+                            <button
+                              type="button"
+                              onClick={() => handleToggleHardCopy(inv.id, inv.hardCopyReceived)}
+                              disabled={updatingId === inv.id}
+                              className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm ${
+                                inv.hardCopyReceived
+                                  ? 'bg-emerald-100 hover:bg-emerald-200 text-emerald-900 border border-emerald-300'
+                                  : 'bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-300'
+                              }`}
+                              title="Click to toggle hard copy status"
+                            >
+                              <span
+                                className={`w-2 h-2 rounded-full ${
+                                  inv.hardCopyReceived ? 'bg-emerald-600' : 'bg-slate-400'
+                                }`}
+                              />
+                              <span>{inv.hardCopyReceived ? 'Received ✓' : 'Pending'}</span>
+                            </button>
+                          </td>
+                          {/* Send Mail to ERP Column */}
+                          <td className="px-4 py-4">
+                            <button
+                              type="button"
+                              onClick={() => setMailingInv(inv)}
+                              className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
+                              title="Send publication request to erp@mail.sjctni.edu"
+                            >
+                              <Mail className="w-3.5 h-3.5 text-blue-600" />
+                              <span>Send Mail</span>
+                            </button>
+                          </td>
+                          {/* Action Buttons */}
+                          <td className="px-6 py-4 text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              <button
+                                onClick={() => setViewingInv(inv)}
+                                className="px-3 py-1.5 bg-[#6320ee] hover:bg-[#5215ce] text-white text-xs font-bold rounded-xl shadow transition-all flex items-center gap-1.5 cursor-pointer"
+                              >
+                                <Eye className="w-3.5 h-3.5" />
+                                <span>View</span>
+                              </button>
+                              <a
+                                href={`/api/invitations/${inv.id}/file?rev=${inv.revisionCount || 0}&t=${inv.updatedAt ? new Date(inv.updatedAt).getTime() : Date.now()}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="p-1.5 rounded-xl bg-slate-100 hover:bg-purple-50 text-slate-600 hover:text-purple-700 transition-colors"
+                                title="Open Full File"
+                              >
+                                <ExternalLink className="w-4 h-4" />
+                              </a>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Mobile Responsive Cards */}
+                <div className="md:hidden divide-y divide-slate-100">
+                  {filteredInvitations.map((inv) => (
+                    <div key={inv.id} className="p-4 space-y-3 bg-white">
+                      <div>
+                        <h4 className="font-bold text-slate-900 text-sm">{inv.programTitle}</h4>
+                        <div className="text-xs text-slate-500 mt-1">
+                          {inv.department?.name} ({inv.shift}) • {inv.category}
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 text-xs pt-1">
+                        <div className="p-2 bg-slate-50 rounded-xl">
+                          <span className="text-slate-400 block text-[10px] uppercase font-bold">Event Date</span>
+                          <span className="font-medium text-slate-700">{new Date(inv.fromDate).toLocaleDateString()}</span>
+                        </div>
+                        <div className="p-2 bg-slate-50 rounded-xl">
+                          <span className="text-slate-400 block text-[10px] uppercase font-bold">Hard Copy</span>
+                          <button
+                            onClick={() => handleToggleHardCopy(inv.id, inv.hardCopyReceived)}
+                            className={`text-xs font-bold mt-0.5 ${inv.hardCopyReceived ? 'text-emerald-700' : 'text-slate-500'}`}
+                          >
+                            {inv.hardCopyReceived ? 'Received ✓' : 'Pending'}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-2 border-t border-slate-100 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setMailingInv(inv)}
+                          className="px-3 py-1.5 bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold rounded-xl flex items-center gap-1 cursor-pointer"
+                        >
+                          <Mail className="w-3.5 h-3.5" />
+                          <span>Send Mail</span>
+                        </button>
+
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            onClick={() => setViewingInv(inv)}
+                            className="px-3 py-1.5 bg-[#6320ee] text-white text-xs font-bold rounded-xl cursor-pointer"
+                          >
+                            View
+                          </button>
+                          <a
+                            href={`/api/invitations/${inv.id}/file?rev=${inv.revisionCount || 0}&t=${inv.updatedAt ? new Date(inv.updatedAt).getTime() : Date.now()}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="p-1.5 bg-slate-100 rounded-xl text-slate-600"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
             )}
           </div>
         </main>
@@ -308,7 +374,7 @@ export default function StaffDashboard() {
               </div>
               <button
                 onClick={() => setViewingInv(null)}
-                className="text-purple-200 hover:text-white p-1 rounded-lg"
+                className="text-purple-200 hover:text-white p-1 rounded-lg cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -354,7 +420,7 @@ export default function StaffDashboard() {
               </a>
               <button
                 onClick={() => setViewingInv(null)}
-                className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold rounded-xl"
+                className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold rounded-xl cursor-pointer"
               >
                 Close
               </button>

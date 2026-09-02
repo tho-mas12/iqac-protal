@@ -25,6 +25,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Check if user or department is disabled/blocked
+    if (user.isActive === false || (user.department && user.department.isActive === false)) {
+      return NextResponse.json(
+        { error: 'This account has been temporarily disabled by the administrator. Please contact IQAC.' },
+        { status: 403 }
+      );
+    }
+
     const isMatch = await comparePassword(password, user.password);
     if (!isMatch) {
       return NextResponse.json(

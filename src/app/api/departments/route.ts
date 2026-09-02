@@ -11,12 +11,19 @@ export async function GET(req: NextRequest) {
     }
 
     const departments = await prisma.department.findMany({
-      include: {
+      select: {
+        id: true,
+        name: true,
+        code: true,
+        shift: true,
+        isActive: true,
+        createdAt: true,
         users: {
           select: {
             id: true,
             username: true,
             name: true,
+            isActive: true,
             isPasswordChanged: true,
             createdAt: true,
           },
@@ -34,6 +41,45 @@ export async function GET(req: NextRequest) {
   } catch (error: any) {
     console.error('Error fetching departments:', error);
     return NextResponse.json({ error: 'Failed to fetch departments' }, { status: 500 });
+  }
+}
+
+export async function PATCH(req: NextRequest) {
+  try {
+    const session = await getCurrentUser();
+    if (!session || session.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Only administrators can perform bulk actions' }, { status: 403 });
+    }
+
+    const body = await req.json();
+    const { action, isActive } = body;
+
+    if (action === 'TOGGLE_BULK') {
+      const targetState = Boolean(isActive);
+
+      // Update all departments
+      await prisma.department.updateMany({
+        data: { isActive: targetState },
+      });
+
+      // Update all department users
+      await prisma.user.updateMany({
+        where: { role: 'DEPARTMENT' },
+        data: { isActive: targetState },
+      });
+
+      return NextResponse.json({
+        success: true,
+        message: targetState
+          ? 'All department accounts have been enabled.'
+          : 'All department accounts have been disabled (blocked).',
+      });
+    }
+
+    return NextResponse.json({ error: 'Invalid bulk action' }, { status: 400 });
+  } catch (error: any) {
+    console.error('Error in bulk department action:', error);
+    return NextResponse.json({ error: error.message || 'Bulk action failed' }, { status: 500 });
   }
 }
 

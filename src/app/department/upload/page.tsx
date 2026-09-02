@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
 import Sidebar from '@/components/Sidebar';
@@ -179,7 +179,7 @@ export default function UploadInvitationPage() {
           userRole="Department"
         />
 
-        <main className="p-6 md:p-8 space-y-6 flex-1">
+        <main className="p-4 sm:p-6 md:p-8 space-y-6 flex-1 max-w-7xl mx-auto w-full">
           {/* Feedback banner */}
           {feedback && (
             <div
@@ -217,7 +217,7 @@ export default function UploadInvitationPage() {
                 resetForm();
                 setIsModalOpen(true);
               }}
-              className="px-5 py-3 bg-[#6320ee] hover:bg-[#5215ce] text-white font-bold rounded-xl shadow-lg shadow-purple-600/25 flex items-center gap-2 text-sm transition-all transform hover:-translate-y-0.5"
+              className="px-5 py-3 bg-[#6320ee] hover:bg-[#5215ce] text-white font-bold rounded-xl shadow-lg shadow-purple-600/25 flex items-center gap-2 text-sm transition-all transform hover:-translate-y-0.5 cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>Add Invitation</span>
@@ -245,14 +245,14 @@ export default function UploadInvitationPage() {
               <div className="p-12 text-center text-slate-400 text-sm">
                 <FileImage className="w-12 h-12 mx-auto text-slate-300 mb-2" />
                 <p className="font-semibold text-slate-600">No invitations uploaded yet</p>
-                <p className="text-xs text-slate-400 mt-1">Click the &quot;Add Invitation&quot; button above to submit your first event invitation.</p>
+                <p className="text-xs text-slate-400 mt-1">Click the "Add Invitation" button above to submit your first event invitation.</p>
               </div>
             ) : (
               <div className="divide-y divide-slate-100">
                 {invitations.map((inv) => (
                   <div key={inv.id} className="p-5 hover:bg-slate-50/70 transition-colors flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <div className="flex items-start gap-4">
-                      {/* Thumbnail / Icon */}
+                      {/* Thumbnail */}
                       <div className="w-16 h-20 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0 shadow-inner group relative">
                         <img
                           src={`/api/invitations/${inv.id}/file?rev=${inv.revisionCount || 0}&t=${inv.updatedAt ? new Date(inv.updatedAt).getTime() : Date.now()}`}
@@ -351,7 +351,7 @@ export default function UploadInvitationPage() {
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="text-purple-200 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"
+                className="text-purple-200 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -368,13 +368,12 @@ export default function UploadInvitationPage() {
                   type="text"
                   value={programTitle}
                   onChange={(e) => setProgramTitle(e.target.value)}
-                  placeholder="e.g. National Conference on Quantum Artificial Intelligence"
                   className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600/30 focus:border-purple-600 transition-all font-medium"
                   required
                 />
               </div>
 
-              {/* Department Name & Shift (Defaults) */}
+              {/* Department Name & Shift */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
@@ -428,7 +427,6 @@ export default function UploadInvitationPage() {
                     type="text"
                     value={customCategory}
                     onChange={(e) => setCustomCategory(e.target.value)}
-                    placeholder="Enter custom category name"
                     className="w-full px-4 py-3 rounded-xl border-2 border-purple-300 focus:border-purple-600 text-sm font-medium focus:outline-none"
                     required
                   />
@@ -462,7 +460,7 @@ export default function UploadInvitationPage() {
                 </div>
               </div>
 
-              {/* File Upload to Google Drive */}
+              {/* File Upload */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
                   Upload Invitation Image / PDF <span className="text-rose-500">*</span>
@@ -486,7 +484,7 @@ export default function UploadInvitationPage() {
                     <span className="text-slate-500"> or drag & drop</span>
                   </div>
                   <span className="text-[11px] text-slate-400">
-                    PNG, JPG, PDF up to 15MB • Uploads directly to Google Drive
+                    PNG, JPG, PDF up to 15MB
                   </span>
 
                   {selectedFile && (
@@ -507,7 +505,7 @@ export default function UploadInvitationPage() {
                   type="button"
                   onClick={() => setIsModalOpen(false)}
                   disabled={submitting}
-                  className="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-sm font-semibold transition-colors"
+                  className="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-sm font-semibold transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>

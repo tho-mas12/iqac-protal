@@ -18,6 +18,7 @@ export async function GET() {
         username: true,
         name: true,
         role: true,
+        isActive: true,
         isPasswordChanged: true,
         createdAt: true,
       },

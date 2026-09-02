@@ -318,7 +318,6 @@ export default function RemarksPage() {
                         <div>
                           <input
                             type="text"
-                            placeholder="Optional note on what was corrected..."
                             value={notes[inv.id] || ''}
                             onChange={(e) =>
                               setNotes((prev) => ({ ...prev, [inv.id]: e.target.value }))

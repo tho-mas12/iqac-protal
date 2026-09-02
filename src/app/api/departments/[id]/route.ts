@@ -14,20 +14,84 @@ export async function PUT(
 
     const { id } = params;
     const body = await req.json();
-    const { name, shift, code } = body;
+    const { name, shift, code, isActive } = body;
+
+    const deptName = name?.trim();
+    const deptShift = shift?.trim();
+    const deptCode = code?.trim().toUpperCase();
 
     const department = await prisma.department.update({
       where: { id },
       data: {
-        ...(name ? { name: name.trim() } : {}),
-        ...(shift ? { shift: shift.trim() } : {}),
-        ...(code ? { code: code.trim().toUpperCase() } : {}),
+        ...(deptName ? { name: deptName } : {}),
+        ...(deptShift ? { shift: deptShift } : {}),
+        ...(deptCode ? { code: deptCode } : {}),
+        ...(typeof isActive === 'boolean' ? { isActive } : {}),
       },
     });
 
-    return NextResponse.json({ success: true, department });
+    // If name or shift changed, also update the display name of assigned users
+    if (deptName || deptShift) {
+      await prisma.user.updateMany({
+        where: { departmentId: id },
+        data: {
+          name: `${department.name} (${department.shift})`,
+        },
+      });
+    }
+
+    // If isActive changed, also update user status
+    if (typeof isActive === 'boolean') {
+      await prisma.user.updateMany({
+        where: { departmentId: id },
+        data: { isActive },
+      });
+    }
+
+    return NextResponse.json({ success: true, department, message: 'Department updated successfully' });
   } catch (error: any) {
-    return NextResponse.json({ error: 'Failed to update department' }, { status: 500 });
+    console.error('Error updating department:', error);
+    return NextResponse.json({ error: error.message || 'Failed to update department' }, { status: 500 });
+  }
+}
+
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getCurrentUser();
+    if (!session || session.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    }
+
+    const { id } = params;
+    const body = await req.json();
+    const { isActive } = body;
+
+    if (typeof isActive !== 'boolean') {
+      return NextResponse.json({ error: 'isActive boolean is required' }, { status: 400 });
+    }
+
+    const department = await prisma.department.update({
+      where: { id },
+      data: { isActive },
+    });
+
+    // Also toggle the department user
+    await prisma.user.updateMany({
+      where: { departmentId: id },
+      data: { isActive },
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: isActive ? `Department "${department.name}" enabled.` : `Department "${department.name}" disabled.`,
+      department,
+    });
+  } catch (error: any) {
+    console.error('Error toggling department status:', error);
+    return NextResponse.json({ error: error.message || 'Failed to update department status' }, { status: 500 });
   }
 }
 
