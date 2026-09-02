@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { comparePassword, signToken, AUTH_COOKIE_NAME } from '@/lib/auth';
+import { autoSyncDatabaseColumns } from '@/lib/db-sync';
 
 export async function POST(req: NextRequest) {
   try {
@@ -13,10 +14,23 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const user = await prisma.user.findUnique({
-      where: { username: username.trim().toLowerCase() },
-      include: { department: true },
-    });
+    // Automatically ensure columns exist
+    await autoSyncDatabaseColumns();
+
+    let user;
+    try {
+      user = await prisma.user.findUnique({
+        where: { username: username.trim().toLowerCase() },
+        include: { department: true },
+      });
+    } catch (dbErr: any) {
+      // If column still missing, attempt emergency DDL sync and retry
+      await autoSyncDatabaseColumns();
+      user = await prisma.user.findUnique({
+        where: { username: username.trim().toLowerCase() },
+        include: { department: true },
+      });
+    }
 
     if (!user) {
       return NextResponse.json(

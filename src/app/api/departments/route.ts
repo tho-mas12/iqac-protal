@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser, hashPassword } from '@/lib/auth';
 import { createDepartmentFolder } from '@/lib/drive';
+import { autoSyncDatabaseColumns } from '@/lib/db-sync';
 
 export async function GET(req: NextRequest) {
   try {
@@ -9,6 +10,8 @@ export async function GET(req: NextRequest) {
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    await autoSyncDatabaseColumns();
 
     const departments = await prisma.department.findMany({
       select: {

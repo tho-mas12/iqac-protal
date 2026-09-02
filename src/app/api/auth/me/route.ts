@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { autoSyncDatabaseColumns } from '@/lib/db-sync';
 
 export async function GET() {
   try {
@@ -8,6 +9,8 @@ export async function GET() {
     if (!session) {
       return NextResponse.json({ authenticated: false }, { status: 401 });
     }
+
+    await autoSyncDatabaseColumns();
 
     const user = await prisma.user.findUnique({
       where: { id: session.userId },
