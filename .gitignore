@@ -1,4 +1,4 @@
-﻿# dependencies
+# dependencies
 /node_modules
 /.pnp
 .pnp.js
@@ -36,4 +36,5 @@ next-env.d.ts
 
 # sqlite / local db
 *.db
+!prisma/dev.db
 *.db-journal
