@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -47,10 +47,10 @@ model Invitation {
   
   // File Details
   driveFileId       String?
-  driveViewLink     String?     @db.LongText
-  driveDownloadLink String?     @db.LongText
-  localFilePath     String?     @db.LongText
-  fileData          String?     @db.LongText
+  driveViewLink     String?
+  driveDownloadLink String?
+  localFilePath     String?
+  fileData          String?
   fileName          String
   fileSize          Int?
   mimeType          String?
@@ -64,7 +64,7 @@ model Invitation {
   checkTitle        Boolean     @default(false)
   checkHeaders      Boolean     @default(false)
   checkOthers       Boolean     @default(false)
-  directorRemarks   String?     @db.Text
+  directorRemarks   String?
   remarkedAt        DateTime?
   approvedAt        DateTime?
   
@@ -90,9 +90,9 @@ model InvitationHistory {
   action       String      // "UPLOAD", "REMARKS_ADDED", "REUPLOAD_CORRECTION", "APPROVED", "HARD_COPY_MARKED", "REMARKS_EDITED"
   actorName    String
   actorRole    String
-  notes        String?     @db.Text
+  notes        String?
   driveFileId  String?
-  fileData     String?     @db.LongText
+  fileData     String?
   timestamp    DateTime    @default(now())
 }
 
