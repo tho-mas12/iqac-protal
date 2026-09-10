@@ -94,10 +94,12 @@ export async function POST(req: NextRequest) {
       redirectUrl,
     });
 
-    // Set secure HTTP-only cookie
+    const isHttps = req.nextUrl.protocol === 'https:' || req.headers.get('x-forwarded-proto') === 'https';
+
+    // Set HTTP-only auth cookie (secure only when accessed over HTTPS)
     res.cookies.set(AUTH_COOKIE_NAME, token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: isHttps,
       sameSite: 'lax',
       path: '/',
       maxAge: 60 * 60 * 24 * 7, // 7 days
