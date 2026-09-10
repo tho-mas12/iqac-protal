@@ -1,4 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
+﻿const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
 
 const prisma = new PrismaClient();
@@ -18,7 +18,7 @@ async function main() {
   const adminPassword = await bcrypt.hash('admin123', 10);
 
   // 1. Create Admin
-  const admin = await prisma.user.create({
+  await prisma.user.create({
     data: {
       username: 'admin',
       password: adminPassword,
@@ -29,7 +29,7 @@ async function main() {
   });
 
   // 2. Create Director
-  const director = await prisma.user.create({
+  await prisma.user.create({
     data: {
       username: 'director',
       password: directorPassword,
@@ -40,7 +40,7 @@ async function main() {
   });
 
   // 3. Create Staff
-  const staff = await prisma.user.create({
+  await prisma.user.create({
     data: {
       username: 'staff',
       password: staffPassword,
@@ -50,16 +50,44 @@ async function main() {
     },
   });
 
-  // 4. Create Departments
+  // 4. Create all 36 Departments & Department Users
   const departmentsData = [
-    { name: 'Computer Science', code: 'CS', shift: 'Shift I', user: 'cs_shift1', folderId: 'local_Computer_Science_Shift_I' },
-    { name: 'Computer Science', code: 'CS_S2', shift: 'Shift II', user: 'cs_shift2', folderId: 'local_Computer_Science_Shift_II' },
-    { name: 'Mathematics', code: 'MATHS', shift: 'Shift I', user: 'maths_shift1', folderId: 'local_Mathematics_Shift_I' },
-    { name: 'Physics', code: 'PHY', shift: 'Shift I', user: 'physics_shift1', folderId: 'local_Physics_Shift_I' },
-    { name: 'Commerce', code: 'COMM_S1', shift: 'Shift I', user: 'commerce_shift1', folderId: 'local_Commerce_Shift_I' },
-    { name: 'Commerce', code: 'COMM_S2', shift: 'Shift II', user: 'commerce_shift2', folderId: 'local_Commerce_Shift_II' },
-    { name: 'English', code: 'ENG', shift: 'Shift I', user: 'english_shift1', folderId: 'local_English_Shift_I' },
-    { name: 'Business Administration', code: 'BBA', shift: 'Shift II', user: 'bba_shift2', folderId: 'local_Business_Administration_Shift_II' },
+    { name: 'Biochemistry', code: 'BIOCHEM_S2', shift: 'Shift II', user: 'biochem_s2', folderId: 'local_Biochemistry_Shift_II' },
+    { name: 'Biotechnology', code: 'BIOTECH_S2', shift: 'Shift II', user: 'biotech_s2', folderId: 'local_Biotechnology_Shift_II' },
+    { name: 'Botany', code: 'BOT_S1', shift: 'Shift I', user: 'bot_s1', folderId: 'local_Botany_Shift_I' },
+    { name: 'Commerce', code: 'COM_S1', shift: 'Shift I', user: 'com_s1', folderId: 'local_Commerce_Shift_I' },
+    { name: 'Commerce', code: 'COM_S2', shift: 'Shift II', user: 'com_s2', folderId: 'local_Commerce_Shift_II' },
+    { name: 'Commerce Business Analytics', code: 'BUS_S2', shift: 'Shift II', user: 'bus_s2', folderId: 'local_Commerce_Business_Analytics_Shift_II' },
+    { name: 'Commerce Computer Application', code: 'COMCA_S2', shift: 'Shift II', user: 'comca_s2', folderId: 'local_Commerce_Computer_Application_Shift_II' },
+    { name: 'Commerce Honours', code: 'COMCR_S2', shift: 'Shift II', user: 'comcr_s2', folderId: 'local_Commerce_Honours_Shift_II' },
+    { name: 'Commerce Strategic Finance', code: 'COMSF_S2', shift: 'Shift II', user: 'comsf_s2', folderId: 'local_Commerce_Strategic_Finance_Shift_II' },
+    { name: 'Artificial Intelligence', code: 'AI_S2', shift: 'Shift II', user: 'ai_s2', folderId: 'local_Artificial_Intelligence_Shift_II' },
+    { name: 'B Voc Software Development & System Administration', code: 'SDSA_S2', shift: 'Shift II', user: 'sdsa_s2', folderId: 'local_B_Voc_SDSA_Shift_II' },
+    { name: 'Computer Science', code: 'CS_S1', shift: 'Shift I', user: 'cs_s1', folderId: 'local_Computer_Science_Shift_I' },
+    { name: 'Computer Science', code: 'CS_S2', shift: 'Shift II', user: 'cs_s2', folderId: 'local_Computer_Science_Shift_II' },
+    { name: 'Data Science', code: 'DS_S2', shift: 'Shift II', user: 'ds_s2', folderId: 'local_Data_Science_Shift_II' },
+    { name: 'Information Technology', code: 'IT_S2', shift: 'Shift II', user: 'it_s2', folderId: 'local_Information_Technology_Shift_II' },
+    { name: 'Mathematics', code: 'MAT_S1', shift: 'Shift I', user: 'mat_s1', folderId: 'local_Mathematics_Shift_I' },
+    { name: 'Mathematics', code: 'MAT_S2', shift: 'Shift II', user: 'mat_s2', folderId: 'local_Mathematics_Shift_II' },
+    { name: 'Statistics', code: 'STAT_S1', shift: 'Shift I', user: 'stat_s1', folderId: 'local_Statistics_Shift_I' },
+    { name: 'English', code: 'EN_S1', shift: 'Shift I', user: 'en_s1', folderId: 'local_English_Shift_I' },
+    { name: 'English', code: 'EN_S2', shift: 'Shift II', user: 'en_s2', folderId: 'local_English_Shift_II' },
+    { name: 'French', code: 'FR_S1', shift: 'Shift I', user: 'fr_s1', folderId: 'local_French_Shift_I' },
+    { name: 'Hindi', code: 'HI_S1', shift: 'Shift I', user: 'hi_s1', folderId: 'local_Hindi_Shift_I' },
+    { name: 'History', code: 'HS_S1', shift: 'Shift I', user: 'hs_s1', folderId: 'local_History_Shift_I' },
+    { name: 'Sanskrit', code: 'SA_S1', shift: 'Shift I', user: 'sa_s1', folderId: 'local_Sanskrit_Shift_I' },
+    { name: 'Tamil', code: 'TA_S1', shift: 'Shift I', user: 'ta_s1', folderId: 'local_Tamil_Shift_I' },
+    { name: 'Tamil', code: 'TA_S2', shift: 'Shift II', user: 'ta_s2', folderId: 'local_Tamil_Shift_II' },
+    { name: 'Business Administration', code: 'BU_S2', shift: 'Shift II', user: 'bu_s2', folderId: 'local_Business_Administration_Shift_II' },
+    { name: 'Counselling Psychology', code: 'CP_S2', shift: 'Shift II', user: 'cp_s2', folderId: 'local_Counselling_Psychology_Shift_II' },
+    { name: 'Economics', code: 'ECO_S1', shift: 'Shift I', user: 'eco_s1', folderId: 'local_Economics_Shift_I' },
+    { name: 'Human Resource Management', code: 'HR_S1', shift: 'Shift I', user: 'hr_s1', folderId: 'local_Human_Resource_Management_Shift_I' },
+    { name: 'Physical Education, Health Education, Sports', code: 'PE_S2', shift: 'Shift II', user: 'pe_s2', folderId: 'local_Physical_Education_Shift_II' },
+    { name: 'Visual Communication', code: 'VC_S2', shift: 'Shift II', user: 'vc_s2', folderId: 'local_Visual_Communication_Shift_II' },
+    { name: 'Chemistry', code: 'CH_S1', shift: 'Shift I', user: 'ch_s1', folderId: 'local_Chemistry_Shift_I' },
+    { name: 'Electronic', code: 'EL_S2', shift: 'Shift II', user: 'el_s2', folderId: 'local_Electronic_Shift_II' },
+    { name: 'Physics', code: 'PH_S1', shift: 'Shift I', user: 'ph_s1', folderId: 'local_Physics_Shift_I' },
+    { name: 'Physics', code: 'PH_S2', shift: 'Shift II', user: 'ph_s2', folderId: 'local_Physics_Shift_II' },
   ];
 
   const createdDepts = [];
@@ -87,16 +115,15 @@ async function main() {
     });
   }
 
-  console.log(`Created ${createdDepts.length} departments.`);
+  console.log(`Created ${createdDepts.length} departments and users.`);
 
   // 5. Seed sample Invitations
-  const csDept = createdDepts[0];
-  const mathsDept = createdDepts[2];
-  const commDept = createdDepts[4];
-  const phyDept = createdDepts[3];
+  const csDept = createdDepts.find(d => d.code === 'CS_S1') || createdDepts[0];
+  const mathsDept = createdDepts.find(d => d.code === 'MAT_S1') || createdDepts[1];
+  const commDept = createdDepts.find(d => d.code === 'COM_S1') || createdDepts[2];
+  const phyDept = createdDepts.find(d => d.code === 'PH_S1') || createdDepts[3];
 
-  // 5a. Pending Invitation (CS)
-  const inv1 = await prisma.invitation.create({
+  await prisma.invitation.create({
     data: {
       programTitle: 'International Conference on Quantum Computing & AI 2026',
       departmentId: csDept.id,
@@ -111,12 +138,11 @@ async function main() {
       driveViewLink: '/uploads/sample_invitation_1.png',
       status: 'PENDING',
       revisionCount: 0,
-      createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
+      createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
     },
   });
 
-  // 5b. Remarks Invitation (Maths - Needs correction)
-  const inv2 = await prisma.invitation.create({
+  await prisma.invitation.create({
     data: {
       programTitle: 'National Seminar on Applied Discrete Mathematics & Cryptography',
       departmentId: mathsDept.id,
@@ -132,14 +158,13 @@ async function main() {
       revisionCount: 0,
       checkLogo: true,
       checkHeaders: true,
-      directorRemarks: 'Please ensure the IQAC logo is placed on the top right alongside the college crest, and correct the date format in the chief guest header section.',
+      directorRemarks: 'Please ensure the IQAC logo is placed on the top right alongside the college crest.',
       remarkedAt: new Date(Date.now() - 5 * 60 * 60 * 1000),
       createdAt: new Date(Date.now() - 8 * 60 * 60 * 1000),
     },
   });
 
-  // 5c. Approved Invitation (Commerce - Approved & Hard Copy Received)
-  const inv3 = await prisma.invitation.create({
+  await prisma.invitation.create({
     data: {
       programTitle: 'Endowment Lecture on Fintech Innovations & GST 2.0',
       departmentId: commDept.id,
@@ -166,8 +191,7 @@ async function main() {
     },
   });
 
-  // 5d. Approved Invitation (Physics - Approved, Hard Copy Pending)
-  const inv4 = await prisma.invitation.create({
+  await prisma.invitation.create({
     data: {
       programTitle: 'Workshop on Advanced Spectroscopic Characterization Techniques',
       departmentId: phyDept.id,
@@ -191,7 +215,7 @@ async function main() {
     },
   });
 
-  console.log('Seed completed successfully!');
+  console.log('Seed completed successfully with all 36 department users!');
 }
 
 main()
