@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import {
@@ -32,7 +32,7 @@ export default function MailComposerModal({
   if (!isOpen || !invitation) return null;
 
   const fromEmail = 'sjcdoccentre@mail.sjctni.edu';
-  const toEmail = 'erp@mail.sjctni.edu';
+  const toEmail = 'sjcerp@mail.sjctni.edu';
   const subject = 'To publish in college website';
   const fileDownloadUrl = `/api/invitations/${invitation.id}/file?rev=${invitation.revisionCount || 0}&t=${invitation.updatedAt ? new Date(invitation.updatedAt).getTime() : Date.now()}`;
 

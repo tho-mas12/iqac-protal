@@ -25,9 +25,11 @@ import {
   ZoomIn,
   ZoomOut,
   RotateCcw,
-  Maximize2
+  Maximize2,
+  Megaphone
 } from 'lucide-react';
 import Link from 'next/link';
+import AnnouncementEditorModal from '@/components/AnnouncementEditorModal';
 
 export default function DirectorDashboard() {
   const [user, setUser] = useState<any>(null);
@@ -53,6 +55,7 @@ export default function DirectorDashboard() {
   const [checkOthers, setCheckOthers] = useState(false);
   const [submittingReview, setSubmittingReview] = useState(false);
   const [reviewMessage, setReviewMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [isAnnouncementOpen, setIsAnnouncementOpen] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -193,10 +196,17 @@ export default function DirectorDashboard() {
                   Priority-ordered submissions awaiting portal verification, remarks, or approval
                 </p>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3">
+                <button
+                  onClick={() => setIsAnnouncementOpen(true)}
+                  className="px-4 py-2.5 bg-gradient-to-r from-[#6320ee] to-[#4c1d95] hover:from-[#5215ce] hover:to-[#3b1975] text-white text-xs font-bold rounded-xl shadow-md flex items-center gap-2 transition-all cursor-pointer"
+                >
+                  <Megaphone className="w-3.5 h-3.5 text-amber-300" />
+                  <span>Post Announcement Feed</span>
+                </button>
                 <button
                   onClick={fetchData}
-                  className="p-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors flex items-center gap-1.5 text-xs font-semibold"
+                  className="p-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors flex items-center gap-1.5 text-xs font-semibold cursor-pointer"
                 >
                   <RotateCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
                   <span>Refresh Queue</span>
@@ -574,6 +584,12 @@ export default function DirectorDashboard() {
           </div>
         </div>
       )}
+
+      {/* Live Announcement Editor Modal for Director */}
+      <AnnouncementEditorModal
+        isOpen={isAnnouncementOpen}
+        onClose={() => setIsAnnouncementOpen(false)}
+      />
     </div>
   );
 }

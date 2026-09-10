@@ -1,4 +1,4 @@
-﻿import { prisma } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 
 let syncAttempted = false;
@@ -8,6 +8,12 @@ export async function autoSyncDatabaseColumns() {
   syncAttempted = true;
 
   try {
+    try {
+      await prisma.$executeRawUnsafe(`ALTER TABLE SystemSettings ADD COLUMN IF NOT EXISTS announcementText TEXT;`);
+    } catch {
+      // ignore if exists or unsupported dialect
+    }
+
     const existingSettings = await prisma.systemSettings.findUnique({
       where: { id: 'default' },
     });

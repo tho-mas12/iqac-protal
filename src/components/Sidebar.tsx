@@ -19,6 +19,7 @@ import {
   Layers,
   ClipboardList,
   MessageSquare,
+  PhoneCall,
   X
 } from 'lucide-react';
 import Logo from './Logo';
@@ -209,6 +210,25 @@ export default function Sidebar({ role, userName, departmentName, shift }: Sideb
               <LogOut className="w-4 h-4" />
             </button>
           </div>
+
+          {/* Department Contact Support Footer */}
+          {role === 'DEPARTMENT' && !collapsed && (
+            <div className="mt-2.5 p-2.5 rounded-xl bg-[#161f30] border border-purple-500/20 text-slate-300 space-y-1 animate-in fade-in duration-200">
+              <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-purple-300">
+                <PhoneCall className="w-3 h-3 text-amber-400 shrink-0" />
+                <span>For any queries:</span>
+              </div>
+              <div className="text-[11px] font-semibold text-white truncate">
+                Dr. A. Johnson Francis
+              </div>
+              <a
+                href="tel:7418671366"
+                className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-400 hover:text-amber-300 transition-colors"
+              >
+                <span>📞 7418671366</span>
+              </a>
+            </div>
+          )}
         </div>
       </aside>
 
@@ -304,6 +324,25 @@ export default function Sidebar({ role, userName, departmentName, shift }: Sideb
                   <LogOut className="w-4 h-4" />
                 </button>
               </div>
+
+              {/* Department Contact Support Footer in Mobile Drawer */}
+              {role === 'DEPARTMENT' && (
+                <div className="mt-2.5 p-2.5 rounded-xl bg-[#161f30] border border-purple-500/20 text-slate-300 space-y-1">
+                  <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-purple-300">
+                    <PhoneCall className="w-3 h-3 text-amber-400 shrink-0" />
+                    <span>For any queries:</span>
+                  </div>
+                  <div className="text-[11px] font-semibold text-white truncate">
+                    Dr. A. Johnson Francis
+                  </div>
+                  <a
+                    href="tel:7418671366"
+                    className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-400 hover:text-amber-300 transition-colors"
+                  >
+                    <span>📞 7418671366</span>
+                  </a>
+                </div>
+              )}
             </div>
           </div>
         </div>

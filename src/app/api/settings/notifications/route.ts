@@ -48,8 +48,8 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const session = await getCurrentUser();
-    if (!session || session.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Only administrators can update notification settings' }, { status: 403 });
+    if (!session || !['ADMIN', 'DIRECTOR', 'STAFF'].includes(session.role)) {
+      return NextResponse.json({ error: 'Unauthorized to update announcement settings' }, { status: 403 });
     }
 
     await autoSyncDatabaseColumns();

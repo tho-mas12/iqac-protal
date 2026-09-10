@@ -23,8 +23,10 @@ import {
   FileText,
   Mail,
   Send,
-  Sparkles
+  Sparkles,
+  Megaphone
 } from 'lucide-react';
+import AnnouncementEditorModal from '@/components/AnnouncementEditorModal';
 
 export default function StaffDashboard() {
   const [user, setUser] = useState<any>(null);
@@ -40,9 +42,10 @@ export default function StaffDashboard() {
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [toast, setToast] = useState<ToastMessage | null>(null);
 
-  // View & Mail Modal states
+  // View, Mail & Announcement Modal states
   const [viewingInv, setViewingInv] = useState<any | null>(null);
   const [mailingInv, setMailingInv] = useState<any | null>(null);
+  const [isAnnouncementOpen, setIsAnnouncementOpen] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -173,7 +176,14 @@ export default function StaffDashboard() {
                 </p>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3">
+                <button
+                  onClick={() => setIsAnnouncementOpen(true)}
+                  className="px-4 py-2 bg-gradient-to-r from-[#6320ee] to-[#4c1d95] hover:from-[#5215ce] hover:to-[#3b1975] text-white text-xs font-bold rounded-xl shadow-md flex items-center gap-2 transition-all cursor-pointer shrink-0"
+                >
+                  <Megaphone className="w-3.5 h-3.5 text-amber-300" />
+                  <span>Post Announcement Feed</span>
+                </button>
                 <div className="relative w-full sm:w-64">
                   <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
@@ -459,6 +469,12 @@ export default function StaffDashboard() {
           </div>
         </div>
       )}
+
+      {/* Announcement Editor Modal */}
+      <AnnouncementEditorModal
+        isOpen={isAnnouncementOpen}
+        onClose={() => setIsAnnouncementOpen(false)}
+      />
     </div>
   );
 }
