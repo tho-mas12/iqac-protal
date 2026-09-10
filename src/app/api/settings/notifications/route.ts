@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
 import { autoSyncDatabaseColumns } from '@/lib/db-sync';
@@ -63,6 +63,7 @@ export async function POST(req: NextRequest) {
       whatsappInstanceId,
       whatsappApiKey,
       whatsappCustomWebhookUrl,
+      announcementText,
     } = body;
 
     const updated = await prisma.systemSettings.upsert({
@@ -75,6 +76,7 @@ export async function POST(req: NextRequest) {
         whatsappInstanceId: whatsappInstanceId !== undefined ? String(whatsappInstanceId).trim() : null,
         whatsappApiKey: whatsappApiKey !== undefined ? String(whatsappApiKey).trim() : null,
         whatsappCustomWebhookUrl: whatsappCustomWebhookUrl !== undefined ? String(whatsappCustomWebhookUrl).trim() : null,
+        announcementText: announcementText !== undefined ? String(announcementText).trim() : undefined,
       },
       create: {
         id: 'default',
@@ -85,6 +87,7 @@ export async function POST(req: NextRequest) {
         whatsappInstanceId: whatsappInstanceId !== undefined ? String(whatsappInstanceId).trim() : null,
         whatsappApiKey: whatsappApiKey !== undefined ? String(whatsappApiKey).trim() : null,
         whatsappCustomWebhookUrl: whatsappCustomWebhookUrl !== undefined ? String(whatsappCustomWebhookUrl).trim() : null,
+        announcementText: announcementText !== undefined ? String(announcementText).trim() : null,
       },
     });
 

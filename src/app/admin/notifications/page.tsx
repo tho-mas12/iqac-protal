@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
@@ -20,7 +20,8 @@ import {
   Layers,
   Zap,
   Info,
-  Check
+  Check,
+  Megaphone
 } from 'lucide-react';
 
 export default function AdminNotificationSettingsPage() {
@@ -39,6 +40,9 @@ export default function AdminNotificationSettingsPage() {
   const [instanceId, setInstanceId] = useState('');
   const [apiKey, setApiKey] = useState('');
   const [customWebhookUrl, setCustomWebhookUrl] = useState('');
+  const [announcementText, setAnnouncementText] = useState(
+    "🏛️ Welcome to IQAC Portal — St. Joseph's College (Autonomous) | 🔔 Kindly submit all event invitations at least 3-5 working days prior to the event date | 📄 Ensure official College crest and IQAC logo follow the approved format | ✉️ Submit hard copy to IQAC office immediately upon Director approval for website publishing | 🚀 Portal active for 2026 Academic Events."
+  );
 
   const fetchSettings = async () => {
     try {
@@ -63,6 +67,9 @@ export default function AdminNotificationSettingsPage() {
           setInstanceId(sData.settings.whatsappInstanceId || '');
           setApiKey(sData.settings.whatsappApiKey || '');
           setCustomWebhookUrl(sData.settings.whatsappCustomWebhookUrl || '');
+          if (sData.settings.announcementText) {
+            setAnnouncementText(sData.settings.announcementText);
+          }
         }
       }
     } catch (e) {
@@ -100,12 +107,13 @@ export default function AdminNotificationSettingsPage() {
           whatsappInstanceId: instanceId.trim(),
           whatsappApiKey: apiKey.trim(),
           whatsappCustomWebhookUrl: customWebhookUrl.trim(),
+          announcementText: announcementText.trim(),
         }),
       });
 
       const data = await res.json();
       if (res.ok) {
-        setToast({ type: 'success', message: 'WhatsApp 100% automated notification settings saved successfully!' });
+        setToast({ type: 'success', message: 'Notification & Scrolling Announcement settings saved successfully!' });
       } else {
         setToast({ type: 'error', message: data.error || 'Failed to save settings' });
       }
@@ -336,6 +344,23 @@ export default function AdminNotificationSettingsPage() {
                       className="w-full px-4 py-3 rounded-xl border border-slate-200 text-xs font-mono font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-600/30 bg-white"
                     />
                   </div>
+                </div>
+
+                {/* Live Scrolling Announcement Editor */}
+                <div className="pt-4 border-t border-slate-100 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Megaphone className="w-4 h-4 text-purple-600" />
+                    <h4 className="font-bold text-slate-900 text-sm">Department Dashboard Scrolling Announcement</h4>
+                  </div>
+                  <p className="text-xs text-slate-500">
+                    This message scrolls continuously at the top of the Department Dashboard when faculty log in.
+                  </p>
+                  <textarea
+                    rows={3}
+                    value={announcementText}
+                    onChange={(e) => setAnnouncementText(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 text-xs font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-600/30 bg-white leading-relaxed"
+                  />
                 </div>
 
                 {/* Save Button */}

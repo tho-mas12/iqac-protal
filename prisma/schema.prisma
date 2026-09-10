@@ -105,5 +105,6 @@ model SystemSettings {
   whatsappInstanceId        String?
   whatsappApiKey            String?
   whatsappCustomWebhookUrl  String?
+  announcementText          String?  @db.Text
   updatedAt                 DateTime @updatedAt
 }

@@ -5,6 +5,7 @@ import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
 import StatCard from '@/components/StatCard';
 import GuidelinesModal from '@/components/GuidelinesModal';
+import AnnouncementTicker from '@/components/AnnouncementTicker';
 import Toast, { ToastMessage } from '@/components/Toast';
 import {
   UploadCloud,
@@ -94,6 +95,9 @@ export default function DepartmentDashboard() {
         />
 
         <main className="p-4 sm:p-6 md:p-8 space-y-6 flex-1 max-w-7xl mx-auto w-full">
+          {/* Dynamic Scrolling IQAC Announcements Ticker */}
+          <AnnouncementTicker onOpenGuidelines={() => setIsGuidelinesOpen(true)} />
+
           {/* Top Banner Notice if remarks are waiting */}
           {stats.remarks > 0 && (
             <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-2xl shadow-sm flex items-center justify-between">
