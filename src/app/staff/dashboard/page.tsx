@@ -24,9 +24,12 @@ import {
   Mail,
   Send,
   Sparkles,
-  Megaphone
+  Megaphone,
+  FileSpreadsheet,
+  Printer
 } from 'lucide-react';
 import AnnouncementEditorModal from '@/components/AnnouncementEditorModal';
+import { exportToExcel, printReport, ExportColumn } from '@/lib/export-utils';
 
 export default function StaffDashboard() {
   const [user, setUser] = useState<any>(null);
@@ -41,6 +44,38 @@ export default function StaffDashboard() {
   const [search, setSearch] = useState('');
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [toast, setToast] = useState<ToastMessage | null>(null);
+
+  const exportColumns: ExportColumn[] = [
+    { header: 'S.No', key: 'sno' },
+    { header: 'Program Title', key: 'programTitle' },
+    { header: 'Department', key: 'department', format: (_val, item) => `${item.department?.name || 'Department'} (${item.shift || 'Shift I'})` },
+    { header: 'Category', key: 'category' },
+    { header: 'Event Date(s)', key: 'fromDate', format: (_val, item) => `${new Date(item.fromDate).toLocaleDateString()}${item.toDate ? ` to ${new Date(item.toDate).toLocaleDateString()}` : ''}` },
+    { header: 'Approved Date', key: 'approvedAt', format: (val) => val ? new Date(val).toLocaleDateString() : 'Approved' },
+    { header: 'Hard Copy Received', key: 'hardCopyReceived', format: (val) => val ? 'Received' : 'Pending' },
+    { header: 'Hard Copy Marked By', key: 'hardCopyStaffName', format: (val) => val || '-' },
+    { header: 'ERP Mail Status', key: 'mailSent', format: (val) => val ? 'Dispatched' : 'Pending' },
+    { header: 'ERP Mail Sent At', key: 'mailSentAt', format: (val) => val ? new Date(val).toLocaleString() : '-' },
+  ];
+
+  const handleExportExcel = () => {
+    const dataWithIndex = approvedInvitations.map((inv, idx) => ({ ...inv, sno: idx + 1 }));
+    exportToExcel(
+      `IQAC_Staff_Approved_Events_Dispatch_Report`,
+      exportColumns,
+      dataWithIndex
+    );
+  };
+
+  const handlePrintPdf = () => {
+    const dataWithIndex = approvedInvitations.map((inv, idx) => ({ ...inv, sno: idx + 1 }));
+    printReport(
+      `Approved Event Invitations & ERP Dispatch Record`,
+      'IQAC Staff Physical Verification and Email Dispatch Summary',
+      exportColumns,
+      dataWithIndex
+    );
+  };
 
   // View, Mail & Announcement Modal states
   const [viewingInv, setViewingInv] = useState<any | null>(null);
@@ -176,26 +211,51 @@ export default function StaffDashboard() {
                 </p>
               </div>
 
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="flex flex-wrap items-center gap-2.5">
                 <button
                   onClick={() => setIsAnnouncementOpen(true)}
-                  className="px-4 py-2 bg-gradient-to-r from-[#6320ee] to-[#4c1d95] hover:from-[#5215ce] hover:to-[#3b1975] text-white text-xs font-bold rounded-xl shadow-md flex items-center gap-2 transition-all cursor-pointer shrink-0"
+                  className="px-3.5 py-2 bg-gradient-to-r from-[#6320ee] to-[#4c1d95] hover:from-[#5215ce] hover:to-[#3b1975] text-white text-xs font-bold rounded-xl shadow-md flex items-center gap-2 transition-all cursor-pointer shrink-0"
                 >
                   <Megaphone className="w-3.5 h-3.5 text-amber-300" />
-                  <span>Post Announcement Feed</span>
+                  <span>Announcement Feed</span>
                 </button>
-                <div className="relative w-full sm:w-64">
-                  <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+
+                <button
+                  type="button"
+                  onClick={handleExportExcel}
+                  disabled={approvedInvitations.length === 0}
+                  className="px-3 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold rounded-xl border border-emerald-200 flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50 shrink-0"
+                  title="Export Dispatch List to Excel (.csv)"
+                >
+                  <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
+                  <span className="hidden sm:inline">Export Excel</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handlePrintPdf}
+                  disabled={approvedInvitations.length === 0}
+                  className="px-3 py-2 bg-purple-50 hover:bg-purple-100 text-purple-800 text-xs font-bold rounded-xl border border-purple-200 flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50 shrink-0"
+                  title="Print / Save PDF Dispatch Report"
+                >
+                  <Printer className="w-3.5 h-3.5 text-purple-600" />
+                  <span className="hidden sm:inline">PDF / Print</span>
+                </button>
+
+                <div className="relative flex-1 sm:w-56 min-w-[160px]">
+                  <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
+                    placeholder="Search approved..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-purple-600/30 focus:border-purple-600"
+                    className="w-full pl-8 pr-3 py-2 rounded-xl border border-slate-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-purple-600/30 focus:border-purple-600 bg-slate-50 focus:bg-white"
                   />
                 </div>
+
                 <button
                   onClick={fetchData}
-                  className="p-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors shrink-0 cursor-pointer"
+                  className="p-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors shrink-0 cursor-pointer"
                   title="Refresh"
                 >
                   <RotateCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />

@@ -14,8 +14,11 @@ import {
   Layers,
   Search,
   Filter,
-  Eye
+  Eye,
+  FileSpreadsheet,
+  Printer
 } from 'lucide-react';
+import { exportToExcel, printReport, ExportColumn } from '@/lib/export-utils';
 
 export default function DirectorSummaryPage() {
   const [user, setUser] = useState<any>(null);
@@ -24,6 +27,38 @@ export default function DirectorSummaryPage() {
   const [deptInvitations, setDeptInvitations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [fetchingInv, setFetchingInv] = useState(false);
+
+  const exportColumns: ExportColumn[] = [
+    { header: 'S.No', key: 'sno' },
+    { header: 'Program Title', key: 'programTitle' },
+    { header: 'Category', key: 'category' },
+    { header: 'Department', key: 'department', format: (_val, item) => `${item.department?.name || selectedDept?.name || 'Department'} (${item.shift || selectedDept?.shift || 'Shift I'})` },
+    { header: 'From Date', key: 'fromDate', format: (val) => new Date(val).toLocaleDateString() },
+    { header: 'To Date', key: 'toDate', format: (val) => val ? new Date(val).toLocaleDateString() : '-' },
+    { header: 'Status', key: 'status' },
+    { header: 'Revision', key: 'revisionCount', format: (val) => val > 0 ? `Rev #${val}` : 'Original' },
+    { header: 'Submitted At', key: 'createdAt', format: (val) => new Date(val).toLocaleDateString() },
+    { header: 'Director Remarks', key: 'directorRemarks', format: (val) => val || '-' },
+  ];
+
+  const handleExportExcel = () => {
+    const dataWithIndex = deptInvitations.map((inv, idx) => ({ ...inv, sno: idx + 1 }));
+    exportToExcel(
+      `${selectedDept?.name || 'Department'}_Submissions_Report`,
+      exportColumns,
+      dataWithIndex
+    );
+  };
+
+  const handlePrintPdf = () => {
+    const dataWithIndex = deptInvitations.map((inv, idx) => ({ ...inv, sno: idx + 1 }));
+    printReport(
+      `${selectedDept?.name || 'Department'} (${selectedDept?.shift || 'Shift I'}) - Submission Report`,
+      'Director Verification & Event Documentation Summary',
+      exportColumns,
+      dataWithIndex
+    );
+  };
 
   useEffect(() => {
     const fetchDepts = async () => {
@@ -150,12 +185,36 @@ export default function DirectorSummaryPage() {
 
           {/* Invitations Table for Selected Department */}
           <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
-            <div className="p-5 sm:p-6 border-b border-slate-100 flex items-center justify-between">
+            <div className="p-5 sm:p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <h3 className="font-bold text-slate-900 text-base">
                   All Invitations from {selectedDept?.name || 'Department'}
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">Priority listed chronologically</p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleExportExcel}
+                  disabled={deptInvitations.length === 0}
+                  className="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold rounded-xl border border-emerald-200 flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+                  title="Export Department Summary to Excel (.csv)"
+                >
+                  <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Export Excel</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handlePrintPdf}
+                  disabled={deptInvitations.length === 0}
+                  className="px-3.5 py-2 bg-purple-50 hover:bg-purple-100 text-purple-800 text-xs font-bold rounded-xl border border-purple-200 flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+                  title="Print / Save PDF Report"
+                >
+                  <Printer className="w-3.5 h-3.5 text-purple-600" />
+                  <span>PDF / Print</span>
+                </button>
               </div>
             </div>
 

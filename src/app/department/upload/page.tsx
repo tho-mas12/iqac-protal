@@ -18,7 +18,9 @@ import {
   Eye,
   FileText,
   Download,
-  Search
+  Search,
+  CheckSquare,
+  Square
 } from 'lucide-react';
 import { compressImageFile } from '@/lib/image-compression';
 
@@ -59,6 +61,12 @@ export default function UploadInvitationPage() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // 4-Point Pre-Submission Checklist States
+  const [checkLogo, setCheckLogo] = useState(false);
+  const [checkDates, setCheckDates] = useState(false);
+  const [checkResource, setCheckResource] = useState(false);
+  const [checkLayout, setCheckLayout] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -132,6 +140,10 @@ export default function UploadInvitationPage() {
     setSelectedFile(null);
     setPreviewUrl(null);
     setIsDragging(false);
+    setCheckLogo(false);
+    setCheckDates(false);
+    setCheckResource(false);
+    setCheckLayout(false);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -579,6 +591,59 @@ export default function UploadInvitationPage() {
                       </span>
                     </div>
                   )}
+                </div>
+              </div>
+
+              {/* 4-Point Pre-Submission Quality Checklist */}
+              <div className="p-4 rounded-2xl bg-purple-50/70 border border-purple-200/80 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold uppercase tracking-wider text-purple-950 flex items-center gap-1.5">
+                    <CheckSquare className="w-4 h-4 text-purple-600" />
+                    <span>Pre-Submission Quality Checklist</span>
+                  </span>
+                  <span className="text-[11px] font-semibold text-purple-700">Recommended before submit</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                  <div
+                    onClick={() => setCheckLogo(!checkLogo)}
+                    className={`p-2.5 rounded-xl border flex items-center justify-between cursor-pointer select-none transition-all ${
+                      checkLogo ? 'bg-white border-purple-500 font-bold text-purple-900 shadow-sm' : 'bg-white/60 border-purple-200/70 text-slate-700'
+                    }`}
+                  >
+                    <span>1. College logo included & verified</span>
+                    {checkLogo ? <CheckSquare className="w-4 h-4 text-purple-600 shrink-0" /> : <Square className="w-4 h-4 text-slate-400 shrink-0" />}
+                  </div>
+
+                  <div
+                    onClick={() => setCheckDates(!checkDates)}
+                    className={`p-2.5 rounded-xl border flex items-center justify-between cursor-pointer select-none transition-all ${
+                      checkDates ? 'bg-white border-purple-500 font-bold text-purple-900 shadow-sm' : 'bg-white/60 border-purple-200/70 text-slate-700'
+                    }`}
+                  >
+                    <span>2. Dates, time & shift mentioned</span>
+                    {checkDates ? <CheckSquare className="w-4 h-4 text-purple-600 shrink-0" /> : <Square className="w-4 h-4 text-slate-400 shrink-0" />}
+                  </div>
+
+                  <div
+                    onClick={() => setCheckResource(!checkResource)}
+                    className={`p-2.5 rounded-xl border flex items-center justify-between cursor-pointer select-none transition-all ${
+                      checkResource ? 'bg-white border-purple-500 font-bold text-purple-900 shadow-sm' : 'bg-white/60 border-purple-200/70 text-slate-700'
+                    }`}
+                  >
+                    <span>3. Complete address of resource person</span>
+                    {checkResource ? <CheckSquare className="w-4 h-4 text-purple-600 shrink-0" /> : <Square className="w-4 h-4 text-slate-400 shrink-0" />}
+                  </div>
+
+                  <div
+                    onClick={() => setCheckLayout(!checkLayout)}
+                    className={`p-2.5 rounded-xl border flex items-center justify-between cursor-pointer select-none transition-all ${
+                      checkLayout ? 'bg-white border-purple-500 font-bold text-purple-900 shadow-sm' : 'bg-white/60 border-purple-200/70 text-slate-700'
+                    }`}
+                  >
+                    <span>4. Verified IQAC layout format</span>
+                    {checkLayout ? <CheckSquare className="w-4 h-4 text-purple-600 shrink-0" /> : <Square className="w-4 h-4 text-slate-400 shrink-0" />}
+                  </div>
                 </div>
               </div>
 

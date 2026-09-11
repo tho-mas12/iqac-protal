@@ -23,9 +23,12 @@ import {
   FileText,
   Image as ImageIcon,
   Download,
-  Search
+  Search,
+  FileSpreadsheet,
+  Printer
 } from 'lucide-react';
 import Link from 'next/link';
+import { exportToExcel, printReport, ExportColumn } from '@/lib/export-utils';
 
 export default function DepartmentDashboard() {
   const [loading, setLoading] = useState(true);
@@ -40,6 +43,39 @@ export default function DepartmentDashboard() {
     remarks: 0,
     approved: 0,
   });
+
+  const exportColumns: ExportColumn[] = [
+    { header: 'S.No', key: 'sno', format: (_val, _item, idx?: any) => '' },
+    { header: 'Program Title', key: 'programTitle' },
+    { header: 'Category', key: 'category' },
+    { header: 'Shift', key: 'shift' },
+    { header: 'From Date', key: 'fromDate', format: (val) => new Date(val).toLocaleDateString() },
+    { header: 'To Date', key: 'toDate', format: (val) => val ? new Date(val).toLocaleDateString() : '-' },
+    { header: 'Status', key: 'status' },
+    { header: 'Revision', key: 'revisionCount', format: (val) => val > 0 ? `Rev #${val}` : 'Original' },
+    { header: 'Uploaded Date', key: 'createdAt', format: (val) => new Date(val).toLocaleDateString() },
+    { header: 'Approval Date', key: 'approvedAt', format: (val) => val ? new Date(val).toLocaleDateString() : '-' },
+    { header: 'Hard Copy Status', key: 'hardCopyReceived', format: (val) => val ? 'Received' : 'Pending' },
+  ];
+
+  const handleExportExcel = () => {
+    const dataWithIndex = invitations.map((inv, idx) => ({ ...inv, sno: idx + 1 }));
+    exportToExcel(
+      `${user?.department?.name || 'Department'}_IQAC_NAAC_Invitations_Report`,
+      exportColumns,
+      dataWithIndex
+    );
+  };
+
+  const handlePrintPdf = () => {
+    const dataWithIndex = invitations.map((inv, idx) => ({ ...inv, sno: idx + 1 }));
+    printReport(
+      `${user?.department?.name || 'Department'} (${user?.department?.shift || 'Shift I'}) - Event Invitations Summary`,
+      'Official IQAC & NAAC Criterion Documentation Report',
+      exportColumns,
+      dataWithIndex
+    );
+  };
 
   const fetchData = async () => {
     try {
@@ -160,7 +196,7 @@ export default function DepartmentDashboard() {
                   title="Official St. Joseph's College Logo download"
                 >
                   <ImageIcon className="w-4 h-4 shrink-0" />
-                  <span>College Logo</span>
+                  <span>Download College Logo</span>
                   <ExternalLink className="w-3 h-3 opacity-80" />
                 </a>
 
@@ -212,24 +248,49 @@ export default function DepartmentDashboard() {
 
           {/* Recent Submissions Table */}
           <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
-            {/* Table Header with Search */}
-            <div className="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            {/* Table Header with Search & NAAC Export */}
+            <div className="p-5 border-b border-slate-100 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               <div>
                 <h3 className="font-bold text-slate-900 text-base">Recent Invitation Submissions</h3>
                 <p className="text-xs text-slate-500 mt-0.5">Priority sorted by date and time of upload</p>
               </div>
 
-              <div className="flex items-center gap-3">
-                <div className="relative flex-1 sm:w-64">
+              <div className="flex flex-wrap items-center gap-2.5">
+                {/* Search Box */}
+                <div className="relative flex-1 sm:w-56 min-w-[180px]">
                   <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
                     type="text"
                     placeholder="Search title, category..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-600/20 focus:border-purple-600 font-medium"
+                    className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-600/20 focus:border-purple-600 font-medium"
                   />
                 </div>
+
+                {/* 1-Click NAAC/IQAC Summary Export Buttons */}
+                <button
+                  type="button"
+                  onClick={handleExportExcel}
+                  disabled={invitations.length === 0}
+                  className="px-3 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold rounded-xl border border-emerald-200 flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+                  title="Download Department Event List in Excel (.csv)"
+                >
+                  <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
+                  <span className="hidden sm:inline">Export Excel</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handlePrintPdf}
+                  disabled={invitations.length === 0}
+                  className="px-3 py-2 bg-purple-50 hover:bg-purple-100 text-purple-800 text-xs font-bold rounded-xl border border-purple-200 flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+                  title="Print / Save PDF for NAAC Criteria Records"
+                >
+                  <Printer className="w-3.5 h-3.5 text-purple-600" />
+                  <span className="hidden sm:inline">PDF / Print</span>
+                </button>
+
                 <button
                   onClick={fetchData}
                   className="p-2 rounded-xl text-slate-500 hover:bg-slate-100 transition-colors cursor-pointer shrink-0"
