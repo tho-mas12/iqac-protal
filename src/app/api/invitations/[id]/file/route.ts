@@ -25,6 +25,10 @@ export async function GET(
       return new NextResponse('File not found', { status: 404 });
     }
 
+    const { searchParams } = new URL(req.url);
+    const isDownload = searchParams.get('download') === 'true';
+    const dispositionType = isDownload ? 'attachment' : 'inline';
+
     const mimeType = invitation.mimeType || 'image/png';
     const fileName = invitation.fileName || 'invitation.png';
 
@@ -39,7 +43,7 @@ export async function GET(
         return new NextResponse(buffer, {
           headers: {
             'Content-Type': mimeType,
-            'Content-Disposition': 'inline; filename="' + fileName + '"',
+            'Content-Disposition': `${dispositionType}; filename="${fileName}"`,
             'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
             'Pragma': 'no-cache',
             'Expires': '0',
@@ -55,7 +59,7 @@ export async function GET(
         return new NextResponse(buffer, {
           headers: {
             'Content-Type': mimeType,
-            'Content-Disposition': 'inline; filename="' + fileName + '"',
+            'Content-Disposition': `${dispositionType}; filename="${fileName}"`,
             'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
             'Pragma': 'no-cache',
             'Expires': '0',
@@ -80,8 +84,8 @@ export async function GET(
         return new NextResponse(fileBuffer, {
           headers: {
             'Content-Type': mimeType,
-            'Content-Disposition': 'inline; filename="' + fileName + '"',
-            'Cache-Control': 'public, max-age=86400',
+            'Content-Disposition': `${dispositionType}; filename="${fileName}"`,
+            'Cache-Control': isDownload ? 'no-cache' : 'public, max-age=86400',
           },
         });
       }

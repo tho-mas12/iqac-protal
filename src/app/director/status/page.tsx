@@ -14,7 +14,8 @@ import {
   Building2,
   RotateCw,
   Search,
-  MessageSquare
+  MessageSquare,
+  Download
 } from 'lucide-react';
 
 export default function DirectorStatusPage() {
@@ -234,15 +235,26 @@ export default function DirectorStatusPage() {
                           </div>
                         </div>
 
-                        <a
-                          href={`/api/invitations/${inv.id}/file?rev=${inv.revisionCount || 0}&t=${inv.updatedAt ? new Date(inv.updatedAt).getTime() : Date.now()}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="px-3 py-1.5 bg-slate-50 hover:bg-purple-50 text-purple-700 text-xs font-semibold rounded-xl border border-purple-200 transition-colors flex items-center gap-1.5 self-start sm:self-center"
-                        >
-                          <span>View File</span>
-                          <ExternalLink className="w-3.5 h-3.5" />
-                        </a>
+                        <div className="flex items-center gap-2 self-start sm:self-center">
+                          <a
+                            href={`/api/invitations/${inv.id}/file?download=true`}
+                            download={inv.fileName || `${inv.programTitle.replace(/[^a-zA-Z0-9_-]/g, '_')}_invitation.png`}
+                            className="px-2.5 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl border border-slate-200 transition-colors flex items-center gap-1"
+                            title="Download File"
+                          >
+                            <Download className="w-3.5 h-3.5 text-purple-600" />
+                            <span>Download</span>
+                          </a>
+                          <a
+                            href={`/api/invitations/${inv.id}/file?rev=${inv.revisionCount || 0}&t=${inv.updatedAt ? new Date(inv.updatedAt).getTime() : Date.now()}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="px-3 py-1.5 bg-slate-50 hover:bg-purple-50 text-purple-700 text-xs font-semibold rounded-xl border border-purple-200 transition-colors flex items-center gap-1.5"
+                          >
+                            <span>View</span>
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </a>
+                        </div>
                       </div>
 
                       {/* Remarks Content & Edit Box */}
@@ -394,15 +406,27 @@ export default function DirectorStatusPage() {
                             )}
                           </td>
                           <td className="px-6 py-4 text-right">
-                            <a
-                              href={`/api/invitations/${inv.id}/file?rev=${inv.revisionCount || 0}&t=${inv.updatedAt ? new Date(inv.updatedAt).getTime() : Date.now()}`}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="p-2 rounded-xl bg-slate-100 hover:bg-purple-50 text-slate-600 hover:text-purple-700 transition-colors inline-flex items-center gap-1 text-xs font-semibold"
-                            >
-                              <span>View</span>
-                              <ExternalLink className="w-3.5 h-3.5" />
-                            </a>
+                            <div className="inline-flex items-center gap-1.5 justify-end">
+                              <a
+                                href={`/api/invitations/${inv.id}/file?download=true`}
+                                download={inv.fileName || `${inv.programTitle.replace(/[^a-zA-Z0-9_-]/g, '_')}_invitation.png`}
+                                className="p-2 rounded-xl bg-slate-100 hover:bg-purple-50 text-slate-600 hover:text-purple-700 transition-colors inline-flex items-center gap-1 text-xs font-semibold"
+                                title="Download File"
+                              >
+                                <Download className="w-3.5 h-3.5 text-purple-600" />
+                                <span className="hidden md:inline">Download</span>
+                              </a>
+                              <a
+                                href={`/api/invitations/${inv.id}/file?rev=${inv.revisionCount || 0}&t=${inv.updatedAt ? new Date(inv.updatedAt).getTime() : Date.now()}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="p-2 rounded-xl bg-slate-100 hover:bg-purple-50 text-slate-600 hover:text-purple-700 transition-colors inline-flex items-center gap-1 text-xs font-semibold"
+                                title="View in New Tab"
+                              >
+                                <span>View</span>
+                                <ExternalLink className="w-3.5 h-3.5" />
+                              </a>
+                            </div>
                           </td>
                         </tr>
                       ))}

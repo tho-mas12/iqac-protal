@@ -26,7 +26,8 @@ import {
   ZoomOut,
   RotateCcw,
   Maximize2,
-  Megaphone
+  Megaphone,
+  Download
 } from 'lucide-react';
 import Link from 'next/link';
 import AnnouncementEditorModal from '@/components/AnnouncementEditorModal';
@@ -62,7 +63,7 @@ export default function DirectorDashboard() {
       setLoading(true);
       const [uRes, iRes] = await Promise.all([
         fetch('/api/auth/me'),
-        fetch('/api/invitations'),
+        fetch('/api/invitations?status=PENDING'),
       ]);
 
       if (uRes.ok) {
@@ -191,12 +192,19 @@ export default function DirectorDashboard() {
           <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
             <div className="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <h3 className="font-bold text-slate-900 text-lg">Director Verification Queue</h3>
+                <h3 className="font-bold text-slate-900 text-lg">Pending Verification Queue</h3>
                 <p className="text-xs text-slate-500 mt-0.5">
-                  Priority-ordered submissions awaiting portal verification, remarks, or approval
+                  Submissions currently awaiting Director verification, remarks, or approval
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-3">
+                <Link
+                  href="/director/status"
+                  className="px-3.5 py-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors flex items-center gap-1.5 text-xs font-semibold"
+                >
+                  <span>View Processed / All</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+                </Link>
                 <button
                   onClick={() => setIsAnnouncementOpen(true)}
                   className="px-4 py-2.5 bg-gradient-to-r from-[#6320ee] to-[#4c1d95] hover:from-[#5215ce] hover:to-[#3b1975] text-white text-xs font-bold rounded-xl shadow-md flex items-center gap-2 transition-all cursor-pointer"
@@ -217,12 +225,20 @@ export default function DirectorDashboard() {
             {loading ? (
               <div className="p-12 text-center text-slate-400 text-sm">
                 <div className="w-6 h-6 border-2 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-                Loading submissions...
+                Loading pending submissions...
               </div>
             ) : invitations.length === 0 ? (
               <div className="p-12 text-center text-slate-400 text-sm">
                 <CheckCircle2 className="w-12 h-12 mx-auto text-emerald-400 mb-2" />
-                <p className="font-semibold text-slate-700">All caught up! No submissions in queue.</p>
+                <p className="font-semibold text-slate-700 text-base">All caught up! No pending submissions.</p>
+                <p className="text-xs text-slate-500 mt-1">All invitation submissions have been reviewed and processed.</p>
+                <Link
+                  href="/director/status"
+                  className="inline-flex items-center gap-1.5 mt-4 px-4 py-2 bg-purple-50 text-purple-700 hover:bg-purple-100 rounded-xl text-xs font-bold border border-purple-200 transition-colors"
+                >
+                  <span>View Approved & Remarked Invitations</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
               </div>
             ) : (
               <div className="divide-y divide-slate-100">
@@ -345,6 +361,16 @@ export default function DirectorDashboard() {
               </div>
 
               <div className="flex items-center gap-3">
+                <a
+                  href={`/api/invitations/${selectedInv.id}/file?download=true`}
+                  download={selectedInv.fileName || `${selectedInv.programTitle.replace(/[^a-zA-Z0-9_-]/g, '_')}_invitation.png`}
+                  className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold border border-white/20 flex items-center gap-1.5 transition-colors cursor-pointer shadow-sm"
+                  title="Download original poster file"
+                >
+                  <Download className="w-3.5 h-3.5 text-purple-300" />
+                  <span>Download</span>
+                </a>
+
                 {selectedInv.revisionCount > 0 && (
                   <span className="hidden sm:inline-flex px-3 py-1 rounded-full bg-amber-400 text-amber-950 text-xs font-extrabold shadow">
                     Re-uploaded: After {selectedInv.revisionCount === 1 ? '1st' : `${selectedInv.revisionCount}th`} correction
@@ -424,20 +450,31 @@ export default function DirectorDashboard() {
                   />
                 </div>
 
-                {/* Bottom Bar: Dedicated Open Full Image in new tab button */}
-                <div className="flex items-center justify-between pt-1">
+                {/* Bottom Bar: Download and Open Full Image buttons */}
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
                   <span className="text-[11px] text-slate-400">
                     Scroll inside to view full poster length or use Zoom controls
                   </span>
-                  <a
-                    href={`/api/invitations/${selectedInv.id}/file?rev=${selectedInv.revisionCount || 0}&t=${selectedInv.updatedAt ? new Date(selectedInv.updatedAt).getTime() : Date.now()}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="px-4 py-2 bg-[#6320ee] hover:bg-[#5215ce] text-white text-xs font-bold rounded-xl flex items-center gap-1.5 shadow-lg shadow-purple-600/30 transition-all transform hover:-translate-y-0.5 cursor-pointer shrink-0"
-                  >
-                    <span>Open High-Res Full Image</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
+                  <div className="flex items-center gap-2">
+                    <a
+                      href={`/api/invitations/${selectedInv.id}/file?download=true`}
+                      download={selectedInv.fileName || `${selectedInv.programTitle.replace(/[^a-zA-Z0-9_-]/g, '_')}_invitation.png`}
+                      className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl flex items-center gap-1.5 border border-slate-700 transition-all cursor-pointer shadow"
+                      title="Download original file"
+                    >
+                      <Download className="w-3.5 h-3.5 text-purple-300" />
+                      <span>Download File</span>
+                    </a>
+                    <a
+                      href={`/api/invitations/${selectedInv.id}/file?rev=${selectedInv.revisionCount || 0}&t=${selectedInv.updatedAt ? new Date(selectedInv.updatedAt).getTime() : Date.now()}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="px-4 py-2 bg-[#6320ee] hover:bg-[#5215ce] text-white text-xs font-bold rounded-xl flex items-center gap-1.5 shadow-lg shadow-purple-600/30 transition-all transform hover:-translate-y-0.5 cursor-pointer shrink-0"
+                    >
+                      <span>Open High-Res Full Image</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
                 </div>
               </div>
 
