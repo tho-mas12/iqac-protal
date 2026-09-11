@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
 import Sidebar from '@/components/Sidebar';
@@ -16,7 +16,9 @@ import {
   ExternalLink,
   Trash2,
   Eye,
-  FileText
+  FileText,
+  Download,
+  Search
 } from 'lucide-react';
 import { compressImageFile } from '@/lib/image-compression';
 
@@ -41,6 +43,7 @@ const CATEGORIES = [
 export default function UploadInvitationPage() {
   const [user, setUser] = useState<any>(null);
   const [invitations, setInvitations] = useState<any[]>([]);
+  const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -54,6 +57,7 @@ export default function UploadInvitationPage() {
   const [toDate, setToDate] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const fetchData = async () => {
@@ -83,16 +87,40 @@ export default function UploadInvitationPage() {
     fetchData();
   }, []);
 
+  const handleProcessFile = (file: File) => {
+    setSelectedFile(file);
+    if (file.type.startsWith('image/')) {
+      setPreviewUrl(URL.createObjectURL(file));
+    } else {
+      setPreviewUrl(null);
+    }
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setSelectedFile(file);
-      if (file.type.startsWith('image/')) {
-        setPreviewUrl(URL.createObjectURL(file));
-      } else {
-        setPreviewUrl(null);
-      }
+      handleProcessFile(e.target.files[0]);
     }
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleProcessFile(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
   };
 
   const resetForm = () => {
@@ -103,6 +131,7 @@ export default function UploadInvitationPage() {
     setToDate('');
     setSelectedFile(null);
     setPreviewUrl(null);
+    setIsDragging(false);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -226,14 +255,27 @@ export default function UploadInvitationPage() {
 
           {/* List of Added Invitations */}
           <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
-            <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+            <div className="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h3 className="font-bold text-slate-900 text-base">Uploaded Invitations Queue</h3>
                 <p className="text-xs text-slate-500 mt-0.5">Priority sorted by date and time</p>
               </div>
-              <span className="text-xs font-semibold px-3 py-1 bg-purple-50 text-purple-700 rounded-full border border-purple-200">
-                {invitations.length} Total Submissions
-              </span>
+
+              <div className="flex items-center gap-3">
+                <div className="relative flex-1 sm:w-64">
+                  <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Search submissions..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-600/20 focus:border-purple-600 font-medium"
+                  />
+                </div>
+                <span className="text-xs font-semibold px-3 py-1 bg-purple-50 text-purple-700 rounded-full border border-purple-200 shrink-0">
+                  {invitations.length} Total
+                </span>
+              </div>
             </div>
 
             {loading ? (
@@ -249,7 +291,17 @@ export default function UploadInvitationPage() {
               </div>
             ) : (
               <div className="divide-y divide-slate-100">
-                {invitations.map((inv) => (
+                {invitations
+                  .filter((inv) => {
+                    if (!search.trim()) return true;
+                    const q = search.toLowerCase();
+                    return (
+                      inv.programTitle?.toLowerCase().includes(q) ||
+                      inv.category?.toLowerCase().includes(q) ||
+                      inv.status?.toLowerCase().includes(q)
+                    );
+                  })
+                  .map((inv) => (
                   <div key={inv.id} className="p-5 hover:bg-slate-50/70 transition-colors flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <div className="flex items-start gap-4">
                       {/* Thumbnail */}
@@ -304,7 +356,7 @@ export default function UploadInvitationPage() {
                     </div>
 
                     {/* Status & Actions */}
-                    <div className="flex items-center gap-3 self-end md:self-center">
+                    <div className="flex items-center gap-2 self-end md:self-center">
                       {inv.status === 'APPROVED' && (
                         <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                           <CheckCircle2 className="w-4 h-4" /> Approved
@@ -321,13 +373,24 @@ export default function UploadInvitationPage() {
                         </span>
                       )}
 
+                      {inv.status === 'APPROVED' && (
+                        <a
+                          href={`/api/invitations/${inv.id}/file?download=true`}
+                          download={inv.fileName || `${inv.programTitle.replace(/[^a-zA-Z0-9_-]/g, '_')}_invitation.png`}
+                          className="p-2 rounded-xl bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 transition-colors"
+                          title="Download Approved File"
+                        >
+                          <Download className="w-4 h-4" />
+                        </a>
+                      )}
+
                       <a
                         href={`/api/invitations/${inv.id}/file?rev=${inv.revisionCount || 0}&t=${inv.updatedAt ? new Date(inv.updatedAt).getTime() : Date.now()}`}
                         target="_blank"
                         rel="noreferrer"
                         className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-purple-50 text-slate-700 hover:text-purple-700 text-xs font-semibold border border-slate-200 transition-colors flex items-center gap-1.5"
                       >
-                        <span>View File</span>
+                        <span>View</span>
                         <ExternalLink className="w-3.5 h-3.5" />
                       </a>
                     </div>
@@ -467,7 +530,14 @@ export default function UploadInvitationPage() {
                 </label>
                 <div
                   onClick={() => fileInputRef.current?.click()}
-                  className="border-2 border-dashed border-purple-200 hover:border-purple-500 bg-purple-50/40 hover:bg-purple-50/80 rounded-2xl p-6 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-2 group"
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-2 group ${
+                    isDragging
+                      ? 'border-purple-600 bg-purple-100/90 scale-[1.01] shadow-lg shadow-purple-600/10'
+                      : 'border-purple-200 hover:border-purple-500 bg-purple-50/40 hover:bg-purple-50/80'
+                  }`}
                 >
                   <input
                     type="file"
@@ -476,22 +546,35 @@ export default function UploadInvitationPage() {
                     accept="image/*,application/pdf"
                     className="hidden"
                   />
-                  <div className="w-12 h-12 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-transform ${
+                    isDragging ? 'bg-purple-600 text-white scale-110' : 'bg-purple-100 text-purple-600 group-hover:scale-110'
+                  }`}>
                     <UploadCloud className="w-6 h-6" />
                   </div>
                   <div className="text-xs">
                     <span className="font-bold text-purple-700">Click to choose file</span>
-                    <span className="text-slate-500"> or drag & drop</span>
+                    <span className="text-slate-500"> or drag & drop poster here</span>
                   </div>
                   <span className="text-[11px] text-slate-400">
-                    PNG, JPG, PDF up to 15MB
+                    PNG, JPG, PDF (Automatic fast compression enabled)
                   </span>
 
+                  {/* Instant Image Preview */}
+                  {previewUrl && (
+                    <div className="mt-2 w-32 h-40 rounded-xl overflow-hidden border border-purple-300 shadow-md bg-white p-1">
+                      <img
+                        src={previewUrl}
+                        alt="Preview"
+                        className="w-full h-full object-contain rounded-lg"
+                      />
+                    </div>
+                  )}
+
                   {selectedFile && (
-                    <div className="mt-3 px-3 py-1.5 bg-purple-600 text-white rounded-lg text-xs font-semibold flex items-center gap-2">
-                      <FileImage className="w-3.5 h-3.5" />
+                    <div className="mt-2 px-3.5 py-1.5 bg-purple-600 text-white rounded-xl text-xs font-semibold flex items-center gap-2 shadow-sm">
+                      <FileImage className="w-3.5 h-3.5 shrink-0" />
                       <span className="truncate max-w-xs">{selectedFile.name}</span>
-                      <span className="text-purple-200 text-[10px]">
+                      <span className="text-purple-200 text-[10px] shrink-0">
                         ({(selectedFile.size / 1024).toFixed(1)} KB)
                       </span>
                     </div>

@@ -22,7 +22,8 @@ import {
   RotateCw,
   FileText,
   Image as ImageIcon,
-  Download
+  Download,
+  Search
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -30,6 +31,7 @@ export default function DepartmentDashboard() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
   const [invitations, setInvitations] = useState<any[]>([]);
+  const [search, setSearch] = useState('');
   const [isGuidelinesOpen, setIsGuidelinesOpen] = useState(false);
   const [toast, setToast] = useState<ToastMessage | null>(null);
   const [stats, setStats] = useState({
@@ -210,18 +212,32 @@ export default function DepartmentDashboard() {
 
           {/* Recent Submissions Table */}
           <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
-            <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+            {/* Table Header with Search */}
+            <div className="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h3 className="font-bold text-slate-900 text-base">Recent Invitation Submissions</h3>
                 <p className="text-xs text-slate-500 mt-0.5">Priority sorted by date and time of upload</p>
               </div>
-              <button
-                onClick={fetchData}
-                className="p-2 rounded-xl text-slate-500 hover:bg-slate-100 transition-colors"
-                title="Refresh"
-              >
-                <RotateCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-              </button>
+
+              <div className="flex items-center gap-3">
+                <div className="relative flex-1 sm:w-64">
+                  <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Search title, category..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-600/20 focus:border-purple-600 font-medium"
+                  />
+                </div>
+                <button
+                  onClick={fetchData}
+                  className="p-2 rounded-xl text-slate-500 hover:bg-slate-100 transition-colors cursor-pointer shrink-0"
+                  title="Refresh Queue"
+                >
+                  <RotateCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                </button>
+              </div>
             </div>
 
             {loading ? (
@@ -251,7 +267,17 @@ export default function DepartmentDashboard() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
-                      {invitations.map((inv) => (
+                      {invitations
+                        .filter((inv) => {
+                          if (!search.trim()) return true;
+                          const q = search.toLowerCase();
+                          return (
+                            inv.programTitle?.toLowerCase().includes(q) ||
+                            inv.category?.toLowerCase().includes(q) ||
+                            inv.status?.toLowerCase().includes(q)
+                          );
+                        })
+                        .map((inv) => (
                         <tr key={inv.id} className="hover:bg-slate-50/80 transition-colors">
                           <td className="px-6 py-4">
                             <div className="font-semibold text-slate-900 line-clamp-1">{inv.programTitle}</div>
@@ -295,7 +321,7 @@ export default function DepartmentDashboard() {
                             )}
                           </td>
                           <td className="px-6 py-4 text-right">
-                            <div className="flex items-center justify-end gap-2">
+                            <div className="flex items-center justify-end gap-1.5">
                               {inv.status === 'REMARKS' && (
                                 <Link
                                   href="/department/remarks"
@@ -304,8 +330,18 @@ export default function DepartmentDashboard() {
                                   Re-upload
                                 </Link>
                               )}
+                              {inv.status === 'APPROVED' && (
+                                <a
+                                  href={`/api/invitations/${inv.id}/file?download=true`}
+                                  download={inv.fileName || `${inv.programTitle.replace(/[^a-zA-Z0-9_-]/g, '_')}_invitation.png`}
+                                  className="p-1.5 rounded-lg text-slate-500 hover:text-emerald-700 hover:bg-emerald-50 transition-colors"
+                                  title="Download Approved File"
+                                >
+                                  <Download className="w-4 h-4" />
+                                </a>
+                              )}
                               <a
-                                href={inv.driveViewLink || inv.localFilePath || `/api/invitations/${inv.id}/file`}
+                                href={`/api/invitations/${inv.id}/file?rev=${inv.revisionCount || 0}&t=${inv.updatedAt ? new Date(inv.updatedAt).getTime() : Date.now()}`}
                                 target="_blank"
                                 rel="noreferrer"
                                 className="p-1.5 rounded-lg text-slate-400 hover:text-purple-600 hover:bg-purple-50 transition-colors"
@@ -323,7 +359,17 @@ export default function DepartmentDashboard() {
 
                 {/* Mobile Responsive Cards */}
                 <div className="md:hidden divide-y divide-slate-100">
-                  {invitations.map((inv) => (
+                  {invitations
+                    .filter((inv) => {
+                      if (!search.trim()) return true;
+                      const q = search.toLowerCase();
+                      return (
+                        inv.programTitle?.toLowerCase().includes(q) ||
+                        inv.category?.toLowerCase().includes(q) ||
+                        inv.status?.toLowerCase().includes(q)
+                      );
+                    })
+                    .map((inv) => (
                     <div key={inv.id} className="p-4 space-y-2.5 bg-white">
                       <div className="flex items-start justify-between gap-2">
                         <div>
@@ -360,8 +406,18 @@ export default function DepartmentDashboard() {
                               Re-upload
                             </Link>
                           )}
+                          {inv.status === 'APPROVED' && (
+                            <a
+                              href={`/api/invitations/${inv.id}/file?download=true`}
+                              download={inv.fileName || `${inv.programTitle.replace(/[^a-zA-Z0-9_-]/g, '_')}_invitation.png`}
+                              className="p-1 rounded text-emerald-600 hover:bg-emerald-50"
+                              title="Download"
+                            >
+                              <Download className="w-3.5 h-3.5" />
+                            </a>
+                          )}
                           <a
-                            href={inv.driveViewLink || inv.localFilePath || `/api/invitations/${inv.id}/file`}
+                            href={`/api/invitations/${inv.id}/file?rev=${inv.revisionCount || 0}&t=${inv.updatedAt ? new Date(inv.updatedAt).getTime() : Date.now()}`}
                             target="_blank"
                             rel="noreferrer"
                             className="p-1 rounded text-purple-600 font-semibold flex items-center gap-1"

@@ -38,10 +38,43 @@ export async function GET(req: NextRequest) {
     }
 
     // Sort priority-wise: latest submissions and revisions first
+    // Note: omit heavy `fileData` column so API payload is 99% smaller and loads instantly
     const invitations = await prisma.invitation.findMany({
       where,
-      include: {
+      select: {
+        id: true,
+        programTitle: true,
+        departmentId: true,
         department: true,
+        shift: true,
+        category: true,
+        customCategory: true,
+        fromDate: true,
+        toDate: true,
+        fileName: true,
+        fileSize: true,
+        mimeType: true,
+        driveFileId: true,
+        driveViewLink: true,
+        driveDownloadLink: true,
+        localFilePath: true,
+        status: true,
+        revisionCount: true,
+        checkLogo: true,
+        checkTitle: true,
+        checkHeaders: true,
+        checkOthers: true,
+        directorRemarks: true,
+        remarkedAt: true,
+        approvedAt: true,
+        hardCopyReceived: true,
+        hardCopyReceivedAt: true,
+        hardCopyStaffName: true,
+        mailSent: true,
+        mailSentAt: true,
+        mailSentStaffName: true,
+        createdAt: true,
+        updatedAt: true,
         history: {
           orderBy: { timestamp: 'desc' },
           take: 5,
