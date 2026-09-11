@@ -2,8 +2,10 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { User, Lock, ArrowRight } from 'lucide-react';
 import Logo from '@/components/Logo';
+import frontierLogo from '../../../public/frontierwox-logo.jpg';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -131,11 +133,15 @@ export default function LoginPage() {
           <span className="text-[9px] uppercase font-bold tracking-wider text-slate-400 block leading-none">Powered by</span>
           <span className="text-xs font-extrabold text-slate-800 leading-tight">FrontierWox Tech</span>
         </div>
-        <img
-          src="/images/frontierwox-logo.jpg"
-          alt="FrontierWox Tech Private Limited"
-          className="h-8 w-auto object-contain rounded"
-        />
+        <div className="h-8 w-auto relative flex items-center">
+          <Image
+            src={frontierLogo}
+            alt="FrontierWox Tech Private Limited"
+            height={32}
+            className="h-8 w-auto object-contain rounded"
+            priority
+          />
+        </div>
       </div>
     </div>
   );
