@@ -15,16 +15,24 @@ export async function GET(req: NextRequest) {
     const status = searchParams.get('status');
     const departmentId = searchParams.get('departmentId');
     const category = searchParams.get('category');
+    const calendar = searchParams.get('calendar');
     const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : undefined;
 
     const where: any = {};
 
-    // Department can only view their own invitations
+    // Department can only view their own invitations unless viewing the shared College Event Calendar
     if (session.role === 'DEPARTMENT') {
       if (!session.departmentId) {
         return NextResponse.json({ error: 'User is not assigned to a department' }, { status: 400 });
       }
-      where.departmentId = session.departmentId;
+      if (calendar === 'true') {
+        // College Calendar view: Allow departments to view all events across the college to avoid date clashes
+        if (departmentId) {
+          where.departmentId = departmentId;
+        }
+      } else {
+        where.departmentId = session.departmentId;
+      }
     } else if (departmentId) {
       where.departmentId = departmentId;
     }

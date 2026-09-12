@@ -20,9 +20,13 @@ import {
   Download,
   Search,
   CheckSquare,
-  Square
+  Square,
+  MessageSquare,
+  Share2
 } from 'lucide-react';
 import { compressImageFile } from '@/lib/image-compression';
+import StatusStepper from '@/components/StatusStepper';
+import { getWhatsAppSubmissionUrl } from '@/lib/whatsapp-direct';
 
 const CATEGORIES = [
   'Endowment Lecture',
@@ -224,13 +228,13 @@ export default function UploadInvitationPage() {
           {/* Feedback banner */}
           {feedback && (
             <div
-              className={`p-4 rounded-2xl border flex items-center justify-between shadow-sm animate-fadeIn ${
+              className={`p-4 rounded-2xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm animate-fadeIn ${
                 feedback.type === 'success'
                   ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
                   : 'bg-rose-50 border-rose-200 text-rose-800'
               }`}
             >
-              <div className="flex items-center gap-2 text-sm font-semibold">
+              <div className="flex items-center gap-2.5 text-sm font-semibold">
                 {feedback.type === 'success' ? (
                   <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
                 ) : (
@@ -238,9 +242,31 @@ export default function UploadInvitationPage() {
                 )}
                 <span>{feedback.message}</span>
               </div>
-              <button onClick={() => setFeedback(null)} className="text-slate-400 hover:text-slate-600">
-                <X className="w-4 h-4" />
-              </button>
+
+              <div className="flex items-center gap-2 shrink-0">
+                {feedback.type === 'success' && (
+                  <a
+                    href={getWhatsAppSubmissionUrl({
+                      departmentName: user?.department?.name || 'Department',
+                      shift: user?.department?.shift || 'Shift I',
+                      programTitle: programTitle || 'Recent Submission',
+                      category: category,
+                      fromDate: fromDate || new Date().toISOString(),
+                      toDate: toDate,
+                      status: 'Pending Director Review',
+                    })}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5" />
+                    <span>Alert Director via WhatsApp</span>
+                  </a>
+                )}
+                <button onClick={() => setFeedback(null)} className="text-slate-400 hover:text-slate-600 p-1">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           )}
 
@@ -368,43 +394,62 @@ export default function UploadInvitationPage() {
                     </div>
 
                     {/* Status & Actions */}
-                    <div className="flex items-center gap-2 self-end md:self-center">
-                      {inv.status === 'APPROVED' && (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                          <CheckCircle2 className="w-4 h-4" /> Approved
-                        </span>
-                      )}
-                      {inv.status === 'PENDING' && (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
-                          <Clock className="w-4 h-4" /> Pending Review
-                        </span>
-                      )}
-                      {inv.status === 'REMARKS' && (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">
-                          <AlertCircle className="w-4 h-4" /> Remarks Returned
-                        </span>
-                      )}
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 self-stretch md:self-center">
+                      <div className="w-full sm:w-auto">
+                        <StatusStepper
+                          status={inv.status}
+                          createdAt={inv.createdAt}
+                          approvedAt={inv.approvedAt}
+                          remarkedAt={inv.remarkedAt}
+                          hardCopyReceived={inv.hardCopyReceived}
+                          mailSent={inv.mailSent}
+                          variant="compact"
+                        />
+                      </div>
 
-                      {inv.status === 'APPROVED' && (
+                      <div className="flex items-center gap-2 self-end sm:self-center">
+                        {/* 1-Click WhatsApp Alert */}
+                        {inv.status === 'PENDING' && (
+                          <a
+                            href={getWhatsAppSubmissionUrl({
+                              departmentName: user?.department?.name || 'Department',
+                              shift: inv.shift,
+                              programTitle: inv.programTitle,
+                              category: inv.category,
+                              fromDate: inv.fromDate,
+                              toDate: inv.toDate,
+                              status: 'Pending Review',
+                            })}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="p-2 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors"
+                            title="1-Click WhatsApp: Alert Director"
+                          >
+                            <MessageSquare className="w-4 h-4" />
+                          </a>
+                        )}
+
+                        {inv.status === 'APPROVED' && (
+                          <a
+                            href={`/api/invitations/${inv.id}/file?download=true`}
+                            download={inv.fileName || `${inv.programTitle.replace(/[^a-zA-Z0-9_-]/g, '_')}_invitation.png`}
+                            className="p-2 rounded-xl bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 transition-colors"
+                            title="Download Approved File"
+                          >
+                            <Download className="w-4 h-4" />
+                          </a>
+                        )}
+
                         <a
-                          href={`/api/invitations/${inv.id}/file?download=true`}
-                          download={inv.fileName || `${inv.programTitle.replace(/[^a-zA-Z0-9_-]/g, '_')}_invitation.png`}
-                          className="p-2 rounded-xl bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 transition-colors"
-                          title="Download Approved File"
+                          href={`/api/invitations/${inv.id}/file?rev=${inv.revisionCount || 0}&t=${inv.updatedAt ? new Date(inv.updatedAt).getTime() : Date.now()}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-purple-50 text-slate-700 hover:text-purple-700 text-xs font-semibold border border-slate-200 transition-colors flex items-center gap-1.5"
                         >
-                          <Download className="w-4 h-4" />
+                          <span>View</span>
+                          <ExternalLink className="w-3.5 h-3.5" />
                         </a>
-                      )}
-
-                      <a
-                        href={`/api/invitations/${inv.id}/file?rev=${inv.revisionCount || 0}&t=${inv.updatedAt ? new Date(inv.updatedAt).getTime() : Date.now()}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-purple-50 text-slate-700 hover:text-purple-700 text-xs font-semibold border border-slate-200 transition-colors flex items-center gap-1.5"
-                      >
-                        <span>View</span>
-                        <ExternalLink className="w-3.5 h-3.5" />
-                      </a>
+                      </div>
                     </div>
                   </div>
                 ))}

@@ -25,10 +25,14 @@ import {
   Download,
   Search,
   FileSpreadsheet,
-  Printer
+  Printer,
+  MessageSquare,
+  Share2
 } from 'lucide-react';
 import Link from 'next/link';
 import { exportToExcel, printReport, ExportColumn } from '@/lib/export-utils';
+import StatusStepper from '@/components/StatusStepper';
+import { getWhatsAppSubmissionUrl, getWhatsAppApprovalShareUrl } from '@/lib/whatsapp-direct';
 
 export default function DepartmentDashboard() {
   const [loading, setLoading] = useState(true);
@@ -177,7 +181,7 @@ export default function DepartmentDashboard() {
             </div>
 
             {/* Action Buttons Column with Blinking Guides */}
-            <div className="flex flex-col sm:flex-row lg:flex-col gap-3 w-full sm:w-auto z-10 shrink-0">
+            <div className="flex flex-col sm:flex-row lg:flex-col gap-2.5 w-full sm:w-auto z-10 shrink-0">
               <Link
                 href="/department/upload"
                 className="px-6 py-3.5 bg-white text-purple-900 hover:bg-purple-50 font-extrabold rounded-2xl shadow-xl transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 text-sm shrink-0"
@@ -186,29 +190,39 @@ export default function DepartmentDashboard() {
                 <span>Add New Invitation</span>
               </Link>
 
-              <div className="flex items-center gap-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-2">
                 {/* College Logo Blinking Button */}
                 <a
                   href="https://www.sjctni.edu/SJC_logo.jsp"
                   target="_blank"
                   rel="noreferrer"
-                  className="flex-1 px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white text-xs font-bold rounded-xl shadow-lg shadow-emerald-500/30 flex items-center justify-center gap-1.5 transition-all transform hover:scale-105 animate-pulse cursor-pointer border border-emerald-300/40"
+                  className="px-3 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white text-xs font-bold rounded-xl shadow-md flex items-center justify-center gap-1.5 transition-all transform hover:scale-105 animate-pulse cursor-pointer border border-emerald-300/40"
                   title="Official St. Joseph's College Logo download"
                 >
-                  <ImageIcon className="w-4 h-4 shrink-0" />
-                  <span>Download College Logo</span>
+                  <ImageIcon className="w-3.5 h-3.5 shrink-0" />
+                  <span>Logo</span>
                   <ExternalLink className="w-3 h-3 opacity-80" />
                 </a>
+
+                {/* Event Calendar Button */}
+                <Link
+                  href="/department/calendar"
+                  className="px-3 py-2 bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white text-xs font-bold rounded-xl shadow-md flex items-center justify-center gap-1.5 transition-all transform hover:scale-105 cursor-pointer border border-indigo-300/40"
+                  title="Check College Events Calendar to avoid date clashes"
+                >
+                  <Calendar className="w-3.5 h-3.5 shrink-0" />
+                  <span>Calendar</span>
+                </Link>
 
                 {/* Instructions & Format Blinking Button */}
                 <button
                   type="button"
                   onClick={() => setIsGuidelinesOpen(true)}
-                  className="flex-1 px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white text-xs font-bold rounded-xl shadow-lg shadow-amber-500/30 flex items-center justify-center gap-1.5 transition-all transform hover:scale-105 animate-pulse cursor-pointer border border-amber-300/40"
+                  className="px-3 py-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white text-xs font-bold rounded-xl shadow-md flex items-center justify-center gap-1.5 transition-all transform hover:scale-105 animate-pulse cursor-pointer border border-amber-300/40"
                   title="Official IQAC Invitation Format & 12 Guidelines"
                 >
-                  <FileText className="w-4 h-4 shrink-0" />
-                  <span>Instructions & Format</span>
+                  <FileText className="w-3.5 h-3.5 shrink-0" />
+                  <span>Guidelines</span>
                 </button>
               </div>
             </div>
@@ -318,13 +332,11 @@ export default function DepartmentDashboard() {
                   <table className="w-full text-left text-sm">
                     <thead className="bg-slate-50 text-slate-500 uppercase text-[11px] font-bold border-b border-slate-100">
                       <tr>
-                        <th className="px-6 py-4">Program Title</th>
-                        <th className="px-4 py-4">Category</th>
-                        <th className="px-4 py-4">Shift</th>
-                        <th className="px-4 py-4">Event Date(s)</th>
-                        <th className="px-4 py-4">Uploaded At</th>
-                        <th className="px-4 py-4">Status</th>
-                        <th className="px-6 py-4 text-right">Actions</th>
+                        <th className="px-5 py-4">Program Title</th>
+                        <th className="px-3 py-4">Category & Shift</th>
+                        <th className="px-3 py-4">Event Date(s)</th>
+                        <th className="px-4 py-4 text-center">4-Stage Progress Stepper</th>
+                        <th className="px-5 py-4 text-right">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
@@ -340,7 +352,7 @@ export default function DepartmentDashboard() {
                         })
                         .map((inv) => (
                         <tr key={inv.id} className="hover:bg-slate-50/80 transition-colors">
-                          <td className="px-6 py-4">
+                          <td className="px-5 py-4">
                             <div className="font-semibold text-slate-900 line-clamp-1">{inv.programTitle}</div>
                             <div className="text-xs text-slate-400 mt-0.5 flex items-center gap-1.5">
                               <span>{inv.fileName}</span>
@@ -351,46 +363,76 @@ export default function DepartmentDashboard() {
                               )}
                             </div>
                           </td>
-                          <td className="px-4 py-4">
-                            <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold">
+                          <td className="px-3 py-4">
+                            <span className="px-2 py-0.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold">
                               {inv.category}
                             </span>
+                            <span className="text-xs font-medium text-slate-400 block mt-0.5">{inv.shift}</span>
                           </td>
-                          <td className="px-4 py-4 text-xs font-semibold text-slate-600">{inv.shift}</td>
-                          <td className="px-4 py-4 text-xs text-slate-600">
-                            {new Date(inv.fromDate).toLocaleDateString()}
-                            {inv.toDate && ` - ${new Date(inv.toDate).toLocaleDateString()}`}
+                          <td className="px-3 py-4 text-xs text-slate-600">
+                            <div>{new Date(inv.fromDate).toLocaleDateString()}</div>
+                            {inv.toDate && <div className="text-slate-400 text-[11px]">to {new Date(inv.toDate).toLocaleDateString()}</div>}
                           </td>
-                          <td className="px-4 py-4 text-xs text-slate-500">
-                            {new Date(inv.createdAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}
+                          <td className="px-4 py-4 text-center">
+                            <StatusStepper
+                              status={inv.status}
+                              createdAt={inv.createdAt}
+                              approvedAt={inv.approvedAt}
+                              remarkedAt={inv.remarkedAt}
+                              hardCopyReceived={inv.hardCopyReceived}
+                              mailSent={inv.mailSent}
+                              variant="compact"
+                            />
                           </td>
-                          <td className="px-4 py-4">
-                            {inv.status === 'APPROVED' && (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                <CheckCircle2 className="w-3 h-3" /> Approved
-                              </span>
-                            )}
-                            {inv.status === 'PENDING' && (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
-                                <Clock className="w-3 h-3" /> Pending Review
-                              </span>
-                            )}
-                            {inv.status === 'REMARKS' && (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">
-                                <AlertTriangle className="w-3 h-3" /> Remarks Received
-                              </span>
-                            )}
-                          </td>
-                          <td className="px-6 py-4 text-right">
+                          <td className="px-5 py-4 text-right">
                             <div className="flex items-center justify-end gap-1.5">
+                              {/* 1-Click Safe WhatsApp Direct Button */}
+                              {inv.status === 'PENDING' ? (
+                                <a
+                                  href={getWhatsAppSubmissionUrl({
+                                    departmentName: user?.department?.name || 'Department',
+                                    shift: inv.shift,
+                                    programTitle: inv.programTitle,
+                                    category: inv.category,
+                                    fromDate: inv.fromDate,
+                                    toDate: inv.toDate,
+                                    status: 'Pending Review',
+                                  })}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-50 transition-colors"
+                                  title="1-Click WhatsApp: Alert Director for Review"
+                                >
+                                  <MessageSquare className="w-4 h-4 text-emerald-600" />
+                                </a>
+                              ) : inv.status === 'APPROVED' ? (
+                                <a
+                                  href={getWhatsAppApprovalShareUrl({
+                                    departmentName: user?.department?.name || 'Department',
+                                    shift: inv.shift,
+                                    programTitle: inv.programTitle,
+                                    category: inv.category,
+                                    fromDate: inv.fromDate,
+                                    toDate: inv.toDate,
+                                  })}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-50 transition-colors"
+                                  title="Share Approved Invitation on WhatsApp"
+                                >
+                                  <Share2 className="w-4 h-4 text-emerald-600" />
+                                </a>
+                              ) : null}
+
                               {inv.status === 'REMARKS' && (
                                 <Link
                                   href="/department/remarks"
-                                  className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold transition-colors shadow-sm"
+                                  className="px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold transition-colors shadow-sm"
                                 >
                                   Re-upload
                                 </Link>
                               )}
+
                               {inv.status === 'APPROVED' && (
                                 <a
                                   href={`/api/invitations/${inv.id}/file?download=true`}
@@ -431,7 +473,7 @@ export default function DepartmentDashboard() {
                       );
                     })
                     .map((inv) => (
-                    <div key={inv.id} className="p-4 space-y-2.5 bg-white">
+                    <div key={inv.id} className="p-4 space-y-3 bg-white">
                       <div className="flex items-start justify-between gap-2">
                         <div>
                           <h4 className="font-bold text-slate-900 text-sm line-clamp-2">{inv.programTitle}</h4>
@@ -456,9 +498,62 @@ export default function DepartmentDashboard() {
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between text-xs text-slate-500 pt-2 border-t border-slate-100">
+                      {/* 4-Stage Stepper on Mobile Card */}
+                      <div className="bg-slate-50/80 p-2.5 rounded-2xl border border-slate-100">
+                        <StatusStepper
+                          status={inv.status}
+                          createdAt={inv.createdAt}
+                          approvedAt={inv.approvedAt}
+                          remarkedAt={inv.remarkedAt}
+                          hardCopyReceived={inv.hardCopyReceived}
+                          mailSent={inv.mailSent}
+                          variant="horizontal"
+                        />
+                      </div>
+
+                      <div className="flex items-center justify-between text-xs text-slate-500 pt-1">
                         <span>{new Date(inv.fromDate).toLocaleDateString()}</span>
                         <div className="flex items-center gap-2">
+                          {/* 1-Click WhatsApp Direct */}
+                          {inv.status === 'PENDING' && (
+                            <a
+                              href={getWhatsAppSubmissionUrl({
+                                departmentName: user?.department?.name || 'Department',
+                                shift: inv.shift,
+                                programTitle: inv.programTitle,
+                                category: inv.category,
+                                fromDate: inv.fromDate,
+                                toDate: inv.toDate,
+                                status: 'Pending Review',
+                              })}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="px-2 py-1 rounded-lg bg-emerald-50 text-emerald-700 font-bold flex items-center gap-1 text-[11px]"
+                            >
+                              <MessageSquare className="w-3 h-3" />
+                              <span>Alert Director</span>
+                            </a>
+                          )}
+
+                          {inv.status === 'APPROVED' && (
+                            <a
+                              href={getWhatsAppApprovalShareUrl({
+                                departmentName: user?.department?.name || 'Department',
+                                shift: inv.shift,
+                                programTitle: inv.programTitle,
+                                category: inv.category,
+                                fromDate: inv.fromDate,
+                                toDate: inv.toDate,
+                              })}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="px-2 py-1 rounded-lg bg-emerald-50 text-emerald-700 font-bold flex items-center gap-1 text-[11px]"
+                            >
+                              <Share2 className="w-3 h-3" />
+                              <span>Share</span>
+                            </a>
+                          )}
+
                           {inv.status === 'REMARKS' && (
                             <Link
                               href="/department/remarks"
