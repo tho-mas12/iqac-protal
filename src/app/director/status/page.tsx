@@ -15,8 +15,10 @@ import {
   RotateCw,
   Search,
   MessageSquare,
-  Download
+  Download,
+  Flame
 } from 'lucide-react';
+import { getUrgencyStatus } from '@/lib/urgency';
 
 export default function DirectorStatusPage() {
   const [user, setUser] = useState<any>(null);
@@ -210,16 +212,27 @@ export default function DirectorStatusPage() {
               ) : (
                 filteredRemarked.map((inv) => {
                   const isEditing = editingInvId === inv.id;
+                  const urgency = getUrgencyStatus(inv.fromDate);
 
                   return (
                     <div
                       key={inv.id}
-                      className="bg-white rounded-2xl border border-amber-200 p-6 shadow-sm space-y-4 transition-all hover:shadow-md"
+                      className={`bg-white rounded-2xl border p-6 shadow-sm space-y-4 transition-all hover:shadow-md ${
+                        urgency?.isUrgent
+                          ? 'border-rose-300 bg-rose-50/15'
+                          : 'border-amber-200'
+                      }`}
                     >
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-2">
                         <div>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 flex-wrap">
                             <span className="font-bold text-slate-900 text-base">{inv.programTitle}</span>
+                            {urgency?.isUrgent && (
+                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-black border flex items-center gap-1 ${urgency.badgeClass}`}>
+                                <Flame className="w-3 h-3 text-amber-300 fill-amber-300" />
+                                {urgency.label}
+                              </span>
+                            )}
                             {inv.revisionCount > 0 && (
                               <span className="px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 text-[10px] font-bold">
                                 Rev #{inv.revisionCount}
@@ -370,8 +383,18 @@ export default function DirectorStatusPage() {
                               {inv.category}
                             </span>
                           </td>
-                          <td className="px-4 py-4 text-xs text-slate-600">
-                            {new Date(inv.fromDate).toLocaleDateString()}
+                          <td className="px-4 py-4 text-xs text-slate-600 whitespace-nowrap">
+                            <div>{new Date(inv.fromDate).toLocaleDateString()}</div>
+                            {(() => {
+                              const u = getUrgencyStatus(inv.fromDate);
+                              if (!u?.isUrgent) return null;
+                              return (
+                                <span className={`inline-flex items-center gap-1 mt-0.5 px-1.5 py-0.5 rounded text-[9px] font-black border ${u.badgeClass}`}>
+                                  <Flame className="w-2.5 h-2.5 text-amber-300" />
+                                  {u.label}
+                                </span>
+                              );
+                            })()}
                           </td>
                           <td className="px-4 py-4 text-xs text-slate-500">
                             {inv.approvedAt ? new Date(inv.approvedAt).toLocaleDateString() : 'Approved'}

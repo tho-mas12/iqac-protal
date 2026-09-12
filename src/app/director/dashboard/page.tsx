@@ -31,6 +31,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import AnnouncementEditorModal from '@/components/AnnouncementEditorModal';
+import { getUrgencyStatus } from '@/lib/urgency';
 
 export default function DirectorDashboard() {
   const [user, setUser] = useState<any>(null);
@@ -72,7 +73,22 @@ export default function DirectorDashboard() {
       }
       if (iRes.ok) {
         const i = await iRes.json();
-        setInvitations(i.invitations || []);
+        const rawList = i.invitations || [];
+
+        // Sort priority: Urgent upcoming events (< 48-72h) first, then newest submissions
+        const sortedList = [...rawList].sort((a, b) => {
+          const uA = getUrgencyStatus(a.fromDate);
+          const uB = getUrgencyStatus(b.fromDate);
+
+          if (uA?.isUrgent && !uB?.isUrgent) return -1;
+          if (!uA?.isUrgent && uB?.isUrgent) return 1;
+          if (uA?.isUrgent && uB?.isUrgent) {
+            return (uA.diffDays || 0) - (uB.diffDays || 0);
+          }
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        });
+
+        setInvitations(sortedList);
         setStats(i.stats || { total: 0, pending: 0, remarks: 0, approved: 0, last24hPending: 0 });
       }
     } catch (e) {
@@ -242,71 +258,93 @@ export default function DirectorDashboard() {
               </div>
             ) : (
               <div className="divide-y divide-slate-100">
-                {invitations.map((inv) => (
-                  <div
-                    key={inv.id}
-                    className={`p-6 transition-colors flex flex-col lg:flex-row lg:items-center justify-between gap-6 hover:bg-slate-50/80 ${
-                      inv.status === 'PENDING' ? 'bg-amber-50/20' : ''
-                    }`}
-                  >
-                    {/* Left: Department, Title, Meta */}
-                    <div className="flex items-start gap-4 flex-1">
-                      {/* Document / Image Thumbnail */}
-                      <div className="w-16 h-20 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
-                        <img
-                          src={`/api/invitations/${inv.id}/file?rev=${inv.revisionCount || 0}&t=${inv.updatedAt ? new Date(inv.updatedAt).getTime() : Date.now()}`}
-                          alt={inv.programTitle}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            (e.target as HTMLElement).style.display = 'none';
-                          }}
-                        />
-                      </div>
-
-                      <div className="space-y-1.5 flex-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <h4 className="font-bold text-slate-900 text-base">{inv.programTitle}</h4>
-
-                          {/* Re-upload Badge */}
-                          {inv.revisionCount > 0 && (
-                            <span className="px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-800 text-[11px] font-extrabold border border-purple-200 animate-pulse">
-                              Re-uploaded: After {inv.revisionCount === 1 ? '1st' : `${inv.revisionCount}th`} correction
-                            </span>
-                          )}
-
-                          {/* Status Badge */}
-                          {inv.status === 'APPROVED' && (
-                            <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold border border-emerald-200">
-                              Approved
-                            </span>
-                          )}
-                          {inv.status === 'REMARKS' && (
-                            <span className="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 text-[11px] font-bold border border-rose-200">
-                              Remarks Sent
-                            </span>
-                          )}
-                          {inv.status === 'PENDING' && (
-                            <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[11px] font-bold border border-amber-200">
-                              Pending Review
-                            </span>
+                {invitations.map((inv) => {
+                  const urgency = getUrgencyStatus(inv.fromDate);
+                  return (
+                    <div
+                      key={inv.id}
+                      className={`p-6 transition-colors flex flex-col lg:flex-row lg:items-center justify-between gap-6 hover:bg-slate-50/80 ${
+                        urgency?.level === 'critical' || urgency?.level === 'urgent'
+                          ? 'border-l-4 border-rose-500 bg-rose-50/25'
+                          : urgency?.level === 'priority'
+                          ? 'border-l-4 border-amber-400 bg-amber-50/25'
+                          : inv.status === 'PENDING'
+                          ? 'bg-amber-50/10'
+                          : ''
+                      }`}
+                    >
+                      {/* Left: Department, Title, Meta */}
+                      <div className="flex items-start gap-4 flex-1">
+                        {/* Document / Image Thumbnail */}
+                        <div className="w-16 h-20 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0 shadow-inner relative">
+                          <img
+                            src={`/api/invitations/${inv.id}/file?rev=${inv.revisionCount || 0}&t=${inv.updatedAt ? new Date(inv.updatedAt).getTime() : Date.now()}`}
+                            alt={inv.programTitle}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLElement).style.display = 'none';
+                            }}
+                          />
+                          {urgency?.isUrgent && (
+                            <span className="absolute top-1 right-1 w-3 h-3 bg-rose-500 rounded-full border-2 border-white animate-ping" />
                           )}
                         </div>
 
-                        {/* Dept & Event Details */}
-                        <div className="flex flex-wrap items-center gap-3 text-xs text-slate-600 font-medium">
-                          <span className="font-bold text-purple-900 bg-purple-50 px-2 py-0.5 rounded-md border border-purple-200">
-                            {inv.department?.name}
-                          </span>
-                          <span className="font-semibold text-slate-500">Shift: {inv.shift}</span>
-                          <span>•</span>
-                          <span className="px-2 py-0.5 bg-slate-100 rounded text-slate-700 font-semibold">{inv.category}</span>
-                          <span>•</span>
-                          <span className="flex items-center gap-1 text-slate-500">
-                            <Calendar className="w-3.5 h-3.5" />
-                            {new Date(inv.fromDate).toLocaleDateString()}
-                            {inv.toDate && ` - ${new Date(inv.toDate).toLocaleDateString()}`}
-                          </span>
-                        </div>
+                        <div className="space-y-1.5 flex-1">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <h4 className="font-bold text-slate-900 text-base">{inv.programTitle}</h4>
+
+                            {/* Urgency Indicator Pulse Badge */}
+                            {urgency?.isUrgent && (
+                              <span
+                                className={`px-2.5 py-0.5 rounded-full text-[10px] font-black border flex items-center gap-1 ${urgency.badgeClass}`}
+                                title={`Event date: ${new Date(inv.fromDate).toLocaleDateString()}`}
+                              >
+                                <Flame className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
+                                <span>{urgency.label}</span>
+                              </span>
+                            )}
+
+                            {/* Re-upload Badge */}
+                            {inv.revisionCount > 0 && (
+                              <span className="px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-800 text-[11px] font-extrabold border border-purple-200 animate-pulse">
+                                Re-uploaded: After {inv.revisionCount === 1 ? '1st' : `${inv.revisionCount}th`} correction
+                              </span>
+                            )}
+
+                            {/* Status Badge */}
+                            {inv.status === 'APPROVED' && (
+                              <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold border border-emerald-200">
+                                Approved
+                              </span>
+                            )}
+                            {inv.status === 'REMARKS' && (
+                              <span className="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 text-[11px] font-bold border border-rose-200">
+                                Remarks Sent
+                              </span>
+                            )}
+                            {inv.status === 'PENDING' && (
+                              <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[11px] font-bold border border-amber-200">
+                                Pending Review
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Dept & Event Details */}
+                          <div className="flex flex-wrap items-center gap-3 text-xs text-slate-600 font-medium">
+                            <span className="font-bold text-purple-900 bg-purple-50 px-2 py-0.5 rounded-md border border-purple-200">
+                              {inv.department?.name}
+                            </span>
+                            <span className="font-semibold text-slate-500">Shift: {inv.shift}</span>
+                            <span>•</span>
+                            <span className="px-2 py-0.5 bg-slate-100 rounded text-slate-700 font-semibold">{inv.category}</span>
+                            <span>•</span>
+                            <span className={`flex items-center gap-1 font-bold ${urgency?.isUrgent ? 'text-rose-600' : 'text-slate-500'}`}>
+                              <Calendar className="w-3.5 h-3.5" />
+                              {new Date(inv.fromDate).toLocaleDateString()}
+                              {inv.toDate && ` - ${new Date(inv.toDate).toLocaleDateString()}`}
+                            </span>
+                          </div>
 
                         <div className="text-[11px] text-slate-400">
                           Submitted on: {new Date(inv.createdAt).toLocaleString()} • File: {inv.fileName}
@@ -333,7 +371,8 @@ export default function DirectorDashboard() {
                       </button>
                     </div>
                   </div>
-                ))}
+                );
+              })}
               </div>
             )}
           </div>
@@ -481,6 +520,23 @@ export default function DirectorDashboard() {
               {/* Right Column: Checklist Inspection & Action Panel */}
               <div className="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-between space-y-6 bg-white overflow-y-auto">
                 <div className="space-y-6">
+                  {/* Urgent Review Alert Banner if within 48-72 hours */}
+                  {(() => {
+                    const modalUrgency = getUrgencyStatus(selectedInv.fromDate);
+                    if (!modalUrgency?.isUrgent) return null;
+                    return (
+                      <div className="p-3.5 rounded-2xl bg-gradient-to-r from-rose-600 to-red-600 text-white text-xs font-bold flex items-center justify-between shadow-md shadow-rose-600/20 animate-pulse">
+                        <div className="flex items-center gap-2">
+                          <Flame className="w-4 h-4 text-amber-300 fill-amber-300 shrink-0" />
+                          <span>{modalUrgency.label}</span>
+                        </div>
+                        <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded-full uppercase font-black tracking-wider">
+                          Priority Queue
+                        </span>
+                      </div>
+                    );
+                  })()}
+
                   {/* Revision Alert Header if re-uploaded */}
                   {selectedInv.revisionCount > 0 && (
                     <div className="p-3.5 rounded-2xl bg-purple-50 border border-purple-200 text-purple-900 text-xs font-bold flex items-center gap-2">
