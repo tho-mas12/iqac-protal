@@ -139,15 +139,16 @@ export default function StaffDashboard() {
     fetchData(currentTab);
   }, [currentTab, fetchData]);
 
-  // Combined 1-Click Action: Mark Hard Copy Received AND Auto-Send/Mark ERP Mail
-  const handleReceiveHardCopyAndSendMail = async (invId: string, currentHardCopyStatus: boolean) => {
-    setUpdatingId(invId);
+  // Combined Action: Mark Hard Copy Received AND Automatically Open Mail Composer
+  const handleReceiveHardCopyAndSendMail = async (inv: any) => {
+    setUpdatingId(inv.id);
 
     try {
-      const res = await fetch(`/api/invitations/${invId}/hard-copy`, {
+      const isCurrentlyReceived = Boolean(inv.hardCopyReceived);
+      const res = await fetch(`/api/invitations/${inv.id}/hard-copy`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ received: !currentHardCopyStatus }),
+        body: JSON.stringify({ received: !isCurrentlyReceived }),
       });
 
       const data = await res.json();
@@ -155,12 +156,19 @@ export default function StaffDashboard() {
         throw new Error(data.error || 'Failed to update hard copy status');
       }
 
-      setToast({
-        type: 'success',
-        message: !currentHardCopyStatus
-          ? 'Hard copy received & publication automatically marked as Sent to ERP!'
-          : 'Hard copy status reset to pending.',
-      });
+      if (!isCurrentlyReceived) {
+        // Automatically open the mail composer for ERP publication
+        setMailingInv(inv);
+        setToast({
+          type: 'success',
+          message: 'Hard copy marked as Received! Opening ERP Mail Composer...',
+        });
+      } else {
+        setToast({
+          type: 'info',
+          message: 'Hard copy status reset to pending.',
+        });
+      }
 
       fetchData();
     } catch (err: any) {
@@ -479,7 +487,7 @@ export default function StaffDashboard() {
                             {inv.status === 'APPROVED' ? (
                               <button
                                 type="button"
-                                onClick={() => handleReceiveHardCopyAndSendMail(inv.id, inv.hardCopyReceived)}
+                                onClick={() => handleReceiveHardCopyAndSendMail(inv)}
                                 disabled={updatingId === inv.id}
                                 className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-bold text-xs transition-all shadow-sm cursor-pointer ${
                                   inv.hardCopyReceived
@@ -606,7 +614,7 @@ export default function StaffDashboard() {
                         <div className="pt-2">
                           <button
                             type="button"
-                            onClick={() => handleReceiveHardCopyAndSendMail(inv.id, inv.hardCopyReceived)}
+                            onClick={() => handleReceiveHardCopyAndSendMail(inv)}
                             disabled={updatingId === inv.id}
                             className={`w-full py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition ${
                               inv.hardCopyReceived
