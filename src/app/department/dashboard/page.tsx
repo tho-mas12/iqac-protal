@@ -27,7 +27,8 @@ import {
   FileSpreadsheet,
   Printer,
   MessageSquare,
-  Share2
+  Share2,
+  Palette
 } from 'lucide-react';
 import Link from 'next/link';
 import { exportToExcel, printReport, ExportColumn } from '@/lib/export-utils';
@@ -219,13 +220,25 @@ export default function DepartmentDashboard() {
 
             {/* Action Buttons Column with Blinking Guides */}
             <div className="flex flex-col sm:flex-row lg:flex-col gap-3 w-full sm:w-auto z-10 shrink-0">
-              <Link
-                href="/department/upload"
-                className="px-6 py-3.5 bg-white text-purple-900 hover:bg-purple-50 font-extrabold rounded-2xl shadow-xl transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 text-sm shrink-0"
-              >
-                <UploadCloud className="w-5 h-5 text-purple-700" />
-                <span>Add New Invitation</span>
-              </Link>
+              <div className="flex flex-col sm:flex-row gap-2.5">
+                <Link
+                  href="/department/designer"
+                  className="px-5 py-3.5 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 font-black rounded-2xl shadow-xl transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 text-sm shrink-0 border border-amber-300/40"
+                  title="Design with St. Joseph's Auto Templates & Live Canvas"
+                >
+                  <Palette className="w-5 h-5 text-slate-950" />
+                  <span>Design Poster (Canvas)</span>
+                </Link>
+
+                <Link
+                  href="/department/upload"
+                  className="px-5 py-3.5 bg-white text-purple-900 hover:bg-purple-50 font-extrabold rounded-2xl shadow-xl transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 text-sm shrink-0"
+                  title="Upload pre-made poster/invitation file"
+                >
+                  <UploadCloud className="w-5 h-5 text-purple-700" />
+                  <span>Upload File</span>
+                </Link>
+              </div>
 
               <div className="flex items-center gap-2.5">
                 {/* College Logo Blinking Button */}
