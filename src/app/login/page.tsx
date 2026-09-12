@@ -45,9 +45,18 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen gradient-bg flex flex-col items-center justify-center p-4 selection:bg-purple-600 selection:text-white">
+    <div className="relative min-h-screen gradient-bg flex flex-col items-center justify-center p-4 selection:bg-purple-600 selection:text-white overflow-hidden">
+      {/* College Background Image Overlay with subtle transparency */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-15 pointer-events-none transition-opacity duration-500"
+        style={{ backgroundImage: "url('/college-bg.jpg'), url('/images/college-bg.jpg')" }}
+      />
+
+      {/* Dark/Gradient Vignette for contrast */}
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 via-transparent to-slate-900/20 pointer-events-none" />
+
       {/* Login Card Container */}
-      <div className="w-full max-w-md bg-white rounded-3xl shadow-[0_20px_50px_rgba(79,70,229,0.12)] border border-slate-100/80 p-8 sm:p-10 transition-all duration-300">
+      <div className="relative z-10 w-full max-w-md bg-white/95 backdrop-blur-md rounded-3xl shadow-[0_20px_50px_rgba(79,70,229,0.15)] border border-slate-100/90 p-8 sm:p-10 transition-all duration-300">
         
         {/* Logo and Header */}
         <div className="flex flex-col items-center text-center mb-8">
@@ -127,18 +136,17 @@ export default function LoginPage() {
         </form>
       </div>
 
-      {/* Bottom Right FrontierWox Branding */}
-      <div className="sm:fixed sm:bottom-4 sm:right-4 mt-6 sm:mt-0 flex items-center gap-2.5 bg-white/95 backdrop-blur-md px-4 py-2 rounded-2xl shadow-lg border border-slate-200/80 transition-all hover:shadow-xl hover:scale-[1.02] z-20">
-        <div className="text-right">
-          <span className="text-[9px] uppercase font-bold tracking-wider text-slate-400 block leading-none">Powered by</span>
-          <span className="text-xs font-extrabold text-slate-800 leading-tight">FrontierWox Tech</span>
-        </div>
-        <div className="h-8 w-auto relative flex items-center">
+      {/* Bottom Right FrontierWox Branding: Powered by on top, Logo below */}
+      <div className="sm:fixed sm:bottom-4 sm:right-4 mt-6 sm:mt-0 flex flex-col items-center justify-center bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-lg border border-slate-200/80 transition-all hover:shadow-xl hover:scale-[1.02] z-20">
+        <span className="text-[9px] uppercase font-extrabold tracking-widest text-slate-400 mb-1.5 leading-none">
+          Powered by
+        </span>
+        <div className="h-7 w-auto relative flex items-center justify-center">
           <Image
             src={frontierLogo}
-            alt="FrontierWox Tech Private Limited"
-            height={32}
-            className="h-8 w-auto object-contain rounded"
+            alt="FrontierWox Tech"
+            height={28}
+            className="h-7 w-auto object-contain"
             priority
           />
         </div>
