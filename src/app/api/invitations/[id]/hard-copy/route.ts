@@ -24,12 +24,22 @@ export async function POST(
         hardCopyReceived: isReceived,
         hardCopyReceivedAt: isReceived ? new Date() : null,
         hardCopyStaffName: isReceived ? session.name : null,
+        // When hard copy is received, automatically mark ERP mail as sent/dispatched as well
+        ...(isReceived
+          ? {
+              mailSent: true,
+              mailSentAt: new Date(),
+              mailSentStaffName: session.name,
+            }
+          : {}),
         history: {
           create: {
             action: isReceived ? 'HARD_COPY_MARKED' : 'HARD_COPY_UNMARKED',
             actorName: session.name,
             actorRole: session.role,
-            notes: isReceived ? `Hard copy marked as received by ${session.name}` : 'Hard copy marked as pending',
+            notes: isReceived
+              ? `Hard copy received & auto-dispatched to ERP by ${session.name}`
+              : 'Hard copy marked as pending',
           },
         },
       },
@@ -37,7 +47,9 @@ export async function POST(
 
     return NextResponse.json({
       success: true,
-      message: isReceived ? 'Hard copy status marked as Received.' : 'Hard copy status updated.',
+      message: isReceived
+        ? 'Hard copy received & publication marked as Sent to ERP!'
+        : 'Hard copy status reset to pending.',
       invitation: updated,
     });
   } catch (error: any) {

@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
     const status = searchParams.get('status');
     const departmentId = searchParams.get('departmentId');
     const category = searchParams.get('category');
-    const calendar = searchParams.get('calendar');
+    const staffFilter = searchParams.get('staffFilter');
     const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : undefined;
 
     const where: any = {};
@@ -30,23 +30,42 @@ export async function GET(req: NextRequest) {
       where.departmentId = departmentId;
     }
 
-    if (status) {
-      where.status = status.toUpperCase();
+    if (staffFilter === 'pending_action') {
+      where.status = 'APPROVED';
+      where.OR = [
+        { hardCopyReceived: false },
+        { mailSent: false },
+      ];
+    } else if (staffFilter === 'pending_director') {
+      where.status = 'PENDING';
+    } else if (staffFilter === 'completed') {
+      where.status = 'APPROVED';
+      where.hardCopyReceived = true;
+      where.mailSent = true;
+    } else {
+      if (status) {
+        where.status = status.toUpperCase();
+      }
     }
 
     if (category) {
       where.category = category;
     }
 
-    // Sort priority-wise: latest submissions and revisions first
-    // Note: omit heavy `fileData` column so API payload is 99% smaller and loads instantly
+    // Lean select without heavy history and unneeded relations for lightning-fast loading
     const invitations = await prisma.invitation.findMany({
       where,
       select: {
         id: true,
         programTitle: true,
         departmentId: true,
-        department: true,
+        department: {
+          select: {
+            id: true,
+            name: true,
+            shift: true,
+          },
+        },
         shift: true,
         category: true,
         customCategory: true,
@@ -61,10 +80,6 @@ export async function GET(req: NextRequest) {
         localFilePath: true,
         status: true,
         revisionCount: true,
-        checkLogo: true,
-        checkTitle: true,
-        checkHeaders: true,
-        checkOthers: true,
         directorRemarks: true,
         remarkedAt: true,
         approvedAt: true,
@@ -76,10 +91,6 @@ export async function GET(req: NextRequest) {
         mailSentStaffName: true,
         createdAt: true,
         updatedAt: true,
-        history: {
-          orderBy: { timestamp: 'desc' },
-          take: 5,
-        },
       },
       orderBy: [
         { updatedAt: 'desc' },
@@ -91,11 +102,26 @@ export async function GET(req: NextRequest) {
     // Calculate statistics
     const statsWhere = session.role === 'DEPARTMENT' ? { departmentId: session.departmentId! } : {};
     
-    const [total, pending, remarks, approved] = await Promise.all([
+    const [total, pending, remarks, approved, staffPendingActions, staffCompletedCount] = await Promise.all([
       prisma.invitation.count({ where: statsWhere }),
       prisma.invitation.count({ where: { ...statsWhere, status: 'PENDING' } }),
       prisma.invitation.count({ where: { ...statsWhere, status: 'REMARKS' } }),
       prisma.invitation.count({ where: { ...statsWhere, status: 'APPROVED' } }),
+      prisma.invitation.count({
+        where: {
+          ...statsWhere,
+          status: 'APPROVED',
+          OR: [{ hardCopyReceived: false }, { mailSent: false }],
+        },
+      }),
+      prisma.invitation.count({
+        where: {
+          ...statsWhere,
+          status: 'APPROVED',
+          hardCopyReceived: true,
+          mailSent: true,
+        },
+      }),
     ]);
 
     // Last 24 hours pending count for director
@@ -117,6 +143,8 @@ export async function GET(req: NextRequest) {
         remarks,
         approved,
         last24hPending,
+        staffPendingActions,
+        staffCompletedCount,
       },
     });
   } catch (error: any) {
