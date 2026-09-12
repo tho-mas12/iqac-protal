@@ -1,62 +1,119 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { comparePassword, signToken, AUTH_COOKIE_NAME } from '@/lib/auth';
-import { logAudit } from '@/lib/audit';
+import { autoSyncDatabaseColumns } from '@/lib/db-sync';
 
 export async function POST(req: NextRequest) {
   try {
     const { username, password } = await req.json();
 
     if (!username || !password) {
-      return NextResponse.json({ error: 'Username and password are required' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Username and password are required' },
+        { status: 400 }
+      );
     }
 
-    const user = await prisma.user.findUnique({
-      where: { username },
-      include: { department: true },
-    });
+    // Automatically ensure columns exist
+    await autoSyncDatabaseColumns();
 
-    if (!user || !user.isActive) {
-      return NextResponse.json({ error: 'Invalid username or account disabled' }, { status: 401 });
+    let user;
+    try {
+      user = await prisma.user.findUnique({
+        where: { username: username.trim().toLowerCase() },
+        include: { department: true },
+      });
+    } catch (dbErr: any) {
+      // If column still missing, attempt emergency DDL sync and retry
+      await autoSyncDatabaseColumns();
+      user = await prisma.user.findUnique({
+        where: { username: username.trim().toLowerCase() },
+        include: { department: true },
+      });
     }
 
-    const isValid = await comparePassword(password, user.password);
-    if (!isValid) {
-      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Invalid username or password' },
+        { status: 401 }
+      );
     }
 
-    const payload = {
+    // Check if user or department is disabled/blocked
+    if (user.isActive === false || (user.department && user.department.isActive === false)) {
+      return NextResponse.json(
+        { error: 'This account has been temporarily disabled by the administrator. Please contact IQAC.' },
+        { status: 403 }
+      );
+    }
+
+    const isMatch = await comparePassword(password, user.password);
+    if (!isMatch) {
+      return NextResponse.json(
+        { error: 'Invalid username or password' },
+        { status: 401 }
+      );
+    }
+
+    const token = signToken({
       userId: user.id,
       username: user.username,
       name: user.name,
       role: user.role as any,
       departmentId: user.departmentId,
-      schoolId: user.schoolId,
       shift: user.department?.shift || null,
-    };
-
-    const token = signToken(payload);
-
-    await logAudit({
-      userId: user.id,
-      userName: user.name,
-      role: user.role,
-      action: 'LOGIN',
-      module: 'AUTH',
-      details: { username: user.username },
     });
 
-    const response = NextResponse.json({ success: true, user: payload });
-    response.cookies.set(AUTH_COOKIE_NAME, token, {
+    // Determine redirect path based on role
+    let redirectUrl = '/login';
+    switch (user.role) {
+      case 'DEPARTMENT':
+        redirectUrl = '/department/dashboard';
+        break;
+      case 'DIRECTOR':
+        redirectUrl = '/director/dashboard';
+        break;
+      case 'STAFF':
+        redirectUrl = '/staff/dashboard';
+        break;
+      case 'ADMIN':
+        redirectUrl = '/admin/departments';
+        break;
+    }
+
+    const res = NextResponse.json({
+      success: true,
+      user: {
+        id: user.id,
+        username: user.username,
+        name: user.name,
+        role: user.role,
+        department: user.department,
+        isPasswordChanged: user.isPasswordChanged,
+      },
+      redirectUrl,
+    });
+
+    const isHttps = req.nextUrl.protocol === 'https:' || req.headers.get('x-forwarded-proto') === 'https';
+
+    // Set HTTP-only auth cookie (secure only when accessed over HTTPS)
+    res.cookies.set(AUTH_COOKIE_NAME, token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: isHttps,
       sameSite: 'lax',
       path: '/',
-      maxAge: 7 * 24 * 60 * 60,
+      maxAge: 60 * 60 * 24 * 7, // 7 days
     });
 
-    return response;
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message || 'Login failed' }, { status: 500 });
+    return res;
+  } catch (error: any) {
+    console.error('Login error:', error);
+    const errorMessage = error?.message?.includes('database') || error?.message?.includes('Authentication failed') || error?.message?.includes('connect')
+      ? `Database Connection Error: ${error.message}`
+      : 'An unexpected server error occurred';
+    return NextResponse.json(
+      { error: errorMessage },
+      { status: 500 }
+    );
   }
 }
