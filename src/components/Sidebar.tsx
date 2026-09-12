@@ -21,7 +21,6 @@ import {
   MessageSquare,
   PhoneCall,
   Calendar,
-  Palette,
   X
 } from 'lucide-react';
 import Logo from './Logo';
@@ -69,7 +68,6 @@ export default function Sidebar({ role, userName, departmentName, shift }: Sideb
       case 'DEPARTMENT':
         return [
           { label: 'Dashboard', href: '/department/dashboard', icon: LayoutDashboard },
-          { label: 'Design Poster', href: '/department/designer', icon: Palette },
           { label: 'Upload Invitation', href: '/department/upload', icon: UploadCloud },
           { label: 'Remarks & Corrections', href: '/department/remarks', icon: AlertCircle },
           { label: 'Department Info', href: '/department/info', icon: Info },

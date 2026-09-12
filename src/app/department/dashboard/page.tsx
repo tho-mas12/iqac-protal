@@ -27,8 +27,7 @@ import {
   FileSpreadsheet,
   Printer,
   MessageSquare,
-  Share2,
-  Palette
+  Share2
 } from 'lucide-react';
 import Link from 'next/link';
 import { exportToExcel, printReport, ExportColumn } from '@/lib/export-utils';
@@ -220,25 +219,13 @@ export default function DepartmentDashboard() {
 
             {/* Action Buttons Column with Blinking Guides */}
             <div className="flex flex-col sm:flex-row lg:flex-col gap-3 w-full sm:w-auto z-10 shrink-0">
-              <div className="flex flex-col sm:flex-row gap-2.5">
-                <Link
-                  href="/department/designer"
-                  className="px-5 py-3.5 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 font-black rounded-2xl shadow-xl transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 text-sm shrink-0 border border-amber-300/40"
-                  title="Design with St. Joseph's Auto Templates & Live Canvas"
-                >
-                  <Palette className="w-5 h-5 text-slate-950" />
-                  <span>Design Poster (Canvas)</span>
-                </Link>
-
-                <Link
-                  href="/department/upload"
-                  className="px-5 py-3.5 bg-white text-purple-900 hover:bg-purple-50 font-extrabold rounded-2xl shadow-xl transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 text-sm shrink-0"
-                  title="Upload pre-made poster/invitation file"
-                >
-                  <UploadCloud className="w-5 h-5 text-purple-700" />
-                  <span>Upload File</span>
-                </Link>
-              </div>
+              <Link
+                href="/department/upload"
+                className="px-6 py-3.5 bg-white text-purple-900 hover:bg-purple-50 font-extrabold rounded-2xl shadow-xl transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 text-sm shrink-0"
+              >
+                <UploadCloud className="w-5 h-5 text-purple-700" />
+                <span>Add New Invitation</span>
+              </Link>
 
               <div className="flex items-center gap-2.5">
                 {/* College Logo Blinking Button */}
@@ -266,34 +253,6 @@ export default function DepartmentDashboard() {
                 </button>
               </div>
             </div>
-          </div>
-
-          {/* Dedicated In-Portal Designer Callout Card */}
-          <div className="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 border border-blue-700/50 rounded-2xl p-4 sm:p-5 text-white shadow-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div className="flex items-center gap-3.5">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-400 to-amber-500 flex items-center justify-center text-slate-950 shadow-md flex-shrink-0">
-                <Palette className="w-6 h-6" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h3 className="text-base font-bold text-white">St. Joseph&apos;s Poster &amp; Invitation Designer</h3>
-                  <span className="bg-amber-400/20 text-amber-300 border border-amber-400/30 text-[10px] font-extrabold px-2 py-0.5 rounded-full">
-                    NEW
-                  </span>
-                </div>
-                <p className="text-xs text-slate-300 mt-0.5 max-w-2xl">
-                  Facing difficulty designing invitations? Use our built-in smart canvas with official SJC crests, auto-framed speaker photos, and 4 college templates.
-                </p>
-              </div>
-            </div>
-
-            <Link
-              href="/department/designer"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 text-xs font-black shadow-md transition-all transform hover:scale-105 shrink-0"
-            >
-              <span>Launch Designer Studio</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
           </div>
 
           {/* Statistics Grid (2 cols on mobile, 4 on desktop) */}
