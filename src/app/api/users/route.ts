@@ -5,21 +5,17 @@ import { getCurrentUser, hashPassword } from '@/lib/auth';
 export async function GET() {
   try {
     const session = await getCurrentUser();
-    if (!session || session.role !== 'ADMIN') {
+    if (!session || (session.role !== 'SUPER_ADMIN' && session.role !== 'IQAC_ADMIN')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
     const users = await prisma.user.findMany({
-      where: {
-        role: { in: ['DIRECTOR', 'STAFF', 'ADMIN'] },
-      },
       select: {
         id: true,
         username: true,
         name: true,
         role: true,
         isActive: true,
-        isPasswordChanged: true,
         createdAt: true,
       },
       orderBy: { createdAt: 'desc' },
@@ -34,7 +30,7 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const session = await getCurrentUser();
-    if (!session || session.role !== 'ADMIN') {
+    if (!session || (session.role !== 'SUPER_ADMIN' && session.role !== 'IQAC_ADMIN')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
@@ -43,10 +39,6 @@ export async function POST(req: NextRequest) {
 
     if (!username || !password || !name || !role) {
       return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
-    }
-
-    if (!['DIRECTOR', 'STAFF', 'ADMIN'].includes(role)) {
-      return NextResponse.json({ error: 'Invalid role specified' }, { status: 400 });
     }
 
     const existing = await prisma.user.findUnique({
@@ -65,7 +57,6 @@ export async function POST(req: NextRequest) {
         password: hashedPassword,
         name: name.trim(),
         role,
-        isPasswordChanged: true,
       },
       select: {
         id: true,
@@ -78,7 +69,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: `${role} account created successfully`,
       user: newUser,
     });
   } catch (error: any) {

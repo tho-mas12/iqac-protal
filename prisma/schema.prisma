@@ -3,108 +3,491 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
+model AcademicYear {
+  id          String        @id @default(cuid())
+  year        String        @unique // e.g. "2024-25", "2025-26", "2026-27"
+  isCurrent   Boolean       @default(false)
+  startDate   DateTime?
+  endDate     DateTime?
+  createdAt   DateTime      @default(now())
+  
+  requirements Requirements[]
+  dataRequests DataRequest[]
+  submissions  Submission[]
+  evidences    Evidence[]
+  faculty      Faculty[]
+  facultyTrainings FacultyTraining[]
+  fsrRecords   FacultyStudentRatio[]
+  studentData  StudentData[]
+  activities   Activity[]
+  academicAudits AcademicAudit[]
+  pedagogical  PedagogicalApproach[]
+}
+
+model School {
+  id          String       @id @default(cuid())
+  name        String
+  code        String       @unique
+  createdAt   DateTime     @default(now())
+  departments Department[]
+  users       User[]
+}
+
 model Department {
-  id            String       @id @default(cuid())
-  name          String
-  code          String       @unique
-  shift         String       @default("Shift I") // "Shift I", "Shift II", "Units", etc.
-  driveFolderId String?      // Google Drive Folder ID
-  isActive      Boolean      @default(true)
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  users         User[]
-  invitations   Invitation[]
+  id           String        @id @default(cuid())
+  name         String
+  code         String        @unique
+  shift        String        @default("Shift I") // "Shift I", "Shift II", "Units", etc.
+  schoolId     String?
+  school       School?       @relation(fields: [schoolId], references: [id], onDelete: SetNull)
+  isActive     Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  
+  users        User[]
+  programmes   Programme[]
+  requirements Requirements[]
+  submissions  Submission[]
+  evidences    Evidence[]
+  faculty      Faculty[]
+  fsrRecords   FacultyStudentRatio[]
+  studentData  StudentData[]
+  activities   Activity[]
+  audits       AcademicAudit[]
+  pedagogical  PedagogicalApproach[]
+  actionItems  MeetingActionItem[]
+}
+
+model Programme {
+  id           String      @id @default(cuid())
+  name         String
+  code         String      @unique
+  level        String      @default("UG") // "UG", "PG", "PhD", "Diploma"
+  departmentId String
+  department   Department  @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  shift        String      @default("Shift I")
+  createdAt    DateTime    @default(now())
+  
+  studentData  StudentData[]
+  pedagogical  PedagogicalApproach[]
 }
 
 model User {
   id                String      @id @default(cuid())
   username          String      @unique
-  password          String      // Hashed bcrypt password
+  password          String
   name              String
-  role              String      // "DEPARTMENT", "DIRECTOR", "STAFF", "ADMIN"
+  email             String?
+  role              String      // "SUPER_ADMIN", "IQAC_ADMIN", "IQAC_MEMBER", "PRINCIPAL", "SCHOOL_DEAN", "HOD", "DEPT_COORDINATOR", "FACULTY", "VIEWER"
   departmentId      String?
-  department        Department? @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  department        Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  schoolId          String?
+  school            School?     @relation(fields: [schoolId], references: [id], onDelete: SetNull)
   isPasswordChanged Boolean     @default(false)
   isActive          Boolean     @default(true)
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt
+
+  assignedRequirements Requirements[] @relation("AssignedIQACMember")
+  assignedDataRequests DataRequest[]  @relation("AssignedMemberDataReq")
+  submissionsSubmitted Submission[]   @relation("SubmissionSubmittedBy")
+  submissionsVerified  Submission[]   @relation("SubmissionVerifiedBy")
+  evidencesUploaded    Evidence[]     @relation("EvidenceUploadedBy")
+  auditsReviewed       AcademicAudit[]@relation("AuditVerifiedBy")
+  notifications        Notification[]
+  auditLogs            AuditLog[]
+  actionItemsAssigned  MeetingActionItem[] @relation("ActionItemResponsible")
 }
 
-model Invitation {
-  id                String      @id @default(cuid())
-  programTitle      String
-  departmentId      String
-  department        Department  @relation(fields: [departmentId], references: [id], onDelete: Cascade)
-  shift             String
-  category          String      // Endowment Lecture, Conference, Webinar, Seminar, Orientation, Skill Development, Induction, FDP, Workshop, Club Activity, Gender Based, Career Guidance, Placement Lecture Series, Training, or custom
-  customCategory    String?
-  fromDate          DateTime
-  toDate            DateTime?
-  
-  // File Details
-  driveFileId       String?
-  driveViewLink     String?     @db.LongText
-  driveDownloadLink String?     @db.LongText
-  localFilePath     String?     @db.LongText
-  fileData          String?     @db.LongText
-  fileName          String
-  fileSize          Int?
-  mimeType          String?
-  
-  // Workflow Status: "PENDING", "REMARKS", "APPROVED"
-  status            String      @default("PENDING")
-  revisionCount     Int         @default(0) // 0 = initial, 1 = after 1st correction, etc.
-  
-  // Director Checklist Review Flags
-  checkLogo         Boolean     @default(false)
-  checkTitle        Boolean     @default(false)
-  checkHeaders      Boolean     @default(false)
-  checkOthers       Boolean     @default(false)
-  directorRemarks   String?     @db.Text
-  remarkedAt        DateTime?
-  approvedAt        DateTime?
-  
-  // Staff Hard Copy Status
-  hardCopyReceived   Boolean     @default(false)
-  hardCopyReceivedAt DateTime?
-  hardCopyStaffName  String?
+model Framework {
+  id          String        @id @default(cuid())
+  code        String        @unique // NAAC, UGC, NIRF, NEP2020, AISHE, ACADEMIC_AUDIT, IDP, INTERNAL, OTHER
+  name        String
+  description String?
+  isCustom    Boolean       @default(false)
+  createdAt   DateTime      @default(now())
 
-  // Staff ERP Mail Dispatch Status
-  mailSent           Boolean     @default(false)
-  mailSentAt         DateTime?
-  mailSentStaffName  String?
-  
+  requirements Requirements[]
+}
+
+model Requirements {
+  id               String       @id @default(cuid())
+  reqId            String       @unique // e.g. "REQ-2025-001"
+  title            String
+  description      String?
+  category         String       @default("General")
+  frameworkId      String
+  framework        Framework    @relation(fields: [frameworkId], references: [id])
+  criterion        String       // e.g. "Criterion I: Curricular Aspects"
+  subCriterion     String?      // e.g. "1.1.1 Curricular Planning"
+  sourceAuthority  String?      // e.g. "NAAC Guidelines 2024"
+  academicYearId   String
+  academicYear     AcademicYear @relation(fields: [academicYearId], references: [id])
+  responsibleDeptId String?
+  department       Department?  @relation(fields: [responsibleDeptId], references: [id], onDelete: SetNull)
+  priority         String       @default("MEDIUM") // "HIGH", "MEDIUM", "LOW"
+  startDate        DateTime?
+  dueDate          DateTime?
+  status           String       @default("Not Started") // "Not Started", "In Progress", "Submitted", "Under Verification", "Correction Required", "Approved", "Completed", "Overdue", "Not Applicable"
+  remarks          String?
+  requiredEvidence String?
+  complianceScore  Float        @default(0.0)
+  assignedMemberId String?
+  assignedMember   User?        @relation("AssignedIQACMember", fields: [assignedMemberId], references: [id], onDelete: SetNull)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  evidences        Evidence[]
+}
+
+model DataRequest {
+  id                 String       @id @default(cuid())
+  reqNumber          String       @unique // e.g. "DR-2025-010"
+  title              String
+  instructions       String?
+  academicYearId     String
+  academicYear       AcademicYear @relation(fields: [academicYearId], references: [id])
+  targetDepartments  String       // JSON string of department IDs or "ALL"
+  deadline           DateTime?
+  assignedMemberId   String?
+  assignedMember     User?        @relation("AssignedMemberDataReq", fields: [assignedMemberId], references: [id], onDelete: SetNull)
+  status             String       @default("ACTIVE") // "ACTIVE", "CLOSED", "DRAFT"
+  formId             String?
+  dynamicForm        DynamicForm? @relation(fields: [formId], references: [id], onDelete: SetNull)
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  submissions        Submission[]
+}
+
+model DynamicForm {
+  id           String        @id @default(cuid())
+  title        String
+  description  String?
+  fieldsJson   String        // JSON string storing FormField definitions
+  createdById  String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  dataRequests DataRequest[]
+}
+
+model Submission {
+  id                   String              @id @default(cuid())
+  dataRequestId        String
+  dataRequest          DataRequest         @relation(fields: [dataRequestId], references: [id], onDelete: Cascade)
+  departmentId         String
+  department           Department          @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  academicYearId       String
+  academicYear         AcademicYear        @relation(fields: [academicYearId], references: [id])
+  submittedById        String?
+  submittedBy          User?               @relation("SubmissionSubmittedBy", fields: [submittedById], references: [id], onDelete: SetNull)
+  status               String              @default("DRAFT") // "DRAFT", "SUBMITTED", "UNDER_VERIFICATION", "CORRECTION_REQUIRED", "APPROVED", "REJECTED"
+  verificationRemarks  String?
+  resubmissionDeadline DateTime?
+  revisionCount        Int                 @default(0)
+  submittedAt          DateTime?
+  verifiedAt           DateTime?
+  verifiedById         String?
+  verifiedBy           User?               @relation("SubmissionVerifiedBy", fields: [verifiedById], references: [id], onDelete: SetNull)
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+
+  values               SubmissionValue[]
+  versions             SubmissionVersion[]
+  evidences            Evidence[]
+}
+
+model SubmissionValue {
+  id           String     @id @default(cuid())
+  submissionId String
+  submission   Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  fieldId      String
+  fieldLabel   String
+  value        String?    // JSON string for complex/table/file values
+  evidenceId   String?
+}
+
+model SubmissionVersion {
+  id            String     @id @default(cuid())
+  submissionId  String
+  submission    Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  versionNumber Int
+  valuesJson    String
+  remarks       String?
+  changedById   String?
+  createdAt     DateTime   @default(now())
+}
+
+model Evidence {
+  id                 String            @id @default(cuid())
+  evidenceNumber     String            @unique // e.g. "EVI-2025-001"
+  title              String
+  category           String            @default("General") // "Invitation", "Report", "Attendance", "Photographs", "Feedback", "Certificates", "Other"
+  requirementId     String?
+  requirement        Requirements?     @relation(fields: [requirementId], references: [id], onDelete: SetNull)
+  submissionId       String?
+  submission         Submission?       @relation(fields: [submissionId], references: [id], onDelete: SetNull)
+  departmentId       String?
+  department         Department?       @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  academicYearId     String?
+  academicYear       AcademicYear?     @relation(fields: [academicYearId], references: [id], onDelete: SetNull)
+  activityId         String?
+  fileName           String
+  fileUrl            String
+  mimeType           String?
+  fileSize           Int?
+  tag                String?
+  uploadedById       String?
+  uploadedBy         User?             @relation("EvidenceUploadedBy", fields: [uploadedById], references: [id], onDelete: SetNull)
+  verificationStatus String            @default("PENDING") // "PENDING", "VERIFIED", "CORRECTION_REQUIRED", "REJECTED"
+  version            Int               @default(1)
+  remarks            String?
+  isDeleted          Boolean           @default(false)
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+
+  versions           EvidenceVersion[]
+}
+
+model EvidenceVersion {
+  id            String   @id @default(cuid())
+  evidenceId    String
+  evidence      Evidence @relation(fields: [evidenceId], references: [id], onDelete: Cascade)
+  versionNumber Int
+  fileName      String
+  fileUrl       String
+  mimeType      String?
+  fileSize      Int?
+  remarks       String?
+  uploadedById  String?
+  createdAt     DateTime @default(now())
+}
+
+model Faculty {
+  id               String       @id @default(cuid())
+  facultyIdNumber  String       @unique // e.g. "FAC-1001"
+  name             String
+  departmentId     String
+  department       Department   @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  designation      String       // "Professor", "Associate Professor", "Assistant Professor"
+  appointmentNature String      @default("Regular") // "Regular", "Contract", "Adhoc"
+  category         String       @default("Management") // "Management", "Aided", "Govt"
+  dateOfJoining    DateTime?
+  qualification    String?      // e.g. "Ph.D., M.Sc."
+  specialization   String?
+  isPhd            Boolean      @default(false)
+  experienceYears  Float        @default(0.0)
+  email            String?
+  phone            String?
+  status           String       @default("Active")
+  academicYearId   String?
+  academicYear     AcademicYear?@relation(fields: [academicYearId], references: [id], onDelete: SetNull)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  trainings        FacultyTraining[]
+}
+
+model FacultyTraining {
+  id             String       @id @default(cuid())
+  facultyId      String
+  faculty        Faculty      @relation(fields: [facultyId], references: [id], onDelete: Cascade)
+  programmeName  String
+  organizer      String
+  category       String       @default("FDP") // "FDP", "MMTTC", "NEP Sensitization", "Refresher", "Orientation", "Workshop", "Other"
+  startDate      DateTime?
+  endDate        DateTime?
+  durationDays   Int          @default(1)
+  certFileUrl    String?
+  academicYearId String?
+  academicYear   AcademicYear?@relation(fields: [academicYearId], references: [id], onDelete: SetNull)
+  createdAt      DateTime     @default(now())
+}
+
+model FacultyStudentRatio {
+  id                  String       @id @default(cuid())
+  academicYearId      String
+  academicYear        AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: Cascade)
+  departmentId        String?
+  department          Department?  @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  facultyCount        Int
+  studentCount        Int
+  fullTimeFacultyCount Int
+  ratioValue          Float
+  customFormula       String       @default("students / max(fullTimeFaculty, 1)")
+  createdAt           DateTime     @default(now())
+}
+
+model StudentData {
+  id                    String       @id @default(cuid())
+  academicYearId        String
+  academicYear          AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: Cascade)
+  departmentId          String
+  department            Department   @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  programmeId           String?
+  programme             Programme?   @relation(fields: [programmeId], references: [id], onDelete: SetNull)
+  shift                 String       @default("Shift I")
+  totalStudents         Int          @default(0)
+  maleStudents          Int          @default(0)
+  femaleStudents        Int          @default(0)
+  otherStudents         Int          @default(0)
+  categoryBreakdownJson String?      // e.g. {"SC": 10, "ST": 5, "OBC": 30, "General": 55}
+  passedOutCount        Int          @default(0)
+  progressionCount      Int          @default(0)
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
+}
+
+model Activity {
+  id                String       @id @default(cuid())
+  activityNumber    String       @unique // e.g. "ACT-2025-001"
+  departmentId      String
+  department        Department   @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  academicYearId    String
+  academicYear      AcademicYear @relation(fields: [academicYearId], references: [id])
+  title             String
+  type              String       // "Conference", "FDP", "Seminar", "Workshop", "Extension Activity", "Other"
+  startDate         DateTime
+  endDate           DateTime?
+  durationHours     Float        @default(1.0)
+  coordinatorName   String?
+  objectives        String?
+  outcomes          String?
+  participantCount  Int          @default(0)
+  beneficiariesCount Int         @default(0)
+  sdgGoal           String?      // e.g. "SDG 4: Quality Education"
+  categoryType      String       @default("Academic") // "Academic", "Co-Curricular"
+  invitationFileUrl String?
+  reportFileUrl     String?
+  attendanceFileUrl String?
+  photosFileUrl     String?
+  feedbackFileUrl   String?
+  certsFileUrl      String?
+  evidenceStatus    String       @default("Incomplete") // "Complete", "Incomplete"
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+}
+
+model AcademicAudit {
+  id              String       @id @default(cuid())
+  academicYearId  String
+  academicYear    AcademicYear @relation(fields: [academicYearId], references: [id])
+  departmentId    String
+  department      Department   @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  auditDataJson   String       // JSON storing multi-parameter evaluation
+  score           Float        @default(0.0)
+  status          String       @default("Draft") // "Draft", "Submitted", "Under Review", "Correction Required", "Verified", "Closed"
+  reviewerRemarks String?
+  verifiedById    String?
+  verifiedBy      User?        @relation("AuditVerifiedBy", fields: [verifiedById], references: [id], onDelete: SetNull)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+}
+
+model PedagogicalApproach {
+  id                  String       @id @default(cuid())
+  academicYearId      String
+  academicYear        AcademicYear @relation(fields: [academicYearId], references: [id])
+  departmentId        String
+  department          Department   @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  programmeId         String?
+  programme           Programme?   @relation(fields: [programmeId], references: [id], onDelete: SetNull)
+  courseName          String
+  facultyName         String
+  pedagogicalApproach String
+  assessmentPractice  String?
+  eContentDetails     String?
+  evidenceFileUrl     String?
+  createdAt           DateTime     @default(now())
+}
+
+model UgcNepCompliance {
+  id               String    @id @default(cuid())
+  requirementName  String
+  category         String    @default("UGC") // "UGC", "NEP", "NAAC", "NIRF"
+  sourceAuthority  String?
+  status           String    @default("Not Compliant") // "Compliant", "Partially Compliant", "Not Compliant", "Under Review"
+  responsiblePerson String?
+  remarks          String?
+  dueDates         DateTime?
+  evidenceFileUrl  String?
+  lastReviewedAt   DateTime?
+  nextReviewAt     DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+model Meeting {
+  id            String              @id @default(cuid())
+  meetingNumber String              @unique // e.g. "IQAC-MTG-2025-01"
+  title         String
+  date          DateTime
+  time          String?
+  venue         String?
+  agenda        String?
+  minutes       String?
+  status        String              @default("Scheduled") // "Scheduled", "Completed", "Cancelled"
+  documentUrl   String?
+  createdAt     DateTime            @default(now())
+
+  actionItems   MeetingActionItem[]
+}
+
+model MeetingActionItem {
+  id                String      @id @default(cuid())
+  meetingId         String
+  meeting           Meeting     @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  resolution        String
+  actionRequired    String
+  responsibleUserId String?
+  responsibleUser   User?       @relation("ActionItemResponsible", fields: [responsibleUserId], references: [id], onDelete: SetNull)
+  departmentId      String?
+  department        Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  deadline          DateTime?
+  actionTaken       String?
+  evidenceUrl       String?
+  status            String      @default("Pending") // "Pending", "In Progress", "Completed", "Overdue"
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt
-  history           InvitationHistory[]
 }
 
-model InvitationHistory {
-  id           String      @id @default(cuid())
-  invitationId String
-  invitation   Invitation  @relation(fields: [invitationId], references: [id], onDelete: Cascade)
-  action       String      // "UPLOAD", "REMARKS_ADDED", "REUPLOAD_CORRECTION", "APPROVED", "HARD_COPY_MARKED", "REMARKS_EDITED"
-  actorName    String
-  actorRole    String
-  notes        String?     @db.Text
-  driveFileId  String?
-  fileData     String?     @db.LongText
-  timestamp    DateTime    @default(now())
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      String   @default("INFO") // "TASK_ASSIGNED", "DEADLINE_APPROACHING", "CORRECTION_REQUESTED", "SUBMISSION_RECEIVED", "APPROVED", "OVERDUE"
+  isRead    Boolean  @default(false)
+  linkUrl   String?
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userName    String
+  role        String
+  action      String   // "LOGIN", "LOGOUT", "CREATE", "UPDATE", "DELETE", "SUBMIT", "APPROVE", "REJECT", "CORRECTION", "IMPORT", "EXPORT"
+  module      String   // "AUTH", "REQUIREMENT", "DATA_REQUEST", "FACULTY", "STUDENT", "ACTIVITY", "AUDIT", "EVIDENCE"
+  recordId    String?
+  detailsJson String?
+  ipAddress   String?
+  userAgent   String?
+  timestamp   DateTime @default(now())
 }
 
 model SystemSettings {
-  id                        String   @id @default("default")
-  whatsappSenderNumber      String   @default("9626806328")
-  whatsappReceiverNumber    String   @default("7418671366")
-  whatsappEnabled           Boolean  @default(true)
-  whatsappProvider          String   @default("ultramsg") // "ultramsg", "greenapi", "custom_webhook"
-  whatsappInstanceId        String?
-  whatsappApiKey            String?
-  whatsappCustomWebhookUrl  String?
-  announcementText          String?  @db.Text
-  updatedAt                 DateTime @updatedAt
+  id                   String   @id @default("default")
+  institutionName      String   @default("St. Joseph's College (Autonomous)")
+  academicYearCurrent  String   @default("2025-26")
+  formulaFsr           String   @default("students / max(fullTimeFaculty, 1)")
+  complianceRulesJson  String?  // JSON configuration for compliance scoring
+  updatedAt            DateTime @updatedAt
 }

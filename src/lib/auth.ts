@@ -6,12 +6,24 @@ import { prisma } from './prisma';
 const JWT_SECRET = process.env.JWT_SECRET || 'sjciqac-portal-secret-key-super-secure-2026';
 const COOKIE_NAME = 'iqac_token';
 
+export type UserRole =
+  | 'SUPER_ADMIN'
+  | 'IQAC_ADMIN'
+  | 'IQAC_MEMBER'
+  | 'PRINCIPAL'
+  | 'SCHOOL_DEAN'
+  | 'HOD'
+  | 'DEPT_COORDINATOR'
+  | 'FACULTY'
+  | 'VIEWER';
+
 export interface TokenPayload {
   userId: string;
   username: string;
   name: string;
-  role: 'DEPARTMENT' | 'DIRECTOR' | 'STAFF' | 'ADMIN';
+  role: UserRole;
   departmentId?: string | null;
+  schoolId?: string | null;
   shift?: string | null;
 }
 
@@ -37,28 +49,32 @@ export async function comparePassword(password: string, hash: string): Promise<b
 }
 
 export async function getCurrentUser(): Promise<TokenPayload | null> {
-  const cookieStore = cookies();
-  const token = cookieStore.get(COOKIE_NAME)?.value;
-  if (!token) return null;
-  const payload = verifyToken(token);
-  if (!payload) return null;
+  try {
+    const cookieStore = cookies();
+    const token = cookieStore.get(COOKIE_NAME)?.value;
+    if (!token) return null;
+    const payload = verifyToken(token);
+    if (!payload) return null;
 
-  // Verify user still exists in DB
-  const user = await prisma.user.findUnique({
-    where: { id: payload.userId },
-    include: { department: true }
-  });
+    const user = await prisma.user.findUnique({
+      where: { id: payload.userId },
+      include: { department: true },
+    });
 
-  if (!user) return null;
+    if (!user || !user.isActive) return null;
 
-  return {
-    userId: user.id,
-    username: user.username,
-    name: user.name,
-    role: user.role as any,
-    departmentId: user.departmentId,
-    shift: user.department?.shift || null,
-  };
+    return {
+      userId: user.id,
+      username: user.username,
+      name: user.name,
+      role: user.role as UserRole,
+      departmentId: user.departmentId,
+      schoolId: user.schoolId,
+      shift: user.department?.shift || null,
+    };
+  } catch (err) {
+    return null;
+  }
 }
 
 export const AUTH_COOKIE_NAME = COOKIE_NAME;

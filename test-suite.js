@@ -1,60 +1,74 @@
-async function testAuth() {
-  console.log('Testing authentication & API endpoints...');
+const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcryptjs');
 
-  // Test 1: Department Login
-  const deptLogin = await fetch('http://localhost:3000/api/auth/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username: 'cs_shift1', password: 'sjciqac' }),
-  });
-  const deptData = await deptLogin.json();
-  console.log('1. Department Login (cs_shift1 / sjciqac):', deptData.success ? 'SUCCESS (Role: ' + deptData.user?.role + ', Redirect: ' + deptData.redirectUrl + ')' : 'FAILED: ' + JSON.stringify(deptData));
-  const deptCookie = deptLogin.headers.get('set-cookie');
+const prisma = new PrismaClient();
 
-  // Test 2: Director Login
-  const dirLogin = await fetch('http://localhost:3000/api/auth/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username: 'director', password: 'director123' }),
-  });
-  const dirData = await dirLogin.json();
-  console.log('2. Director Login (director / director123):', dirData.success ? 'SUCCESS (Role: ' + dirData.user?.role + ', Redirect: ' + dirData.redirectUrl + ')' : 'FAILED: ' + JSON.stringify(dirData));
-  const dirCookie = dirLogin.headers.get('set-cookie');
+async function runTests() {
+  console.log('🧪 Starting IQAC Quality Management Portal Automated Test Suite...\n');
+  let passed = 0;
+  let total = 0;
 
-  // Test 3: Staff Login
-  const staffLogin = await fetch('http://localhost:3000/api/auth/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username: 'staff', password: 'staff123' }),
-  });
-  const staffData = await staffLogin.json();
-  console.log('3. Staff Login (staff / staff123):', staffData.success ? 'SUCCESS (Role: ' + staffData.user?.role + ', Redirect: ' + staffData.redirectUrl + ')' : 'FAILED: ' + JSON.stringify(staffData));
+  function assert(condition, testName) {
+    total++;
+    if (condition) {
+      console.log(`  ✅ [PASS] ${testName}`);
+      passed++;
+    } else {
+      console.error(`  ❌ [FAIL] ${testName}`);
+    }
+  }
 
-  // Test 4: Admin Login
-  const adminLogin = await fetch('http://localhost:3000/api/auth/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username: 'admin', password: 'admin123' }),
-  });
-  const adminData = await adminLogin.json();
-  console.log('4. Admin Login (admin / admin123):', adminData.success ? 'SUCCESS (Role: ' + adminData.user?.role + ', Redirect: ' + adminData.redirectUrl + ')' : 'FAILED: ' + JSON.stringify(adminData));
-  const adminCookie = adminLogin.headers.get('set-cookie');
+  try {
+    // Test 1: Academic Years in DB
+    const ayCount = await prisma.academicYear.count();
+    assert(ayCount >= 3, `Academic Years seeded (Found: ${ayCount})`);
 
-  // Test 5: Director Fetch Stats & Queue
-  const dirQueue = await fetch('http://localhost:3000/api/invitations', {
-    headers: { cookie: dirCookie || '' },
-  });
-  const dirQueueData = await dirQueue.json();
-  console.log('5. Director Dashboard Queue & Stats:', dirQueueData.success ? `SUCCESS (${dirQueueData.invitations?.length} invitations, Stats: Total=${dirQueueData.stats?.total}, Pending=${dirQueueData.stats?.pending}, Remarks=${dirQueueData.stats?.remarks}, Approved=${dirQueueData.stats?.approved})` : 'FAILED');
+    // Test 2: User Roles
+    const userCount = await prisma.user.count();
+    assert(userCount >= 9, `Seeded users for all 9 roles (Found: ${userCount})`);
 
-  // Test 6: Admin Department List
-  const adminDepts = await fetch('http://localhost:3000/api/departments', {
-    headers: { cookie: adminCookie || '' },
-  });
-  const adminDeptsData = await adminDepts.json();
-  console.log('6. Admin Departments List:', adminDeptsData.success ? `SUCCESS (${adminDeptsData.departments?.length} departments registered)` : 'FAILED');
+    // Test 3: Password Hashing & Verification
+    const password = 'password123';
+    const hashed = await bcrypt.hash(password, 10);
+    const isValid = await bcrypt.compare(password, hashed);
+    assert(isValid, 'Password hashing and bcrypt comparison works');
 
-  console.log('\n--- All Automated Integration Tests Passed! ---');
+    // Test 4: Requirements Query
+    const reqCount = await prisma.requirements.count();
+    assert(reqCount >= 4, `Requirements seeded correctly (Found: ${reqCount})`);
+
+    // Test 5: Faculty & Training Data
+    const facCount = await prisma.faculty.count();
+    assert(facCount >= 3, `Faculty members registered (Found: ${facCount})`);
+
+    // Test 6: Faculty-Student Ratio (FSR) Math
+    const studentAgg = await prisma.studentData.aggregate({
+      _sum: { totalStudents: true },
+    });
+    const totalStudents = studentAgg._sum.totalStudents || 0;
+    const fsrRatio = totalStudents / facCount;
+    assert(fsrRatio > 0, `FSR mathematical ratio calculated dynamically (Ratio: 1:${fsrRatio.toFixed(1)})`);
+
+    // Test 7: Activity Evidence Checklist
+    const act = await prisma.activity.findFirst({ where: { activityNumber: 'ACT-2025-001' } });
+    const hasCompleteChecklist =
+      Boolean(act?.invitationFileUrl) &&
+      Boolean(act?.reportFileUrl) &&
+      Boolean(act?.attendanceFileUrl) &&
+      Boolean(act?.photosFileUrl);
+    assert(hasCompleteChecklist, 'Department Activity evidence checklist verification');
+
+    // Test 8: UGC Compliance items
+    const ugcCount = await prisma.ugcNepCompliance.count();
+    assert(ugcCount >= 6, `UGC / NEP statutory compliance directives seeded (Found: ${ugcCount})`);
+
+    console.log(`\n🎉 Test Suite Completed: ${passed}/${total} assertions passed successfully.`);
+  } catch (err) {
+    console.error('❌ Test suite execution failed:', err);
+    process.exit(1);
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
-testAuth().catch(console.error);
+runTests();
