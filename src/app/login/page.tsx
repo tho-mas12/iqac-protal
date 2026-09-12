@@ -149,13 +149,13 @@ export default function LoginPage() {
         <span className="text-[9px] uppercase font-extrabold tracking-widest text-slate-400 mb-1.5 leading-none">
           Powered by
         </span>
-        <div className="h-7 w-auto relative flex items-center justify-center">
+        <div className="w-36 sm:w-44 h-auto relative flex items-center justify-center py-0.5">
           <Image
             src={frontierLogo}
-            alt="FrontierWox Tech"
-            height={28}
-            className="h-7 w-auto object-contain"
+            alt="FrontierWox Tech Private Limited"
+            className="w-full h-auto object-contain"
             priority
+            quality={100}
           />
         </div>
       </div>
