@@ -21,7 +21,9 @@ import {
   MessageSquare,
   PhoneCall,
   Calendar,
-  X
+  X,
+  HardDrive,
+  Database,
 } from 'lucide-react';
 import Logo from './Logo';
 
@@ -88,6 +90,8 @@ export default function Sidebar({ role, userName, departmentName, shift }: Sideb
           { label: 'Access Department', href: '/admin/access-departments', icon: KeyRound },
           { label: 'Access Control', href: '/admin/access-control', icon: ShieldCheck },
           { label: 'WhatsApp Alerts', href: '/admin/notifications', icon: MessageSquare },
+          { label: 'Server & Storage', href: '/admin/server-status', icon: HardDrive },
+          { label: 'Database Explorer', href: '/admin/database', icon: Database },
         ];
       default:
         return [];
