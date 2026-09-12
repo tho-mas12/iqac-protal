@@ -55,13 +55,13 @@ export default function LoginPage() {
           fill
           priority
           sizes="100vw"
-          quality={85}
-          className="object-cover opacity-20 pointer-events-none select-none"
+          quality={90}
+          className="object-cover opacity-25 pointer-events-none select-none"
         />
       </div>
 
       {/* Dark/Gradient Vignette for contrast */}
-      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-slate-900/25 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 via-transparent to-slate-900/15 pointer-events-none" />
 
       {/* Login Card Container */}
       <div className="relative z-10 w-full max-w-md bg-white/95 backdrop-blur-md rounded-3xl shadow-[0_20px_50px_rgba(79,70,229,0.15)] border border-slate-100/90 p-8 sm:p-10 transition-all duration-300">
