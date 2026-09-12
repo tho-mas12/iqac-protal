@@ -108,10 +108,21 @@ export default function UploadInvitationPage() {
       if (!res.ok) {
         throw new Error(data.error || 'Failed to trigger notification');
       }
-      setFeedback({
-        type: 'success',
-        message: 'Notification triggered from 9626806328 to Director (7418671366)!',
-      });
+
+      if (data.result?.automated) {
+        setFeedback({
+          type: 'success',
+          message: 'Automated alert sent from 9626806328 to Director (7418671366)!',
+        });
+      } else {
+        if (data.result?.directUrl) {
+          window.open(data.result.directUrl, '_blank');
+        }
+        setFeedback({
+          type: 'success',
+          message: 'WhatsApp alert generated for Director (7418671366). WhatsApp opened!',
+        });
+      }
     } catch (err: any) {
       setFeedback({
         type: 'error',

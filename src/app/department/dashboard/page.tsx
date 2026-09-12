@@ -119,10 +119,21 @@ export default function DepartmentDashboard() {
       if (!res.ok) {
         throw new Error(data.error || 'Failed to trigger notification');
       }
-      setToast({
-        type: 'success',
-        message: 'Notification triggered from 9626806328 to Director (7418671366)!',
-      });
+
+      if (data.result?.automated) {
+        setToast({
+          type: 'success',
+          message: 'Automated alert sent from 9626806328 to Director (7418671366)!',
+        });
+      } else {
+        if (data.result?.directUrl) {
+          window.open(data.result.directUrl, '_blank');
+        }
+        setToast({
+          type: 'info',
+          message: 'Gateway token not set in Admin Settings. Opened direct WhatsApp alert to 7418671366.',
+        });
+      }
     } catch (err: any) {
       setToast({
         type: 'error',
