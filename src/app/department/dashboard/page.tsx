@@ -107,6 +107,32 @@ export default function DepartmentDashboard() {
     }
   };
 
+  const [notifyingId, setNotifyingId] = useState<string | null>(null);
+
+  const handleTriggerNotify = async (invitationId: string) => {
+    try {
+      setNotifyingId(invitationId);
+      const res = await fetch(`/api/invitations/${invitationId}/notify`, {
+        method: 'POST',
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to trigger notification');
+      }
+      setToast({
+        type: 'success',
+        message: 'Notification triggered from 9626806328 to Director (7418671366)!',
+      });
+    } catch (err: any) {
+      setToast({
+        type: 'error',
+        message: err.message || 'Failed to send notification',
+      });
+    } finally {
+      setNotifyingId(null);
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -376,25 +402,21 @@ export default function DepartmentDashboard() {
                           </td>
                           <td className="px-5 py-4 text-right">
                             <div className="flex items-center justify-end gap-1.5">
-                              {/* 1-Click Safe WhatsApp Direct Button */}
+                              {/* 1-Click System WhatsApp Notify Button (from 9626806328 to Director 7418671366) */}
                               {inv.status === 'PENDING' ? (
-                                <a
-                                  href={getWhatsAppSubmissionUrl({
-                                    departmentName: user?.department?.name || 'Department',
-                                    shift: inv.shift,
-                                    programTitle: inv.programTitle,
-                                    category: inv.category,
-                                    fromDate: inv.fromDate,
-                                    toDate: inv.toDate,
-                                    status: 'Pending Review',
-                                  })}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  className="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-50 transition-colors"
-                                  title="1-Click WhatsApp: Alert Director for Review"
+                                <button
+                                  type="button"
+                                  onClick={() => handleTriggerNotify(inv.id)}
+                                  disabled={notifyingId === inv.id}
+                                  className="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-50 transition-colors disabled:opacity-50 cursor-pointer"
+                                  title="Notify Director (7418671366) from system sender (9626806328)"
                                 >
-                                  <MessageSquare className="w-4 h-4 text-emerald-600" />
-                                </a>
+                                  {notifyingId === inv.id ? (
+                                    <RotateCw className="w-4 h-4 text-emerald-600 animate-spin" />
+                                  ) : (
+                                    <MessageSquare className="w-4 h-4 text-emerald-600" />
+                                  )}
+                                </button>
                               ) : inv.status === 'APPROVED' ? (
                                 <a
                                   href={getWhatsAppApprovalShareUrl({
@@ -504,25 +526,22 @@ export default function DepartmentDashboard() {
                       <div className="flex items-center justify-between text-xs text-slate-500 pt-1">
                         <span>{new Date(inv.fromDate).toLocaleDateString()}</span>
                         <div className="flex items-center gap-2">
-                          {/* 1-Click WhatsApp Direct */}
+                          {/* 1-Click System WhatsApp Notify Button */}
                           {inv.status === 'PENDING' && (
-                            <a
-                              href={getWhatsAppSubmissionUrl({
-                                departmentName: user?.department?.name || 'Department',
-                                shift: inv.shift,
-                                programTitle: inv.programTitle,
-                                category: inv.category,
-                                fromDate: inv.fromDate,
-                                toDate: inv.toDate,
-                                status: 'Pending Review',
-                              })}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="px-2 py-1 rounded-lg bg-emerald-50 text-emerald-700 font-bold flex items-center gap-1 text-[11px]"
+                            <button
+                              type="button"
+                              onClick={() => handleTriggerNotify(inv.id)}
+                              disabled={notifyingId === inv.id}
+                              className="px-2 py-1 rounded-lg bg-emerald-50 text-emerald-700 font-bold flex items-center gap-1 text-[11px] disabled:opacity-50 cursor-pointer"
+                              title="Notify Director (7418671366) from 9626806328"
                             >
-                              <MessageSquare className="w-3 h-3" />
-                              <span>Alert Director</span>
-                            </a>
+                              {notifyingId === inv.id ? (
+                                <RotateCw className="w-3 h-3 animate-spin text-emerald-600" />
+                              ) : (
+                                <MessageSquare className="w-3 h-3 text-emerald-600" />
+                              )}
+                              <span>Notify Director</span>
+                            </button>
                           )}
 
                           {inv.status === 'APPROVED' && (

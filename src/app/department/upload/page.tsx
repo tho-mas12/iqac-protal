@@ -22,7 +22,8 @@ import {
   CheckSquare,
   Square,
   MessageSquare,
-  Share2
+  Share2,
+  RotateCw
 } from 'lucide-react';
 import { compressImageFile } from '@/lib/image-compression';
 import StatusStepper from '@/components/StatusStepper';
@@ -92,6 +93,32 @@ export default function UploadInvitationPage() {
       console.error(e);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const [notifyingId, setNotifyingId] = useState<string | null>(null);
+
+  const handleTriggerNotify = async (invitationId: string) => {
+    try {
+      setNotifyingId(invitationId);
+      const res = await fetch(`/api/invitations/${invitationId}/notify`, {
+        method: 'POST',
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to trigger notification');
+      }
+      setFeedback({
+        type: 'success',
+        message: 'Notification triggered from 9626806328 to Director (7418671366)!',
+      });
+    } catch (err: any) {
+      setFeedback({
+        type: 'error',
+        message: err.message || 'Failed to send notification',
+      });
+    } finally {
+      setNotifyingId(null);
     }
   };
 
@@ -408,25 +435,21 @@ export default function UploadInvitationPage() {
                       </div>
 
                       <div className="flex items-center gap-2 self-end sm:self-center">
-                        {/* 1-Click WhatsApp Alert */}
+                        {/* 1-Click System WhatsApp Notify Button (from 9626806328 to Director 7418671366) */}
                         {inv.status === 'PENDING' && (
-                          <a
-                            href={getWhatsAppSubmissionUrl({
-                              departmentName: user?.department?.name || 'Department',
-                              shift: inv.shift,
-                              programTitle: inv.programTitle,
-                              category: inv.category,
-                              fromDate: inv.fromDate,
-                              toDate: inv.toDate,
-                              status: 'Pending Review',
-                            })}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="p-2 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors"
-                            title="1-Click WhatsApp: Alert Director"
+                          <button
+                            type="button"
+                            onClick={() => handleTriggerNotify(inv.id)}
+                            disabled={notifyingId === inv.id}
+                            className="p-2 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors disabled:opacity-50 cursor-pointer"
+                            title="Notify Director (7418671366) from system sender (9626806328)"
                           >
-                            <MessageSquare className="w-4 h-4" />
-                          </a>
+                            {notifyingId === inv.id ? (
+                              <RotateCw className="w-4 h-4 animate-spin text-emerald-600" />
+                            ) : (
+                              <MessageSquare className="w-4 h-4 text-emerald-600" />
+                            )}
+                          </button>
                         )}
 
                         {inv.status === 'APPROVED' && (
