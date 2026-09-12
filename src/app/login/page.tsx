@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { User, Lock, ArrowRight } from 'lucide-react';
 import Logo from '@/components/Logo';
 import frontierLogo from '../../../public/frontierwox-logo.jpg';
+import collegeBg from '../../../public/college-bg.jpg';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -47,13 +48,20 @@ export default function LoginPage() {
   return (
     <div className="relative min-h-screen gradient-bg flex flex-col items-center justify-center p-4 selection:bg-purple-600 selection:text-white overflow-hidden">
       {/* College Background Image Overlay with subtle transparency */}
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-15 pointer-events-none transition-opacity duration-500"
-        style={{ backgroundImage: "url('/college-bg.jpg'), url('/images/college-bg.jpg')" }}
-      />
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <Image
+          src={collegeBg}
+          alt="St. Joseph's College"
+          fill
+          priority
+          sizes="100vw"
+          quality={85}
+          className="object-cover opacity-20 pointer-events-none select-none"
+        />
+      </div>
 
       {/* Dark/Gradient Vignette for contrast */}
-      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 via-transparent to-slate-900/20 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-slate-900/25 pointer-events-none" />
 
       {/* Login Card Container */}
       <div className="relative z-10 w-full max-w-md bg-white/95 backdrop-blur-md rounded-3xl shadow-[0_20px_50px_rgba(79,70,229,0.15)] border border-slate-100/90 p-8 sm:p-10 transition-all duration-300">
