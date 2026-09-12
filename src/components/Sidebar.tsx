@@ -69,21 +69,18 @@ export default function Sidebar({ role, userName, departmentName, shift }: Sideb
         return [
           { label: 'Dashboard', href: '/department/dashboard', icon: LayoutDashboard },
           { label: 'Upload Invitation', href: '/department/upload', icon: UploadCloud },
-          { label: 'Event Calendar', href: '/department/calendar', icon: Calendar },
           { label: 'Remarks & Corrections', href: '/department/remarks', icon: AlertCircle },
           { label: 'Department Info', href: '/department/info', icon: Info },
         ];
       case 'DIRECTOR':
         return [
           { label: 'Dashboard', href: '/director/dashboard', icon: LayoutDashboard },
-          { label: 'Event Calendar', href: '/director/calendar', icon: Calendar },
           { label: 'Status & History', href: '/director/status', icon: FileCheck2 },
           { label: 'Department Summary', href: '/director/summary', icon: Layers },
         ];
       case 'STAFF':
         return [
           { label: 'Staff Dashboard', href: '/staff/dashboard', icon: LayoutDashboard },
-          { label: 'Event Calendar', href: '/department/calendar', icon: Calendar },
         ];
       case 'ADMIN':
         return [

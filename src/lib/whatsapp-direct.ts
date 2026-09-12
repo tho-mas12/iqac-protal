@@ -41,7 +41,7 @@ export function getWhatsAppApprovalShareUrl(options: WhatsAppDirectOptions): str
   const toFormatted = options.toDate ? ` to ${new Date(options.toDate).toLocaleDateString('en-GB')}` : '';
   const dateStr = `${fromFormatted}${toFormatted}`;
 
-  const message = `🎉 *IQAC Invitation Verified & Approved! — SJC*\n\n• *Department:* ${options.departmentName} (${options.shift || 'Shift I'})\n• *Event:* ${options.programTitle}\n• *Date(s):* ${dateStr}\n• *Category:* ${options.category || 'Event'}\n\n✅ Verified by IQAC Director. Next steps: Physical copy submission & ERP dispatch.\n\n🔗 *Portal:* ${PORTAL_BASE_URL}/department/dashboard`;
+  const message = `🎉 *IQAC Invitation Verified & Approved! — SJC*\n\n• *Department:* ${options.departmentName} (${options.shift || 'Shift I'})\n• *Event:* ${options.programTitle}\n• *Date(s):* ${dateStr}\n• *Category:* ${options.category || 'Event'}\n\n✅ Verified by IQAC Director. Next steps: Physical copy submission & Send to ERP.\n\n🔗 *Portal:* ${PORTAL_BASE_URL}/department/dashboard`;
 
   return `https://wa.me/?text=${encodeURIComponent(message)}`;
 }

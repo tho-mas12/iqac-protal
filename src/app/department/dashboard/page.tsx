@@ -181,7 +181,7 @@ export default function DepartmentDashboard() {
             </div>
 
             {/* Action Buttons Column with Blinking Guides */}
-            <div className="flex flex-col sm:flex-row lg:flex-col gap-2.5 w-full sm:w-auto z-10 shrink-0">
+            <div className="flex flex-col sm:flex-row lg:flex-col gap-3 w-full sm:w-auto z-10 shrink-0">
               <Link
                 href="/department/upload"
                 className="px-6 py-3.5 bg-white text-purple-900 hover:bg-purple-50 font-extrabold rounded-2xl shadow-xl transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 text-sm shrink-0"
@@ -190,39 +190,29 @@ export default function DepartmentDashboard() {
                 <span>Add New Invitation</span>
               </Link>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-2">
+              <div className="flex items-center gap-2.5">
                 {/* College Logo Blinking Button */}
                 <a
                   href="https://www.sjctni.edu/SJC_logo.jsp"
                   target="_blank"
                   rel="noreferrer"
-                  className="px-3 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white text-xs font-bold rounded-xl shadow-md flex items-center justify-center gap-1.5 transition-all transform hover:scale-105 animate-pulse cursor-pointer border border-emerald-300/40"
+                  className="flex-1 px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white text-xs font-bold rounded-xl shadow-lg shadow-emerald-500/30 flex items-center justify-center gap-1.5 transition-all transform hover:scale-105 animate-pulse cursor-pointer border border-emerald-300/40"
                   title="Official St. Joseph's College Logo download"
                 >
-                  <ImageIcon className="w-3.5 h-3.5 shrink-0" />
-                  <span>Logo</span>
+                  <ImageIcon className="w-4 h-4 shrink-0" />
+                  <span>Download College Logo</span>
                   <ExternalLink className="w-3 h-3 opacity-80" />
                 </a>
-
-                {/* Event Calendar Button */}
-                <Link
-                  href="/department/calendar"
-                  className="px-3 py-2 bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white text-xs font-bold rounded-xl shadow-md flex items-center justify-center gap-1.5 transition-all transform hover:scale-105 cursor-pointer border border-indigo-300/40"
-                  title="Check College Events Calendar to avoid date clashes"
-                >
-                  <Calendar className="w-3.5 h-3.5 shrink-0" />
-                  <span>Calendar</span>
-                </Link>
 
                 {/* Instructions & Format Blinking Button */}
                 <button
                   type="button"
                   onClick={() => setIsGuidelinesOpen(true)}
-                  className="px-3 py-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white text-xs font-bold rounded-xl shadow-md flex items-center justify-center gap-1.5 transition-all transform hover:scale-105 animate-pulse cursor-pointer border border-amber-300/40"
+                  className="flex-1 px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white text-xs font-bold rounded-xl shadow-lg shadow-amber-500/30 flex items-center justify-center gap-1.5 transition-all transform hover:scale-105 animate-pulse cursor-pointer border border-amber-300/40"
                   title="Official IQAC Invitation Format & 12 Guidelines"
                 >
-                  <FileText className="w-3.5 h-3.5 shrink-0" />
-                  <span>Guidelines</span>
+                  <FileText className="w-4 h-4 shrink-0" />
+                  <span>Instructions & Format</span>
                 </button>
               </div>
             </div>

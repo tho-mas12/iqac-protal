@@ -109,21 +109,21 @@ export default function StatusStepper({
 
         <span className="text-slate-300">→</span>
 
-        {/* Step 4: Dispatched */}
+        {/* Step 4: Sent to ERP */}
         {isStage4BothDone ? (
-          <span className="flex items-center gap-1 text-emerald-700 font-bold" title="Stage 4: Hard Copy & ERP Dispatched">
+          <span className="flex items-center gap-1 text-emerald-700 font-bold" title="Stage 4: Hard Copy & Sent to ERP">
             <span className="w-4 h-4 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[9px]">✓</span>
-            <span>Dispatched</span>
+            <span>Sent to ERP</span>
           </span>
         ) : isStage4Partial ? (
-          <span className="flex items-center gap-1 text-blue-700 font-bold" title="Stage 4: In Progress">
+          <span className="flex items-center gap-1 text-blue-700 font-bold" title="Stage 4: Sending to ERP">
             <span className="w-4 h-4 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-[9px]">4</span>
-            <span>Dispatching</span>
+            <span>Sending to ERP</span>
           </span>
         ) : (
-          <span className="flex items-center gap-1 text-slate-400" title="Stage 4: Awaiting Hard Copy & ERP Dispatch">
+          <span className="flex items-center gap-1 text-slate-400" title="Stage 4: Awaiting Hard Copy & Send to ERP">
             <span className="w-4 h-4 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-[9px]">4</span>
-            <span>Dispatch</span>
+            <span>Send to ERP</span>
           </span>
         )}
       </div>
@@ -162,15 +162,15 @@ export default function StatusStepper({
     },
     {
       id: 4,
-      title: 'Hard Copy & ERP Dispatched',
+      title: 'Hard Copy & Sent to ERP',
       status: isStage4BothDone ? 'complete' : isStage4Partial ? 'partial' : 'pending',
       date: isStage4BothDone ? 'Completed' : isStage4Partial ? 'In Progress' : 'Pending',
       subtext: isStage4BothDone
-        ? 'Physical copy & Web circular sent'
+        ? 'Physical copy & Sent to ERP'
         : hardCopyReceived
         ? 'Hard copy received'
         : mailSent
-        ? 'ERP mail dispatched'
+        ? 'Sent to ERP'
         : 'IQAC documentation & ERP',
       color: isStage4BothDone ? 'emerald' : isStage4Partial ? 'blue' : 'slate',
     },
