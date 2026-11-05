@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { User, Lock, ArrowRight } from 'lucide-react';
+import { User, Lock, ArrowRight, ExternalLink } from 'lucide-react';
 import Logo from '@/components/Logo';
 import frontierLogo from '../../../public/frontierwox-logo.jpg';
 import collegeBg from '../../../public/college-bg.jpg';
@@ -62,6 +62,17 @@ export default function LoginPage() {
 
       {/* Dark/Gradient Vignette for contrast */}
       <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 via-transparent to-slate-900/15 pointer-events-none" />
+
+      {/* Top Right AAA Project Link */}
+      <a
+        href="/AAA"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed top-4 right-4 sm:top-6 sm:right-6 z-20 inline-flex items-center gap-2 px-4 py-2.5 bg-white/95 hover:bg-white text-slate-800 hover:text-[#6320ee] font-bold text-xs sm:text-sm rounded-2xl shadow-lg hover:shadow-xl border border-slate-200/80 backdrop-blur-md transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] group"
+      >
+        <span>AAA 2026 - 2027</span>
+        <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#6320ee] transition-colors" />
+      </a>
 
       {/* Login Card Container */}
       <div className="relative z-10 w-full max-w-md bg-white/95 backdrop-blur-md rounded-3xl shadow-[0_20px_50px_rgba(79,70,229,0.15)] border border-slate-100/90 p-8 sm:p-10 transition-all duration-300">
