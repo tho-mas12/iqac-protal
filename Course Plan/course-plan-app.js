@@ -3547,15 +3547,11 @@ class CoursePlanApp {
   }
 
   createDefaultPlan() {
-    const deptObj = this.getCurrentDepartmentObj();
-    const firstFac = (deptObj.faculty && deptObj.faculty.length > 0) ? deptObj.faculty[0].name : '';
-    const firstEmail = (deptObj.faculty && deptObj.faculty.length > 0) ? deptObj.faculty[0].email : '';
-
     return {
       id: null,
       department_name: this.selectedDept,
-      faculty_name: firstFac,
-      faculty_email: firstEmail,
+      faculty_name: '',
+      faculty_email: '',
       programme: '',
       year_class: 'I UG',
       section: 'N/A',
@@ -3604,7 +3600,7 @@ class CoursePlanApp {
       ],
       declaration: {
         confirmed: true,
-        faculty_signature: firstFac,
+        faculty_signature: '',
         submission_date: new Date().toISOString().split('T')[0],
         reviewer_name: '',
         review_date: '',
