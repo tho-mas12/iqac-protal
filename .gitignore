@@ -38,3 +38,7 @@ next-env.d.ts
 *.db
 !prisma/dev.db
 *.db-journal
+
+# scratch / temp
+scratch/
+
