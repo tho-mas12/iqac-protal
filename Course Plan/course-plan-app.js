@@ -2207,9 +2207,14 @@ class CoursePlanApp {
         <!-- ================= PART I SECTION ================= -->
         <div id="section-part1" class="${this.activeFormTab === 'part1' ? '' : 'hidden'} space-y-6">
           <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs space-y-6">
-            <div class="border-b border-slate-200 pb-3">
-              <h3 class="text-sm font-black text-slate-900 uppercase tracking-wide">Part-I: Course Information</h3>
-              <p class="text-[11px] text-slate-500">General details & Course Outcomes (COs) mapped to K-Levels</p>
+            <div class="border-b border-slate-200 pb-3 flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h3 class="text-sm font-black text-slate-900 uppercase tracking-wide">Part-I: Course Information</h3>
+                <p class="text-[11px] text-slate-500">General details & Course Outcomes (COs) mapped to K-Levels</p>
+              </div>
+              <span class="text-[10.5px] bg-rose-50 text-rose-700 font-black px-2.5 py-1 rounded-lg border border-rose-200 flex items-center gap-1">
+                <i data-lucide="alert-circle" class="w-3.5 h-3.5 text-rose-600"></i> All Fields Mandatory *
+              </span>
             </div>
 
             <!-- A. General Details -->
@@ -2539,9 +2544,14 @@ class CoursePlanApp {
         <!-- ================= PART II SECTION ================= -->
         <div id="section-part2" class="${this.activeFormTab === 'part2' ? '' : 'hidden'} space-y-6">
           <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs space-y-6">
-            <div class="border-b border-slate-200 pb-3">
-              <h3 class="text-sm font-black text-slate-900 uppercase tracking-wide">Part-II: Unit-wise Teaching Plan</h3>
-              <p class="text-[11px] text-slate-500">Divide each unit into manageable topics, allocate hours, and map Course Outcomes</p>
+            <div class="border-b border-slate-200 pb-3 flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h3 class="text-sm font-black text-slate-900 uppercase tracking-wide">Part-II: Unit-wise Teaching Plan</h3>
+                <p class="text-[11px] text-slate-500">Divide each unit into manageable topics, allocate hours, and map Course Outcomes</p>
+              </div>
+              <span class="text-[10.5px] bg-rose-50 text-rose-700 font-black px-2.5 py-1 rounded-lg border border-rose-200 flex items-center gap-1">
+                <i data-lucide="alert-circle" class="w-3.5 h-3.5 text-rose-600"></i> All Fields Mandatory *
+              </span>
             </div>
 
             <!-- A. Detailed Teaching Plan -->
@@ -2732,9 +2742,14 @@ class CoursePlanApp {
         <!-- ================= PART III SECTION ================= -->
         <div id="section-part3" class="${this.activeFormTab === 'part3' ? '' : 'hidden'} space-y-6">
           <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs space-y-6">
-            <div class="border-b border-slate-200 pb-3">
-              <h3 class="text-sm font-black text-slate-900 uppercase tracking-wide">Part-III: Learning Activities and Assessment Plan</h3>
-              <p class="text-[11px] text-slate-500">Activities enabling application, analysis, and institutional assessment schedules</p>
+            <div class="border-b border-slate-200 pb-3 flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h3 class="text-sm font-black text-slate-900 uppercase tracking-wide">Part-III: Learning Activities and Assessment Plan</h3>
+                <p class="text-[11px] text-slate-500">Activities enabling application, analysis, and institutional assessment schedules</p>
+              </div>
+              <span class="text-[10.5px] bg-rose-50 text-rose-700 font-black px-2.5 py-1 rounded-lg border border-rose-200 flex items-center gap-1">
+                <i data-lucide="alert-circle" class="w-3.5 h-3.5 text-rose-600"></i> All Fields Mandatory *
+              </span>
             </div>
 
             <!-- A. Learning Activities -->
@@ -3102,16 +3117,21 @@ class CoursePlanApp {
         <!-- ================= DECLARATION SECTION ================= -->
         <div id="section-declaration" class="${this.activeFormTab === 'declaration' ? '' : 'hidden'} space-y-6">
           <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs space-y-6">
-            <div class="border-b border-slate-200 pb-3">
-              <h3 class="text-sm font-black text-slate-900 uppercase tracking-wide">Declaration & Submissions</h3>
-              <p class="text-[11px] text-slate-500">Confirm preparation compliance and submit directly to Head of Department</p>
+            <div class="border-b border-slate-200 pb-3 flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h3 class="text-sm font-black text-slate-900 uppercase tracking-wide">Declaration & Submissions</h3>
+                <p class="text-[11px] text-slate-500">Confirm preparation compliance and submit directly to Head of Department</p>
+              </div>
+              <span class="text-[10.5px] bg-rose-50 text-rose-700 font-black px-2.5 py-1 rounded-lg border border-rose-200 flex items-center gap-1">
+                <i data-lucide="alert-circle" class="w-3.5 h-3.5 text-rose-600"></i> All Fields Mandatory *
+              </span>
             </div>
 
             <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs text-slate-700">
               <div class="flex items-start gap-2.5">
-                <input type="checkbox" id="cp-decl-check" checked class="mt-0.5 rounded text-indigo-600 focus:ring-0 cursor-pointer" />
+                <input type="checkbox" id="cp-decl-check" ${decl.confirmed ? 'checked' : ''} class="mt-0.5 rounded text-indigo-600 focus:ring-0 cursor-pointer" />
                 <label for="cp-decl-check" class="font-medium cursor-pointer">
-                  <strong>Declaration by the Faculty Member:</strong> I hereby confirm that the course plan has been prepared based on the approved syllabus, prescribed teaching hours, academic calendar, and institutional assessment regulations.
+                  <strong class="text-indigo-900">Declaration by the Faculty Member *:</strong> I hereby confirm that the course plan has been prepared based on the approved syllabus, prescribed teaching hours, academic calendar, and institutional assessment regulations.
                 </label>
               </div>
             </div>
@@ -3475,63 +3495,247 @@ class CoursePlanApp {
     `;
   }
 
-  // ================= STAGE PROGRESSION & VALIDATION =================
-  isPart1Complete() {
-    if (!this.activePlan) return false;
-    const p = this.activePlan;
-    const fac = p.faculty_name ? p.faculty_name.trim() : '';
-    const code = p.course_code ? p.course_code.trim() : '';
-    const title = p.course_title ? p.course_title.trim() : '';
-    return (fac.length > 0 && code.length > 0 && title.length > 0);
+  // ================= STAGE PROGRESSION & COMPREHENSIVE VALIDATION =================
+  validatePart1() {
+    this.harvestFormInputs();
+    const p = this.activePlan || {};
+    const errors = [];
+
+    if (!p.department_name) errors.push('Department');
+    if (!p.faculty_name || !p.faculty_name.trim()) errors.push('Name of the Faculty Member');
+    if (!p.semester) errors.push('Semester');
+    if (!p.programme || !p.programme.trim()) errors.push('Programme');
+    if (!p.year_class || !p.year_class.trim()) errors.push('Year & Class');
+    if (!p.section || !p.section.trim()) errors.push('Section');
+    if (!p.course_code || !p.course_code.trim()) errors.push('Course Code');
+    if (!p.course_title || !p.course_title.trim()) errors.push('Course Title');
+    if (!p.course_category || !p.course_category.trim()) errors.push('Course Category');
+    if (!p.teaching_hours || !String(p.teaching_hours).trim()) errors.push('Total Teaching Hours');
+    if (!p.credits || !String(p.credits).trim()) errors.push('Credits');
+
+    const cos = p.course_outcomes || [];
+    if (cos.length === 0) {
+      errors.push('Course Outcomes (COs) Table');
+    } else {
+      let emptyCOs = 0;
+      cos.slice(0, 5).forEach((co) => {
+        if (!co.outcome || !co.outcome.trim() || !co.k_level) {
+          emptyCOs++;
+        }
+      });
+      if (emptyCOs > 0) {
+        errors.push(`Course Outcomes (${emptyCOs} outcome statement(s) or K-level(s) incomplete)`);
+      }
+    }
+
+    return { valid: errors.length === 0, errors };
   }
 
-  getPart1MissingReason() {
-    if (!this.activePlan) return 'Please complete Part-I details.';
-    const p = this.activePlan;
-    const missing = [];
-    if (!p.faculty_name || !p.faculty_name.trim()) missing.push('Name of Faculty Member');
-    if (!p.course_code || !p.course_code.trim()) missing.push('Course Code');
-    if (!p.course_title || !p.course_title.trim()) missing.push('Course Title');
-    if (missing.length > 0) return `Please select or enter: ${missing.join(', ')}.`;
-    return '';
+  isPart1Complete() {
+    return this.validatePart1().valid;
+  }
+
+  validatePart2() {
+    this.harvestFormInputs();
+    const p = this.activePlan || {};
+    const errors = [];
+
+    // Ensure Part 1 is complete
+    const p1 = this.validatePart1();
+    if (!p1.valid) {
+      return { valid: false, errors: ['Please complete all mandatory questions in Part-I first.'] };
+    }
+
+    // A. Detailed Teaching Plan
+    const dtp = p.detailed_teaching_plan || [];
+    if (dtp.length === 0) {
+      errors.push('Detailed Teaching Plan entries');
+    } else {
+      let emptyTopics = 0;
+      let emptyDates = 0;
+      let emptyHours = 0;
+      let emptyMethods = 0;
+      let emptyRes = 0;
+
+      dtp.forEach((row) => {
+        if (!row.topics || !row.topics.trim()) emptyTopics++;
+        if (!row.from_date || !row.to_date) emptyDates++;
+        if (!row.hours || !String(row.hours).trim()) emptyHours++;
+        if (!row.methodology || !row.methodology.trim()) emptyMethods++;
+        if (!row.resources || !row.resources.trim()) emptyRes++;
+      });
+
+      if (emptyTopics > 0) errors.push(`Detailed Teaching Plan: Topic(s) missing in ${emptyTopics} row(s)`);
+      if (emptyDates > 0) errors.push(`Detailed Teaching Plan: From/To Date(s) missing in ${emptyDates} row(s)`);
+      if (emptyHours > 0) errors.push(`Detailed Teaching Plan: Lecture Hour(s) missing in ${emptyHours} row(s)`);
+      if (emptyMethods > 0) errors.push(`Detailed Teaching Plan: Teaching Methodology missing in ${emptyMethods} row(s)`);
+      if (emptyRes > 0) errors.push(`Detailed Teaching Plan: Learning Resource missing in ${emptyRes} row(s)`);
+    }
+
+    // B. Unit Completion Plan
+    const ucp = p.unit_completion_plan || [];
+    if (ucp.length === 0) {
+      errors.push('Unit Completion Plan entries');
+    } else {
+      let emptyUcpPlanned = 0;
+      let emptyUcpActual = 0;
+      let emptyUcpDate = 0;
+
+      ucp.forEach((u) => {
+        if (!u.planned_hours || !String(u.planned_hours).trim()) emptyUcpPlanned++;
+        if (!u.actual_hours || !String(u.actual_hours).trim()) emptyUcpActual++;
+        if (!u.target_date || !String(u.target_date).trim()) emptyUcpDate++;
+      });
+
+      if (emptyUcpPlanned > 0) errors.push(`Unit Completion Plan: Planned Hours missing in ${emptyUcpPlanned} unit(s)`);
+      if (emptyUcpActual > 0) errors.push(`Unit Completion Plan: Actual Hours missing in ${emptyUcpActual} unit(s)`);
+      if (emptyUcpDate > 0) errors.push(`Unit Completion Plan: Target Date missing in ${emptyUcpDate} unit(s)`);
+    }
+
+    return { valid: errors.length === 0, errors };
   }
 
   isPart2Complete() {
-    if (!this.isPart1Complete()) return false;
-    const p = this.activePlan;
-    if (!p.detailed_teaching_plan || p.detailed_teaching_plan.length === 0) return false;
-    // Check if at least one topic or hours is entered
-    const hasTopics = p.detailed_teaching_plan.some(d => (d.topics && d.topics.trim().length > 0) || (d.hours && d.hours.trim().length > 0));
-    return hasTopics;
+    return this.validatePart2().valid;
+  }
+
+  validatePart3() {
+    this.harvestFormInputs();
+    const p = this.activePlan || {};
+    const errors = [];
+
+    // Ensure Part 2 is complete
+    const p2 = this.validatePart2();
+    if (!p2.valid) {
+      return { valid: false, errors: ['Please complete all mandatory questions in Part-II first.'] };
+    }
+
+    // A. Learning Activities
+    const acts = p.learning_activities || [];
+    if (acts.length === 0) {
+      errors.push('Learning Activities entries');
+    } else {
+      let emptyActName = 0;
+      let emptyActTopic = 0;
+      let emptyActOutcome = 0;
+      let emptyActDate = 0;
+
+      acts.forEach(a => {
+        if (!a.activity || !a.activity.trim()) emptyActName++;
+        if (!a.topic || !a.topic.trim()) emptyActTopic++;
+        if (!a.outcome || !a.outcome.trim()) emptyActOutcome++;
+        if (!a.proposed_date || !a.proposed_date.trim()) emptyActDate++;
+      });
+
+      if (emptyActName > 0) errors.push(`Learning Activities: Activity selection missing in ${emptyActName} row(s)`);
+      if (emptyActTopic > 0) errors.push(`Learning Activities: Topic/Unit missing in ${emptyActTopic} row(s)`);
+      if (emptyActOutcome > 0) errors.push(`Learning Activities: Expected Outcome missing in ${emptyActOutcome} row(s)`);
+      if (emptyActDate > 0) errors.push(`Learning Activities: Proposed Date missing in ${emptyActDate} row(s)`);
+    }
+
+    // B. Assessment Plan
+    const assts = p.assessment_plan || [];
+    if (assts.length === 0) {
+      errors.push('Assessment Plan entries');
+    } else {
+      let emptyAsstMarks = 0;
+      let emptyAsstCat = 0;
+      let emptyAsstCov = 0;
+      let emptyAsstDates = 0;
+      let emptyAsstCos = 0;
+
+      assts.forEach(asst => {
+        if (!asst.marks || !String(asst.marks).trim()) emptyAsstMarks++;
+        if (!asst.category || !asst.category.trim()) emptyAsstCat++;
+        if (!asst.unit_coverage || !asst.unit_coverage.trim()) emptyAsstCov++;
+        if (!asst.from_date || !asst.to_date) emptyAsstDates++;
+        if (!asst.cos_assessed || !asst.cos_assessed.trim()) emptyAsstCos++;
+      });
+
+      if (emptyAsstMarks > 0) errors.push(`Assessment Plan: Marks missing in ${emptyAsstMarks} component(s)`);
+      if (emptyAsstCat > 0) errors.push(`Assessment Plan: Category missing in ${emptyAsstCat} component(s)`);
+      if (emptyAsstCov > 0) errors.push(`Assessment Plan: Unit Coverage missing in ${emptyAsstCov} component(s)`);
+      if (emptyAsstDates > 0) errors.push(`Assessment Plan: Dates missing in ${emptyAsstDates} component(s)`);
+      if (emptyAsstCos > 0) errors.push(`Assessment Plan: COs Assessed missing in ${emptyAsstCos} component(s)`);
+    }
+
+    // C. Digital Resources and ICT Integration
+    const icts = p.ict_integration || [];
+    if (icts.length === 0) {
+      errors.push('Digital Resources & ICT Integration entries');
+    } else {
+      let emptyIctTopic = 0;
+      let emptyIctTool = 0;
+      let emptyIctPlat = 0;
+      let emptyIctPurpose = 0;
+
+      icts.forEach(ict => {
+        if (!ict.topic || !ict.topic.trim()) emptyIctTopic++;
+        if (!ict.tool || !ict.tool.trim()) emptyIctTool++;
+        if (!ict.platform || !ict.platform.trim()) emptyIctPlat++;
+        if (!ict.purpose || !ict.purpose.trim()) emptyIctPurpose++;
+      });
+
+      if (emptyIctTopic > 0) errors.push(`Digital Resources / ICT: Topic/Unit missing in ${emptyIctTopic} row(s)`);
+      if (emptyIctTool > 0) errors.push(`Digital Resources / ICT: Tool missing in ${emptyIctTool} row(s)`);
+      if (emptyIctPlat > 0) errors.push(`Digital Resources / ICT: Platform missing in ${emptyIctPlat} row(s)`);
+      if (emptyIctPurpose > 0) errors.push(`Digital Resources / ICT: Purpose missing in ${emptyIctPurpose} row(s)`);
+    }
+
+    return { valid: errors.length === 0, errors };
   }
 
   isPart3Complete() {
-    return this.isPart2Complete();
+    return this.validatePart3().valid;
+  }
+
+  validatePart4() {
+    this.harvestFormInputs();
+    const p = this.activePlan || {};
+    const errors = [];
+
+    const p3 = this.validatePart3();
+    if (!p3.valid) {
+      return { valid: false, errors: ['Please complete all mandatory questions in Part-I, Part-II, and Part-III first.'] };
+    }
+
+    const decl = p.declaration || {};
+    const declCheck = document.getElementById('cp-decl-check');
+    if ((declCheck && !declCheck.checked) || !decl.confirmed) {
+      errors.push('Declaration Confirmation Checkbox (must be checked)');
+    }
+    if (!decl.faculty_signature || !decl.faculty_signature.trim()) {
+      errors.push('Faculty Digital Signature');
+    }
+    if (!decl.submission_date || !decl.submission_date.trim()) {
+      errors.push('Submission Date');
+    }
+
+    return { valid: errors.length === 0, errors };
   }
 
   isPart4Complete() {
-    if (!this.isPart3Complete()) return false;
-    const p = this.activePlan;
-    const decl = p.declaration || {};
-    return !!(decl.confirmed && p.faculty_name);
+    return this.validatePart4().valid;
   }
 
   proceedToTab(targetTab) {
     this.harvestFormInputs();
     if (targetTab === 'part2') {
-      if (!this.isPart1Complete()) {
-        const reason = this.getPart1MissingReason();
-        alert(`🔒 Part-I Incomplete\n\n${reason}`);
+      const v = this.validatePart1();
+      if (!v.valid) {
+        alert(`🔒 Cannot proceed to Part-II: All questions in Part-I are mandatory.\n\nPlease complete:\n• ${v.errors.join('\n• ')}`);
         return;
       }
     } else if (targetTab === 'part3') {
-      if (!this.isPart2Complete()) {
-        alert('🔒 Part-II Incomplete\n\nPlease enter the teaching topics/hours for the units before proceeding to Part-III.');
+      const v = this.validatePart2();
+      if (!v.valid) {
+        alert(`🔒 Cannot proceed to Part-III: All questions in Part-II are mandatory.\n\nPlease complete:\n• ${v.errors.join('\n• ')}`);
         return;
       }
     } else if (targetTab === 'declaration') {
-      if (!this.isPart3Complete()) {
-        alert('🔒 Part-III Incomplete\n\nPlease complete Part-III sections before proceeding to Declaration.');
+      const v = this.validatePart3();
+      if (!v.valid) {
+        alert(`🔒 Cannot proceed to Part-IV: All questions in Part-III are mandatory.\n\nPlease complete:\n• ${v.errors.join('\n• ')}`);
         return;
       }
     }
@@ -3542,29 +3746,23 @@ class CoursePlanApp {
   switchFormTab(tabKey) {
     this.harvestFormInputs();
 
-    // Prevent jumping forward if previous sections are not completed
-    if (tabKey === 'part2' && !this.isPart1Complete()) {
-      const reason = this.getPart1MissingReason();
-      alert(`🔒 Part-II is Locked\n\n${reason}`);
-      return;
-    }
-    if (tabKey === 'part3') {
-      if (!this.isPart1Complete()) {
-        alert(`🔒 Part-III is Locked\n\n${this.getPart1MissingReason()}`);
+    // Prevent jumping forward if previous sections are not completely filled
+    if (tabKey === 'part2') {
+      const v = this.validatePart1();
+      if (!v.valid) {
+        alert(`🔒 Part-II is Locked. All questions in Part-I are mandatory.\n\nPlease complete:\n• ${v.errors.join('\n• ')}`);
         return;
       }
-      if (!this.isPart2Complete()) {
-        alert('🔒 Part-III is Locked\n\nPlease enter topics in Part-II Teaching Plan first.');
+    } else if (tabKey === 'part3') {
+      const v = this.validatePart2();
+      if (!v.valid) {
+        alert(`🔒 Part-III is Locked. All questions in Part-II are mandatory.\n\nPlease complete:\n• ${v.errors.join('\n• ')}`);
         return;
       }
-    }
-    if (tabKey === 'declaration') {
-      if (!this.isPart1Complete()) {
-        alert(`🔒 Declaration is Locked\n\n${this.getPart1MissingReason()}`);
-        return;
-      }
-      if (!this.isPart2Complete()) {
-        alert('🔒 Declaration is Locked\n\nPlease complete Part-II Teaching Plan first.');
+    } else if (tabKey === 'declaration') {
+      const v = this.validatePart3();
+      if (!v.valid) {
+        alert(`🔒 Part-IV Declaration is Locked. All questions in Part-III are mandatory.\n\nPlease complete:\n• ${v.errors.join('\n• ')}`);
         return;
       }
     }
@@ -3619,6 +3817,11 @@ class CoursePlanApp {
     this.harvestFormInputs();
     if (this.activeFormTab !== 'declaration') {
       alert('🔒 Print Preview is enabled after reaching Part-IV (Declaration & HOD Approval). Please complete each section and proceed to Part-IV.');
+      return;
+    }
+    const v = this.validatePart4();
+    if (!v.valid) {
+      alert(`🔒 Cannot open Print Preview: All fields across all sections are mandatory.\n\nPlease complete:\n• ${v.errors.join('\n• ')}`);
       return;
     }
     this.viewMode = 'print';
@@ -3773,7 +3976,7 @@ class CoursePlanApp {
         { sno: '4', topic: '', tool: 'E-Book / PDF Notes', platform: 'JosTEL', purpose: '' }
       ],
       declaration: {
-        confirmed: true,
+        confirmed: false,
         faculty_signature: '',
         submission_date: new Date().toISOString().split('T')[0],
         reviewer_name: '',
@@ -3997,8 +4200,9 @@ class CoursePlanApp {
     if (icts.length > 0) this.activePlan.ict_integration = icts;
 
     // Declaration
+    const declCheckEl = document.getElementById('cp-decl-check');
     this.activePlan.declaration = {
-      confirmed: document.getElementById('cp-decl-check')?.checked || true,
+      confirmed: declCheckEl ? declCheckEl.checked : (this.activePlan.declaration?.confirmed || false),
       faculty_signature: document.getElementById('cp-decl-fac-sig')?.value || this.activePlan.faculty_name,
       submission_date: document.getElementById('cp-decl-fac-date')?.value || new Date().toISOString().split('T')[0]
     };
@@ -4013,19 +4217,9 @@ class CoursePlanApp {
         alert('🔒 Submit to HOD is enabled after completing IV Declaration & HOD Approval. Please proceed to Part-IV to review and submit.');
         return;
       }
-      if (!this.activePlan.faculty_name) {
-        alert('Please select your Faculty Name from the dropdown.');
-        this.switchFormTab('part1');
-        return;
-      }
-      if (!this.activePlan.course_code || !this.activePlan.course_title) {
-        alert('Please enter Course Code and Course Title.');
-        this.switchFormTab('part1');
-        return;
-      }
-      const declCheck = document.getElementById('cp-decl-check');
-      if (declCheck && !declCheck.checked) {
-        alert('Please verify and check the Declaration confirmation box before submitting to HOD.');
+      const v = this.validatePart4();
+      if (!v.valid) {
+        alert(`🔒 Cannot submit to HOD: All fields across all sections are mandatory.\n\nPlease complete:\n• ${v.errors.join('\n• ')}`);
         return;
       }
     } else {
