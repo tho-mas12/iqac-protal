@@ -65,7 +65,7 @@ export default function LoginPage() {
 
       {/* Top Navigation Menu: Course Plan & AAA */}
       <div className="fixed top-4 right-4 sm:top-6 sm:right-6 z-20 flex items-center gap-2 sm:gap-3 flex-wrap justify-end">
-        {/* Course Plan 2026 - 2027 (Even) Link */}
+        {/* Course Plan 2026 - 2027 (Even) Direct Form */}
         <a
           href="/course-plan/"
           target="_blank"
@@ -73,8 +73,20 @@ export default function LoginPage() {
           className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 bg-white/95 hover:bg-white text-slate-800 hover:text-indigo-600 font-bold text-xs sm:text-sm rounded-2xl shadow-lg hover:shadow-xl border border-slate-200/80 backdrop-blur-md transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] group"
         >
           <Calendar className="w-3.5 h-3.5 text-indigo-500 group-hover:scale-110 transition-transform" />
-          <span>Course Plan 2026 - 2027 (Even)</span>
+          <span>Course Plan Form</span>
           <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-600 transition-colors" />
+        </a>
+
+        {/* Course Plan HOD & Admin Login */}
+        <a
+          href="/course-plan/login"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 bg-indigo-50/95 hover:bg-indigo-100 text-indigo-800 hover:text-indigo-950 font-bold text-xs sm:text-sm rounded-2xl shadow-lg hover:shadow-xl border border-indigo-200/80 backdrop-blur-md transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] group"
+        >
+          <Lock className="w-3.5 h-3.5 text-indigo-600 group-hover:scale-110 transition-transform" />
+          <span>Course Plan (HOD / Admin Login)</span>
+          <ExternalLink className="w-3.5 h-3.5 text-indigo-400 group-hover:text-indigo-700 transition-colors" />
         </a>
 
         {/* AAA 2026 - 2027 Link */}
