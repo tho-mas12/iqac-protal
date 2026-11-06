@@ -2040,6 +2040,18 @@ class CoursePlanApp {
     const icts = plan.ict_integration || [];
     const decl = plan.declaration || {};
 
+    const part1Done = this.isPart1Complete();
+    const part2Done = this.isPart2Complete();
+    const part3Done = this.isPart3Complete();
+    const part4Done = this.isPart4Complete();
+
+    const part2Locked = !part1Done;
+    const part3Locked = !part2Done;
+    const part4Locked = !part3Done;
+
+    const isDeclarationTab = (this.activeFormTab === 'declaration');
+    const canPrintAndSubmit = isDeclarationTab && !part4Locked;
+
     return `
       <div class="space-y-6 animate-fadeIn w-full">
         <!-- Institutional Header Banner (matching PDF Header) -->
@@ -2063,77 +2075,132 @@ class CoursePlanApp {
 
         <!-- Part-wise Navigation Tabs & Form Actions -->
         <div class="bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3 sticky top-16 z-20">
-          <!-- Navigation Tabs -->
+          <!-- Navigation Tabs with Stage Lock Icons -->
           <div class="flex flex-wrap items-center gap-1.5">
+            <!-- Part I Tab (Always Unlocked) -->
             <button 
               type="button" 
               onclick="coursePlanApp.switchFormTab('part1')" 
-              class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${this.activeFormTab === 'part1' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}"
+              class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${this.activeFormTab === 'part1' ? 'bg-indigo-600 text-white shadow-sm ring-2 ring-indigo-300' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}"
             >
-              <span class="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center text-[10px]">I</span>
+              <span class="w-4 h-4 rounded-full ${part1Done ? 'bg-emerald-500 text-white' : 'bg-white/20'} flex items-center justify-center text-[10px] font-black">
+                ${part1Done ? '<i data-lucide="check" class="w-2.5 h-2.5"></i>' : 'I'}
+              </span>
               <span>Part-I: Course Info</span>
             </button>
+
+            <!-- Part II Tab (Locked until Part I Complete) -->
             <button 
               type="button" 
               onclick="coursePlanApp.switchFormTab('part2')" 
-              class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${this.activeFormTab === 'part2' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}"
+              class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${part2Locked ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-65' : (this.activeFormTab === 'part2' ? 'bg-indigo-600 text-white shadow-sm ring-2 ring-indigo-300 cursor-pointer' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer')}"
+              title="${part2Locked ? 'Locked: Complete Part-I Course Information to unlock' : 'Part-II: Teaching Plan'}"
             >
-              <span class="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center text-[10px]">II</span>
+              <span class="w-4 h-4 rounded-full ${part2Locked ? 'bg-slate-200 text-slate-500' : (part2Done ? 'bg-emerald-500 text-white' : 'bg-white/20')} flex items-center justify-center text-[10px] font-black">
+                ${part2Locked ? '<i data-lucide="lock" class="w-2.5 h-2.5"></i>' : (part2Done ? '<i data-lucide="check" class="w-2.5 h-2.5"></i>' : 'II')}
+              </span>
               <span>Part-II: Teaching Plan</span>
+              ${part2Locked ? '<i data-lucide="lock" class="w-3 h-3 text-slate-400 ml-0.5"></i>' : ''}
             </button>
+
+            <!-- Part III Tab (Locked until Part II Complete) -->
             <button 
               type="button" 
               onclick="coursePlanApp.switchFormTab('part3')" 
-              class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${this.activeFormTab === 'part3' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}"
+              class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${part3Locked ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-65' : (this.activeFormTab === 'part3' ? 'bg-indigo-600 text-white shadow-sm ring-2 ring-indigo-300 cursor-pointer' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer')}"
+              title="${part3Locked ? 'Locked: Complete Part-II Teaching Plan topics to unlock' : 'Part-III: Activities & CIA'}"
             >
-              <span class="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center text-[10px]">III</span>
+              <span class="w-4 h-4 rounded-full ${part3Locked ? 'bg-slate-200 text-slate-500' : (part3Done ? 'bg-emerald-500 text-white' : 'bg-white/20')} flex items-center justify-center text-[10px] font-black">
+                ${part3Locked ? '<i data-lucide="lock" class="w-2.5 h-2.5"></i>' : (part3Done ? '<i data-lucide="check" class="w-2.5 h-2.5"></i>' : 'III')}
+              </span>
               <span>Part-III: Activities & CIA</span>
+              ${part3Locked ? '<i data-lucide="lock" class="w-3 h-3 text-slate-400 ml-0.5"></i>' : ''}
             </button>
+
+            <!-- Part IV Tab (Locked until Part III Complete) -->
             <button 
               type="button" 
               onclick="coursePlanApp.switchFormTab('declaration')" 
-              class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${this.activeFormTab === 'declaration' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}"
+              class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${part4Locked ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-65' : (this.activeFormTab === 'declaration' ? 'bg-indigo-600 text-white shadow-sm ring-2 ring-indigo-300 cursor-pointer' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer')}"
+              title="${part4Locked ? 'Locked: Complete Part-III Activities & Assessment to unlock' : 'IV Declaration & HOD Approval'}"
             >
-              <span class="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center text-[10px]">IV</span>
-              <span>Declaration & HOD Approval</span>
+              <span class="w-4 h-4 rounded-full ${part4Locked ? 'bg-slate-200 text-slate-500' : (part4Done ? 'bg-emerald-500 text-white' : 'bg-white/20')} flex items-center justify-center text-[10px] font-black">
+                ${part4Locked ? '<i data-lucide="lock" class="w-2.5 h-2.5"></i>' : (part4Done ? '<i data-lucide="check" class="w-2.5 h-2.5"></i>' : 'IV')}
+              </span>
+              <span>IV Declaration & HOD Approval</span>
+              ${part4Locked ? '<i data-lucide="lock" class="w-3 h-3 text-slate-400 ml-0.5"></i>' : ''}
             </button>
           </div>
 
           <!-- Action Buttons Next to Tabs -->
           <div class="flex items-center gap-2 flex-wrap shrink-0">
+            <!-- New Form Button -->
             <button 
               type="button" 
               onclick="coursePlanApp.createNewPlan()" 
-              class="text-xs px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition flex items-center gap-1.5 border border-slate-300 shadow-2xs cursor-pointer"
+              class="text-xs px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition flex items-center gap-1.5 border border-slate-300 shadow-2xs cursor-pointer active:scale-95"
               title="Clear form and start a new course plan"
             >
               <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 text-slate-500"></i>
               <span>New Form</span>
             </button>
-            <button 
-              type="button" 
-              onclick="coursePlanApp.previewCurrentPlan()" 
-              class="text-xs px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl transition flex items-center gap-1.5 border border-slate-300 shadow-2xs cursor-pointer"
-            >
-              <i data-lucide="printer" class="w-3.5 h-3.5 text-slate-600"></i>
-              <span>Print Preview</span>
-            </button>
+
+            <!-- Print Preview (Enabled ONLY on Part-IV) -->
+            ${canPrintAndSubmit ? `
+              <button 
+                type="button" 
+                onclick="coursePlanApp.previewCurrentPlan()" 
+                class="text-xs px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl transition flex items-center gap-1.5 border border-slate-300 shadow-2xs cursor-pointer active:scale-95"
+                title="Preview printable course plan"
+              >
+                <i data-lucide="printer" class="w-3.5 h-3.5 text-slate-600"></i>
+                <span>Print Preview</span>
+              </button>
+            ` : `
+              <button 
+                type="button" 
+                disabled 
+                class="text-xs px-3 py-2 bg-slate-100 text-slate-400 font-bold rounded-xl flex items-center gap-1.5 border border-slate-200 cursor-not-allowed opacity-60"
+                title="Print Preview is enabled after reaching Part-IV (Declaration & HOD Approval)"
+              >
+                <i data-lucide="lock" class="w-3.5 h-3.5 text-slate-400"></i>
+                <span>Print Preview</span>
+              </button>
+            `}
+
+            <!-- Save as Draft (Always Available) -->
             <button 
               type="button" 
               onclick="coursePlanApp.saveCurrentPlan('Draft')" 
-              class="text-xs px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-800 font-bold rounded-xl transition flex items-center gap-1.5 border border-slate-300 shadow-2xs cursor-pointer"
+              class="text-xs px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-800 font-bold rounded-xl transition flex items-center gap-1.5 border border-slate-300 shadow-2xs cursor-pointer active:scale-95"
+              title="Save current progress as a draft"
             >
               <i data-lucide="save" class="w-4 h-4 text-slate-500"></i>
               <span>Save as Draft</span>
             </button>
-            <button 
-              type="button" 
-              onclick="coursePlanApp.saveCurrentPlan('Submitted')" 
-              class="text-xs px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl transition flex items-center gap-1.5 shadow-md shadow-indigo-600/25 cursor-pointer active:scale-95"
-            >
-              <i data-lucide="send" class="w-3.5 h-3.5"></i>
-              <span>Submit to HOD</span>
-            </button>
+
+            <!-- Submit to HOD (Enabled ONLY on Part-IV) -->
+            ${canPrintAndSubmit ? `
+              <button 
+                type="button" 
+                onclick="coursePlanApp.saveCurrentPlan('Submitted')" 
+                class="text-xs px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl transition flex items-center gap-1.5 shadow-md shadow-indigo-600/25 cursor-pointer active:scale-95 animate-pulse"
+                title="Submit completed course plan to Head of Department"
+              >
+                <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                <span>Submit to HOD</span>
+              </button>
+            ` : `
+              <button 
+                type="button" 
+                disabled 
+                class="text-xs px-4 py-2 bg-slate-200 text-slate-400 font-bold rounded-xl flex items-center gap-1.5 cursor-not-allowed opacity-60"
+                title="Submit to HOD is enabled after reaching Part-IV (Declaration & HOD Approval)"
+              >
+                <i data-lucide="lock" class="w-3.5 h-3.5 text-slate-400"></i>
+                <span>Submit to HOD</span>
+              </button>
+            `}
           </div>
         </div>
 
@@ -2459,8 +2526,8 @@ class CoursePlanApp {
             <div class="flex justify-end pt-4 border-t border-slate-100">
               <button 
                 type="button" 
-                onclick="coursePlanApp.switchFormTab('part2')" 
-                class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition flex items-center gap-1.5 shadow-sm"
+                onclick="coursePlanApp.proceedToTab('part2')" 
+                class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition flex items-center gap-2 shadow-sm cursor-pointer active:scale-95"
               >
                 <span>Continue to Part-II: Teaching Plan</span>
                 <i data-lucide="arrow-right" class="w-4 h-4"></i>
@@ -2647,9 +2714,15 @@ class CoursePlanApp {
             </div>
 
             <div class="flex justify-between pt-4 border-t border-slate-100">
-              <button type="button" onclick="coursePlanApp.switchFormTab('part1')" class="px-4 py-2 bg-slate-100 text-slate-700 font-bold rounded-xl text-xs">← Back to Part-I</button>
-              <button type="button" onclick="coursePlanApp.switchFormTab('part3')" class="px-5 py-2.5 bg-indigo-600 text-white font-bold rounded-xl text-xs flex items-center gap-1.5">
-                <span>Continue to Part-III: Activities</span>
+              <button type="button" onclick="coursePlanApp.switchFormTab('part1')" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition cursor-pointer">
+                ← Back to Part-I
+              </button>
+              <button 
+                type="button" 
+                onclick="coursePlanApp.proceedToTab('part3')" 
+                class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-2 cursor-pointer active:scale-95 shadow-sm"
+              >
+                <span>Continue to Part-III: Activities & CIA</span>
                 <i data-lucide="arrow-right" class="w-4 h-4"></i>
               </button>
             </div>
@@ -3011,9 +3084,15 @@ class CoursePlanApp {
             </div>
 
             <div class="flex justify-between pt-4 border-t border-slate-100">
-              <button type="button" onclick="coursePlanApp.switchFormTab('part2')" class="px-4 py-2 bg-slate-100 text-slate-700 font-bold rounded-xl text-xs">← Back to Part-II</button>
-              <button type="button" onclick="coursePlanApp.switchFormTab('declaration')" class="px-5 py-2.5 bg-indigo-600 text-white font-bold rounded-xl text-xs flex items-center gap-1.5">
-                <span>Continue to Declaration & Submission</span>
+              <button type="button" onclick="coursePlanApp.switchFormTab('part2')" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition cursor-pointer">
+                ← Back to Part-II
+              </button>
+              <button 
+                type="button" 
+                onclick="coursePlanApp.proceedToTab('declaration')" 
+                class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-2 cursor-pointer active:scale-95 shadow-sm"
+              >
+                <span>Continue to IV Declaration & HOD Approval</span>
                 <i data-lucide="arrow-right" class="w-4 h-4"></i>
               </button>
             </div>
@@ -3396,9 +3475,100 @@ class CoursePlanApp {
     `;
   }
 
+  // ================= STAGE PROGRESSION & VALIDATION =================
+  isPart1Complete() {
+    if (!this.activePlan) return false;
+    const p = this.activePlan;
+    const fac = p.faculty_name ? p.faculty_name.trim() : '';
+    const code = p.course_code ? p.course_code.trim() : '';
+    const title = p.course_title ? p.course_title.trim() : '';
+    return (fac.length > 0 && code.length > 0 && title.length > 0);
+  }
+
+  getPart1MissingReason() {
+    if (!this.activePlan) return 'Please complete Part-I details.';
+    const p = this.activePlan;
+    const missing = [];
+    if (!p.faculty_name || !p.faculty_name.trim()) missing.push('Name of Faculty Member');
+    if (!p.course_code || !p.course_code.trim()) missing.push('Course Code');
+    if (!p.course_title || !p.course_title.trim()) missing.push('Course Title');
+    if (missing.length > 0) return `Please select or enter: ${missing.join(', ')}.`;
+    return '';
+  }
+
+  isPart2Complete() {
+    if (!this.isPart1Complete()) return false;
+    const p = this.activePlan;
+    if (!p.detailed_teaching_plan || p.detailed_teaching_plan.length === 0) return false;
+    // Check if at least one topic or hours is entered
+    const hasTopics = p.detailed_teaching_plan.some(d => (d.topics && d.topics.trim().length > 0) || (d.hours && d.hours.trim().length > 0));
+    return hasTopics;
+  }
+
+  isPart3Complete() {
+    return this.isPart2Complete();
+  }
+
+  isPart4Complete() {
+    if (!this.isPart3Complete()) return false;
+    const p = this.activePlan;
+    const decl = p.declaration || {};
+    return !!(decl.confirmed && p.faculty_name);
+  }
+
+  proceedToTab(targetTab) {
+    this.harvestFormInputs();
+    if (targetTab === 'part2') {
+      if (!this.isPart1Complete()) {
+        const reason = this.getPart1MissingReason();
+        alert(`🔒 Part-I Incomplete\n\n${reason}`);
+        return;
+      }
+    } else if (targetTab === 'part3') {
+      if (!this.isPart2Complete()) {
+        alert('🔒 Part-II Incomplete\n\nPlease enter the teaching topics/hours for the units before proceeding to Part-III.');
+        return;
+      }
+    } else if (targetTab === 'declaration') {
+      if (!this.isPart3Complete()) {
+        alert('🔒 Part-III Incomplete\n\nPlease complete Part-III sections before proceeding to Declaration.');
+        return;
+      }
+    }
+    this.switchFormTab(targetTab);
+  }
+
   // ================= TAB SWITCHING =================
   switchFormTab(tabKey) {
     this.harvestFormInputs();
+
+    // Prevent jumping forward if previous sections are not completed
+    if (tabKey === 'part2' && !this.isPart1Complete()) {
+      const reason = this.getPart1MissingReason();
+      alert(`🔒 Part-II is Locked\n\n${reason}`);
+      return;
+    }
+    if (tabKey === 'part3') {
+      if (!this.isPart1Complete()) {
+        alert(`🔒 Part-III is Locked\n\n${this.getPart1MissingReason()}`);
+        return;
+      }
+      if (!this.isPart2Complete()) {
+        alert('🔒 Part-III is Locked\n\nPlease enter topics in Part-II Teaching Plan first.');
+        return;
+      }
+    }
+    if (tabKey === 'declaration') {
+      if (!this.isPart1Complete()) {
+        alert(`🔒 Declaration is Locked\n\n${this.getPart1MissingReason()}`);
+        return;
+      }
+      if (!this.isPart2Complete()) {
+        alert('🔒 Declaration is Locked\n\nPlease complete Part-II Teaching Plan first.');
+        return;
+      }
+    }
+
     this.activeFormTab = tabKey;
     ['part1', 'part2', 'part3', 'declaration'].forEach(k => {
       const el = document.getElementById(`section-${k}`);
@@ -3447,6 +3617,10 @@ class CoursePlanApp {
 
   previewCurrentPlan() {
     this.harvestFormInputs();
+    if (this.activeFormTab !== 'declaration') {
+      alert('🔒 Print Preview is enabled after reaching Part-IV (Declaration & HOD Approval). Please complete each section and proceed to Part-IV.');
+      return;
+    }
     this.viewMode = 'print';
     this.render();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -3834,16 +4008,31 @@ class CoursePlanApp {
     this.harvestFormInputs();
     this.activePlan.status = status;
 
-    if (!this.activePlan.faculty_name) {
-      alert('Please select your Faculty Name from the dropdown.');
-      this.switchFormTab('part1');
-      return;
-    }
-
-    if (!this.activePlan.course_code || !this.activePlan.course_title) {
-      alert('Please enter Course Code and Course Title.');
-      this.switchFormTab('part1');
-      return;
+    if (status === 'Submitted') {
+      if (this.activeFormTab !== 'declaration') {
+        alert('🔒 Submit to HOD is enabled after completing IV Declaration & HOD Approval. Please proceed to Part-IV to review and submit.');
+        return;
+      }
+      if (!this.activePlan.faculty_name) {
+        alert('Please select your Faculty Name from the dropdown.');
+        this.switchFormTab('part1');
+        return;
+      }
+      if (!this.activePlan.course_code || !this.activePlan.course_title) {
+        alert('Please enter Course Code and Course Title.');
+        this.switchFormTab('part1');
+        return;
+      }
+      const declCheck = document.getElementById('cp-decl-check');
+      if (declCheck && !declCheck.checked) {
+        alert('Please verify and check the Declaration confirmation box before submitting to HOD.');
+        return;
+      }
+    } else {
+      if (!this.activePlan.faculty_name && !this.activePlan.course_code) {
+        // Allow saving draft with minimal info, but prompt if completely blank
+        if (!confirm('Faculty name and course details are not yet selected. Save empty draft anyway?')) return;
+      }
     }
 
     try {
