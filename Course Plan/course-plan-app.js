@@ -705,7 +705,7 @@ class CoursePlanApp {
         <!-- Autocomplete Dropdown Menu -->
         <div 
           id="dtp-method-menu-${rowIdx}" 
-          class="hidden absolute left-0 top-full mt-1 bg-white border border-slate-300 rounded-xl shadow-2xl z-40 p-2 space-y-2 w-72 sm:w-80"
+          class="hidden absolute left-0 sm:left-auto right-0 sm:right-auto top-full mt-1 bg-white border border-slate-300 rounded-xl shadow-2xl z-40 p-2 space-y-2 w-[calc(100vw-3rem)] max-w-xs sm:w-80"
           onclick="event.stopPropagation()"
         >
           <div class="relative">
@@ -928,8 +928,8 @@ class CoursePlanApp {
     const curDept = deptName || (existingFac ? existingFac.dept : this.selectedDept);
 
     el.innerHTML = `
-      <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 animate-scaleIn space-y-5">
+      <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-2 sm:p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-4 sm:p-6 shadow-2xl border border-slate-200 animate-scaleIn space-y-4 max-h-[92vh] overflow-y-auto">
           <div class="flex items-center justify-between border-b border-slate-200 pb-3">
             <h3 class="text-base font-black text-slate-900 flex items-center gap-2">
               <i data-lucide="user-plus" class="w-5 h-5 text-indigo-600"></i>
@@ -952,7 +952,7 @@ class CoursePlanApp {
               <label class="block font-bold text-slate-700 mb-1">Faculty Name (with Title) *</label>
               <input type="text" id="af-name" value="${isEdit ? existingFac.name : ''}" placeholder="e.g. Dr. K. Soundararajan" class="w-full px-3 py-2 border border-slate-300 rounded-xl font-bold" />
             </div>
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label class="block font-bold text-slate-700 mb-1">Shift</label>
                 <select id="af-shift" class="w-full px-3 py-2 border border-slate-300 rounded-xl bg-white font-bold">
@@ -1062,8 +1062,8 @@ class CoursePlanApp {
     const isEdit = !!existingCourse;
 
     el.innerHTML = `
-      <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl border border-slate-200 animate-scaleIn space-y-5">
+      <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-2 sm:p-4">
+        <div class="bg-white rounded-2xl max-w-xl w-full p-4 sm:p-6 shadow-2xl border border-slate-200 animate-scaleIn space-y-4 max-h-[92vh] overflow-y-auto">
           <div class="flex items-center justify-between border-b border-slate-200 pb-3">
             <h3 class="text-base font-black text-slate-900 flex items-center gap-2">
               <i data-lucide="book-plus" class="w-5 h-5 text-indigo-600"></i>
@@ -1074,7 +1074,7 @@ class CoursePlanApp {
 
           <div class="space-y-3.5 text-xs max-h-[70vh] overflow-y-auto pr-1">
             <input type="hidden" id="ac-old-code" value="${isEdit ? existingCourse.course_code : ''}" />
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label class="block font-bold text-slate-700 mb-1">Course Code *</label>
                 <input type="text" id="ac-code" value="${isEdit ? existingCourse.course_code : ''}" placeholder="e.g. 25UCS23CC03" class="w-full px-3 py-2 border border-slate-300 rounded-xl font-bold font-mono uppercase" />
@@ -1094,7 +1094,7 @@ class CoursePlanApp {
               <input type="text" id="ac-title" value="${isEdit ? existingCourse.course_title : ''}" placeholder="e.g. Core Course - 3: Python Programming" class="w-full px-3 py-2 border border-slate-300 rounded-xl font-bold" />
             </div>
 
-            <div class="grid grid-cols-3 gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
                 <label class="block font-bold text-slate-700 mb-1">Semester</label>
                 <select id="ac-sem" class="w-full px-3 py-2 border border-slate-300 rounded-xl bg-white font-bold">
@@ -1370,43 +1370,43 @@ class CoursePlanApp {
       const roleTitle = isHOD ? 'Head of Department' : isFaculty ? 'Faculty Member' : 'IQAC Admin';
 
       authStatusEl.innerHTML = `
-        <div class="flex items-center gap-2 flex-wrap">
+        <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
           ${isFaculty ? `
             <button 
               type="button" 
               onclick="coursePlanApp.navigateTo('/course-plan/dashboard')" 
-              class="px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+              class="px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition flex items-center gap-1 cursor-pointer shadow-2xs"
             >
               <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
-              <span>My Dashboard</span>
+              <span>Dashboard</span>
             </button>
           ` : isHOD ? `
             <button 
               type="button" 
               onclick="coursePlanApp.navigateTo('/course-plan/hod')" 
-              class="px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+              class="px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition flex items-center gap-1 cursor-pointer shadow-2xs"
             >
               <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
-              <span>HOD Dashboard</span>
+              <span>HOD Portal</span>
             </button>
           ` : `
             <button 
               type="button" 
               onclick="coursePlanApp.navigateTo('/course-plan/admin')" 
-              class="px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+              class="px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition flex items-center gap-1 cursor-pointer shadow-2xs"
             >
               <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
-              <span>Admin Dashboard</span>
+              <span>Admin Hub</span>
             </button>
           `}
-          <span class="px-2.5 py-1 rounded-xl text-xs font-bold ${roleBadge} flex items-center gap-1.5">
-            <i data-lucide="${roleIcon}" class="w-3.5 h-3.5"></i>
-            <span>${this.escapeHtml(this.currentUser.display_name || this.currentUser.faculty_name || 'User')}</span>
+          <span class="px-2 sm:px-2.5 py-1 rounded-xl text-[11px] sm:text-xs font-bold ${roleBadge} flex items-center gap-1 max-w-[130px] sm:max-w-xs truncate" title="${this.escapeHtml(this.currentUser.display_name || this.currentUser.faculty_name || 'User')}">
+            <i data-lucide="${roleIcon}" class="w-3.5 h-3.5 shrink-0"></i>
+            <span class="truncate">${this.escapeHtml(this.currentUser.display_name || this.currentUser.faculty_name || 'User')}</span>
           </span>
           <button 
             type="button" 
             onclick="coursePlanApp.logout()" 
-            class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold rounded-xl text-xs transition border border-rose-200 cursor-pointer"
+            class="px-2.5 sm:px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold rounded-xl text-[11px] sm:text-xs transition border border-rose-200 cursor-pointer"
           >
             Sign Out
           </button>
@@ -2321,7 +2321,7 @@ class CoursePlanApp {
             </div>
 
             <div class="overflow-x-auto w-full">
-              <table class="w-full text-left text-xs border-collapse">
+              <table class="w-full text-left text-xs border-collapse mobile-card-table">
                 <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold uppercase text-[11px]">
                   <tr>
                     <th class="p-3 text-center w-12">S.No</th>
@@ -2367,10 +2367,10 @@ class CoursePlanApp {
 
                     return `
                       <tr class="hover:bg-slate-50/70 transition">
-                        <td class="p-3 text-center font-bold text-slate-400">${idx + 1}</td>
-                        <td class="p-3 font-bold text-slate-900">${fac.name}</td>
-                        <td class="p-3 text-slate-600">Shift ${fac.shift || 'I'} • ${fac.category || 'Faculty'}</td>
-                        <td class="p-3 font-mono text-slate-600">${fac.email || '—'}</td>
+                        <td class="p-3 text-center font-bold text-slate-400" data-label="S.No">${idx + 1}</td>
+                        <td class="p-3 font-bold text-slate-900" data-label="Faculty Member">${fac.name}</td>
+                        <td class="p-3 text-slate-600" data-label="Shift & Designation">Shift ${fac.shift || 'I'} • ${fac.category || 'Faculty'}</td>
+                        <td class="p-3 font-mono text-slate-600" data-label="Email">${fac.email || '—'}</td>
                         <td class="p-3">
                           ${facPlans.length === 0 ? '<span class="text-slate-400 italic">None</span>' : `
                             <div class="flex flex-wrap gap-1">
@@ -2382,8 +2382,8 @@ class CoursePlanApp {
                             </div>
                           `}
                         </td>
-                        <td class="p-3 text-center">${statusBadge}</td>
-                        <td class="p-3 text-center">
+                        <td class="p-3 text-center" data-label="Status">${statusBadge}</td>
+                        <td class="p-3 text-center" data-label="Action">
                           ${facPlans.length > 0 ? `
                             <button 
                               type="button" 
@@ -2418,7 +2418,7 @@ class CoursePlanApp {
               </div>
             ` : `
               <div class="overflow-x-auto w-full">
-                <table class="w-full text-left text-xs border-collapse">
+                <table class="w-full text-left text-xs border-collapse mobile-card-table">
                   <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold uppercase text-[11px]">
                     <tr>
                       <th class="p-3 text-center w-12">S.No</th>
@@ -2433,25 +2433,25 @@ class CoursePlanApp {
                   <tbody class="divide-y divide-slate-100 font-medium">
                     ${plans.map((p, idx) => `
                       <tr class="hover:bg-slate-50/70 transition">
-                        <td class="p-3 text-center font-bold text-slate-400">${idx + 1}</td>
-                        <td class="p-3 cursor-pointer group" onclick="coursePlanApp.openHODReviewModal(${p.id})" title="Click to review this course plan">
+                        <td class="p-3 text-center font-bold text-slate-400" data-label="S.No">${idx + 1}</td>
+                        <td class="p-3 cursor-pointer group" onclick="coursePlanApp.openHODReviewModal(${p.id})" title="Click to review this course plan" data-label="Course Code & Title">
                           <div class="font-bold text-slate-900 group-hover:text-indigo-600 transition flex items-center gap-1.5">
                             <span>${p.course_code || '—'}</span>
                             <i data-lucide="external-link" class="w-3 h-3 text-slate-400 group-hover:text-indigo-600 opacity-0 group-hover:opacity-100 transition"></i>
                           </div>
                           <div class="text-slate-600 text-[11px] font-semibold group-hover:text-indigo-900">${p.course_title || 'Untitled'}</div>
                         </td>
-                        <td class="p-3 text-slate-700">
+                        <td class="p-3 text-slate-700" data-label="Programme & Sem">
                           <div>${p.programme || '—'}</div>
                           <div class="text-[10px] text-slate-400">${p.year_class || ''}${p.section && p.section !== 'N/A' ? ' (' + p.section + ')' : ''} • Semester ${p.semester || ''}</div>
                         </td>
-                        <td class="p-3 font-bold text-slate-800">${p.faculty_name || '—'}</td>
-                        <td class="p-3 text-center">
+                        <td class="p-3 font-bold text-slate-800" data-label="Faculty Member">${p.faculty_name || '—'}</td>
+                        <td class="p-3 text-center" data-label="Submission Status">
                           <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${p.status === 'Submitted' || p.status === 'Approved by HOD' ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' : 'bg-slate-100 text-slate-600'}">
                             ${p.status || 'Draft'}
                           </span>
                         </td>
-                        <td class="p-3 text-center">
+                        <td class="p-3 text-center" data-label="HOD Approval">
                           ${p.hod_status === 'Approved' ? `
                             <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center justify-center gap-1 mx-auto w-fit">
                               <i data-lucide="check-circle" class="w-3 h-3 text-emerald-600"></i>
@@ -2467,7 +2467,7 @@ class CoursePlanApp {
                             </span>
                           `}
                         </td>
-                        <td class="p-3 text-center">
+                        <td class="p-3 text-center" data-label="Actions">
                           <div class="flex items-center justify-center gap-1.5 flex-wrap">
                             <button 
                               type="button" 
@@ -2838,7 +2838,7 @@ class CoursePlanApp {
               </div>
             ` : `
               <div class="overflow-x-auto w-full">
-                <table class="w-full text-left text-xs border-collapse">
+                <table class="w-full text-left text-xs border-collapse mobile-card-table">
                   <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold uppercase text-[11px]">
                     <tr>
                       <th class="p-3 text-center w-12">S.No</th>
@@ -3218,14 +3218,14 @@ class CoursePlanApp {
         </div>
 
         <!-- Part-wise Navigation Tabs & Form Actions -->
-        <div class="bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3 sticky top-16 z-20">
-          <!-- Navigation Tabs with Stage Lock Icons -->
-          <div class="flex flex-wrap items-center gap-1.5">
+        <div class="bg-white p-2 sm:p-2.5 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-2.5 sticky top-14 sm:top-16 z-20">
+          <!-- Navigation Tabs with Stage Lock Icons (Horizontally scrollable on mobile) -->
+          <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar w-full md:w-auto flex-nowrap py-0.5">
             <!-- Part I Tab (Always Unlocked) -->
             <button 
               type="button" 
               onclick="coursePlanApp.switchFormTab('part1')" 
-              class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${this.activeFormTab === 'part1' ? 'bg-indigo-600 text-white shadow-sm ring-2 ring-indigo-300' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}"
+              class="px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shrink-0 whitespace-nowrap ${this.activeFormTab === 'part1' ? 'bg-indigo-600 text-white shadow-sm ring-2 ring-indigo-300' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}"
             >
               <span class="w-4 h-4 rounded-full ${part1Done ? 'bg-emerald-500 text-white' : 'bg-white/20'} flex items-center justify-center text-[10px] font-black">
                 ${part1Done ? '<i data-lucide="check" class="w-2.5 h-2.5"></i>' : 'I'}
@@ -3237,7 +3237,7 @@ class CoursePlanApp {
             <button 
               type="button" 
               onclick="coursePlanApp.switchFormTab('part2')" 
-              class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${part2Locked ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-65' : (this.activeFormTab === 'part2' ? 'bg-indigo-600 text-white shadow-sm ring-2 ring-indigo-300 cursor-pointer' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer')}"
+              class="px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shrink-0 whitespace-nowrap ${part2Locked ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-65' : (this.activeFormTab === 'part2' ? 'bg-indigo-600 text-white shadow-sm ring-2 ring-indigo-300 cursor-pointer' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer')}"
               title="${part2Locked ? 'Locked: Complete Part-I Course Information to unlock' : 'Part-II: Teaching Plan'}"
             >
               <span class="w-4 h-4 rounded-full ${part2Locked ? 'bg-slate-200 text-slate-500' : (part2Done ? 'bg-emerald-500 text-white' : 'bg-white/20')} flex items-center justify-center text-[10px] font-black">
@@ -3251,7 +3251,7 @@ class CoursePlanApp {
             <button 
               type="button" 
               onclick="coursePlanApp.switchFormTab('part3')" 
-              class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${part3Locked ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-65' : (this.activeFormTab === 'part3' ? 'bg-indigo-600 text-white shadow-sm ring-2 ring-indigo-300 cursor-pointer' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer')}"
+              class="px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shrink-0 whitespace-nowrap ${part3Locked ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-65' : (this.activeFormTab === 'part3' ? 'bg-indigo-600 text-white shadow-sm ring-2 ring-indigo-300 cursor-pointer' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer')}"
               title="${part3Locked ? 'Locked: Complete Part-II Teaching Plan topics to unlock' : 'Part-III: Activities & CIA'}"
             >
               <span class="w-4 h-4 rounded-full ${part3Locked ? 'bg-slate-200 text-slate-500' : (part3Done ? 'bg-emerald-500 text-white' : 'bg-white/20')} flex items-center justify-center text-[10px] font-black">
@@ -3265,7 +3265,7 @@ class CoursePlanApp {
             <button 
               type="button" 
               onclick="coursePlanApp.switchFormTab('declaration')" 
-              class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${part4Locked ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-65' : (this.activeFormTab === 'declaration' ? 'bg-indigo-600 text-white shadow-sm ring-2 ring-indigo-300 cursor-pointer' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer')}"
+              class="px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shrink-0 whitespace-nowrap ${part4Locked ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-65' : (this.activeFormTab === 'declaration' ? 'bg-indigo-600 text-white shadow-sm ring-2 ring-indigo-300 cursor-pointer' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer')}"
               title="${part4Locked ? 'Locked: Complete Part-III Activities & Assessment to unlock' : 'IV Declaration & HOD Approval'}"
             >
               <span class="w-4 h-4 rounded-full ${part4Locked ? 'bg-slate-200 text-slate-500' : (part4Done ? 'bg-emerald-500 text-white' : 'bg-white/20')} flex items-center justify-center text-[10px] font-black">
@@ -3276,13 +3276,13 @@ class CoursePlanApp {
             </button>
           </div>
 
-          <!-- Action Buttons Next to Tabs -->
-          <div class="flex items-center gap-2 flex-wrap shrink-0">
+          <!-- Action Buttons Next to Tabs (Smooth responsive layout) -->
+          <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar w-full md:w-auto justify-between md:justify-end shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-slate-100">
             <!-- Back to Dashboard Button -->
             <button 
               type="button" 
               onclick="coursePlanApp.backToDashboard()" 
-              class="text-xs px-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold rounded-xl transition flex items-center gap-1.5 border border-indigo-200 shadow-2xs cursor-pointer active:scale-95"
+              class="text-xs px-2.5 sm:px-3 py-1.5 sm:py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold rounded-xl transition flex items-center gap-1 border border-indigo-200 shadow-2xs cursor-pointer active:scale-95 shrink-0"
               title="Return to your Dashboard"
             >
               <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
@@ -3293,11 +3293,12 @@ class CoursePlanApp {
             <button 
               type="button" 
               onclick="coursePlanApp.createNewPlan()" 
-              class="text-xs px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition flex items-center gap-1.5 border border-slate-300 shadow-2xs cursor-pointer active:scale-95"
+              class="text-xs px-2.5 sm:px-3 py-1.5 sm:py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition flex items-center gap-1 border border-slate-300 shadow-2xs cursor-pointer active:scale-95 shrink-0"
               title="Clear form and start a new course plan"
             >
               <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 text-slate-500"></i>
-              <span>New Form</span>
+              <span class="hidden sm:inline">New Form</span>
+              <span class="sm:hidden">Reset</span>
             </button>
 
             <!-- Print Preview (Enabled ONLY on Part-IV) -->
@@ -3305,21 +3306,23 @@ class CoursePlanApp {
               <button 
                 type="button" 
                 onclick="coursePlanApp.previewCurrentPlan()" 
-                class="text-xs px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl transition flex items-center gap-1.5 border border-slate-300 shadow-2xs cursor-pointer active:scale-95"
+                class="text-xs px-2.5 sm:px-3 py-1.5 sm:py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl transition flex items-center gap-1 border border-slate-300 shadow-2xs cursor-pointer active:scale-95 shrink-0"
                 title="Preview printable course plan"
               >
                 <i data-lucide="printer" class="w-3.5 h-3.5 text-slate-600"></i>
-                <span>Print Preview</span>
+                <span class="hidden sm:inline">Print Preview</span>
+                <span class="sm:hidden">Print</span>
               </button>
             ` : `
               <button 
                 type="button" 
                 disabled 
-                class="text-xs px-3 py-2 bg-slate-100 text-slate-400 font-bold rounded-xl flex items-center gap-1.5 border border-slate-200 cursor-not-allowed opacity-60"
+                class="text-xs px-2.5 sm:px-3 py-1.5 sm:py-2 bg-slate-100 text-slate-400 font-bold rounded-xl flex items-center gap-1 border border-slate-200 cursor-not-allowed opacity-60 shrink-0"
                 title="Print Preview is enabled after reaching Part-IV (Declaration & HOD Approval)"
               >
                 <i data-lucide="lock" class="w-3.5 h-3.5 text-slate-400"></i>
-                <span>Print Preview</span>
+                <span class="hidden sm:inline">Print Preview</span>
+                <span class="sm:hidden">Print</span>
               </button>
             `}
 
@@ -3327,11 +3330,11 @@ class CoursePlanApp {
             <button 
               type="button" 
               onclick="coursePlanApp.saveCurrentPlan('Draft')" 
-              class="text-xs px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-800 font-bold rounded-xl transition flex items-center gap-1.5 border border-slate-300 shadow-2xs cursor-pointer active:scale-95"
+              class="text-xs px-3 sm:px-3.5 py-1.5 sm:py-2 bg-white hover:bg-slate-50 text-slate-800 font-bold rounded-xl transition flex items-center gap-1 border border-slate-300 shadow-2xs cursor-pointer active:scale-95 shrink-0"
               title="Save current progress as a draft"
             >
-              <i data-lucide="save" class="w-4 h-4 text-slate-500"></i>
-              <span>Save as Draft</span>
+              <i data-lucide="save" class="w-3.5 h-3.5 text-slate-500"></i>
+              <span>Save</span>
             </button>
 
             <!-- Submit to HOD (Enabled ONLY on Part-IV) -->
@@ -3339,21 +3342,21 @@ class CoursePlanApp {
               <button 
                 type="button" 
                 onclick="coursePlanApp.saveCurrentPlan('Submitted')" 
-                class="text-xs px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl transition flex items-center gap-1.5 shadow-md shadow-indigo-600/25 cursor-pointer active:scale-95 animate-pulse"
+                class="text-xs px-3.5 sm:px-4 py-1.5 sm:py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl transition flex items-center gap-1 shadow-md shadow-indigo-600/25 cursor-pointer active:scale-95 shrink-0 animate-pulse"
                 title="Submit completed course plan to Head of Department"
               >
                 <i data-lucide="send" class="w-3.5 h-3.5"></i>
-                <span>Submit to HOD</span>
+                <span>Submit</span>
               </button>
             ` : `
               <button 
                 type="button" 
                 disabled 
-                class="text-xs px-4 py-2 bg-slate-200 text-slate-400 font-bold rounded-xl flex items-center gap-1.5 cursor-not-allowed opacity-60"
+                class="text-xs px-3.5 sm:px-4 py-1.5 sm:py-2 bg-slate-200 text-slate-400 font-bold rounded-xl flex items-center gap-1 cursor-not-allowed opacity-60 shrink-0"
                 title="Submit to HOD is enabled after reaching Part-IV (Declaration & HOD Approval)"
               >
                 <i data-lucide="lock" class="w-3.5 h-3.5 text-slate-400"></i>
-                <span>Submit to HOD</span>
+                <span>Submit</span>
               </button>
             `}
           </div>
@@ -3742,8 +3745,7 @@ class CoursePlanApp {
             <div class="flex justify-end pt-4 border-t border-slate-100">
               <button 
                 type="button" 
-                onclick="coursePlanApp.proceedToTab('part2')" 
-                class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition flex items-center gap-2 shadow-sm cursor-pointer active:scale-95"
+                onclick="coursePlanApp.proceedToTab(\'part2\')" class="w-full sm:w-auto justify-center px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition flex items-center gap-2 shadow-sm cursor-pointer active:scale-95"
               >
                 <span>Continue to Part-II: Teaching Plan</span>
                 <i data-lucide="arrow-right" class="w-4 h-4"></i>
@@ -3781,7 +3783,7 @@ class CoursePlanApp {
                 </button>
               </div>
 
-              <div class="overflow-x-auto rounded-xl border border-slate-200 max-h-[580px] scrollbar-thin">
+              <div class="overflow-x-auto rounded-xl border border-slate-200 max-h-none md:max-h-[580px] scrollbar-thin">
                 <table class="w-full text-left text-xs border-collapse mobile-card-table">
                   <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold sticky top-0 z-10">
                     <tr>
@@ -3944,8 +3946,7 @@ class CoursePlanApp {
               </button>
               <button 
                 type="button" 
-                onclick="coursePlanApp.proceedToTab('part3')" 
-                class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-2 cursor-pointer active:scale-95 shadow-sm"
+                onclick="coursePlanApp.proceedToTab(\'part3\')" class="w-full sm:w-auto justify-center px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-2 cursor-pointer active:scale-95 shadow-sm"
               >
                 <span>Continue to Part-III: Activities & CIA</span>
                 <i data-lucide="arrow-right" class="w-4 h-4"></i>
@@ -4245,8 +4246,7 @@ class CoursePlanApp {
               </button>
               <button 
                 type="button" 
-                onclick="coursePlanApp.proceedToTab('declaration')" 
-                class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-2 cursor-pointer active:scale-95 shadow-sm"
+                onclick="coursePlanApp.proceedToTab(\'declaration\')" class="w-full sm:w-auto justify-center px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-2 cursor-pointer active:scale-95 shadow-sm"
               >
                 <span>Continue to IV Declaration & HOD Approval</span>
                 <i data-lucide="arrow-right" class="w-4 h-4"></i>
@@ -4399,7 +4399,7 @@ class CoursePlanApp {
         </div>
 
         <!-- Printable Document (1:1 matching institutional PDF) -->
-        <div id="course-plan-print-doc" class="bg-white p-8 sm:p-12 rounded-2xl border border-slate-300 shadow-sm max-w-5xl mx-auto space-y-6 text-slate-900 font-sans">
+        <div id="course-plan-print-doc" class="bg-white p-4 sm:p-12 rounded-2xl border border-slate-300 shadow-sm max-w-5xl mx-auto space-y-6 text-slate-900 font-sans">
           
           <div class="text-center space-y-1 border-b-2 border-slate-800 pb-4">
             <h1 class="text-sm font-extrabold uppercase tracking-wide text-slate-700">Internal Quality Assurance Cell (IQAC)</h1>
@@ -4418,7 +4418,7 @@ class CoursePlanApp {
             <h4 class="text-xs font-black uppercase tracking-wider text-slate-900 bg-slate-100 p-2 rounded">Part-I: Course Information</h4>
             <div class="text-xs space-y-1.5 pl-2">
               <div class="font-bold text-slate-700">A. General Details</div>
-              <div class="grid grid-cols-2 gap-x-6 gap-y-1.5 text-xs">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1.5 text-xs">
                 <div><span class="font-bold text-slate-600">Name of the Faculty Member:</span> ${plan.faculty_name || '—'}</div>
                 <div><span class="font-bold text-slate-600">Department:</span> ${plan.department_name || '—'}</div>
                 <div><span class="font-bold text-slate-600">Programme:</span> ${plan.programme || '—'}</div>
@@ -4622,7 +4622,7 @@ class CoursePlanApp {
               "I hereby confirm that the course plan has been prepared based on the approved syllabus, prescribed teaching hours, academic calendar, and institutional assessment regulations."
             </div>
 
-            <div class="grid grid-cols-3 gap-6 pt-4">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4">
               <div class="space-y-6">
                 <div>Faculty Signature: <strong>${decl.faculty_signature || plan.faculty_name || '____________________'}</strong></div>
                 <div>Date: <strong>${decl.submission_date || '____________________'}</strong></div>
@@ -5259,8 +5259,8 @@ class CoursePlanApp {
     const curCiaMarks = existing?.cia_marks || (isPG ? '6' : '10');
 
     modal.innerHTML = `
-      <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-fadeIn">
-        <div class="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl border border-slate-200 animate-scaleIn space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-2 sm:p-4 animate-fadeIn">
+        <div class="bg-white rounded-2xl sm:rounded-3xl max-w-xl w-full p-4 sm:p-6 shadow-2xl border border-slate-200 animate-scaleIn space-y-4 max-h-[92vh] overflow-y-auto">
           
           <div class="flex items-center justify-between border-b border-slate-100 pb-3">
             <div class="flex items-center gap-2.5">
@@ -5990,10 +5990,10 @@ class CoursePlanApp {
     const fullPlan = (json.success && json.data) ? json.data : plan;
 
     const modalHtml = `
-      <div id="hod-review-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
-        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-3xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div id="hod-review-modal" class="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
+        <div class="bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 w-full max-w-3xl overflow-hidden flex flex-col max-h-[92vh]">
           
-          <div class="p-6 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+          <div class="p-4 sm:p-6 border-b border-slate-200 flex items-center justify-between bg-slate-50">
             <div>
               <div class="text-[10px] uppercase font-bold text-amber-700">HOD Verification & Review</div>
               <h3 class="text-base font-extrabold text-slate-900">${fullPlan.course_code}: ${fullPlan.course_title}</h3>
@@ -6005,7 +6005,7 @@ class CoursePlanApp {
           </div>
 
           <div class="p-6 overflow-y-auto space-y-4 text-xs">
-            <div class="grid grid-cols-2 gap-4 p-3 bg-slate-50 rounded-xl border border-slate-200">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 p-3 bg-slate-50 rounded-xl border border-slate-200">
               <div><span class="font-bold text-slate-600">Programme:</span> ${fullPlan.programme || '—'}</div>
               <div><span class="font-bold text-slate-600">Year & Class:</span> ${fullPlan.year_class || '—'}</div>
               <div><span class="font-bold text-slate-600">Teaching Hours:</span> ${fullPlan.teaching_hours || '—'}</div>
@@ -6029,31 +6029,31 @@ class CoursePlanApp {
             </div>
           </div>
 
-          <div class="p-5 border-t border-slate-200 bg-slate-50 flex items-center justify-between gap-3">
+          <div class="p-3.5 sm:p-5 border-t border-slate-200 bg-slate-50 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
             <button 
               type="button" 
               onclick="coursePlanApp.previewPlan(${fullPlan.id})" 
-              class="px-4 py-2 bg-white text-slate-700 font-bold border border-slate-300 rounded-xl text-xs hover:bg-slate-100 flex items-center gap-1.5"
+              class="px-4 py-2 bg-white text-slate-700 font-bold border border-slate-300 rounded-xl text-xs hover:bg-slate-100 flex items-center justify-center gap-1.5 w-full sm:w-auto"
             >
               <i data-lucide="eye" class="w-3.5 h-3.5"></i>
-              <span>View Full Document Preview</span>
+              <span>View Document Preview</span>
             </button>
 
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap w-full sm:w-auto">
               <button 
                 type="button" 
                 onclick="coursePlanApp.submitHODDecision(${fullPlan.id}, 'Revision Needed')" 
-                class="px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold rounded-xl text-xs transition border border-rose-200"
+                class="flex-1 sm:flex-initial px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold rounded-xl text-xs transition border border-rose-200 text-center"
               >
                 Request Revision
               </button>
               <button 
                 type="button" 
                 onclick="coursePlanApp.submitHODDecision(${fullPlan.id}, 'Approved')" 
-                class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl text-xs transition flex items-center gap-1.5 shadow-md shadow-emerald-600/25"
+                class="flex-1 sm:flex-initial px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/25"
               >
                 <i data-lucide="check-check" class="w-4 h-4"></i>
-                <span>Approve & Transmit to IQAC</span>
+                <span>Approve</span>
               </button>
             </div>
           </div>
