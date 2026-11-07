@@ -229,18 +229,31 @@ class CoursePlanApp {
 
   fetchFromSyllabus(courseCode, showAlert = false) {
     if (!courseCode) return;
-    const course = this.syllabusCourses.find(c => c.course_code.toLowerCase() === courseCode.toLowerCase().trim());
+    const cleanCode = courseCode.toLowerCase().trim();
+    const course = (this.syllabusCourses || []).find(c => c.course_code.toLowerCase().trim() === cleanCode);
     if (!course) {
       if (showAlert) alert("Course code '" + courseCode + "' not found in syllabus database for this department.");
       return;
     }
 
     if (!this.activePlan) this.activePlan = this.createDefaultPlan();
-    this.harvestFormInputs();
 
+    // Preserve already entered faculty metadata without letting stale course inputs overwrite
+    const curDept = document.getElementById('cp-dept-name')?.value;
+    if (curDept) this.activePlan.department_name = curDept;
+    const curFac = document.getElementById('cp-faculty-name')?.value;
+    if (curFac) this.activePlan.faculty_name = curFac;
+    const curSem = document.getElementById('cp-semester')?.value;
+    if (curSem) this.activePlan.semester = curSem;
+    const curYc = document.getElementById('cp-year-class')?.value;
+    if (curYc) this.activePlan.year_class = curYc;
+    const curSec = document.getElementById('cp-section')?.value;
+    if (curSec) this.activePlan.section = curSec;
+
+    // Auto-fill course details from syllabus master
     this.activePlan.course_code = course.course_code;
-    this.activePlan.course_title = course.course_title || this.activePlan.course_title;
-    this.activePlan.credits = course.credits || this.activePlan.credits || '3';
+    this.activePlan.course_title = course.course_title || '';
+    this.activePlan.credits = course.credits || '3';
     this.activePlan.course_category = course.course_category || this.detectCourseCategory(course.course_code, course.course_title);
     
     if (course.programme && (!this.activePlan.programme || this.activePlan.programme === '')) {
@@ -248,7 +261,7 @@ class CoursePlanApp {
     }
 
     const weeklyHrs = parseInt(course.hours) || 4;
-    this.activePlan.teaching_hours = (weeklyHrs * 15) + " Hours & " + weeklyHrs + " Hours/Week";
+    this.activePlan.teaching_hours = `${weeklyHrs * 15} Hours & ${weeklyHrs} Hours/Week`;
 
     const isPG = course.level === 'PG' || (course.year_class && course.year_class.includes('PG')) || course.course_code.includes('P') || (this.activePlan.programme && this.activePlan.programme.startsWith('M.'));
     this.activePlan.is_pg = isPG;
@@ -269,9 +282,32 @@ class CoursePlanApp {
     this.applyAssessmentRules(isPG);
     this.render();
 
+    this.showAutoFillToast(course);
+
     if (showAlert) {
       alert("✓ Auto-fetched syllabus details for " + course.course_code + ":\n• Course Title: " + (course.course_title || '—') + "\n• Credits: " + this.activePlan.credits + "\n• Teaching Hours: " + weeklyHrs + " Hrs/Week (" + (weeklyHrs*15) + " Total)\n• Unit Hours: " + perUnitHours + " Hrs/Unit (Default Actual Hours pre-filled)\n• Course Outcomes: " + (course.cos ? course.cos.length : 0) + " COs loaded!");
     }
+  }
+
+  showAutoFillToast(course) {
+    let toast = document.getElementById('cp-autofill-toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'cp-autofill-toast';
+      document.body.appendChild(toast);
+    }
+    toast.className = 'fixed bottom-6 right-6 z-50 bg-emerald-700 text-white px-5 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 animate-bounce border-2 border-emerald-400 text-xs font-bold';
+    toast.innerHTML = `
+      <div class="w-7 h-7 rounded-xl bg-white text-emerald-700 flex items-center justify-center font-black">✓</div>
+      <div>
+        <div class="text-[13px] font-black">${course.course_code} Auto-Filled!</div>
+        <div class="text-emerald-100 font-medium">${course.course_title || ''} • ${course.credits || 3} Credits • ${course.hours || 4}h/wk</div>
+      </div>
+      <button type="button" onclick="this.parentElement.remove()" class="text-emerald-200 hover:text-white font-bold ml-2">✕</button>
+    `;
+    setTimeout(() => {
+      if (toast && toast.parentElement) toast.remove();
+    }, 4500);
   }
 
   onSyllabusCourseSelected(code) {
@@ -282,7 +318,7 @@ class CoursePlanApp {
 
   onCourseCodeInputChange(val) {
     if (!val) return;
-    const match = (this.syllabusCourses || []).find(c => c.course_code.toLowerCase() === val.toLowerCase().trim());
+    const match = (this.syllabusCourses || []).find(c => c.course_code.toLowerCase().trim() === val.toLowerCase().trim());
     if (match) {
       this.fetchFromSyllabus(match.course_code, false);
     }
@@ -346,21 +382,6 @@ class CoursePlanApp {
       { sno: '6', component: 'Library Referencing - K3', marks: '5', category: 'Library Notes / Reference Work', unit_coverage: 'Units I - V', from_date: '', to_date: '', cos_assessed: 'CO3' },
       { sno: '7', component: 'End Sem', marks: '30', category: 'Written Examination', unit_coverage: 'All Units (I - V)', from_date: '16-03-2027', to_date: '24-03-2027', cos_assessed: isPG ? 'CO1 to CO6' : 'CO1 to CO5', uneditable: true }
     ];
-  }
-
-  onSyllabusCourseSelected(code) {
-    if (code) {
-      this.fetchFromSyllabus(code);
-    }
-  }
-
-  fetchByCodeInput() {
-    const input = document.getElementById('cp-course-code');
-    if (input && input.value) {
-      this.fetchFromSyllabus(input.value.trim());
-    } else {
-      alert('Please enter or select a Course Code.');
-    }
   }
 
   formatDateToDDMMYYYY(dateStr) {
@@ -1107,9 +1128,12 @@ class CoursePlanApp {
                   ${plans.map((p, idx) => `
                     <tr class="hover:bg-slate-50/70 transition">
                       <td class="p-3 text-center font-bold text-slate-400">${idx + 1}</td>
-                      <td class="p-3">
-                        <div class="font-bold text-slate-900">${p.course_code || '—'}</div>
-                        <div class="text-slate-600 text-[11px] font-semibold">${p.course_title || 'Untitled Course'}</div>
+                      <td class="p-3 cursor-pointer group" onclick="coursePlanApp.editPlan(${p.id})" title="Click to view/edit this course plan">
+                        <div class="font-bold text-slate-900 group-hover:text-indigo-600 transition flex items-center gap-1.5">
+                          <span>${p.course_code || '—'}</span>
+                          <i data-lucide="external-link" class="w-3 h-3 text-slate-400 group-hover:text-indigo-600 opacity-0 group-hover:opacity-100 transition"></i>
+                        </div>
+                        <div class="text-slate-600 text-[11px] font-semibold group-hover:text-indigo-900">${p.course_title || 'Untitled Course'}</div>
                       </td>
                       <td class="p-3 text-slate-700">
                         <div class="font-semibold">${p.programme || '—'}</div>
@@ -1389,9 +1413,12 @@ class CoursePlanApp {
                     ${plans.map((p, idx) => `
                       <tr class="hover:bg-slate-50/70 transition">
                         <td class="p-3 text-center font-bold text-slate-400">${idx + 1}</td>
-                        <td class="p-3">
-                          <div class="font-bold text-slate-900">${p.course_code || '—'}</div>
-                          <div class="text-slate-600 text-[11px] font-semibold">${p.course_title || 'Untitled'}</div>
+                        <td class="p-3 cursor-pointer group" onclick="coursePlanApp.openHODReviewModal(${p.id})" title="Click to review this course plan">
+                          <div class="font-bold text-slate-900 group-hover:text-indigo-600 transition flex items-center gap-1.5">
+                            <span>${p.course_code || '—'}</span>
+                            <i data-lucide="external-link" class="w-3 h-3 text-slate-400 group-hover:text-indigo-600 opacity-0 group-hover:opacity-100 transition"></i>
+                          </div>
+                          <div class="text-slate-600 text-[11px] font-semibold group-hover:text-indigo-900">${p.course_title || 'Untitled'}</div>
                         </td>
                         <td class="p-3 text-slate-700">
                           <div>${p.programme || '—'}</div>
@@ -2053,84 +2080,6 @@ class CoursePlanApp {
     const canPrintAndSubmit = isDeclarationTab && !part4Locked;
 
     return `
-      <style>
-        /* Red Outline Error Highlighting */
-        .field-error-highlight {
-          border-color: #f43f5e !important;
-          background-color: #fff1f2 !important;
-          box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.28) !important;
-        }
-        @keyframes field-pulse-shake {
-          0%, 100% { transform: translateX(0); }
-          20%, 60% { transform: translateX(-4px); }
-          40%, 80% { transform: translateX(4px); }
-        }
-        .field-error-shake {
-          animation: field-pulse-shake 0.35s ease-in-out;
-        }
-
-        /* Compact Card View for Mobile Screens (<= 768px) */
-        @media (max-width: 768px) {
-          .mobile-card-table {
-            display: block !important;
-            border: none !important;
-            background: transparent !important;
-          }
-          .mobile-card-table thead {
-            display: none !important;
-          }
-          .mobile-card-table tbody {
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 1rem !important;
-            border: none !important;
-            background: transparent !important;
-          }
-          .mobile-card-table tr {
-            display: block !important;
-            background: #ffffff !important;
-            border: 1.5px solid #e2e8f0 !important;
-            border-radius: 1rem !important;
-            padding: 1rem !important;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03) !important;
-            transition: all 0.2s ease;
-          }
-          .mobile-card-table tr:hover {
-            border-color: #cbd5e1 !important;
-          }
-          .mobile-card-table td {
-            display: block !important;
-            width: 100% !important;
-            padding: 0.35rem 0 !important;
-            border: none !important;
-            text-align: left !important;
-          }
-          .mobile-card-table td::before {
-            content: attr(data-label);
-            display: block;
-            font-size: 10.5px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-            color: #475569;
-            margin-bottom: 3px;
-          }
-          .mobile-card-table td.mobile-card-action {
-            display: flex !important;
-            justify-content: flex-end !important;
-            padding-top: 0.65rem !important;
-            margin-top: 0.4rem !important;
-            border-top: 1px dashed #e2e8f0 !important;
-          }
-          .mobile-card-table td.mobile-card-action::before {
-            display: none !important;
-          }
-          .mobile-card-table tr.mobile-summary-row {
-            background: #eef2ff !important;
-            border-color: #c7d2fe !important;
-          }
-        }
-      </style>
       <div class="space-y-6 animate-fadeIn w-full">
         <!-- Institutional Header Banner (matching PDF Header) -->
         <div class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white rounded-2xl p-6 shadow-md text-center space-y-1.5">
@@ -2547,7 +2496,7 @@ class CoursePlanApp {
               </div>
 
               <div class="overflow-x-auto rounded-xl border border-slate-200">
-                <table class="mobile-card-table w-full text-left text-xs border-collapse">
+                <table class="w-full text-left text-xs border-collapse">
                   <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
                     <tr>
                       <th class="p-2.5 w-24">CO Code</th>
@@ -2559,13 +2508,13 @@ class CoursePlanApp {
                   <tbody id="cp-cos-tbody" class="divide-y divide-slate-100">
                     ${cos.map((co, idx) => `
                       <tr>
-                        <td class="p-2" data-label="CO Code">
+                        <td class="p-2">
                           <input type="text" class="co-code w-full text-xs px-2 py-1.5 font-bold font-mono border border-slate-300 rounded bg-slate-50" value="${co.code || 'CO' + (idx + 1)}" />
                         </td>
-                        <td class="p-2" data-label="Course Outcome *">
+                        <td class="p-2">
                           <textarea class="co-outcome w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:border-indigo-600 focus:outline-none" rows="2" placeholder="State outcome statement...">${co.outcome || ''}</textarea>
                         </td>
-                        <td class="p-2" data-label="K-Levels *">
+                        <td class="p-2">
                           <select class="co-klevel w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-semibold bg-white">
                             <option value="K1" ${co.k_level === 'K1' ? 'selected' : ''}>K1 - Remember</option>
                             <option value="K2" ${co.k_level === 'K2' ? 'selected' : ''}>K2 - Understand</option>
@@ -2578,10 +2527,9 @@ class CoursePlanApp {
                             <option value="K5, K6" ${co.k_level === 'K5, K6' ? 'selected' : ''}>K5, K6</option>
                           </select>
                         </td>
-                        <td class="mobile-card-action p-2 text-center">
-                          <button type="button" onclick="coursePlanApp.deleteCORow(${idx})" class="p-1 text-slate-400 hover:text-red-600 rounded flex items-center gap-1 font-semibold text-xs">
+                        <td class="p-2 text-center">
+                          <button type="button" onclick="coursePlanApp.deleteCORow(${idx})" class="p-1 text-slate-400 hover:text-red-600 rounded">
                             <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                            <span class="md:hidden text-rose-600">Delete CO</span>
                           </button>
                         </td>
                       </tr>
@@ -2650,7 +2598,7 @@ class CoursePlanApp {
               </div>
 
               <div class="overflow-x-auto rounded-xl border border-slate-200 max-h-[500px] scrollbar-thin">
-                <table class="mobile-card-table w-full text-left text-xs border-collapse">
+                <table class="w-full text-left text-xs border-collapse">
                   <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold sticky top-0 z-10">
                     <tr>
                       <th class="p-2.5 w-32">Month / Days</th>
@@ -2668,10 +2616,10 @@ class CoursePlanApp {
                   <tbody id="cp-dtp-tbody" class="divide-y divide-slate-100">
                     ${dtp.map((row, idx) => `
                       <tr>
-                        <td class="p-1.5" data-label="Month / Days">
+                        <td class="p-1.5">
                           <input type="text" class="dtp-month w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-bold" value="${row.month_days || ''}" placeholder="e.g. November/10" />
                         </td>
-                        <td class="p-1.5" data-label="Unit">
+                        <td class="p-1.5">
                           <input 
                             list="dtp-units-datalist" 
                             class="dtp-unit w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-bold bg-white focus:border-indigo-600 focus:outline-none" 
@@ -2680,22 +2628,22 @@ class CoursePlanApp {
                             title="Multiple units can be specified for a month (e.g. Unit I & II)"
                           />
                         </td>
-                        <td class="p-1.5" data-label="Topics to Be Covered *">
+                        <td class="p-1.5">
                           <textarea class="dtp-topics w-full text-xs px-2 py-1.5 border border-slate-300 rounded" rows="2" placeholder="List topics...">${row.topics || ''}</textarea>
                         </td>
-                        <td class="p-1.5" data-label="From Date *">
+                        <td class="p-1.5">
                           <input type="date" class="dtp-from w-full text-xs px-1.5 py-1.5 border border-slate-300 rounded font-mono" value="${row.from_date || ''}" />
                         </td>
-                        <td class="p-1.5" data-label="To Date *">
+                        <td class="p-1.5">
                           <input type="date" class="dtp-to w-full text-xs px-1.5 py-1.5 border border-slate-300 rounded font-mono" value="${row.to_date || ''}" />
                         </td>
-                        <td class="p-1.5 text-center" data-label="Lecture Hours *">
+                        <td class="p-1.5 text-center">
                           <input type="number" class="dtp-hours w-full text-xs px-1.5 py-1.5 border border-slate-300 rounded font-bold text-center" value="${row.hours || ''}" placeholder="Hrs" />
                         </td>
-                        <td class="p-1.5 text-center" data-label="Course Outcomes (COs) *">
+                        <td class="p-1.5 text-center">
                           <input type="text" class="dtp-cos w-full text-xs px-1.5 py-1.5 border border-slate-300 rounded font-bold text-center" value="${row.cos || 'CO1'}" />
                         </td>
-                        <td class="p-1.5" data-label="Teaching Methodology *">
+                        <td class="p-1.5">
                           ${(() => {
                             const methodOptions = [
                               'Lecture / PPT', 'Chalk & Talk', 'Demonstration / Hands-on',
@@ -2721,7 +2669,7 @@ class CoursePlanApp {
                             `;
                           })()}
                         </td>
-                        <td class="p-1.5" data-label="Learning Resources *">
+                        <td class="p-1.5">
                           ${(() => {
                             const resOptions = [
                               'Text Book / Reference Book', 'PPT / Lecture Notes', 'JosTEL LMS / E-Content',
@@ -2747,10 +2695,9 @@ class CoursePlanApp {
                             `;
                           })()}
                         </td>
-                        <td class="mobile-card-action p-1.5 text-center">
-                          <button type="button" onclick="coursePlanApp.deleteTeachingPlanRow(${idx})" class="p-1 text-slate-400 hover:text-red-600 rounded flex items-center gap-1 font-semibold text-xs">
+                        <td class="p-1.5 text-center">
+                          <button type="button" onclick="coursePlanApp.deleteTeachingPlanRow(${idx})" class="p-1 text-slate-400 hover:text-red-600 rounded">
                             <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                            <span class="md:hidden text-rose-600">Delete Row</span>
                           </button>
                         </td>
                       </tr>
@@ -2768,7 +2715,7 @@ class CoursePlanApp {
               </p>
 
               <div class="overflow-x-auto rounded-xl border border-slate-200">
-                <table class="mobile-card-table w-full text-left text-xs border-collapse">
+                <table class="w-full text-left text-xs border-collapse">
                   <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
                     <tr>
                       <th class="p-2.5 w-36">Unit</th>
@@ -2780,23 +2727,23 @@ class CoursePlanApp {
                   <tbody id="cp-ucp-tbody" class="divide-y divide-slate-100 font-medium">
                     ${ucp.map((u, idx) => `
                       <tr>
-                        <td class="p-2.5 font-bold text-slate-800" data-label="Unit">${u.unit}</td>
-                        <td class="p-2 text-center" data-label="Planned Hours *">
-                          <input type="number" class="ucp-planned w-full md:w-28 text-xs px-2 py-1.5 border border-slate-300 rounded font-bold text-center" value="${u.planned_hours || ''}" onchange="coursePlanApp.calculateTotalHours()" placeholder="0" />
+                        <td class="p-2.5 font-bold text-slate-800">${u.unit}</td>
+                        <td class="p-2 text-center">
+                          <input type="number" class="ucp-planned w-28 text-xs px-2 py-1.5 border border-slate-300 rounded font-bold text-center" value="${u.planned_hours || ''}" onchange="coursePlanApp.calculateTotalHours()" placeholder="0" />
                         </td>
-                        <td class="p-2 text-center" data-label="Actual Hours *">
-                          <input type="number" class="ucp-actual w-full md:w-28 text-xs px-2 py-1.5 border border-slate-300 rounded font-bold text-center" value="${u.actual_hours || ''}" onchange="coursePlanApp.calculateTotalHours()" placeholder="0" />
+                        <td class="p-2 text-center">
+                          <input type="number" class="ucp-actual w-28 text-xs px-2 py-1.5 border border-slate-300 rounded font-bold text-center" value="${u.actual_hours || ''}" onchange="coursePlanApp.calculateTotalHours()" placeholder="0" />
                         </td>
-                        <td class="p-2" data-label="Target Completion Date *">
-                          <input type="date" class="ucp-date w-full md:w-48 text-xs px-2.5 py-1.5 border border-slate-300 rounded font-mono" value="${u.target_date || ''}" />
+                        <td class="p-2">
+                          <input type="date" class="ucp-date w-48 text-xs px-2.5 py-1.5 border border-slate-300 rounded font-mono" value="${u.target_date || ''}" />
                         </td>
                       </tr>
                     `).join('')}
-                    <tr class="mobile-summary-row bg-indigo-50/60 font-bold border-t border-indigo-200">
-                      <td class="p-2.5 text-indigo-950 font-black" data-label="Summary">Total (As per Syllabus)</td>
-                      <td class="p-2.5 text-center text-indigo-950 font-black" id="ucp-total-planned" data-label="Total Planned">0 Hrs</td>
-                      <td class="p-2.5 text-center text-indigo-950 font-black" id="ucp-total-actual" data-label="Total Actual">0 Hrs</td>
-                      <td class="p-2.5 text-slate-500 text-[11px] italic" data-label="Audit Status">Verified before semester audit</td>
+                    <tr class="bg-indigo-50/60 font-bold border-t border-indigo-200">
+                      <td class="p-2.5 text-indigo-950 font-black">Total (As per Syllabus)</td>
+                      <td class="p-2.5 text-center text-indigo-950 font-black" id="ucp-total-planned">0 Hrs</td>
+                      <td class="p-2.5 text-center text-indigo-950 font-black" id="ucp-total-actual">0 Hrs</td>
+                      <td class="p-2.5 text-slate-500 text-[11px] italic">Verified before semester audit</td>
                     </tr>
                   </tbody>
                 </table>
@@ -2849,7 +2796,7 @@ class CoursePlanApp {
               </div>
 
               <div class="overflow-x-auto rounded-xl border border-slate-200">
-                <table class="mobile-card-table w-full text-left text-xs border-collapse">
+                <table class="w-full text-left text-xs border-collapse">
                   <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
                     <tr>
                       <th class="p-2.5 w-12 text-center">S.No</th>
@@ -2863,8 +2810,8 @@ class CoursePlanApp {
                   <tbody id="cp-acts-tbody" class="divide-y divide-slate-100 font-medium">
                     ${acts.map((act, idx) => `
                       <tr>
-                        <td class="p-2 text-center font-bold text-slate-400" data-label="S.No">${idx + 1}</td>
-                        <td class="p-2" data-label="Learning Activity *">
+                        <td class="p-2 text-center font-bold text-slate-400">${idx + 1}</td>
+                        <td class="p-2">
                           <div class="space-y-1.5">
                             <select 
                               class="act-name-select w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded font-bold bg-white focus:border-indigo-600 focus:outline-none" 
@@ -2892,19 +2839,18 @@ class CoursePlanApp {
                             />
                           </div>
                         </td>
-                        <td class="p-2" data-label="Related Unit / Topic *">
+                        <td class="p-2">
                           <input type="text" class="act-topic w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded" value="${act.topic || ''}" placeholder="Unit / Topic..." />
                         </td>
-                        <td class="p-2" data-label="Expected Learning Outcome *">
+                        <td class="p-2">
                           <input type="text" class="act-outcome w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded" value="${act.outcome || ''}" placeholder="Outcome..." />
                         </td>
-                        <td class="p-2" data-label="Proposed Date *">
+                        <td class="p-2">
                           <input type="date" class="act-date w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-mono" value="${act.proposed_date || ''}" />
                         </td>
-                        <td class="mobile-card-action p-2 text-center">
-                          <button type="button" onclick="coursePlanApp.deleteActivityRow(${idx})" class="p-1 text-slate-400 hover:text-red-600 rounded flex items-center gap-1 font-semibold text-xs">
+                        <td class="p-2 text-center">
+                          <button type="button" onclick="coursePlanApp.deleteActivityRow(${idx})" class="p-1 text-slate-400 hover:text-red-600 rounded">
                             <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                            <span class="md:hidden text-rose-600">Delete Activity</span>
                           </button>
                         </td>
                       </tr>
@@ -2931,7 +2877,7 @@ class CoursePlanApp {
               </div>
 
               <div class="overflow-x-auto rounded-xl border border-slate-200">
-                <table class="mobile-card-table w-full text-left text-xs border-collapse">
+                <table class="w-full text-left text-xs border-collapse">
                   <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
                     <tr>
                       <th class="p-2.5 w-12 text-center">S.No</th>
@@ -2964,27 +2910,27 @@ class CoursePlanApp {
                       if (isSno5 && !isPG) {
                         return `
                           <tr class="bg-slate-50/60 opacity-60">
-                            <td class="p-2 text-center font-bold text-slate-400" data-label="S.No">5</td>
-                            <td class="p-2" data-label="CIA Component">
+                            <td class="p-2 text-center font-bold text-slate-400">5</td>
+                            <td class="p-2">
                               <span class="font-bold text-slate-500 text-xs">C2 - K6 (Creative Model / Review)</span>
                             </td>
-                            <td class="p-2 text-center" data-label="Marks">
+                            <td class="p-2 text-center">
                               <span class="px-2 py-1 bg-slate-200 text-slate-500 text-xs font-bold rounded">N/A</span>
                             </td>
-                            <td class="p-2" colspan="5" data-label="Details">
+                            <td class="p-2" colspan="5">
                               <span class="text-[11px] text-amber-700 font-bold bg-amber-50 px-2.5 py-1 rounded-md border border-amber-200">
                                 ℹ K6 Cognitive Component is applicable ONLY for Postgraduate (PG) courses.
                               </span>
                             </td>
-                            <td class="mobile-card-action p-2 text-center text-slate-300">—</td>
+                            <td class="p-2 text-center text-slate-300">—</td>
                           </tr>
                         `;
                       }
 
                       return `
                         <tr class="${isLocked ? 'bg-slate-50/70' : 'hover:bg-slate-50/40'}">
-                          <td class="p-2 text-center font-bold text-slate-400" data-label="S.No">${asst.sno || (idx + 1)}</td>
-                          <td class="p-2" data-label="CIA Component *">
+                          <td class="p-2 text-center font-bold text-slate-400">${asst.sno || (idx + 1)}</td>
+                          <td class="p-2">
                             ${isLocked ? `
                               <div class="flex items-center gap-1.5 font-bold text-slate-900 text-xs">
                                 <span>${asst.component || ''}</span>
@@ -2995,7 +2941,7 @@ class CoursePlanApp {
                               <input type="text" class="asst-comp w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-bold" value="${asst.component || ''}" />
                             `}
                           </td>
-                          <td class="p-2 text-center" data-label="Marks *">
+                          <td class="p-2 text-center">
                             ${isLocked ? `
                               <span class="px-2 py-1 rounded bg-slate-200/80 font-black text-slate-800 text-xs">${currentMarks}</span>
                               <input type="hidden" class="asst-marks" value="${currentMarks}" />
@@ -3003,7 +2949,7 @@ class CoursePlanApp {
                               <input type="text" class="asst-marks w-full text-xs px-1.5 py-1.5 border border-indigo-300 bg-indigo-50/20 rounded font-black text-center text-indigo-900" value="${currentMarks}" />
                             `}
                           </td>
-                          <td class="p-2" data-label="Assessment Category *">
+                          <td class="p-2">
                             ${isLocked ? `
                               <span class="text-xs text-slate-800 font-bold">${asst.category || ''}</span>
                               <input type="hidden" class="asst-cat" value="${asst.category || ''}" />
@@ -3033,7 +2979,7 @@ class CoursePlanApp {
                               `;
                             })()}
                           </td>
-                          <td class="p-2" data-label="Unit / Syllabus Coverage *">
+                          <td class="p-2">
                             ${isLocked ? `
                               <span class="text-xs text-slate-600 font-semibold">${asst.unit_coverage || ''}</span>
                               <input type="hidden" class="asst-cov" value="${asst.unit_coverage || ''}" />
@@ -3041,7 +2987,7 @@ class CoursePlanApp {
                               <input type="text" class="asst-cov w-full text-xs px-2 py-1.5 border border-slate-300 rounded" value="${asst.unit_coverage || ''}" />
                             `}
                           </td>
-                          <td class="p-2" data-label="From Date *">
+                          <td class="p-2">
                             ${isLocked ? `
                               <span class="text-xs font-mono font-bold text-slate-800">${this.formatDateToDDMMYYYY(asst.from_date)}</span>
                               <input type="hidden" class="asst-from" value="${this.formatDateToDDMMYYYY(asst.from_date)}" />
@@ -3049,7 +2995,7 @@ class CoursePlanApp {
                               <input type="text" class="asst-from w-full text-xs px-1.5 py-1.5 border border-slate-300 rounded font-mono text-center font-bold" value="${this.formatDateToDDMMYYYY(asst.from_date)}" placeholder="DD-MM-YYYY" />
                             `}
                           </td>
-                          <td class="p-2" data-label="To Date *">
+                          <td class="p-2">
                             ${isLocked ? `
                               <span class="text-xs font-mono font-bold text-slate-800">${this.formatDateToDDMMYYYY(asst.to_date)}</span>
                               <input type="hidden" class="asst-to" value="${this.formatDateToDDMMYYYY(asst.to_date)}" />
@@ -3057,7 +3003,7 @@ class CoursePlanApp {
                               <input type="text" class="asst-to w-full text-xs px-1.5 py-1.5 border border-slate-300 rounded font-mono text-center font-bold" value="${this.formatDateToDDMMYYYY(asst.to_date)}" placeholder="DD-MM-YYYY" />
                             `}
                           </td>
-                          <td class="p-2 text-center" data-label="COs Assessed *">
+                          <td class="p-2 text-center">
                             ${isLocked ? `
                               <span class="text-xs font-bold text-slate-700">${asst.cos_assessed || ''}</span>
                               <input type="hidden" class="asst-cos" value="${asst.cos_assessed || ''}" />
@@ -3065,13 +3011,12 @@ class CoursePlanApp {
                               <input type="text" class="asst-cos w-full text-xs px-1.5 py-1.5 border border-slate-300 rounded font-bold text-center" value="${asst.cos_assessed || ''}" />
                             `}
                           </td>
-                          <td class="mobile-card-action p-2 text-center">
+                          <td class="p-2 text-center">
                             ${isLocked ? `
                               <span class="text-slate-300 text-xs">—</span>
                             ` : `
-                              <button type="button" onclick="coursePlanApp.deleteAssessmentRow(${idx})" class="p-1 text-slate-400 hover:text-red-600 rounded flex items-center gap-1 font-semibold text-xs">
+                              <button type="button" onclick="coursePlanApp.deleteAssessmentRow(${idx})" class="p-1 text-slate-400 hover:text-red-600 rounded">
                                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                                <span class="md:hidden text-rose-600">Delete Row</span>
                               </button>
                             `}
                           </td>
@@ -3100,7 +3045,7 @@ class CoursePlanApp {
               </div>
 
               <div class="overflow-x-auto rounded-xl border border-slate-200">
-                <table class="mobile-card-table w-full text-left text-xs border-collapse">
+                <table class="w-full text-left text-xs border-collapse">
                   <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
                     <tr>
                       <th class="p-2.5 w-12 text-center">S.No</th>
@@ -3130,11 +3075,11 @@ class CoursePlanApp {
 
                       return `
                         <tr>
-                          <td class="p-2 text-center font-bold text-slate-400" data-label="S.No">${idx + 1}</td>
-                          <td class="p-2" data-label="Topic / Unit *">
+                          <td class="p-2 text-center font-bold text-slate-400">${idx + 1}</td>
+                          <td class="p-2">
                             <input type="text" class="ict-topic w-full text-xs px-2 py-1.5 border border-slate-300 rounded" value="${ict.topic || ''}" placeholder="Topic / Unit..." />
                           </td>
-                          <td class="p-2" data-label="Digital Resource / ICT Tool *">
+                          <td class="p-2">
                             <select 
                               class="ict-tool-select w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-bold bg-white"
                               onchange="coursePlanApp.onICTToolChange(this)"
@@ -3149,7 +3094,7 @@ class CoursePlanApp {
                               value="${isOtherTool ? curTool : ''}"
                             />
                           </td>
-                          <td class="p-2" data-label="Platform *">
+                          <td class="p-2">
                             <select 
                               class="ict-platform-select w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-semibold bg-white"
                               onchange="coursePlanApp.onICTPlatformChange(this)"
@@ -3164,13 +3109,12 @@ class CoursePlanApp {
                               value="${isOtherPlatform ? curPlatform : ''}"
                             />
                           </td>
-                          <td class="p-2" data-label="Purpose *">
+                          <td class="p-2">
                             <input type="text" class="ict-purpose w-full text-xs px-2 py-1.5 border border-slate-300 rounded" value="${ict.purpose || ''}" placeholder="Purpose of ICT integration..." />
                           </td>
-                          <td class="mobile-card-action p-2 text-center">
-                            <button type="button" onclick="coursePlanApp.deleteICTRow(${idx})" class="p-1 text-slate-400 hover:text-red-600 rounded flex items-center gap-1 font-semibold text-xs">
+                          <td class="p-2 text-center">
+                            <button type="button" onclick="coursePlanApp.deleteICTRow(${idx})" class="p-1 text-slate-400 hover:text-red-600 rounded">
                               <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                              <span class="md:hidden text-rose-600">Delete Resource</span>
                             </button>
                           </td>
                         </tr>
@@ -3578,194 +3522,166 @@ class CoursePlanApp {
     `;
   }
 
-  // ================= STAGE PROGRESSION, ERROR HIGHLIGHTING & VALIDATION =================
+  // ================= STAGE PROGRESSION & COMPREHENSIVE VALIDATION =================
   clearValidationHighlights() {
-    document.querySelectorAll('.field-error-highlight').forEach(el => {
-      el.classList.remove('field-error-highlight', 'field-error-shake');
+    document.querySelectorAll('.is-invalid-field').forEach(el => {
+      el.classList.remove('is-invalid-field', 'border-rose-500', 'ring-2', 'ring-rose-200', 'bg-rose-50/40');
     });
-    const oldBanner = document.getElementById('validation-error-banner');
-    if (oldBanner) oldBanner.remove();
+    const banner = document.getElementById('cp-validation-banner');
+    if (banner) banner.remove();
   }
 
-  highlightValidationErrors(validationResult, sectionId) {
+  highlightElement(el) {
+    if (!el) return;
+    el.classList.add('is-invalid-field', 'border-rose-500', 'ring-2', 'ring-rose-200', 'bg-rose-50/40');
+    const clearFn = () => {
+      el.classList.remove('is-invalid-field', 'border-rose-500', 'ring-2', 'ring-rose-200', 'bg-rose-50/40');
+      el.removeEventListener('input', clearFn);
+      el.removeEventListener('change', clearFn);
+    };
+    el.addEventListener('input', clearFn, { once: true });
+    el.addEventListener('change', clearFn, { once: true });
+  }
+
+  showValidationFeedback(sectionId, errors, invalidEls) {
     this.clearValidationHighlights();
-    const invalidEls = validationResult.elements || [];
+    (invalidEls || []).forEach(el => this.highlightElement(el));
 
-    if (invalidEls.length > 0) {
-      invalidEls.forEach(el => {
-        if (!el) return;
-        el.classList.add('field-error-highlight', 'field-error-shake');
-
-        const clearHandler = () => {
-          el.classList.remove('field-error-highlight', 'field-error-shake');
-          el.removeEventListener('input', clearHandler);
-          el.removeEventListener('change', clearHandler);
-        };
-        el.addEventListener('input', clearHandler);
-        el.addEventListener('change', clearHandler);
-      });
-
-      // Scroll smoothly to first invalid field and focus it
-      const firstEl = invalidEls[0];
-      if (firstEl) {
-        firstEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        try { firstEl.focus(); } catch (e) {}
-      }
+    if (invalidEls && invalidEls.length > 0) {
+      const first = invalidEls[0];
+      first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => {
+        try { first.focus(); } catch (e) {}
+      }, 300);
     }
 
-    // Insert user-friendly error banner at top of current section
-    const sectionEl = document.getElementById(sectionId);
-    if (sectionEl) {
-      const banner = document.createElement('div');
-      banner.id = 'validation-error-banner';
-      banner.className = 'p-4 bg-rose-50 border-2 border-rose-300 rounded-2xl text-rose-900 space-y-2 text-xs shadow-sm mb-4 transition-all animate-fadeIn';
-      banner.innerHTML = `
-        <div class="flex items-center gap-2 font-black text-rose-800 text-sm">
-          <i data-lucide="alert-circle" class="w-4 h-4 text-rose-600 shrink-0"></i>
-          <span>Please complete the highlighted mandatory fields before proceeding:</span>
-        </div>
-        <ul class="list-disc list-inside space-y-1 text-[11.5px] text-rose-700 pl-1 font-medium">
-          ${validationResult.errors.map(err => `<li>${err}</li>`).join('')}
-        </ul>
-      `;
-      const firstChild = sectionEl.querySelector('.bg-white') || sectionEl.firstElementChild;
-      if (firstChild) {
-        firstChild.prepend(banner);
-      } else {
-        sectionEl.prepend(banner);
+    const container = document.getElementById(sectionId) || document.getElementById(`section-${this.activeFormTab}`);
+    if (container) {
+      let banner = document.getElementById('cp-validation-banner');
+      if (!banner) {
+        banner = document.createElement('div');
+        banner.id = 'cp-validation-banner';
+        container.prepend(banner);
       }
-      if (window.lucide) lucide.createIcons();
+      banner.className = 'p-4 bg-rose-50 border-2 border-rose-300 rounded-2xl mb-4 text-rose-900 shadow-md animate-fadeIn flex items-start gap-3';
+      banner.innerHTML = `
+        <div class="w-8 h-8 rounded-xl bg-rose-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+          <i data-lucide="alert-octagon" class="w-4 h-4"></i>
+        </div>
+        <div class="flex-1 text-xs">
+          <div class="font-black text-rose-950 text-sm">Please complete the highlighted mandatory fields:</div>
+          <ul class="list-disc list-inside mt-1.5 space-y-0.5 font-bold text-rose-800">
+            ${errors.slice(0, 8).map(err => `<li>${err}</li>`).join('')}
+            ${errors.length > 8 ? `<li>...and ${errors.length - 8} more field(s) highlighted in red</li>` : ''}
+          </ul>
+        </div>
+        <button type="button" onclick="this.parentElement.remove()" class="text-rose-400 hover:text-rose-700 font-bold text-base px-1">✕</button>
+      `;
+      if (window.lucide) window.lucide.createIcons();
     }
   }
 
-  validatePart1() {
-    this.harvestFormInputs();
+  validatePart1(harvest = false) {
+    if (harvest) this.harvestFormInputs();
     const p = this.activePlan || {};
     const errors = [];
-    const elements = [];
+    const invalidEls = [];
 
-    const checkField = (val, id, label) => {
-      const el = document.getElementById(id);
+    const check = (val, id, name) => {
       if (!val || !String(val).trim()) {
-        errors.push(label);
-        if (el) elements.push(el);
+        errors.push(name);
+        const el = document.getElementById(id);
+        if (el) invalidEls.push(el);
       }
     };
 
-    checkField(p.department_name, 'cp-dept-name', 'Department');
-    checkField(p.faculty_name, 'cp-faculty-name', 'Name of the Faculty Member');
-    checkField(p.semester, 'cp-semester', 'Semester');
-    checkField(p.programme, 'cp-programme', 'Programme');
-    checkField(p.year_class, 'cp-year-class', 'Year & Class');
-    checkField(p.section, 'cp-section', 'Section');
-    checkField(p.course_code, 'cp-course-code', 'Course Code');
-    checkField(p.course_title, 'cp-course-title', 'Course Title');
-    checkField(p.course_category, 'cp-course-cat', 'Course Category');
-    checkField(p.teaching_hours, 'cp-teaching-hours', 'Total Teaching Hours');
-    checkField(p.credits, 'cp-credits', 'Credits');
+    check(p.department_name, 'cp-dept-name', 'Department');
+    check(p.faculty_name, 'cp-faculty-name', 'Name of the Faculty Member');
+    check(p.semester, 'cp-semester', 'Semester');
+    check(p.programme, 'cp-programme', 'Programme');
+    check(p.year_class, 'cp-year-class', 'Year & Class');
+    check(p.section, 'cp-section', 'Section');
+    check(p.course_code, 'cp-course-code', 'Course Code');
+    check(p.course_title, 'cp-course-title', 'Course Title');
+    check(p.course_category, 'cp-course-category', 'Course Category');
+    check(p.teaching_hours, 'cp-teaching-hours', 'Total Teaching Hours');
+    check(p.credits, 'cp-credits', 'Credits');
 
-    const cos = p.course_outcomes || [];
     const coRows = document.querySelectorAll('#cp-cos-tbody tr');
     let emptyCOs = 0;
-    if (cos.length === 0) {
-      errors.push('Course Outcomes (COs) Table');
-      const table = document.querySelector('#cp-cos-tbody');
-      if (table) elements.push(table);
-    } else {
-      cos.slice(0, 5).forEach((co, idx) => {
-        const tr = coRows[idx];
-        const outEl = tr ? tr.querySelector('.co-outcome') : null;
-        const kEl = tr ? tr.querySelector('.co-klevel') : null;
-        let rowErr = false;
-        if (!co.outcome || !co.outcome.trim()) {
-          rowErr = true;
-          if (outEl) elements.push(outEl);
+    coRows.forEach((row, i) => {
+      if (i < 5) {
+        const outEl = row.querySelector('.co-outcome');
+        const kEl = row.querySelector('.co-klevel');
+        let rowEmpty = false;
+        if (!outEl || !outEl.value.trim()) {
+          if (outEl) invalidEls.push(outEl);
+          rowEmpty = true;
         }
-        if (!co.k_level) {
-          rowErr = true;
-          if (kEl) elements.push(kEl);
+        if (!kEl || !kEl.value.trim()) {
+          if (kEl) invalidEls.push(kEl);
+          rowEmpty = true;
         }
-        if (rowErr) emptyCOs++;
-      });
-      if (emptyCOs > 0) {
-        errors.push(`Course Outcomes (${emptyCOs} outcome statement(s) or K-level(s) incomplete)`);
+        if (rowEmpty) emptyCOs++;
       }
+    });
+    if (emptyCOs > 0) {
+      errors.push(`Course Outcomes (${emptyCOs} outcome statement(s) or K-level(s) incomplete)`);
     }
 
-    return { valid: errors.length === 0, errors, elements };
+    return { valid: errors.length === 0, errors, invalidEls };
   }
 
   isPart1Complete() {
-    return this.validatePart1().valid;
+    return this.validatePart1(false).valid;
   }
 
-  validatePart2() {
-    this.harvestFormInputs();
+  validatePart2(harvest = false) {
+    if (harvest) this.harvestFormInputs();
     const p = this.activePlan || {};
     const errors = [];
-    const elements = [];
+    const invalidEls = [];
 
     // Ensure Part 1 is complete
-    const p1 = this.validatePart1();
+    const p1 = this.validatePart1(false);
     if (!p1.valid) {
-      return { valid: false, errors: ['Please complete all mandatory questions in Part-I first.'], elements: p1.elements };
+      return { valid: false, errors: ['Please complete all mandatory questions in Part-I first.'], invalidEls: p1.invalidEls };
     }
 
     // A. Detailed Teaching Plan
-    const dtp = p.detailed_teaching_plan || [];
     const dtpRows = document.querySelectorAll('#cp-dtp-tbody tr');
-    if (dtp.length === 0) {
+    if (dtpRows.length === 0) {
       errors.push('Detailed Teaching Plan entries');
-      const tbody = document.getElementById('cp-dtp-tbody');
-      if (tbody) elements.push(tbody);
     } else {
-      let emptyTopics = 0;
-      let emptyDates = 0;
-      let emptyHours = 0;
-      let emptyMethods = 0;
-      let emptyRes = 0;
+      let emptyTopics = 0, emptyDates = 0, emptyHours = 0, emptyMethods = 0, emptyRes = 0;
+      dtpRows.forEach((row) => {
+        const topEl = row.querySelector('.dtp-topics');
+        const fromEl = row.querySelector('.dtp-from');
+        const toEl = row.querySelector('.dtp-to');
+        const hrEl = row.querySelector('.dtp-hours');
+        const methEl = row.querySelector('.dtp-method-select');
+        const methOther = row.querySelector('.dtp-method-other');
+        const resEl = row.querySelector('.dtp-res-select');
+        const resOther = row.querySelector('.dtp-res-other');
 
-      dtp.forEach((row, idx) => {
-        const tr = dtpRows[idx];
-        const topicsEl = tr ? tr.querySelector('.dtp-topics') : null;
-        const fromEl = tr ? tr.querySelector('.dtp-from') : null;
-        const toEl = tr ? tr.querySelector('.dtp-to') : null;
-        const hoursEl = tr ? tr.querySelector('.dtp-hours') : null;
-        const methodSelect = tr ? tr.querySelector('.dtp-method-select') : null;
-        const methodOther = tr ? tr.querySelector('.dtp-method-other') : null;
-        const resSelect = tr ? tr.querySelector('.dtp-res-select') : null;
-        const resOther = tr ? tr.querySelector('.dtp-res-other') : null;
-
-        if (!row.topics || !row.topics.trim()) {
-          emptyTopics++;
-          if (topicsEl) elements.push(topicsEl);
-        }
-        if (!row.from_date) {
+        if (!topEl || !topEl.value.trim()) { emptyTopics++; if (topEl) invalidEls.push(topEl); }
+        if (!fromEl || !fromEl.value || !toEl || !toEl.value) {
           emptyDates++;
-          if (fromEl) elements.push(fromEl);
+          if (fromEl && !fromEl.value) invalidEls.push(fromEl);
+          if (toEl && !toEl.value) invalidEls.push(toEl);
         }
-        if (!row.to_date) {
-          if (toEl) elements.push(toEl);
+        if (!hrEl || !hrEl.value.trim()) { emptyHours++; if (hrEl) invalidEls.push(hrEl); }
+
+        if (methEl && methEl.value === 'Others' && (!methOther || !methOther.value.trim())) {
+          emptyMethods++; if (methOther) invalidEls.push(methOther);
+        } else if (!methEl || !methEl.value.trim()) {
+          emptyMethods++; if (methEl) invalidEls.push(methEl);
         }
-        if (!row.hours || !String(row.hours).trim()) {
-          emptyHours++;
-          if (hoursEl) elements.push(hoursEl);
-        }
-        if (!row.methodology || !row.methodology.trim()) {
-          emptyMethods++;
-          if (methodSelect && methodSelect.value === 'Others' && methodOther) {
-            elements.push(methodOther);
-          } else if (methodSelect) {
-            elements.push(methodSelect);
-          }
-        }
-        if (!row.resources || !row.resources.trim()) {
-          emptyRes++;
-          if (resSelect && resSelect.value === 'Others' && resOther) {
-            elements.push(resOther);
-          } else if (resSelect) {
-            elements.push(resSelect);
-          }
+
+        if (resEl && resEl.value === 'Others' && (!resOther || !resOther.value.trim())) {
+          emptyRes++; if (resOther) invalidEls.push(resOther);
+        } else if (!resEl || !resEl.value.trim()) {
+          emptyRes++; if (resEl) invalidEls.push(resEl);
         }
       });
 
@@ -3777,250 +3693,161 @@ class CoursePlanApp {
     }
 
     // B. Unit Completion Plan
-    const ucp = p.unit_completion_plan || [];
-    const ucpRows = document.querySelectorAll('#cp-ucp-tbody tr');
-    if (ucp.length === 0) {
-      errors.push('Unit Completion Plan entries');
-      const tbody = document.getElementById('cp-ucp-tbody');
-      if (tbody) elements.push(tbody);
-    } else {
-      let emptyUcpPlanned = 0;
-      let emptyUcpActual = 0;
-      let emptyUcpDate = 0;
+    const ucpRows = document.querySelectorAll('#cp-ucp-tbody tr:not(:last-child)');
+    let emptyUcpPlanned = 0, emptyUcpActual = 0, emptyUcpDate = 0;
+    ucpRows.forEach((row) => {
+      const plEl = row.querySelector('.ucp-planned');
+      const acEl = row.querySelector('.ucp-actual');
+      const dtEl = row.querySelector('.ucp-date');
+      if (!plEl || !plEl.value.trim()) { emptyUcpPlanned++; if (plEl) invalidEls.push(plEl); }
+      if (!acEl || !acEl.value.trim()) { emptyUcpActual++; if (acEl) invalidEls.push(acEl); }
+      if (!dtEl || !dtEl.value.trim()) { emptyUcpDate++; if (dtEl) invalidEls.push(dtEl); }
+    });
 
-      ucp.forEach((u, idx) => {
-        const tr = ucpRows[idx];
-        const plannedEl = tr ? tr.querySelector('.ucp-planned') : null;
-        const actualEl = tr ? tr.querySelector('.ucp-actual') : null;
-        const dateEl = tr ? tr.querySelector('.ucp-date') : null;
+    if (emptyUcpPlanned > 0) errors.push(`Unit Completion Plan: Planned Hours missing in ${emptyUcpPlanned} unit(s)`);
+    if (emptyUcpActual > 0) errors.push(`Unit Completion Plan: Actual Hours missing in ${emptyUcpActual} unit(s)`);
+    if (emptyUcpDate > 0) errors.push(`Unit Completion Plan: Target Date missing in ${emptyUcpDate} unit(s)`);
 
-        if (!u.planned_hours || !String(u.planned_hours).trim()) {
-          emptyUcpPlanned++;
-          if (plannedEl) elements.push(plannedEl);
-        }
-        if (!u.actual_hours || !String(u.actual_hours).trim()) {
-          emptyUcpActual++;
-          if (actualEl) elements.push(actualEl);
-        }
-        if (!u.target_date || !String(u.target_date).trim()) {
-          emptyUcpDate++;
-          if (dateEl) elements.push(dateEl);
-        }
-      });
-
-      if (emptyUcpPlanned > 0) errors.push(`Unit Completion Plan: Planned Hours missing in ${emptyUcpPlanned} unit(s)`);
-      if (emptyUcpActual > 0) errors.push(`Unit Completion Plan: Actual Hours missing in ${emptyUcpActual} unit(s)`);
-      if (emptyUcpDate > 0) errors.push(`Unit Completion Plan: Target Date missing in ${emptyUcpDate} unit(s)`);
-    }
-
-    return { valid: errors.length === 0, errors, elements };
+    return { valid: errors.length === 0, errors, invalidEls };
   }
 
   isPart2Complete() {
-    return this.validatePart2().valid;
+    return this.validatePart2(false).valid;
   }
 
-  validatePart3() {
-    this.harvestFormInputs();
+  validatePart3(harvest = false) {
+    if (harvest) this.harvestFormInputs();
     const p = this.activePlan || {};
     const errors = [];
-    const elements = [];
+    const invalidEls = [];
 
     // Ensure Part 2 is complete
-    const p2 = this.validatePart2();
+    const p2 = this.validatePart2(false);
     if (!p2.valid) {
-      return { valid: false, errors: ['Please complete all mandatory questions in Part-II first.'], elements: p2.elements };
+      return { valid: false, errors: ['Please complete all mandatory questions in Part-II first.'], invalidEls: p2.invalidEls };
     }
 
     // A. Learning Activities
-    const acts = p.learning_activities || [];
     const actRows = document.querySelectorAll('#cp-acts-tbody tr');
-    if (acts.length === 0) {
-      errors.push('Learning Activities entries');
-      const tbody = document.getElementById('cp-acts-tbody');
-      if (tbody) elements.push(tbody);
-    } else {
-      let emptyActName = 0;
-      let emptyActTopic = 0;
-      let emptyActOutcome = 0;
-      let emptyActDate = 0;
+    let emptyActName = 0, emptyActTopic = 0, emptyActOutcome = 0, emptyActDate = 0;
+    actRows.forEach(row => {
+      const selEl = row.querySelector('.act-name-select');
+      const othEl = row.querySelector('.act-other-name');
+      const topEl = row.querySelector('.act-topic');
+      const outEl = row.querySelector('.act-outcome');
+      const dtEl = row.querySelector('.act-date');
 
-      acts.forEach((a, idx) => {
-        const tr = actRows[idx];
-        const selEl = tr ? tr.querySelector('.act-name-select') : null;
-        const otherEl = tr ? tr.querySelector('.act-other-name') : null;
-        const topicEl = tr ? tr.querySelector('.act-topic') : null;
-        const outEl = tr ? tr.querySelector('.act-outcome') : null;
-        const dateEl = tr ? tr.querySelector('.act-date') : null;
+      if (selEl && selEl.value === 'Others' && (!othEl || !othEl.value.trim())) {
+        emptyActName++; if (othEl) invalidEls.push(othEl);
+      } else if (!selEl || !selEl.value.trim()) {
+        emptyActName++; if (selEl) invalidEls.push(selEl);
+      }
 
-        if (!a.activity || !a.activity.trim()) {
-          emptyActName++;
-          if (selEl && selEl.value === 'Others' && otherEl) elements.push(otherEl);
-          else if (selEl) elements.push(selEl);
-        }
-        if (!a.topic || !a.topic.trim()) {
-          emptyActTopic++;
-          if (topicEl) elements.push(topicEl);
-        }
-        if (!a.outcome || !a.outcome.trim()) {
-          emptyActOutcome++;
-          if (outEl) elements.push(outEl);
-        }
-        if (!a.proposed_date || !a.proposed_date.trim()) {
-          emptyActDate++;
-          if (dateEl) elements.push(dateEl);
-        }
-      });
+      if (!topEl || !topEl.value.trim()) { emptyActTopic++; if (topEl) invalidEls.push(topEl); }
+      if (!outEl || !outEl.value.trim()) { emptyActOutcome++; if (outEl) invalidEls.push(outEl); }
+      if (!dtEl || !dtEl.value.trim()) { emptyActDate++; if (dtEl) invalidEls.push(dtEl); }
+    });
 
-      if (emptyActName > 0) errors.push(`Learning Activities: Activity selection missing in ${emptyActName} row(s)`);
-      if (emptyActTopic > 0) errors.push(`Learning Activities: Topic/Unit missing in ${emptyActTopic} row(s)`);
-      if (emptyActOutcome > 0) errors.push(`Learning Activities: Expected Outcome missing in ${emptyActOutcome} row(s)`);
-      if (emptyActDate > 0) errors.push(`Learning Activities: Proposed Date missing in ${emptyActDate} row(s)`);
-    }
+    if (emptyActName > 0) errors.push(`Learning Activities: Activity selection missing in ${emptyActName} row(s)`);
+    if (emptyActTopic > 0) errors.push(`Learning Activities: Topic/Unit missing in ${emptyActTopic} row(s)`);
+    if (emptyActOutcome > 0) errors.push(`Learning Activities: Expected Outcome missing in ${emptyActOutcome} row(s)`);
+    if (emptyActDate > 0) errors.push(`Learning Activities: Proposed Date missing in ${emptyActDate} row(s)`);
 
     // B. Assessment Plan
-    const assts = p.assessment_plan || [];
     const asstRows = document.querySelectorAll('#cp-assts-tbody tr');
-    if (assts.length === 0) {
-      errors.push('Assessment Plan entries');
-      const tbody = document.getElementById('cp-assts-tbody');
-      if (tbody) elements.push(tbody);
-    } else {
-      let emptyAsstMarks = 0;
-      let emptyAsstCat = 0;
-      let emptyAsstCov = 0;
-      let emptyAsstDates = 0;
-      let emptyAsstCos = 0;
+    let emptyAsstMarks = 0, emptyAsstCat = 0, emptyAsstCov = 0, emptyAsstDates = 0, emptyAsstCos = 0;
+    asstRows.forEach(row => {
+      if (row.classList.contains('opacity-60')) return;
 
-      assts.forEach((asst, idx) => {
-        const tr = asstRows[idx];
-        const marksEl = tr ? tr.querySelector('.asst-marks') : null;
-        const catSelect = tr ? tr.querySelector('.asst-cat-select') : null;
-        const catOther = tr ? tr.querySelector('.asst-cat-other') : null;
-        const covEl = tr ? tr.querySelector('.asst-cov') : null;
-        const fromEl = tr ? tr.querySelector('.asst-from') : null;
-        const toEl = tr ? tr.querySelector('.asst-to') : null;
-        const cosEl = tr ? tr.querySelector('.asst-cos') : null;
+      const compEl = row.querySelector('.asst-comp');
+      const marksEl = row.querySelector('.asst-marks');
+      const catEl = row.querySelector('.asst-cat-select');
+      const covEl = row.querySelector('.asst-cov');
+      const fromEl = row.querySelector('.asst-from');
+      const toEl = row.querySelector('.asst-to');
+      const cosEl = row.querySelector('.asst-cos');
 
-        if (!asst.marks || !String(asst.marks).trim()) {
-          emptyAsstMarks++;
-          if (marksEl && marksEl.type !== 'hidden') elements.push(marksEl);
-        }
-        if (!asst.category || !asst.category.trim()) {
-          emptyAsstCat++;
-          if (catSelect && catSelect.value === 'Others' && catOther) elements.push(catOther);
-          else if (catSelect) elements.push(catSelect);
-        }
-        if (!asst.unit_coverage || !asst.unit_coverage.trim()) {
-          emptyAsstCov++;
-          if (covEl && covEl.type !== 'hidden') elements.push(covEl);
-        }
-        if (!asst.from_date || !asst.to_date) {
-          emptyAsstDates++;
-          if (fromEl && fromEl.type !== 'hidden' && !asst.from_date) elements.push(fromEl);
-          if (toEl && toEl.type !== 'hidden' && !asst.to_date) elements.push(toEl);
-        }
-        if (!asst.cos_assessed || !asst.cos_assessed.trim()) {
-          emptyAsstCos++;
-          if (cosEl && cosEl.type !== 'hidden') elements.push(cosEl);
-        }
-      });
+      if (!marksEl || !marksEl.value.trim()) { emptyAsstMarks++; if (marksEl) invalidEls.push(marksEl); }
+      if (!catEl || !catEl.value.trim()) { emptyAsstCat++; if (catEl) invalidEls.push(catEl); }
+      if (!covEl || !covEl.value.trim()) { emptyAsstCov++; if (covEl) invalidEls.push(covEl); }
+      if (!fromEl || !fromEl.value || !toEl || !toEl.value) {
+        emptyAsstDates++;
+        if (fromEl && !fromEl.value) invalidEls.push(fromEl);
+        if (toEl && !toEl.value) invalidEls.push(toEl);
+      }
+      if (!cosEl || !cosEl.value.trim()) { emptyAsstCos++; if (cosEl) invalidEls.push(cosEl); }
+    });
 
-      if (emptyAsstMarks > 0) errors.push(`Assessment Plan: Marks missing in ${emptyAsstMarks} component(s)`);
-      if (emptyAsstCat > 0) errors.push(`Assessment Plan: Category missing in ${emptyAsstCat} component(s)`);
-      if (emptyAsstCov > 0) errors.push(`Assessment Plan: Unit Coverage missing in ${emptyAsstCov} component(s)`);
-      if (emptyAsstDates > 0) errors.push(`Assessment Plan: Dates missing in ${emptyAsstDates} component(s)`);
-      if (emptyAsstCos > 0) errors.push(`Assessment Plan: COs Assessed missing in ${emptyAsstCos} component(s)`);
-    }
+    if (emptyAsstMarks > 0) errors.push(`Assessment Plan: Marks missing in ${emptyAsstMarks} component(s)`);
+    if (emptyAsstCat > 0) errors.push(`Assessment Plan: Category missing in ${emptyAsstCat} component(s)`);
+    if (emptyAsstCov > 0) errors.push(`Assessment Plan: Unit Coverage missing in ${emptyAsstCov} component(s)`);
+    if (emptyAsstDates > 0) errors.push(`Assessment Plan: Dates missing in ${emptyAsstDates} component(s)`);
+    if (emptyAsstCos > 0) errors.push(`Assessment Plan: COs Assessed missing in ${emptyAsstCos} component(s)`);
 
     // C. Digital Resources and ICT Integration
-    const icts = p.ict_integration || [];
     const ictRows = document.querySelectorAll('#cp-icts-tbody tr');
-    if (icts.length === 0) {
-      errors.push('Digital Resources & ICT Integration entries');
-      const tbody = document.getElementById('cp-icts-tbody');
-      if (tbody) elements.push(tbody);
-    } else {
-      let emptyIctTopic = 0;
-      let emptyIctTool = 0;
-      let emptyIctPlat = 0;
-      let emptyIctPurpose = 0;
+    let emptyIctTopic = 0, emptyIctTool = 0, emptyIctPlat = 0, emptyIctPurpose = 0;
+    ictRows.forEach(row => {
+      const topEl = row.querySelector('.ict-topic');
+      const toolEl = row.querySelector('.ict-tool-select');
+      const platEl = row.querySelector('.ict-plat-select');
+      const purpEl = row.querySelector('.ict-purpose');
 
-      icts.forEach((ict, idx) => {
-        const tr = ictRows[idx];
-        const topEl = tr ? tr.querySelector('.ict-topic') : null;
-        const toolSel = tr ? tr.querySelector('.ict-tool-select') : null;
-        const toolOth = tr ? tr.querySelector('.ict-tool-other') : null;
-        const platSel = tr ? tr.querySelector('.ict-platform-select') : null;
-        const platOth = tr ? tr.querySelector('.ict-platform-other') : null;
-        const purpEl = tr ? tr.querySelector('.ict-purpose') : null;
+      if (!topEl || !topEl.value.trim()) { emptyIctTopic++; if (topEl) invalidEls.push(topEl); }
+      if (!toolEl || !toolEl.value.trim()) { emptyIctTool++; if (toolEl) invalidEls.push(toolEl); }
+      if (!platEl || !platEl.value.trim()) { emptyIctPlat++; if (platEl) invalidEls.push(platEl); }
+      if (!purpEl || !purpEl.value.trim()) { emptyIctPurpose++; if (purpEl) invalidEls.push(purpEl); }
+    });
 
-        if (!ict.topic || !ict.topic.trim()) {
-          emptyIctTopic++;
-          if (topEl) elements.push(topEl);
-        }
-        if (!ict.tool || !ict.tool.trim()) {
-          emptyIctTool++;
-          if (toolSel && toolSel.value === 'Others' && toolOth) elements.push(toolOth);
-          else if (toolSel) elements.push(toolSel);
-        }
-        if (!ict.platform || !ict.platform.trim()) {
-          emptyIctPlat++;
-          if (platSel && platSel.value === 'Others' && platOth) elements.push(platOth);
-          else if (platSel) elements.push(platSel);
-        }
-        if (!ict.purpose || !ict.purpose.trim()) {
-          emptyIctPurpose++;
-          if (purpEl) elements.push(purpEl);
-        }
-      });
+    if (emptyIctTopic > 0) errors.push(`Digital Resources / ICT: Topic/Unit missing in ${emptyIctTopic} row(s)`);
+    if (emptyIctTool > 0) errors.push(`Digital Resources / ICT: Tool missing in ${emptyIctTool} row(s)`);
+    if (emptyIctPlat > 0) errors.push(`Digital Resources / ICT: Platform missing in ${emptyIctPlat} row(s)`);
+    if (emptyIctPurpose > 0) errors.push(`Digital Resources / ICT: Purpose missing in ${emptyIctPurpose} row(s)`);
 
-      if (emptyIctTopic > 0) errors.push(`Digital Resources / ICT: Topic/Unit missing in ${emptyIctTopic} row(s)`);
-      if (emptyIctTool > 0) errors.push(`Digital Resources / ICT: Tool missing in ${emptyIctTool} row(s)`);
-      if (emptyIctPlat > 0) errors.push(`Digital Resources / ICT: Platform missing in ${emptyIctPlat} row(s)`);
-      if (emptyIctPurpose > 0) errors.push(`Digital Resources / ICT: Purpose missing in ${emptyIctPurpose} row(s)`);
-    }
-
-    return { valid: errors.length === 0, errors, elements };
+    return { valid: errors.length === 0, errors, invalidEls };
   }
 
   isPart3Complete() {
-    return this.validatePart3().valid;
+    return this.validatePart3(false).valid;
   }
 
-  validatePart4() {
-    this.harvestFormInputs();
+  validatePart4(harvest = false) {
+    if (harvest) this.harvestFormInputs();
     const p = this.activePlan || {};
     const errors = [];
-    const elements = [];
+    const invalidEls = [];
 
-    const p3 = this.validatePart3();
+    const p3 = this.validatePart3(false);
     if (!p3.valid) {
-      return { valid: false, errors: ['Please complete all mandatory questions in Part-I, Part-II, and Part-III first.'], elements: p3.elements };
+      return { valid: false, errors: ['Please complete all mandatory questions in Part-I, Part-II, and Part-III first.'], invalidEls: p3.invalidEls };
     }
 
     const decl = p.declaration || {};
     const declCheck = document.getElementById('cp-decl-check');
+    const declBox = document.getElementById('cp-decl-box');
     if ((declCheck && !declCheck.checked) || !decl.confirmed) {
       errors.push('Declaration Confirmation Checkbox (must be checked)');
-      if (declCheck) elements.push(declCheck);
+      if (declBox) invalidEls.push(declBox);
+      else if (declCheck) invalidEls.push(declCheck);
     }
+
     const sigEl = document.getElementById('cp-decl-fac-sig');
     if (!decl.faculty_signature || !decl.faculty_signature.trim()) {
       errors.push('Faculty Digital Signature');
-      if (sigEl) elements.push(sigEl);
+      if (sigEl) invalidEls.push(sigEl);
     }
+
     const dateEl = document.getElementById('cp-decl-fac-date');
     if (!decl.submission_date || !decl.submission_date.trim()) {
       errors.push('Submission Date');
-      if (dateEl) elements.push(dateEl);
+      if (dateEl) invalidEls.push(dateEl);
     }
 
-    return { valid: errors.length === 0, errors, elements };
+    return { valid: errors.length === 0, errors, invalidEls };
   }
 
   isPart4Complete() {
-    return this.validatePart4().valid;
+    return this.validatePart4(false).valid;
   }
 
   proceedToTab(targetTab) {
@@ -4028,25 +3855,23 @@ class CoursePlanApp {
     if (targetTab === 'part2') {
       const v = this.validatePart1();
       if (!v.valid) {
-        this.highlightValidationErrors(v, 'section-part1');
+        this.showValidationFeedback('section-part1', v.errors, v.invalidEls);
         return;
       }
-      this.clearValidationHighlights();
     } else if (targetTab === 'part3') {
       const v = this.validatePart2();
       if (!v.valid) {
-        this.highlightValidationErrors(v, 'section-part2');
+        this.showValidationFeedback('section-part2', v.errors, v.invalidEls);
         return;
       }
-      this.clearValidationHighlights();
     } else if (targetTab === 'declaration') {
       const v = this.validatePart3();
       if (!v.valid) {
-        this.highlightValidationErrors(v, 'section-part3');
+        this.showValidationFeedback('section-part3', v.errors, v.invalidEls);
         return;
       }
-      this.clearValidationHighlights();
     }
+    this.clearValidationHighlights();
     this.switchFormTab(targetTab);
   }
 
@@ -4058,26 +3883,24 @@ class CoursePlanApp {
     if (tabKey === 'part2') {
       const v = this.validatePart1();
       if (!v.valid) {
-        this.highlightValidationErrors(v, 'section-part1');
+        this.showValidationFeedback('section-part1', v.errors, v.invalidEls);
         return;
       }
-      this.clearValidationHighlights();
     } else if (tabKey === 'part3') {
       const v = this.validatePart2();
       if (!v.valid) {
-        this.highlightValidationErrors(v, 'section-part2');
+        this.showValidationFeedback('section-part2', v.errors, v.invalidEls);
         return;
       }
-      this.clearValidationHighlights();
     } else if (tabKey === 'declaration') {
       const v = this.validatePart3();
       if (!v.valid) {
-        this.highlightValidationErrors(v, 'section-part3');
+        this.showValidationFeedback('section-part3', v.errors, v.invalidEls);
         return;
       }
-      this.clearValidationHighlights();
     }
 
+    this.clearValidationHighlights();
     this.activeFormTab = tabKey;
     ['part1', 'part2', 'part3', 'declaration'].forEach(k => {
       const el = document.getElementById(`section-${k}`);
@@ -4132,10 +3955,9 @@ class CoursePlanApp {
     }
     const v = this.validatePart4();
     if (!v.valid) {
-      this.highlightValidationErrors(v, 'section-declaration');
+      this.showValidationFeedback('section-declaration', v.errors, v.invalidEls);
       return;
     }
-    this.clearValidationHighlights();
     this.viewMode = 'print';
     this.render();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -4531,10 +4353,9 @@ class CoursePlanApp {
       }
       const v = this.validatePart4();
       if (!v.valid) {
-        this.highlightValidationErrors(v, 'section-declaration');
+        this.showValidationFeedback('section-declaration', v.errors, v.invalidEls);
         return;
       }
-      this.clearValidationHighlights();
     } else {
       if (!this.activePlan.faculty_name && !this.activePlan.course_code) {
         // Allow saving draft with minimal info, but prompt if completely blank
