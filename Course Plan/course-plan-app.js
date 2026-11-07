@@ -3215,16 +3215,6 @@ class CoursePlanApp {
           <div class="text-sm font-extrabold text-amber-300 pt-1 tracking-wide">
             COURSE PLAN – ACADEMIC YEAR 2026–2027 (Even Semester)
           </div>
-          
-          <!-- Dynamic Instructions Box: Hidden by default, shown upon Faculty selection -->
-          <div id="cp-banner-instructions-box" class="${plan.faculty_name ? '' : 'hidden'} text-xs text-indigo-100 max-w-2xl mx-auto pt-3 bg-white/10 rounded-2xl p-4 mt-3 border border-white/20 animate-fadeIn space-y-1.5 shadow-inner">
-            <div id="cp-banner-welcome" class="text-base font-black text-amber-300 flex items-center justify-center gap-2">
-              ${plan.faculty_name ? `<span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-400 text-indigo-950 text-xs font-black uppercase tracking-wider shadow-sm"><i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Welcome, ${plan.faculty_name}</span>` : ''}
-            </div>
-            <div id="cp-banner-instructions" class="text-[11.5px] leading-relaxed text-indigo-100 font-medium">
-              ${plan.faculty_name ? `<strong>Instructions:</strong> Dear ${plan.faculty_name}, The course plan shall be prepared for all the theory courses before the commencement of the course and submitted to the Head of the Department for review and approval.` : ''}
-            </div>
-          </div>
         </div>
 
         <!-- Part-wise Navigation Tabs & Form Actions -->
