@@ -65,6 +65,12 @@ class CoursePlanApp {
     this.adminDeptFilter = 'all';
     this.adminTab = 'dept';
     this.adminManageSubTab = 'faculty';
+    this.adminLevelFilter = 'all'; // 'all' | 'UG' | 'PG'
+    this.adminSemFilter = 'even'; // 'even' | 'all' | '2' | '4' | '6' | '1' | '3' | '5'
+    this.adminStatusFilter = 'all'; // 'all' | 'Approved' | 'Pending' | 'Draft' | 'Revision Needed' | 'Not Started'
+    this.adminSearchQuery = '';
+    this.adminCoursePage = 1;
+    this.adminCoursePageSize = 50;
     this.hodTab = 'courses';
     this.syllabusCourses = [];
     this.syllabusLoaded = false;
@@ -178,12 +184,19 @@ class CoursePlanApp {
 
   async loadSyllabusData() {
     try {
-      const res = await fetch('data/syllabus_master.json');
+      let res = await fetch('data/syllabus_master.json');
+      if (!res.ok) res = await fetch('syllabus_master.json');
       this.syllabusCourses = await res.json();
       this.syllabusLoaded = true;
     } catch (e) {
-      console.warn('Could not load syllabus_master.json', e);
-      this.syllabusCourses = [];
+      try {
+        const res2 = await fetch('syllabus_master.json');
+        this.syllabusCourses = await res2.json();
+        this.syllabusLoaded = true;
+      } catch (err) {
+        console.warn('Could not load syllabus_master.json', err);
+        this.syllabusCourses = [];
+      }
     }
   }
 
@@ -238,7 +251,11 @@ class CoursePlanApp {
     if (!sem) return 2;
     const s = String(sem).toUpperCase();
     if (s === 'VI' || s.includes('VI') || s.includes('6')) return 6;
+    if (s === 'V' || s.includes('V') || s.includes('5')) return 5;
     if (s === 'IV' || s.includes('IV') || s.includes('4')) return 4;
+    if (s === 'III' || s.includes('III') || s.includes('3')) return 3;
+    if (s === 'II' || s.includes('II') || s.includes('2')) return 2;
+    if (s === 'I' || s.includes('I') || s.includes('1')) return 1;
     return 2;
   }
 
@@ -2658,7 +2675,7 @@ class CoursePlanApp {
               class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${this.adminTab === 'course' ? 'bg-purple-600 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}"
             >
               <i data-lucide="book-open" class="w-4 h-4"></i>
-              <span>3. Course-wise Master View (${approvedPlans.length})</span>
+              <span>3. Course-wise Monitoring (UG & PG Sem-wise)</span>
             </button>
           </div>
 
@@ -2807,104 +2824,481 @@ class CoursePlanApp {
           </div>
         ` : ''}
 
-        <!-- ================= 3. COURSE-WISE MASTER VIEW (APPROVED COURSES ONLY) ================= -->
-        ${this.adminTab === 'course' ? `
-          <div class="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden w-full">
-            <div class="px-6 py-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
-                  <i data-lucide="book-check" class="w-4 h-4 text-emerald-600"></i>
-                  <span>HOD-Approved Course Plans Master Registry</span>
-                </h2>
-                <p class="text-[11px] text-slate-500">Only verified and HOD-approved course plans across all academic departments</p>
+        <!-- ================= 3. COURSE-WISE MASTER VIEW (UG & PG SEM-WISE) ================= -->
+        ${this.adminTab === 'course' ? (() => {
+          // 1. Gather all master courses from syllabusCourses + any ad-hoc course codes in plans
+          const catalog = (this.syllabusCourses || []).slice();
+          const existingCodes = new Set(catalog.map(c => (c.course_code || '').trim().toUpperCase()));
+          
+          (this.plans || []).forEach(p => {
+            const pCode = (p.course_code || '').trim().toUpperCase();
+            if (pCode && !existingCodes.has(pCode)) {
+              existingCodes.add(pCode);
+              const isPG = (p.programme && (p.programme.startsWith('M.') || p.programme.includes('Master') || p.programme.includes('MCA'))) || (p.year_class && p.year_class.includes('PG'));
+              catalog.push({
+                course_code: p.course_code,
+                course_title: p.course_title,
+                department: p.department_name,
+                programme: p.programme,
+                semester: `Semester ${this.getSemesterNum(p.semester)}`,
+                semester_num: this.getSemesterNum(p.semester),
+                level: isPG ? 'PG' : 'UG',
+                year_class: p.year_class,
+                hours: p.teaching_hours,
+                credits: p.credits,
+                course_category: p.course_category || 'Core'
+              });
+            }
+          });
+
+          // Precompute plan match lookup by normalized course code
+          const plansByCode = new Map();
+          (this.plans || []).forEach(p => {
+            const code = (p.course_code || '').trim().toUpperCase();
+            if (!code) return;
+            if (!plansByCode.has(code)) plansByCode.set(code, []);
+            plansByCode.get(code).push(p);
+          });
+
+          // Precompute counts for Level Filter
+          const totalAllCount = catalog.length;
+          const totalUGCount = catalog.filter(c => (c.level || (c.programme && (c.programme.startsWith('M.') || c.programme.includes('Master') || c.programme.includes('MCA')) ? 'PG' : 'UG')).toUpperCase() === 'UG').length;
+          const totalPGCount = catalog.filter(c => (c.level || (c.programme && (c.programme.startsWith('M.') || c.programme.includes('Master') || c.programme.includes('MCA')) ? 'PG' : 'UG')).toUpperCase() === 'PG').length;
+
+          // 2. Filter by Level, Semester, Department, Status, Search
+          const levelFilter = this.adminLevelFilter || 'all';
+          const semFilter = this.adminSemFilter || 'even';
+          const deptFilter = this.adminDeptFilter || 'all';
+          const statusFilter = this.adminStatusFilter || 'all';
+          const searchQuery = (this.adminSearchQuery || '').trim().toLowerCase();
+
+          const filteredCourses = catalog.filter(c => {
+            const cLevel = (c.level || (c.programme && (c.programme.startsWith('M.') || c.programme.includes('Master') || c.programme.includes('MCA')) ? 'PG' : 'UG')).toUpperCase();
+            const cSemNum = c.semester_num || this.getSemesterNum(c.semester);
+            const cDept = c.department || '';
+
+            // A. Level Filter (All / UG / PG)
+            if (levelFilter !== 'all' && cLevel !== levelFilter.toUpperCase()) return false;
+
+            // B. Semester Filter
+            if (semFilter === 'even') {
+              if (cSemNum !== 2 && cSemNum !== 4 && cSemNum !== 6) return false;
+            } else if (semFilter !== 'all') {
+              if (String(cSemNum) !== String(semFilter)) return false;
+            }
+
+            // C. Department Filter
+            if (deptFilter !== 'all') {
+              if (cDept.toLowerCase() !== deptFilter.toLowerCase() && !cDept.toLowerCase().includes(deptFilter.toLowerCase())) return false;
+            }
+
+            // D. Course Status & Matching Plans
+            const code = (c.course_code || '').trim().toUpperCase();
+            const matchingPlans = plansByCode.get(code) || [];
+            let courseStatus = 'Not Started';
+            if (matchingPlans.length > 0) {
+              if (matchingPlans.some(p => p.hod_status === 'Approved')) courseStatus = 'Approved';
+              else if (matchingPlans.some(p => p.hod_status === 'Revision Needed')) courseStatus = 'Revision Needed';
+              else if (matchingPlans.some(p => p.status === 'Submitted' || p.hod_status === 'Pending')) courseStatus = 'Pending';
+              else courseStatus = 'Draft';
+            }
+            c._computedStatus = courseStatus;
+            c._matchingPlans = matchingPlans;
+
+            if (statusFilter !== 'all' && courseStatus !== statusFilter) return false;
+
+            // E. Search Query
+            if (searchQuery) {
+              const codeMatch = (c.course_code || '').toLowerCase().includes(searchQuery);
+              const titleMatch = (c.course_title || '').toLowerCase().includes(searchQuery);
+              const deptMatch = (c.department || '').toLowerCase().includes(searchQuery);
+              const progMatch = (c.programme || '').toLowerCase().includes(searchQuery);
+              const facMatch = matchingPlans.some(p => (p.faculty_name || '').toLowerCase().includes(searchQuery));
+              if (!codeMatch && !titleMatch && !deptMatch && !progMatch && !facMatch) return false;
+            }
+
+            return true;
+          });
+
+          // Sort by Level (UG first, then PG), then Semester ascending (2, 4, 6), then Department, then Code
+          filteredCourses.sort((a, b) => {
+            const aLevel = (a.level || 'UG').toUpperCase();
+            const bLevel = (b.level || 'UG').toUpperCase();
+            if (aLevel !== bLevel) return aLevel === 'UG' ? -1 : 1;
+
+            const aSem = a.semester_num || 0;
+            const bSem = b.semester_num || 0;
+            if (aSem !== bSem) return aSem - bSem;
+
+            const aDept = (a.department || '').localeCompare(b.department || '');
+            if (aDept !== 0) return aDept;
+
+            return (a.course_code || '').localeCompare(b.course_code || '');
+          });
+
+          // KPI counts among filtered items
+          const kpiApproved = filteredCourses.filter(c => c._computedStatus === 'Approved').length;
+          const kpiPending = filteredCourses.filter(c => c._computedStatus === 'Pending').length;
+          const kpiDraft = filteredCourses.filter(c => c._computedStatus === 'Draft').length;
+          const kpiRevision = filteredCourses.filter(c => c._computedStatus === 'Revision Needed').length;
+          const kpiNotStarted = filteredCourses.filter(c => c._computedStatus === 'Not Started').length;
+
+          // Pagination calculations
+          const pageSize = this.adminCoursePageSize || 50;
+          const totalPages = Math.max(1, Math.ceil(filteredCourses.length / pageSize));
+          const currentPage = Math.min(Math.max(1, this.adminCoursePage || 1), totalPages);
+          const startIdx = (currentPage - 1) * pageSize;
+          const endIdx = Math.min(startIdx + pageSize, filteredCourses.length);
+          const pagedCourses = filteredCourses.slice(startIdx, endIdx);
+
+          return `
+            <div class="space-y-4">
+              <!-- Filter Controls Card -->
+              <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs space-y-4">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                  <div>
+                    <h2 class="text-base font-black text-slate-900 flex items-center gap-2">
+                      <i data-lucide="book-open-check" class="w-5 h-5 text-purple-600"></i>
+                      <span>Institutional Course-wise Monitoring Registry</span>
+                    </h2>
+                    <p class="text-xs text-slate-500 font-medium mt-0.5">
+                      Real-time tracking of syllabus courses across UG & PG programmes, semester-wise status, and assigned faculty members.
+                    </p>
+                  </div>
+
+                  <!-- Level Quick Filter Pills (UG / PG / All) -->
+                  <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-2xl shrink-0">
+                    <button 
+                      type="button" 
+                      onclick="coursePlanApp.setAdminLevelFilter('all')" 
+                      class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${levelFilter === 'all' ? 'bg-purple-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'}"
+                    >
+                      All Courses (${totalAllCount})
+                    </button>
+                    <button 
+                      type="button" 
+                      onclick="coursePlanApp.setAdminLevelFilter('UG')" 
+                      class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${levelFilter === 'UG' ? 'bg-purple-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'}"
+                    >
+                      UG Courses (${totalUGCount})
+                    </button>
+                    <button 
+                      type="button" 
+                      onclick="coursePlanApp.setAdminLevelFilter('PG')" 
+                      class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${levelFilter === 'PG' ? 'bg-purple-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'}"
+                    >
+                      PG Courses (${totalPGCount})
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Secondary Dropdown Filters -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                  <!-- Semester Filter -->
+                  <div class="space-y-1">
+                    <label class="block font-bold text-slate-700">Semester Filter</label>
+                    <select 
+                      onchange="coursePlanApp.setAdminSemFilter(this.value)" 
+                      class="w-full px-3 py-2 border border-slate-300 rounded-xl font-bold bg-white text-slate-800 focus:border-purple-600 focus:outline-none cursor-pointer"
+                    >
+                      <option value="even" ${semFilter === 'even' ? 'selected' : ''}>🌟 Even Semesters (II, IV, VI) - Current</option>
+                      <option value="all" ${semFilter === 'all' ? 'selected' : ''}>All Semesters (I to VI)</option>
+                      <option value="2" ${semFilter === '2' ? 'selected' : ''}>Semester 2 (Even)</option>
+                      <option value="4" ${semFilter === '4' ? 'selected' : ''}>Semester 4 (Even)</option>
+                      <option value="6" ${semFilter === '6' ? 'selected' : ''}>Semester 6 (Even - UG only)</option>
+                      <option value="1" ${semFilter === '1' ? 'selected' : ''}>Semester 1 (Odd)</option>
+                      <option value="3" ${semFilter === '3' ? 'selected' : ''}>Semester 3 (Odd)</option>
+                      <option value="5" ${semFilter === '5' ? 'selected' : ''}>Semester 5 (Odd)</option>
+                    </select>
+                  </div>
+
+                  <!-- Department Filter -->
+                  <div class="space-y-1">
+                    <label class="block font-bold text-slate-700">Department</label>
+                    <select 
+                      onchange="coursePlanApp.setAdminDeptFilter(this.value)" 
+                      class="w-full px-3 py-2 border border-slate-300 rounded-xl font-bold bg-white text-slate-800 focus:border-purple-600 focus:outline-none cursor-pointer"
+                    >
+                      <option value="all" ${deptFilter === 'all' ? 'selected' : ''}>All Departments (${this.departments.length})</option>
+                      ${this.departments.map(d => `
+                        <option value="${this.escapeHtml(d.name)}" ${deptFilter === d.name ? 'selected' : ''}>
+                          ${this.escapeHtml(d.name)}
+                        </option>
+                      `).join('')}
+                    </select>
+                  </div>
+
+                  <!-- Status Filter -->
+                  <div class="space-y-1">
+                    <label class="block font-bold text-slate-700">Course Plan Status</label>
+                    <select 
+                      onchange="coursePlanApp.setAdminStatusFilter(this.value)" 
+                      class="w-full px-3 py-2 border border-slate-300 rounded-xl font-bold bg-white text-slate-800 focus:border-purple-600 focus:outline-none cursor-pointer"
+                    >
+                      <option value="all" ${statusFilter === 'all' ? 'selected' : ''}>All Statuses (${filteredCourses.length})</option>
+                      <option value="Approved" ${statusFilter === 'Approved' ? 'selected' : ''}>✓ HOD Approved (${kpiApproved})</option>
+                      <option value="Pending" ${statusFilter === 'Pending' ? 'selected' : ''}>⏳ Under HOD Review (${kpiPending})</option>
+                      <option value="Draft" ${statusFilter === 'Draft' ? 'selected' : ''}>📝 Draft Saved (${kpiDraft})</option>
+                      <option value="Revision Needed" ${statusFilter === 'Revision Needed' ? 'selected' : ''}>⚠️ Revision Needed (${kpiRevision})</option>
+                      <option value="Not Started" ${statusFilter === 'Not Started' ? 'selected' : ''}>⚪ Not Started / Pending (${kpiNotStarted})</option>
+                    </select>
+                  </div>
+
+                  <!-- Real-time Search Input -->
+                  <div class="space-y-1">
+                    <label class="block font-bold text-slate-700">Search Course or Faculty</label>
+                    <div class="relative">
+                      <input 
+                        type="text" 
+                        id="admin-course-search" 
+                        placeholder="Course code, title, faculty..." 
+                        value="${this.escapeHtml(searchQuery)}" 
+                        oninput="coursePlanApp.onAdminCourseSearchInput(this.value)" 
+                        class="w-full px-3 py-2 pl-8 border border-slate-300 rounded-xl font-medium bg-white text-slate-900 focus:border-purple-600 focus:outline-none"
+                      />
+                      <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2"></i>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- KPI Status Badges Summary -->
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 pt-2 border-t border-slate-100 text-xs">
+                  <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-center">
+                    <div class="text-[10px] font-bold text-slate-500 uppercase">Filtered Courses</div>
+                    <div class="text-lg font-black text-slate-900">${filteredCourses.length}</div>
+                  </div>
+                  <div class="p-2.5 bg-emerald-50/70 rounded-xl border border-emerald-200 text-center">
+                    <div class="text-[10px] font-bold text-emerald-800 uppercase">HOD Approved</div>
+                    <div class="text-lg font-black text-emerald-700">${kpiApproved}</div>
+                  </div>
+                  <div class="p-2.5 bg-amber-50/70 rounded-xl border border-amber-200 text-center">
+                    <div class="text-[10px] font-bold text-amber-800 uppercase">Under Review</div>
+                    <div class="text-lg font-black text-amber-800">${kpiPending}</div>
+                  </div>
+                  <div class="p-2.5 bg-blue-50/70 rounded-xl border border-blue-200 text-center">
+                    <div class="text-[10px] font-bold text-blue-800 uppercase">Drafts</div>
+                    <div class="text-lg font-black text-blue-800">${kpiDraft}</div>
+                  </div>
+                  <div class="p-2.5 bg-rose-50/70 rounded-xl border border-rose-200 text-center col-span-2 sm:col-span-1">
+                    <div class="text-[10px] font-bold text-rose-800 uppercase">Not Started</div>
+                    <div class="text-lg font-black text-rose-700">${kpiNotStarted}</div>
+                  </div>
+                </div>
               </div>
 
-              <div class="flex items-center gap-2 flex-wrap">
-                <select 
-                  onchange="coursePlanApp.adminDeptFilter = this.value; coursePlanApp.render();" 
-                  class="text-xs px-3 py-2 border border-slate-300 rounded-xl font-bold bg-white"
-                >
-                  <option value="all">All Departments (${this.departments.length})</option>
-                  ${this.departments.map(d => `
-                    <option value="${d.name}" ${this.adminDeptFilter === d.name ? 'selected' : ''}>${d.name}</option>
-                  `).join('')}
-                </select>
+              <!-- Main Table Card -->
+              <div class="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden w-full">
+                ${filteredCourses.length === 0 ? `
+                  <div class="p-12 text-center space-y-2">
+                    <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
+                      <i data-lucide="inbox" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-sm font-black text-slate-800">No Courses Match Your Criteria</h3>
+                    <p class="text-xs text-slate-500">Try adjusting your Level, Semester, Department, or Status filters above.</p>
+                  </div>
+                ` : `
+                  <div class="overflow-x-auto w-full">
+                    <table class="w-full text-left text-xs border-collapse mobile-card-table">
+                      <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold uppercase text-[11px] sticky top-0 z-10">
+                        <tr>
+                          <th class="p-3 text-center w-12">S.No</th>
+                          <th class="p-3 w-80">Course Code & Title</th>
+                          <th class="p-3 w-56">Department & Programme</th>
+                          <th class="p-3 w-36 text-center">Semester & Class</th>
+                          <th class="p-3 w-32 text-center">Hrs & Credits</th>
+                          <th class="p-3 w-64">Faculty Name(s)</th>
+                          <th class="p-3 w-40 text-center">Submission Status</th>
+                          <th class="p-3 text-center w-28">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-slate-100 font-medium">
+                        ${pagedCourses.map((c, idx) => {
+                          const globalIdx = startIdx + idx + 1;
+                          const cLevel = (c.level || (c.programme && (c.programme.startsWith('M.') || c.programme.includes('Master') || c.programme.includes('MCA')) ? 'PG' : 'UG')).toUpperCase();
+                          const plans = c._matchingPlans || [];
+
+                          let statusBadge = '';
+                          let facultyDisplay = '';
+                          let actionsHtml = '';
+
+                          if (c._computedStatus === 'Approved') {
+                            statusBadge = `
+                              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs">
+                                <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-600"></i>
+                                <span>HOD Approved</span>
+                              </span>
+                            `;
+                          } else if (c._computedStatus === 'Revision Needed') {
+                            statusBadge = `
+                              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-100 text-rose-800 border border-rose-300">
+                                <i data-lucide="alert-triangle" class="w-3.5 h-3.5 text-rose-600"></i>
+                                <span>Revision Needed</span>
+                              </span>
+                            `;
+                          } else if (c._computedStatus === 'Pending') {
+                            statusBadge = `
+                              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
+                                <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-600"></i>
+                                <span>Under HOD Review</span>
+                              </span>
+                            `;
+                          } else if (c._computedStatus === 'Draft') {
+                            statusBadge = `
+                              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-blue-50 text-blue-800 border border-blue-200">
+                                <i data-lucide="file-edit" class="w-3.5 h-3.5 text-blue-600"></i>
+                                <span>Draft Saved</span>
+                              </span>
+                            `;
+                          } else {
+                            statusBadge = `
+                              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10.5px] font-semibold bg-slate-100 text-slate-500 border border-slate-200">
+                                <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                                <span>Not Started</span>
+                              </span>
+                            `;
+                          }
+
+                          if (plans.length > 0) {
+                            facultyDisplay = `
+                              <div class="space-y-1">
+                                ${plans.map(p => `
+                                  <div class="font-black text-indigo-950 text-xs flex items-center gap-1.5">
+                                    <i data-lucide="user-check" class="w-3.5 h-3.5 text-indigo-600 shrink-0"></i>
+                                    <span>${this.escapeHtml(p.faculty_name || 'Assigned Faculty')}</span>
+                                    ${p.section && p.section !== 'N/A' ? `<span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">${this.escapeHtml(p.section)}</span>` : ''}
+                                  </div>
+                                `).join('')}
+                              </div>
+                            `;
+
+                            const primaryPlan = plans[0];
+                            actionsHtml = `
+                              <div class="inline-flex items-center gap-1.5">
+                                <button 
+                                  type="button" 
+                                  onclick="coursePlanApp.previewPlan(${primaryPlan.id})" 
+                                  class="px-2.5 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-900 font-bold rounded-lg text-xs transition border border-purple-200 flex items-center gap-1 cursor-pointer"
+                                  title="View Course Plan Document"
+                                >
+                                  <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                                  <span>View</span>
+                                </button>
+                                <button 
+                                  type="button" 
+                                  onclick="coursePlanApp.navigateTo('/course-plan/edit?id=${primaryPlan.id}')" 
+                                  class="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition cursor-pointer"
+                                  title="Edit Course Plan"
+                                >
+                                  <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                                </button>
+                              </div>
+                            `;
+                          } else {
+                            facultyDisplay = `
+                              <span class="text-slate-400 italic font-medium flex items-center gap-1 text-[11px]">
+                                <i data-lucide="user-x" class="w-3.5 h-3.5 text-slate-300"></i>
+                                <span>Pending Faculty Submission</span>
+                              </span>
+                            `;
+                            actionsHtml = `<span class="text-slate-300 text-xs font-mono">—</span>`;
+                          }
+
+                          return `
+                            <tr class="hover:bg-slate-50/70 transition">
+                              <td class="p-3 text-center font-bold text-slate-400" data-label="S.No">${globalIdx}</td>
+                              
+                              <td class="p-3" data-label="Course Code & Title">
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                  <span class="font-mono font-black text-indigo-950 text-xs">${this.escapeHtml(c.course_code || '—')}</span>
+                                  <span class="text-[9.5px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider ${cLevel === 'PG' ? 'bg-purple-100 text-purple-900 border border-purple-200' : 'bg-blue-100 text-blue-900 border border-blue-200'}">
+                                    ${cLevel}
+                                  </span>
+                                  <span class="text-[9.5px] font-bold bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded">
+                                    ${this.escapeHtml(c.course_category || 'Core')}
+                                  </span>
+                                </div>
+                                <div class="text-slate-700 font-bold text-xs mt-0.5 leading-snug">
+                                  ${this.escapeHtml(c.course_title || 'Untitled Course')}
+                                </div>
+                              </td>
+
+                              <td class="p-3" data-label="Department & Programme">
+                                <div class="font-bold text-slate-900 text-xs">${this.escapeHtml(c.department || '—')}</div>
+                                <div class="text-[11px] text-slate-500 font-medium">${this.escapeHtml(c.programme || '—')}</div>
+                              </td>
+
+                              <td class="p-3 text-center" data-label="Semester & Class">
+                                <div class="font-bold text-slate-800 text-xs">Sem ${this.escapeHtml(c.semester_num ? String(c.semester_num) : (c.semester || '—'))}</div>
+                                <div class="text-[10.5px] text-slate-500 font-medium">${this.escapeHtml(c.year_class || (cLevel === 'PG' ? 'PG' : 'UG'))}</div>
+                              </td>
+
+                              <td class="p-3 text-center font-mono font-bold" data-label="Hours & Credits">
+                                <div class="text-slate-800 text-xs">${this.escapeHtml(c.hours ? String(c.hours).replace(/&/g, '•') : '—')}h</div>
+                                <div class="text-[10px] text-slate-500">${this.escapeHtml(c.credits ? String(c.credits) : '—')} Credits</div>
+                              </td>
+
+                              <td class="p-3" data-label="Faculty Name(s)">
+                                ${facultyDisplay}
+                              </td>
+
+                              <td class="p-3 text-center" data-label="Submission Status">
+                                ${statusBadge}
+                              </td>
+
+                              <td class="p-3 text-center" data-label="Actions">
+                                ${actionsHtml}
+                              </td>
+                            </tr>
+                          `;
+                        }).join('')}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <!-- Table Pagination Controls -->
+                  <div class="p-3.5 sm:p-4 border-t border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs bg-slate-50">
+                    <div class="flex items-center gap-2 text-slate-600 font-medium">
+                      <span>Showing <strong>${startIdx + 1}</strong>–<strong>${endIdx}</strong> of <strong>${filteredCourses.length}</strong> courses</span>
+                      <span class="text-slate-300">•</span>
+                      <span>Page <strong>${currentPage}</strong> of <strong>${totalPages}</strong></span>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                      <select 
+                        onchange="coursePlanApp.setAdminCoursePageSize(this.value)" 
+                        class="px-2.5 py-1.5 border border-slate-300 rounded-xl bg-white font-bold text-slate-700 cursor-pointer"
+                        title="Rows per page"
+                      >
+                        <option value="50" ${pageSize === 50 ? 'selected' : ''}>50 / page</option>
+                        <option value="100" ${pageSize === 100 ? 'selected' : ''}>100 / page</option>
+                        <option value="250" ${pageSize === 250 ? 'selected' : ''}>250 / page</option>
+                        <option value="all" ${pageSize > 1000 ? 'selected' : ''}>Show All</option>
+                      </select>
+
+                      <button 
+                        type="button" 
+                        onclick="coursePlanApp.setAdminCoursePage(${currentPage - 1})" 
+                        class="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 font-bold rounded-xl border border-slate-300 shadow-2xs transition ${currentPage <= 1 ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}"
+                        ${currentPage <= 1 ? 'disabled' : ''}
+                      >
+                        ← Prev
+                      </button>
+
+                      <button 
+                        type="button" 
+                        onclick="coursePlanApp.setAdminCoursePage(${currentPage + 1})" 
+                        class="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 font-bold rounded-xl border border-slate-300 shadow-2xs transition ${currentPage >= totalPages ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}"
+                        ${currentPage >= totalPages ? 'disabled' : ''}
+                      >
+                        Next →
+                      </button>
+                    </div>
+                  </div>
+                `}
               </div>
             </div>
-
-            ${approvedPlans.length === 0 ? `
-              <div class="p-12 text-center text-slate-400 font-bold">
-                No approved course plans found yet across departments. Once HODs approve submissions, they will be listed here automatically.
-              </div>
-            ` : `
-              <div class="overflow-x-auto w-full">
-                <table class="w-full text-left text-xs border-collapse mobile-card-table">
-                  <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold uppercase text-[11px]">
-                    <tr>
-                      <th class="p-3 text-center w-12">S.No</th>
-                      <th class="p-3">Course Code & Title</th>
-                      <th class="p-3">Department</th>
-                      <th class="p-3">Faculty In-Charge</th>
-                      <th class="p-3">Programme / Year</th>
-                      <th class="p-3 text-center">Hrs & Credits</th>
-                      <th class="p-3 text-center">HOD Approval Stamp</th>
-                      <th class="p-3 text-center">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody class="divide-y divide-slate-100 font-medium">
-                    ${approvedPlans
-                      .filter(p => this.adminDeptFilter === 'all' || (p.department_name && (p.department_name.toLowerCase() === this.adminDeptFilter.toLowerCase() || p.department_name.toLowerCase().includes(this.adminDeptFilter.toLowerCase()))))
-                      .map((p, idx) => `
-                        <tr class="hover:bg-slate-50/70 transition">
-                          <td class="p-3 text-center font-bold text-slate-400">${idx + 1}</td>
-                          <td class="p-3">
-                            <div class="font-bold text-slate-900">${p.course_code || '—'}</div>
-                            <div class="text-slate-600 text-[11px] font-semibold">${p.course_title || 'Untitled'}</div>
-                          </td>
-                          <td class="p-3 text-slate-800 font-bold">${p.department_name || '—'}</td>
-                          <td class="p-3 font-semibold text-slate-900">${p.faculty_name || '—'}</td>
-                          <td class="p-3 text-slate-600">
-                            <div>${p.programme || '—'}</div>
-                            <div class="text-[10px] text-slate-400">${p.year_class || ''}${p.section && p.section !== 'N/A' ? ' (' + p.section + ')' : ''} • Semester ${p.semester || ''}</div>
-                          </td>
-                          <td class="p-3 text-center">
-                            <span class="px-2 py-0.5 rounded bg-slate-100 font-bold text-slate-700">
-                              ${p.teaching_hours ? p.teaching_hours.split('&')[1] || p.teaching_hours : '4 Hrs'} • ${p.credits || '3'} Cr
-                            </span>
-                          </td>
-                          <td class="p-3 text-center">
-                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
-                              ✓ Approved by ${p.hod_name || 'HOD'}
-                            </span>
-                          </td>
-                          <td class="p-3 text-center">
-                            <div class="flex items-center justify-center gap-1.5">
-                              <button 
-                                type="button" 
-                                onclick="coursePlanApp.previewPlan(${p.id})" 
-                                class="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl text-xs transition flex items-center gap-1"
-                              >
-                                <i data-lucide="eye" class="w-3.5 h-3.5"></i>
-                                <span>Inspect Plan</span>
-                              </button>
-                              <button 
-                                type="button" 
-                                onclick="coursePlanApp.editPlan(${p.id})" 
-                                class="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition"
-                                title="Edit Course Plan"
-                              >
-                                <i data-lucide="edit" class="w-3.5 h-3.5"></i>
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      `).join('')}
-                  </tbody>
-                </table>
-              </div>
-            `}
-          </div>
-        ` : ''}
+          `;
+        })() : ''}
 
         <!-- ================= 4. MANAGE MASTER DATA (FACULTY / COURSES / DEPTS) ================= -->
         ${this.adminTab === 'manage' ? `
