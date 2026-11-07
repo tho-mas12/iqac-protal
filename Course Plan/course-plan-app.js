@@ -384,55 +384,71 @@ class CoursePlanApp {
     }
   }
 
-  applyAssessmentRules(isPG) {
-    if (!this.activePlan.assessment_plan || this.activePlan.assessment_plan.length === 0) {
-      this.activePlan.assessment_plan = this.getDefaultAssessmentPlan(isPG);
-      return;
-    }
+  getFullAssessmentPlan(plan) {
+    const p = plan || this.activePlan || {};
+    const isPG = !!p.is_pg;
 
-    this.activePlan.assessment_plan.forEach(asst => {
-      if (asst.sno === '1') {
-        asst.component = 'C1 – K1, K2';
-        asst.marks = '15';
-        asst.category = 'MCQ through JosTEL';
-        asst.uneditable = true;
-      } else if (asst.sno === '2') {
-        asst.component = 'Mid Sem';
-        asst.marks = '30';
-        asst.category = 'Written Examination';
-        asst.uneditable = true;
-      } else if (asst.sno === '3') {
-        asst.marks = isPG ? '6' : '10';
-        asst.component = 'C2 - K4';
-      } else if (asst.sno === '4') {
-        asst.marks = isPG ? '6' : '10';
-        asst.component = 'C2 - K5';
-      } else if (asst.sno === '5') {
-        asst.component = 'C2 - K6';
-        asst.marks = isPG ? '8' : '—';
-        asst.disabled = !isPG;
-        if (!isPG) asst.category = 'Not Applicable for UG (PG Course Only)';
-      } else if (asst.sno === '6') {
-        asst.marks = '5';
-      } else if (asst.sno === '7') {
-        asst.component = 'End Sem';
-        asst.marks = '30';
-        asst.category = 'Written Examination';
-        asst.uneditable = true;
-      }
-    });
+    const c1 = {
+      sno: '1',
+      component: 'C1 – K1, K2',
+      marks: '15',
+      category: 'MCQ through JosTEL',
+      unit_coverage: 'Unit I & II',
+      date: '09-01-2027 to 13-01-2027',
+      outcome: 'CO1, CO2 (K1, K2)',
+      is_default: true,
+      uneditable: true
+    };
+
+    const mid = {
+      sno: '2',
+      component: 'Mid Sem',
+      marks: '30',
+      category: 'Written Examination',
+      unit_coverage: 'Unit I, II & III',
+      date: '21-01-2027 to 30-01-2027',
+      outcome: 'CO1, CO2, CO3 (K1, K2, K3)',
+      is_default: true,
+      uneditable: true
+    };
+
+    const end = {
+      component: 'End Sem',
+      marks: '30',
+      category: 'Written Examination',
+      unit_coverage: 'All Units (Unit I - V)',
+      date: '16-03-2027 to 24-03-2027',
+      outcome: isPG ? 'CO1 to CO6 (K1 - K6)' : 'CO1 to CO5 (K1 - K5)',
+      is_default: true,
+      uneditable: true
+    };
+
+    const assessedActs = (p.learning_activities || []).filter(a => a && a.is_assessment);
+    const middleItems = assessedActs.map(a => ({
+      component: a.cia_component || 'C2 Assessment',
+      marks: String(a.cia_marks || '10'),
+      category: a.activity || 'Learning Activity',
+      unit_coverage: a.topic || '—',
+      date: this.formatDateToDDMMYYYY(a.proposed_date) || '—',
+      outcome: a.outcome || '—',
+      is_default: false,
+      uneditable: true
+    }));
+
+    const fullList = [c1, mid, ...middleItems, end];
+    return fullList.map((item, idx) => ({
+      ...item,
+      sno: String(idx + 1)
+    }));
+  }
+
+  applyAssessmentRules(isPG) {
+    if (!this.activePlan) return;
+    this.activePlan.assessment_plan = this.getFullAssessmentPlan(this.activePlan);
   }
 
   getDefaultAssessmentPlan(isPG = false) {
-    return [
-      { sno: '1', component: 'C1 – K1, K2', marks: '15', category: 'MCQ through JosTEL', unit_coverage: 'Unit I & II', from_date: '09-01-2027', to_date: '13-01-2027', cos_assessed: 'CO1, CO2', uneditable: true },
-      { sno: '2', component: 'Mid Sem', marks: '30', category: 'Written Examination', unit_coverage: 'Unit I, II, III', from_date: '21-01-2027', to_date: '30-01-2027', cos_assessed: 'CO1, CO2, CO3', uneditable: true },
-      { sno: '3', component: 'C2 - K4', marks: isPG ? '6' : '10', category: 'Assignment', unit_coverage: 'Unit III', from_date: '', to_date: '', cos_assessed: 'CO4' },
-      { sno: '4', component: 'C2 - K5', marks: isPG ? '6' : '10', category: 'Problem Solving / Case Analysis', unit_coverage: 'Unit IV', from_date: '', to_date: '', cos_assessed: 'CO5' },
-      { sno: '5', component: 'C2 - K6', marks: isPG ? '8' : '—', category: isPG ? 'Creative Model / Simulation' : 'Not Applicable for UG (PG Course Only)', unit_coverage: isPG ? 'Unit V' : '—', from_date: '', to_date: '', cos_assessed: isPG ? 'CO6' : '—', disabled: !isPG },
-      { sno: '6', component: 'Library Referencing - K3', marks: '5', category: 'Library Notes / Reference Work', unit_coverage: 'Units I - V', from_date: '', to_date: '', cos_assessed: 'CO3' },
-      { sno: '7', component: 'End Sem', marks: '30', category: 'Written Examination', unit_coverage: 'All Units (I - V)', from_date: '16-03-2027', to_date: '24-03-2027', cos_assessed: isPG ? 'CO1 to CO6' : 'CO1 to CO5', uneditable: true }
-    ];
+    return this.getFullAssessmentPlan({ is_pg: isPG });
   }
 
 
@@ -2810,6 +2826,7 @@ class CoursePlanApp {
                     onchange="coursePlanApp.onYearClassChange(this.value)" 
                     class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl bg-white font-bold text-slate-900 focus:border-indigo-600 focus:outline-none cursor-pointer"
                   >
+                    <option value="">-- Choose Year & Class --</option>
                     ${isUGProg ? `
                       <option value="I UG" ${plan.year_class === 'I UG' ? 'selected' : ''}>I UG</option>
                       <option value="II UG" ${plan.year_class === 'II UG' ? 'selected' : ''}>II UG</option>
@@ -2830,7 +2847,8 @@ class CoursePlanApp {
                     onchange="coursePlanApp.onSectionChange(this.value)" 
                     class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl bg-white font-bold text-slate-900 focus:border-indigo-600 focus:outline-none cursor-pointer"
                   >
-                    <option value="N/A" ${plan.section === 'N/A' || !plan.section ? 'selected' : ''}>N/A</option>
+                    <option value="">-- Choose Section --</option>
+                    <option value="N/A" ${plan.section === 'N/A' ? 'selected' : ''}>N/A</option>
                     <option value="Shift I - Section A" ${plan.section === 'Shift I - Section A' ? 'selected' : ''}>Shift I - Section A</option>
                     <option value="Shift I - Section B" ${plan.section === 'Shift I - Section B' ? 'selected' : ''}>Shift I - Section B</option>
                     <option value="Shift II - Section A" ${plan.section === 'Shift II - Section A' ? 'selected' : ''}>Shift II - Section A</option>
@@ -3375,39 +3393,25 @@ class CoursePlanApp {
               </div>
             </div>
 
-            <!-- B. Assessment Plan (Completely Uneditable, Auto-populated from Section A) -->
+            <!-- B. Assessment Plan (Completely Uneditable, Default Institutional Fixed + Auto-synced from Section A) -->
             <div class="space-y-3 pt-4 border-t border-slate-100">
               <div class="flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
                     <span>B. Assessment Plan</span>
                     <span class="text-[10px] bg-emerald-50 text-emerald-800 font-bold px-2 py-0.5 rounded-md border border-emerald-200 inline-flex items-center gap-1">
-                      <i data-lucide="lock" class="w-3 h-3 text-emerald-600"></i> Auto-synced from Section A • Completely Uneditable
+                      <i data-lucide="lock" class="w-3 h-3 text-emerald-600"></i> Mid, End & C1 Pre-filled • Completely Uneditable
                     </span>
                   </h4>
                   <p class="text-[11px] text-slate-500 italic">
-                    Displays activities marked as CIA Assessments in Section A above. Completely uneditable.
+                    Institutional exams (C1 JosTEL MCQ, Mid Sem & End Sem) are pre-filled by default. CIA continuous components are auto-populated from Section A above.
                   </p>
                 </div>
               </div>
 
               ${(() => {
-                const assessedActs = acts.filter(a => a.is_assessment);
-                if (assessedActs.length === 0) {
-                  return `
-                    <div class="p-6 text-center border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/60 space-y-2">
-                      <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto">
-                        <i data-lucide="clipboard-check" class="w-5 h-5"></i>
-                      </div>
-                      <h5 class="text-xs font-bold text-slate-800">No Assessment Plan Created Yet</h5>
-                      <p class="text-[11px] text-slate-500 max-w-md mx-auto">
-                        In <strong>A. Learning Activities</strong> above, click <strong>"+ Add Activity"</strong> (or click the edit pencil icon on an activity) and tick <strong>"Convert it as assessment"</strong> to assign CIA components and marks.
-                      </p>
-                    </div>
-                  `;
-                }
-
-                const totalMarks = assessedActs.reduce((sum, a) => sum + (parseFloat(a.cia_marks) || 0), 0);
+                const fullAssessmentPlan = this.getFullAssessmentPlan(plan);
+                const totalMarks = fullAssessmentPlan.reduce((sum, a) => sum + (parseFloat(a.marks) || 0), 0);
 
                 return `
                   <div class="overflow-x-auto rounded-xl border border-slate-200">
@@ -3415,37 +3419,40 @@ class CoursePlanApp {
                       <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
                         <tr>
                           <th class="p-2.5 w-12 text-center">S.No</th>
-                          <th class="p-2.5 w-44">CIA Component</th>
+                          <th class="p-2.5 w-48">CIA / Exam Component</th>
                           <th class="p-2.5 w-24 text-center">Marks</th>
                           <th class="p-2.5">Learning Activity / Assessment Category</th>
                           <th class="p-2.5 w-44">Unit Coverage</th>
-                          <th class="p-2.5 w-32">Proposed Date</th>
+                          <th class="p-2.5 w-36 text-center">Proposed Date / Window</th>
                           <th class="p-2.5">Expected Outcome</th>
                         </tr>
                       </thead>
                       <tbody id="cp-assts-tbody" class="divide-y divide-slate-100 font-medium bg-slate-50/30">
-                        ${assessedActs.map((asst, idx) => `
-                          <tr>
+                        ${fullAssessmentPlan.map((asst, idx) => `
+                          <tr class="${asst.is_default ? 'bg-indigo-50/30' : 'bg-amber-50/30'}">
                             <td class="p-2.5 text-center font-bold text-slate-400" data-label="S.No">${idx + 1}</td>
                             <td class="p-2.5" data-label="CIA Component">
-                              <span class="inline-flex items-center gap-1.5 font-black text-indigo-950 text-xs">
-                                <i data-lucide="award" class="w-3.5 h-3.5 text-indigo-600"></i>
-                                <span>${this.escapeHtml(asst.cia_component || ('C' + (idx + 1)))}</span>
-                              </span>
+                              <div class="inline-flex items-center gap-1.5 font-black text-indigo-950 text-xs">
+                                <i data-lucide="${asst.is_default ? 'lock' : 'award'}" class="w-3.5 h-3.5 ${asst.is_default ? 'text-indigo-600' : 'text-amber-600'}"></i>
+                                <span>${this.escapeHtml(asst.component)}</span>
+                              </div>
+                              <div class="mt-0.5">
+                                ${asst.is_default ? '<span class="text-[9px] bg-slate-200 text-slate-700 font-bold px-1.5 py-0.5 rounded uppercase tracking-wider inline-flex items-center gap-1"><i data-lucide="shield-check" class="w-2.5 h-2.5 text-indigo-600"></i> Institutional Default</span>' : '<span class="text-[9px] bg-amber-200 text-amber-900 font-bold px-1.5 py-0.5 rounded uppercase tracking-wider inline-flex items-center gap-1"><i data-lucide="check" class="w-2.5 h-2.5 text-amber-700"></i> Synced from Section A</span>'}
+                              </div>
                             </td>
                             <td class="p-2.5 text-center" data-label="Marks">
-                              <span class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white font-black text-xs shadow-2xs">
-                                ${this.escapeHtml(asst.cia_marks || '10')} Marks
+                              <span class="px-2.5 py-1 rounded-lg ${asst.is_default ? 'bg-indigo-600' : 'bg-amber-600'} text-white font-black text-xs shadow-2xs">
+                                ${this.escapeHtml(asst.marks)} Marks
                               </span>
                             </td>
                             <td class="p-2.5 font-bold text-slate-800" data-label="Assessment Category">
-                              ${this.escapeHtml(asst.activity || '—')}
+                              ${this.escapeHtml(asst.category || '—')}
                             </td>
                             <td class="p-2.5 text-slate-700 font-medium" data-label="Unit Coverage">
-                              ${this.escapeHtml(asst.topic || '—')}
+                              ${this.escapeHtml(asst.unit_coverage || '—')}
                             </td>
-                            <td class="p-2.5 font-mono text-slate-700 font-bold" data-label="Proposed Date">
-                              ${this.formatDateToDDMMYYYY(asst.proposed_date) || '—'}
+                            <td class="p-2.5 font-mono text-slate-700 font-bold text-center" data-label="Proposed Date / Window">
+                              ${this.escapeHtml(asst.date || '—')}
                             </td>
                             <td class="p-2.5 text-slate-600 text-[11px]" data-label="Expected Outcome">
                               ${this.escapeHtml(asst.outcome || '—')}
@@ -3453,13 +3460,13 @@ class CoursePlanApp {
                           </tr>
                         `).join('')}
                         <tr class="bg-indigo-50/70 border-t-2 border-indigo-200 font-bold text-indigo-950">
-                          <td class="p-2.5 text-center">Σ</td>
-                          <td class="p-2.5 font-black">Total CIA Plan</td>
+                          <td class="p-2.5 text-center font-black">Σ</td>
+                          <td class="p-2.5 font-black">Total Examination & CIA Plan</td>
                           <td class="p-2.5 text-center font-black">
                             ${totalMarks} Marks
                           </td>
                           <td class="p-2.5 italic text-slate-500 text-[11px]" colspan="4">
-                            Auto-synchronized with Section A above • Completely Uneditable
+                            Mid, End & C1 Pre-filled Institutional Assessments • Converted Activities Auto-synced • Completely Uneditable
                           </td>
                         </tr>
                       </tbody>
@@ -3504,15 +3511,15 @@ class CoursePlanApp {
                         'Online Quiz / JosTEL Quiz', 'Discussion Forum', 'E-Book / PDF Notes',
                         'Spreadsheet / Data Analysis', 'Programming IDE / Code Editor'
                       ];
-                      const curTool = ict.tool || 'PPT / Interactive Slides';
-                      const isOtherTool = !toolOptions.includes(curTool);
+                      const curTool = ict.tool || '';
+                      const isOtherTool = curTool !== '' && !toolOptions.includes(curTool);
 
                       const platformOptions = [
                         'JosTEL', 'Google Classroom', 'Moodle', 'YouTube',
                         'Kahoot / Quizizz', 'SWAYAM / NPTEL', 'GitHub'
                       ];
-                      const curPlatform = ict.platform || 'JosTEL';
-                      const isOtherPlatform = !platformOptions.includes(curPlatform);
+                      const curPlatform = ict.platform || '';
+                      const isOtherPlatform = curPlatform !== '' && !platformOptions.includes(curPlatform);
 
                       return `
                         <tr>
@@ -3525,6 +3532,7 @@ class CoursePlanApp {
                               class="ict-tool-select w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-bold bg-white"
                               onchange="coursePlanApp.onICTToolChange(this)"
                             >
+                              <option value="">-- Select Tool --</option>
                               ${toolOptions.map(opt => `<option value="${opt}" ${curTool === opt ? 'selected' : ''}>${opt}</option>`).join('')}
                               <option value="Others" ${isOtherTool ? 'selected' : ''}>Others (Specify)</option>
                             </select>
@@ -3540,6 +3548,7 @@ class CoursePlanApp {
                               class="ict-platform-select w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-semibold bg-white"
                               onchange="coursePlanApp.onICTPlatformChange(this)"
                             >
+                              <option value="">-- Select Platform --</option>
                               ${platformOptions.map(opt => `<option value="${opt}" ${curPlatform === opt ? 'selected' : ''}>${opt}</option>`).join('')}
                               <option value="Others" ${isOtherPlatform ? 'selected' : ''}>Others (Specify)</option>
                             </select>
@@ -3902,14 +3911,14 @@ class CoursePlanApp {
                   </tr>
                 </thead>
                 <tbody>
-                  ${((plan.learning_activities || []).filter(a => a.is_assessment)).map((asst, i) => `
+                  ${this.getFullAssessmentPlan(plan).map((asst, i) => `
                     <tr>
                       <td class="border border-slate-300 p-1.5 text-center font-bold">${i + 1}</td>
-                      <td class="border border-slate-300 p-1.5 font-bold">${this.escapeHtml(asst.cia_component || '—')}</td>
-                      <td class="border border-slate-300 p-1.5 text-center font-bold">${this.escapeHtml(asst.cia_marks || '—')}</td>
-                      <td class="border border-slate-300 p-1.5 font-bold">${this.escapeHtml(asst.activity || '—')}</td>
-                      <td class="border border-slate-300 p-1.5">${this.escapeHtml(asst.topic || '—')}</td>
-                      <td class="border border-slate-300 p-1.5 text-center font-mono">${this.formatDateToDDMMYYYY(asst.proposed_date) || '—'}</td>
+                      <td class="border border-slate-300 p-1.5 font-bold">${this.escapeHtml(asst.component || '—')}</td>
+                      <td class="border border-slate-300 p-1.5 text-center font-bold">${this.escapeHtml(asst.marks || '—')}</td>
+                      <td class="border border-slate-300 p-1.5 font-bold">${this.escapeHtml(asst.category || '—')}</td>
+                      <td class="border border-slate-300 p-1.5">${this.escapeHtml(asst.unit_coverage || '—')}</td>
+                      <td class="border border-slate-300 p-1.5 text-center font-mono">${this.escapeHtml(asst.date || '—')}</td>
                       <td class="border border-slate-300 p-1.5">${this.escapeHtml(asst.outcome || '—')}</td>
                     </tr>
                   `).join('')}
@@ -4467,14 +4476,14 @@ class CoursePlanApp {
   }
 
   createDefaultPlan() {
-    return {
+    const p = {
       id: null,
       department_name: this.selectedDept,
       faculty_name: '',
       faculty_email: '',
       programme: '',
-      year_class: 'I UG',
-      section: 'N/A',
+      year_class: '',
+      section: '',
       semester: 'II',
       academic_year: '2026 - 2027',
       course_code: '',
@@ -4491,41 +4500,31 @@ class CoursePlanApp {
         { code: 'CO6', outcome: '', k_level: 'K6' }
       ],
       detailed_teaching_plan: [
-        { month_days: 'November / 10', unit: 'Unit I', from_topic: '', to_topic: '', hours: '', cos: 'CO1', methodology: '', resources: '' },
-        { month_days: 'November / 10', unit: 'Unit I', from_topic: '', to_topic: '', hours: '', cos: 'CO1', methodology: '', resources: '' },
-        { month_days: 'December / 19', unit: 'Unit II', from_topic: '', to_topic: '', hours: '', cos: 'CO2', methodology: '', resources: '' },
-        { month_days: 'December / 19', unit: 'Unit II', from_topic: '', to_topic: '', hours: '', cos: 'CO2', methodology: '', resources: '' },
-        { month_days: 'January / 13', unit: 'Unit III', from_topic: '', to_topic: '', hours: '', cos: 'CO3', methodology: '', resources: '' },
-        { month_days: 'January / 13', unit: 'Unit III', from_topic: '', to_topic: '', hours: '', cos: 'CO3', methodology: '', resources: '' },
-        { month_days: 'February / 22', unit: 'Unit IV', from_topic: '', to_topic: '', hours: '', cos: 'CO4', methodology: '', resources: '' },
-        { month_days: 'February / 22', unit: 'Unit IV', from_topic: '', to_topic: '', hours: '', cos: 'CO4', methodology: '', resources: '' },
-        { month_days: 'March / 12', unit: 'Unit V', from_topic: '', to_topic: '', hours: '', cos: 'CO5', methodology: '', resources: '' },
-        { month_days: 'March / 12', unit: 'Unit V', from_topic: '', to_topic: '', hours: '', cos: 'CO5', methodology: '', resources: '' }
+        { month_days: 'November / 10', unit: 'Unit I', from_topic: '', to_topic: '', hours: '', cos: '', methodology: '', resources: '' },
+        { month_days: 'November / 10', unit: 'Unit I', from_topic: '', to_topic: '', hours: '', cos: '', methodology: '', resources: '' },
+        { month_days: 'December / 19', unit: 'Unit II', from_topic: '', to_topic: '', hours: '', cos: '', methodology: '', resources: '' },
+        { month_days: 'December / 19', unit: 'Unit II', from_topic: '', to_topic: '', hours: '', cos: '', methodology: '', resources: '' },
+        { month_days: 'January / 13', unit: 'Unit III', from_topic: '', to_topic: '', hours: '', cos: '', methodology: '', resources: '' },
+        { month_days: 'January / 13', unit: 'Unit III', from_topic: '', to_topic: '', hours: '', cos: '', methodology: '', resources: '' },
+        { month_days: 'February / 22', unit: 'Unit IV', from_topic: '', to_topic: '', hours: '', cos: '', methodology: '', resources: '' },
+        { month_days: 'February / 22', unit: 'Unit IV', from_topic: '', to_topic: '', hours: '', cos: '', methodology: '', resources: '' },
+        { month_days: 'March / 12', unit: 'Unit V', from_topic: '', to_topic: '', hours: '', cos: '', methodology: '', resources: '' },
+        { month_days: 'March / 12', unit: 'Unit V', from_topic: '', to_topic: '', hours: '', cos: '', methodology: '', resources: '' }
       ],
       unit_completion_plan: [
-        { unit: 'Unit I', planned_hours: '15', actual_hours: '15', target_date: '' },
-        { unit: 'Unit II', planned_hours: '15', actual_hours: '15', target_date: '' },
-        { unit: 'Unit III', planned_hours: '15', actual_hours: '15', target_date: '' },
-        { unit: 'Unit IV', planned_hours: '15', actual_hours: '15', target_date: '' },
-        { unit: 'Unit V', planned_hours: '15', actual_hours: '15', target_date: '' }
+        { unit: 'Unit I', planned_hours: '', actual_hours: '', target_date: '' },
+        { unit: 'Unit II', planned_hours: '', actual_hours: '', target_date: '' },
+        { unit: 'Unit III', planned_hours: '', actual_hours: '', target_date: '' },
+        { unit: 'Unit IV', planned_hours: '', actual_hours: '', target_date: '' },
+        { unit: 'Unit V', planned_hours: '', actual_hours: '', target_date: '' }
       ],
-      learning_activities: [
-        { sno: '1', activity: 'Quizzes (MCQs, Short Answer)', topic: 'Unit I & II', outcome: 'Recall and understand foundational concepts (K1, K2)', proposed_date: '2027-01-11', is_assessment: true, cia_component: 'C1 – K1, K2', cia_marks: '15' },
-        { sno: '2', activity: 'In-class Exercises / Problem-solving, Assignment', topic: 'Unit III', outcome: 'Apply principles to analyze real-world problems (K4)', proposed_date: '2027-02-05', is_assessment: true, cia_component: 'C2 - K4', cia_marks: '10' },
-        { sno: '3', activity: 'Case Study Analysis, Group Discussions / Seminars', topic: 'Unit IV', outcome: 'Critical evaluation and synthesis of findings (K5)', proposed_date: '2027-02-20', is_assessment: true, cia_component: 'C2 - K5', cia_marks: '10' },
-        { sno: '4', activity: 'Think-Pair-Share, Concept Maps', topic: 'Unit II', outcome: 'Interactive peer engagement and conceptual clarity', proposed_date: '2027-01-18', is_assessment: false, cia_component: '', cia_marks: '' },
-        { sno: '5', activity: 'Projects (Individual/Group), Presentations / Viva Voce', topic: 'Unit V', outcome: 'Design, implement, and present practical solutions', proposed_date: '2027-03-05', is_assessment: false, cia_component: '', cia_marks: '' }
-      ],
-      assessment_plan: [
-        { sno: '1', component: 'C1 – K1, K2', marks: '15', category: 'Quizzes (MCQs, Short Answer)', unit_coverage: 'Unit I & II', from_date: '2027-01-11', to_date: '2027-01-11', cos_assessed: 'Recall and understand foundational concepts (K1, K2)', uneditable: true },
-        { sno: '2', component: 'C2 - K4', marks: '10', category: 'In-class Exercises / Problem-solving, Assignment', unit_coverage: 'Unit III', from_date: '2027-02-05', to_date: '2027-02-05', cos_assessed: 'Apply principles to analyze real-world problems (K4)', uneditable: true },
-        { sno: '3', component: 'C2 - K5', marks: '10', category: 'Case Study Analysis, Group Discussions / Seminars', unit_coverage: 'Unit IV', from_date: '2027-02-20', to_date: '2027-02-20', cos_assessed: 'Critical evaluation and synthesis of findings (K5)', uneditable: true }
-      ],
+      learning_activities: [],
+      assessment_plan: [],
       ict_integration: [
-        { sno: '1', topic: '', tool: 'PPT / Interactive Slides', platform: 'JosTEL', purpose: '' },
-        { sno: '2', topic: '', tool: 'Video Lecture', platform: 'JosTEL', purpose: '' },
-        { sno: '3', topic: '', tool: 'Online Quiz', platform: 'JosTEL', purpose: '' },
-        { sno: '4', topic: '', tool: 'E-Book / PDF Notes', platform: 'JosTEL', purpose: '' }
+        { sno: '1', topic: '', tool: '', platform: '', purpose: '' },
+        { sno: '2', topic: '', tool: '', platform: '', purpose: '' },
+        { sno: '3', topic: '', tool: '', platform: '', purpose: '' },
+        { sno: '4', topic: '', tool: '', platform: '', purpose: '' }
       ],
       declaration: {
         confirmed: false,
@@ -4539,6 +4538,8 @@ class CoursePlanApp {
       status: 'Draft',
       hod_status: 'Draft'
     };
+    p.assessment_plan = this.getFullAssessmentPlan(p);
+    return p;
   }
 
   calculateTotalHours() {
@@ -5008,18 +5009,8 @@ class CoursePlanApp {
   }
 
   syncAssessmentPlanFromActivities() {
-    const assessed = (this.activePlan.learning_activities || []).filter(a => a.is_assessment);
-    this.activePlan.assessment_plan = assessed.map((a, idx) => ({
-      sno: String(idx + 1),
-      component: a.cia_component || ('C2 - K' + (idx <= 1 ? idx + 4 : 4)),
-      marks: String(a.cia_marks || '10'),
-      category: a.activity,
-      unit_coverage: a.topic || '—',
-      from_date: a.proposed_date || '',
-      to_date: a.proposed_date || '',
-      cos_assessed: a.outcome || '—',
-      uneditable: true
-    }));
+    if (!this.activePlan) return;
+    this.activePlan.assessment_plan = this.getFullAssessmentPlan(this.activePlan);
   }
 
   addActivityRow() {
@@ -5049,7 +5040,7 @@ class CoursePlanApp {
   addICTRow() {
     this.harvestFormInputs();
     const count = (this.activePlan.ict_integration || []).length + 1;
-    this.activePlan.ict_integration.push({ sno: String(count), topic: '', tool: '', platform: 'JosTEL', purpose: '' });
+    this.activePlan.ict_integration.push({ sno: String(count), topic: '', tool: '', platform: '', purpose: '' });
     this.render();
   }
 
