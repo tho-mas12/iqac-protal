@@ -22,21 +22,69 @@ $action = isset($_GET['action']) ? $_GET['action'] : ($method === 'POST' ? 'save
 try {
     $pdo = getDBConnection();
 
-    // ================= 1. AUTHENTICATION (HOD & ADMIN) =================
+    // ================= 1. AUTHENTICATION (FACULTY, HOD & ADMIN) =================
     if ($action === 'login' && $method === 'POST') {
         $raw = file_get_contents('php://input');
         $data = json_decode($raw, true);
 
+        $role = isset($data['role']) ? trim($data['role']) : 'faculty';
         $username = isset($data['username']) ? trim($data['username']) : '';
         $password = isset($data['password']) ? trim($data['password']) : '';
         $deptName = isset($data['department_name']) ? trim($data['department_name']) : '';
-        $role = isset($data['role']) ? trim($data['role']) : '';
+        $facName = isset($data['faculty_name']) ? trim($data['faculty_name']) : '';
 
         if (!$password) {
             echo json_encode(['success' => false, 'error' => 'Please provide password']);
             exit;
         }
 
+        // --- FACULTY LOGIN ---
+        if ($role === 'faculty') {
+            if (!$deptName || !$facName) {
+                echo json_encode(['success' => false, 'error' => 'Please select both Department and Faculty Member']);
+                exit;
+            }
+
+            // Check course_plan_faculty_auth table
+            $stmt = $pdo->prepare("SELECT * FROM course_plan_faculty_auth WHERE department_name = :dept AND faculty_name = :fac LIMIT 1");
+            $stmt->execute([':dept' => $deptName, ':fac' => $facName]);
+            $authRow = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            $isValid = false;
+            // Default initial password is '123' for all faculty
+            if ($password === '123') {
+                $isValid = true;
+            } else if ($authRow) {
+                $pwHash = hash('sha256', $password);
+                if ($authRow['password_hash'] === $pwHash || $authRow['plain_password'] === $password) {
+                    $isValid = true;
+                }
+            }
+
+            if (!$isValid) {
+                echo json_encode(['success' => false, 'error' => 'Invalid password for ' . $facName]);
+                exit;
+            }
+
+            $_SESSION['cp_user'] = [
+                'id' => $authRow ? (int)$authRow['id'] : null,
+                'username' => $authRow ? ($authRow['faculty_email'] ?: $facName) : $facName,
+                'role' => 'faculty',
+                'department_name' => $deptName,
+                'faculty_name' => $facName,
+                'display_name' => $facName,
+                'faculty_email' => $authRow ? $authRow['faculty_email'] : ''
+            ];
+
+            echo json_encode([
+                'success' => true,
+                'user' => $_SESSION['cp_user'],
+                'message' => 'Logged in successfully as ' . $facName
+            ]);
+            exit;
+        }
+
+        // --- HOD & ADMIN LOGIN ---
         $pwHash = hash('sha256', $password);
 
         if ($role === 'hod' && $deptName !== '') {
@@ -61,7 +109,8 @@ try {
             'username' => $user['username'],
             'role' => $user['role'],
             'department_name' => $user['department_name'],
-            'display_name' => $user['display_name']
+            'display_name' => $user['display_name'],
+            'faculty_name' => ($user['role'] === 'hod') ? $user['display_name'] : ''
         ];
 
         echo json_encode([
@@ -118,17 +167,26 @@ try {
         $department = isset($_GET['department']) ? trim($_GET['department']) : '';
         $filterStatus = isset($_GET['status']) ? trim($_GET['status']) : '';
 
-        // If logged in as HOD, strictly filter to their department
-        if ($currentUser && $currentUser['role'] === 'hod') {
-            $department = $currentUser['department_name'];
-        }
-
         // Base query
         $sql = "SELECT id, department_name, faculty_name, programme, year_class, semester, academic_year, course_code, course_title, course_category, teaching_hours, credits, status, hod_status, hod_name, approved_at, updated_at FROM course_plan_2026_27 WHERE 1=1";
         $params = [];
 
-        // If IQAC Admin requested approved only or default
-        if ($currentUser && $currentUser['role'] === 'admin') {
+        // Role-based filtering
+        if ($currentUser && $currentUser['role'] === 'faculty') {
+            // Strictly show only the logged-in faculty member's course plans
+            $sql .= " AND faculty_name = :fac AND department_name = :dept";
+            $params[':fac'] = $currentUser['faculty_name'];
+            $params[':dept'] = $currentUser['department_name'];
+        } else if ($currentUser && $currentUser['role'] === 'hod') {
+            // Strictly filter to HOD's department
+            $sql .= " AND department_name = :dept";
+            $params[':dept'] = $currentUser['department_name'];
+            if ($filterStatus && $filterStatus !== 'all') {
+                $sql .= " AND hod_status = :hstatus";
+                $params[':hstatus'] = $filterStatus;
+            }
+        } else if ($currentUser && $currentUser['role'] === 'admin') {
+            // IQAC Admin view
             if ($filterStatus !== '' && $filterStatus !== 'all') {
                 $sql .= " AND hod_status = :hstatus";
                 $params[':hstatus'] = $filterStatus;
@@ -138,7 +196,7 @@ try {
                 $params[':dept'] = $department;
             }
         } else {
-            // Department view (Public Faculty or HOD)
+            // Unauthenticated query (if any)
             if ($department !== '' && $department !== 'All Departments') {
                 $sql .= " AND department_name = :dept";
                 $params[':dept'] = $department;
@@ -355,8 +413,14 @@ try {
             echo json_encode(['success' => false, 'error' => 'Missing ID']);
             exit;
         }
-        $stmt = $pdo->prepare("DELETE FROM course_plan_2026_27 WHERE id = :id");
-        $stmt->execute([':id' => $id]);
+        $currentUser = isset($_SESSION['cp_user']) ? $_SESSION['cp_user'] : null;
+        if ($currentUser && $currentUser['role'] === 'faculty') {
+            $stmt = $pdo->prepare("DELETE FROM course_plan_2026_27 WHERE id = :id AND faculty_name = :fac AND department_name = :dept");
+            $stmt->execute([':id' => $id, ':fac' => $currentUser['faculty_name'], ':dept' => $currentUser['department_name']]);
+        } else {
+            $stmt = $pdo->prepare("DELETE FROM course_plan_2026_27 WHERE id = :id");
+            $stmt->execute([':id' => $id]);
+        }
         echo json_encode(['success' => true, 'message' => 'Course plan deleted successfully']);
         exit;
     }

@@ -53,16 +53,19 @@ class CoursePlanApp {
   constructor() {
     this.departments = [];
     this.selectedDept = localStorage.getItem('CP_SELECTED_DEPT') || 'Computer Science';
-    this.currentUser = null; // null (Faculty/Public), { role: 'hod', department_name: ... }, { role: 'admin' }
+    this.currentUser = null; // null (Faculty/Public), { role: 'faculty', ... }, { role: 'hod', ... }, { role: 'admin' }
     this.plans = [];
     this.activePlan = null;
-    this.viewMode = 'form'; // Default directly to 'form' for faculty data entry
+    this.viewMode = 'login'; // Display login page by default when browsing
     this.activeFormTab = 'part1'; // 'part1' | 'part2' | 'part3' | 'declaration'
-    this.adminFilter = 'Approved'; // Requirement 2: default to Approved for Admin
+    this.loginTab = 'faculty'; // 'faculty' | 'hod' | 'admin'
+    this.loginDept = '';
+    this.loginFaculty = '';
+    this.adminFilter = 'Approved';
     this.adminDeptFilter = 'all';
-    this.adminTab = 'dept'; // 'dept' | 'faculty' | 'course' | 'manage'
-    this.adminManageSubTab = 'faculty'; // 'faculty' | 'course' | 'dept'
-    this.hodTab = 'courses'; // 'courses' | 'roster'
+    this.adminTab = 'dept';
+    this.adminManageSubTab = 'faculty';
+    this.hodTab = 'courses';
     this.syllabusCourses = [];
     this.syllabusLoaded = false;
   }
@@ -71,27 +74,93 @@ class CoursePlanApp {
     await this.loadDepartmentsData();
     await this.loadSyllabusData();
     await this.checkAuth();
-    await this.fetchPlans();
-    if (!this.currentUser) {
-      if (!this.activePlan) {
-        this.activePlan = this.createDefaultPlan();
-      }
-      this.viewMode = 'form';
-      this.activeFormTab = 'part1';
-    } else {
-      this.viewMode = 'dashboard';
-    }
-    this.render();
 
-    // Check if URL specifies login (/login or ?login or #login)
-    const urlParams = new URLSearchParams(window.location.search);
-    const isLoginUrl = urlParams.has('login') || 
-                       window.location.pathname.endsWith('/login') || 
-                       window.location.pathname.endsWith('/login/') || 
-                       window.location.hash === '#login';
-    if (isLoginUrl && !this.currentUser) {
-      this.openLoginModal();
+    // Set default login dept
+    if (!this.loginDept && this.departments.length > 0) {
+      this.loginDept = this.selectedDept || this.departments[0].name;
     }
+
+    // Listen to browser Back / Forward buttons for clean URL navigation
+    window.addEventListener('popstate', () => {
+      this.handleRoute();
+    });
+
+    // Dispatch route based on URL
+    await this.handleRoute();
+  }
+
+  getRoute() {
+    const path = window.location.pathname.replace(/\/+$/, '');
+    const search = new URLSearchParams(window.location.search);
+    const hash = window.location.hash.replace(/^#/, '');
+
+    if (path.endsWith('/login') || search.has('login') || hash === 'login') return { name: 'login' };
+    if (path.endsWith('/dashboard') || search.has('dashboard') || hash === 'dashboard') return { name: 'dashboard' };
+    if (path.endsWith('/new') || path.endsWith('/create') || search.has('new') || hash === 'new') return { name: 'new' };
+    if (path.endsWith('/edit') || search.has('edit')) return { name: 'edit', id: search.get('id') || search.get('edit') };
+    if (path.endsWith('/view') || path.endsWith('/print') || search.has('view') || search.has('print')) return { name: 'view', id: search.get('id') || search.get('view') || search.get('print') };
+    if (path.endsWith('/hod') || search.has('hod') || hash === 'hod') return { name: 'hod' };
+    if (path.endsWith('/admin') || search.has('admin') || hash === 'admin') return { name: 'admin' };
+
+    return { name: 'root' };
+  }
+
+  navigateTo(url, replace = false) {
+    if (replace) {
+      window.history.replaceState(null, '', url);
+    } else {
+      window.history.pushState(null, '', url);
+    }
+    this.handleRoute();
+  }
+
+  async handleRoute() {
+    const r = this.getRoute();
+
+    if (!this.currentUser) {
+      this.viewMode = 'login';
+      if (r.name !== 'login') {
+        window.history.replaceState(null, '', '/course-plan/login');
+      }
+      this.render();
+      return;
+    }
+
+    if (this.currentUser.role === 'faculty') {
+      if (r.name === 'new') {
+        this.createNewPlan();
+        this.viewMode = 'form';
+        this.activeFormTab = 'part1';
+      } else if (r.name === 'edit' && r.id) {
+        await this.loadPlanForEdit(r.id);
+        this.viewMode = 'form';
+        this.activeFormTab = 'part1';
+      } else if (r.name === 'view' && r.id) {
+        await this.loadPlanForPrint(r.id);
+        this.viewMode = 'print';
+      } else {
+        this.viewMode = 'dashboard';
+        if (r.name !== 'dashboard') {
+          window.history.replaceState(null, '', '/course-plan/dashboard');
+        }
+        await this.fetchPlans();
+      }
+    } else if (this.currentUser.role === 'hod') {
+      this.viewMode = 'dashboard';
+      if (r.name !== 'hod' && r.name !== 'dashboard') {
+        window.history.replaceState(null, '', '/course-plan/hod');
+      }
+      await this.fetchPlans();
+    } else if (this.currentUser.role === 'admin') {
+      this.viewMode = 'dashboard';
+      if (r.name !== 'admin' && r.name !== 'dashboard') {
+        window.history.replaceState(null, '', '/course-plan/admin');
+      }
+      await this.fetchPlans();
+    }
+
+    this.render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   async loadSyllabusData() {
@@ -1221,6 +1290,8 @@ class CoursePlanApp {
       if (this.currentUser && this.currentUser.role === 'admin') {
         if (this.adminFilter !== 'all') url += `&status=${encodeURIComponent(this.adminFilter)}`;
         if (this.adminDeptFilter !== 'all') url += `&department=${encodeURIComponent(this.adminDeptFilter)}`;
+      } else if (this.currentUser && this.currentUser.role === 'faculty') {
+        url += `&department=${encodeURIComponent(this.currentUser.department_name)}&faculty_name=${encodeURIComponent(this.currentUser.faculty_name)}`;
       } else {
         url += `&department=${encodeURIComponent(this.selectedDept)}`;
       }
@@ -1248,25 +1319,21 @@ class CoursePlanApp {
 
     this.renderHeaderBar();
 
-    if (this.viewMode === 'form') {
+    if (this.viewMode === 'login' || !this.currentUser) {
+      root.innerHTML = this.renderLoginHtml();
+    } else if (this.viewMode === 'form') {
       root.innerHTML = this.renderFormHtml();
       this.calculateTotalHours();
     } else if (this.viewMode === 'print') {
       root.innerHTML = this.renderPrintHtml();
     } else {
       // Dashboard view based on user role
-      if (this.currentUser && this.currentUser.role === 'admin') {
+      if (this.currentUser.role === 'admin') {
         root.innerHTML = this.renderAdminDashboardHtml();
-      } else if (this.currentUser && this.currentUser.role === 'hod') {
+      } else if (this.currentUser.role === 'hod') {
         root.innerHTML = this.renderHODDashboardHtml();
       } else {
-        if (!this.currentUser) {
-          this.viewMode = 'form';
-          root.innerHTML = this.renderFormHtml();
-          this.calculateTotalHours();
-        } else {
-          root.innerHTML = this.renderFacultyDashboardHtml();
-        }
+        root.innerHTML = this.renderFacultyDashboardHtml();
       }
     }
 
@@ -1282,244 +1349,801 @@ class CoursePlanApp {
 
     if (this.currentUser) {
       const isHOD = this.currentUser.role === 'hod';
+      const isFaculty = this.currentUser.role === 'faculty';
+      const roleBadge = isHOD ? 'bg-amber-100 text-amber-900 border border-amber-300' :
+                        isFaculty ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' :
+                        'bg-purple-100 text-purple-900 border border-purple-300';
+      const roleIcon = isHOD ? 'shield-check' : isFaculty ? 'user-check' : 'crown';
+      const roleTitle = isHOD ? 'Head of Department' : isFaculty ? 'Faculty Member' : 'IQAC Admin';
+
       authStatusEl.innerHTML = `
-        <div class="flex items-center gap-2">
-          <span class="px-2.5 py-1 rounded-xl text-xs font-bold ${isHOD ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-purple-100 text-purple-900 border border-purple-300'} flex items-center gap-1.5">
-            <i data-lucide="${isHOD ? 'shield-check' : 'crown'}" class="w-3.5 h-3.5"></i>
-            <span>${this.currentUser.display_name}</span>
+        <div class="flex items-center gap-2 flex-wrap">
+          ${isFaculty ? `
+            <button 
+              type="button" 
+              onclick="coursePlanApp.navigateTo('/course-plan/dashboard')" 
+              class="px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+            >
+              <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
+              <span>My Dashboard</span>
+            </button>
+          ` : isHOD ? `
+            <button 
+              type="button" 
+              onclick="coursePlanApp.navigateTo('/course-plan/hod')" 
+              class="px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+            >
+              <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
+              <span>HOD Dashboard</span>
+            </button>
+          ` : `
+            <button 
+              type="button" 
+              onclick="coursePlanApp.navigateTo('/course-plan/admin')" 
+              class="px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+            >
+              <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
+              <span>Admin Dashboard</span>
+            </button>
+          `}
+          <span class="px-2.5 py-1 rounded-xl text-xs font-bold ${roleBadge} flex items-center gap-1.5">
+            <i data-lucide="${roleIcon}" class="w-3.5 h-3.5"></i>
+            <span>${this.escapeHtml(this.currentUser.display_name || this.currentUser.faculty_name || 'User')}</span>
           </span>
           <button 
             type="button" 
             onclick="coursePlanApp.logout()" 
             class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold rounded-xl text-xs transition border border-rose-200 cursor-pointer"
           >
-            Logout
+            Sign Out
           </button>
         </div>
       `;
     } else {
-      authStatusEl.innerHTML = '';
+      authStatusEl.innerHTML = `
+        <button 
+          type="button" 
+          onclick="coursePlanApp.navigateTo('/course-plan/login')" 
+          class="px-3 py-1.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 font-bold rounded-xl text-xs border border-indigo-200 flex items-center gap-1.5 cursor-pointer"
+        >
+          <i data-lucide="log-in" class="w-3.5 h-3.5"></i>
+          <span>Sign In</span>
+        </button>
+      `;
     }
   }
 
-  // ================= 1. FACULTY DASHBOARD (DIRECT DATA ENTRY) =================
-  renderFacultyDashboardHtml() {
-    const deptObj = this.getCurrentDepartmentObj();
-    const plans = this.plans;
+  // ================= 0. AUTHENTICATION & LOGIN VIEW =================
+  renderLoginHtml() {
+    const tab = this.loginTab || 'faculty';
+    const deptObj = this.departments.find(d => d.name === (this.loginDept || this.selectedDept)) || this.departments[0] || { name: '', faculty: [] };
+    const facultyList = deptObj.faculty || [];
+    const currentDeptName = deptObj.name;
+    const currentFacName = this.loginFaculty || (facultyList.length > 0 ? (typeof facultyList[0] === 'string' ? facultyList[0] : facultyList[0].name) : '');
 
     return `
-      
-<style>
-  .is-invalid-field {
-    border-color: #ef4444 !important;
-    background-color: #fef2f2 !important;
-    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25) !important;
-    animation: fieldShake 0.4s ease-in-out !important;
-  }
-  @keyframes fieldShake {
-    0%, 100% { transform: translateX(0); }
-    20%, 60% { transform: translateX(-4px); }
-    40%, 80% { transform: translateX(4px); }
-  }
-
-  /* Compact Card View for Mobile Screens */
-  @media (max-width: 768px) {
-    .mobile-card-table thead {
-      display: none !important;
-    }
-    .mobile-card-table, 
-    .mobile-card-table tbody, 
-    .mobile-card-table tr, 
-    .mobile-card-table td {
-      display: block !important;
-      width: 100% !important;
-    }
-    .mobile-card-table tr {
-      margin-bottom: 1rem !important;
-      background: #ffffff !important;
-      border: 1.5px solid #e2e8f0 !important;
-      border-radius: 1rem !important;
-      padding: 0.85rem !important;
-      box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.06) !important;
-    }
-    .mobile-card-table td {
-      padding: 0.35rem 0 !important;
-      border: none !important;
-      display: flex !important;
-      flex-direction: column !important;
-      gap: 0.25rem !important;
-    }
-    .mobile-card-table td::before {
-      content: attr(data-label);
-      font-size: 0.68rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      color: #64748b;
-      letter-spacing: 0.03em;
-    }
-  }
-</style>
-
-      <div class="space-y-6 animate-fadeIn w-full">
-        <!-- Faculty Instructions Banner -->
-        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-5">
-          <div class="space-y-1.5">
-            <div class="flex items-center gap-2">
-              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-200">
-                Department Faculty Data Entry
-              </span>
-              <span class="text-xs font-semibold text-slate-400">•</span>
-              <span class="text-xs font-bold text-slate-700">${this.selectedDept}</span>
+      <div class="min-h-[80vh] flex items-center justify-center py-10 px-4 animate-fadeIn">
+        <div class="w-full max-w-xl">
+          <!-- Institutional Brand Card Header -->
+          <div class="text-center mb-8 space-y-2">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-800 text-xs font-black uppercase tracking-wider">
+              <i data-lucide="award" class="w-3.5 h-3.5 text-indigo-600"></i>
+              <span>Internal Quality Assurance Cell (IQAC)</span>
             </div>
-            <h1 class="text-2xl font-black tracking-tight text-slate-900">
-              Course Plan – Academic Year 2026–2027 (Even Semester)
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+              St. Joseph’s College <span class="text-xs font-bold text-slate-500 uppercase block sm:inline">(Autonomous)</span>
             </h1>
-            <p class="text-xs text-slate-500 font-medium">
-              Dear Professor, prepare theory course plans for the upcoming semester and submit directly to your Head of Department (HOD) for review and approval.
+            <p class="text-xs font-bold text-slate-600 uppercase tracking-widest">
+              Tiruchirappalli – 620 002 • Accredited at A++ Grade (Cycle IV) by NAAC
+            </p>
+            <div class="inline-block mt-1 text-sm font-black text-indigo-700 bg-indigo-50/80 px-4 py-1 rounded-xl border border-indigo-200">
+              Course Plan Portal – Academic Year 2026–2027
+            </div>
+          </div>
+
+          <!-- Main Login Box -->
+          <div class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
+            <!-- Role Tabs Header -->
+            <div class="grid grid-cols-3 bg-slate-50 border-b border-slate-200 p-1.5 gap-1 text-xs font-bold">
+              <button 
+                type="button" 
+                onclick="coursePlanApp.setLoginTab('faculty')" 
+                class="py-2.5 px-3 rounded-2xl transition flex items-center justify-center gap-1.5 cursor-pointer ${tab === 'faculty' ? 'bg-white text-indigo-700 shadow-sm font-black ring-1 ring-slate-200' : 'text-slate-600 hover:text-slate-900'}"
+              >
+                <i data-lucide="user-check" class="w-4 h-4 text-indigo-600"></i>
+                <span>Faculty</span>
+              </button>
+              <button 
+                type="button" 
+                onclick="coursePlanApp.setLoginTab('hod')" 
+                class="py-2.5 px-3 rounded-2xl transition flex items-center justify-center gap-1.5 cursor-pointer ${tab === 'hod' ? 'bg-white text-indigo-700 shadow-sm font-black ring-1 ring-slate-200' : 'text-slate-600 hover:text-slate-900'}"
+              >
+                <i data-lucide="shield-check" class="w-4 h-4 text-amber-600"></i>
+                <span>HOD</span>
+              </button>
+              <button 
+                type="button" 
+                onclick="coursePlanApp.setLoginTab('admin')" 
+                class="py-2.5 px-3 rounded-2xl transition flex items-center justify-center gap-1.5 cursor-pointer ${tab === 'admin' ? 'bg-white text-indigo-700 shadow-sm font-black ring-1 ring-slate-200' : 'text-slate-600 hover:text-slate-900'}"
+              >
+                <i data-lucide="crown" class="w-4 h-4 text-purple-600"></i>
+                <span>IQAC Admin</span>
+              </button>
+            </div>
+
+            <!-- Tab Content Forms -->
+            <div class="p-6 sm:p-8 space-y-6">
+              
+              <!-- Error Notification Box -->
+              <div id="login-error-msg" class="hidden p-3.5 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold rounded-2xl flex items-center gap-2 animate-shake">
+                <i data-lucide="alert-circle" class="w-4 h-4 shrink-0 text-rose-600"></i>
+                <span class="error-text">Authentication failed</span>
+              </div>
+
+              ${tab === 'faculty' ? `
+                <!-- 1. Faculty Login Form -->
+                <form onsubmit="coursePlanApp.loginFaculty(event)" class="space-y-4">
+                  <div class="space-y-1">
+                    <h2 class="text-lg font-black text-slate-900">Faculty Sign In</h2>
+                    <p class="text-xs text-slate-500 font-medium">Select your department and name to manage your course plans.</p>
+                  </div>
+
+                  <!-- Department Dropdown -->
+                  <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                      <i data-lucide="building-2" class="w-3.5 h-3.5 text-indigo-600"></i>
+                      <span>Department *</span>
+                    </label>
+                    <select 
+                      id="login-fac-dept" 
+                      onchange="coursePlanApp.onLoginDeptChange(this.value)" 
+                      class="w-full text-xs sm:text-sm px-3.5 py-2.5 border-2 border-slate-200 rounded-2xl bg-white font-bold text-slate-900 focus:border-indigo-600 focus:outline-none transition cursor-pointer"
+                      required
+                    >
+                      ${this.departments.map(d => `
+                        <option value="${this.escapeHtml(d.name)}" ${d.name === currentDeptName ? 'selected' : ''}>
+                          ${this.escapeHtml(d.name)}
+                        </option>
+                      `).join('')}
+                    </select>
+                  </div>
+
+                  <!-- Faculty Name Dropdown (Dynamically updated based on selected dept) -->
+                  <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                      <i data-lucide="user" class="w-3.5 h-3.5 text-indigo-600"></i>
+                      <span>Faculty Name *</span>
+                    </label>
+                    <select 
+                      id="login-fac-name" 
+                      onchange="coursePlanApp.onLoginFacultyChange(this.value)" 
+                      class="w-full text-xs sm:text-sm px-3.5 py-2.5 border-2 border-indigo-300 bg-indigo-50/20 rounded-2xl font-black text-indigo-950 focus:border-indigo-600 focus:outline-none transition cursor-pointer"
+                      required
+                    >
+                      ${facultyList.map(f => {
+                        const name = typeof f === 'string' ? f : f.name;
+                        return `<option value="${this.escapeHtml(name)}" ${name === currentFacName ? 'selected' : ''}>${this.escapeHtml(name)}</option>`;
+                      }).join('')}
+                    </select>
+                  </div>
+
+                  <!-- Password Field (Pre-filled with '123' by default) -->
+                  <div class="space-y-1.5">
+                    <div class="flex items-center justify-between">
+                      <label class="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                        <i data-lucide="lock" class="w-3.5 h-3.5 text-indigo-600"></i>
+                        <span>Password *</span>
+                      </label>
+                      <span class="text-[10.5px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-200">
+                        Default: 123
+                      </span>
+                    </div>
+                    <div class="relative">
+                      <input 
+                        type="password" 
+                        id="login-fac-password" 
+                        value="123" 
+                        required 
+                        class="w-full text-xs sm:text-sm px-3.5 py-2.5 border-2 border-slate-200 rounded-2xl bg-white font-mono font-bold text-slate-900 focus:border-indigo-600 focus:outline-none transition pr-10"
+                        placeholder="Enter your password"
+                      />
+                      <button 
+                        type="button" 
+                        onclick="coursePlanApp.togglePasswordVisibility('login-fac-password')" 
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                        title="Show/Hide Password"
+                      >
+                        <i data-lucide="eye" class="w-4 h-4"></i>
+                      </button>
+                    </div>
+                    <div class="text-[11px] text-slate-400 font-medium">
+                      Note: Time being default password is <strong>123</strong> for all faculty members.
+                    </div>
+                  </div>
+
+                  <!-- Submit Button -->
+                  <div class="pt-2">
+                    <button 
+                      type="submit" 
+                      id="login-submit-btn" 
+                      class="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-extrabold rounded-2xl shadow-lg shadow-indigo-600/30 transition flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                    >
+                      <span>Sign In to Faculty Portal</span>
+                      <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                  </div>
+                </form>
+              ` : tab === 'hod' ? `
+                <!-- 2. HOD Login Form -->
+                <form onsubmit="coursePlanApp.loginHOD(event)" class="space-y-4">
+                  <div class="space-y-1">
+                    <h2 class="text-lg font-black text-slate-900">Head of Department (HOD) Sign In</h2>
+                    <p class="text-xs text-slate-500 font-medium">Access your department review dashboard to approve or review faculty submissions.</p>
+                  </div>
+
+                  <!-- Department Dropdown -->
+                  <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                      <i data-lucide="building-2" class="w-3.5 h-3.5 text-amber-600"></i>
+                      <span>Department *</span>
+                    </label>
+                    <select 
+                      id="login-hod-dept" 
+                      class="w-full text-xs sm:text-sm px-3.5 py-2.5 border-2 border-slate-200 rounded-2xl bg-white font-bold text-slate-900 focus:border-amber-600 focus:outline-none transition cursor-pointer"
+                      required
+                    >
+                      ${this.departments.map(d => `
+                        <option value="${this.escapeHtml(d.name)}" ${d.name === currentDeptName ? 'selected' : ''}>
+                          ${this.escapeHtml(d.name)}
+                        </option>
+                      `).join('')}
+                    </select>
+                  </div>
+
+                  <!-- Password Field -->
+                  <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                      <i data-lucide="lock" class="w-3.5 h-3.5 text-amber-600"></i>
+                      <span>HOD Password *</span>
+                    </label>
+                    <div class="relative">
+                      <input 
+                        type="password" 
+                        id="login-hod-password" 
+                        value="123" 
+                        required 
+                        class="w-full text-xs sm:text-sm px-3.5 py-2.5 border-2 border-slate-200 rounded-2xl bg-white font-mono font-bold text-slate-900 focus:border-amber-600 focus:outline-none transition pr-10"
+                        placeholder="Enter HOD password"
+                      />
+                      <button 
+                        type="button" 
+                        onclick="coursePlanApp.togglePasswordVisibility('login-hod-password')" 
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                      >
+                        <i data-lucide="eye" class="w-4 h-4"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Submit Button -->
+                  <div class="pt-2">
+                    <button 
+                      type="submit" 
+                      id="login-hod-btn" 
+                      class="w-full py-3.5 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-extrabold rounded-2xl shadow-lg shadow-amber-600/30 transition flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                    >
+                      <span>Sign In as Head of Department</span>
+                      <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                  </div>
+                </form>
+              ` : `
+                <!-- 3. Admin Login Form -->
+                <form onsubmit="coursePlanApp.loginAdmin(event)" class="space-y-4">
+                  <div class="space-y-1">
+                    <h2 class="text-lg font-black text-slate-900">IQAC Admin Portal</h2>
+                    <p class="text-xs text-slate-500 font-medium">Institution-wide course plan monitoring, analytics, and department oversight.</p>
+                  </div>
+
+                  <!-- Username Field -->
+                  <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                      <i data-lucide="shield" class="w-3.5 h-3.5 text-purple-600"></i>
+                      <span>Admin Username *</span>
+                    </label>
+                    <input 
+                      type="text" 
+                      id="login-admin-user" 
+                      value="admin" 
+                      required 
+                      class="w-full text-xs sm:text-sm px-3.5 py-2.5 border-2 border-slate-200 rounded-2xl bg-white font-bold text-slate-900 focus:border-purple-600 focus:outline-none transition"
+                      placeholder="Username"
+                    />
+                  </div>
+
+                  <!-- Password Field -->
+                  <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                      <i data-lucide="lock" class="w-3.5 h-3.5 text-purple-600"></i>
+                      <span>Admin Password *</span>
+                    </label>
+                    <div class="relative">
+                      <input 
+                        type="password" 
+                        id="login-admin-password" 
+                        required 
+                        class="w-full text-xs sm:text-sm px-3.5 py-2.5 border-2 border-slate-200 rounded-2xl bg-white font-mono font-bold text-slate-900 focus:border-purple-600 focus:outline-none transition pr-10"
+                        placeholder="Admin password"
+                      />
+                      <button 
+                        type="button" 
+                        onclick="coursePlanApp.togglePasswordVisibility('login-admin-password')" 
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                      >
+                        <i data-lucide="eye" class="w-4 h-4"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Submit Button -->
+                  <div class="pt-2">
+                    <button 
+                      type="submit" 
+                      id="login-admin-btn" 
+                      class="w-full py-3.5 bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 text-white font-extrabold rounded-2xl shadow-lg shadow-purple-600/30 transition flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                    >
+                      <span>Sign In as IQAC Admin</span>
+                      <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                  </div>
+                </form>
+              `}
+
+            </div>
+
+            <!-- Footer Note -->
+            <div class="bg-slate-50 px-6 py-3.5 border-t border-slate-200 text-center text-[11px] text-slate-500 font-medium">
+              St. Joseph’s College (Autonomous), Tiruchirappalli • Internal Quality Assurance Cell (IQAC)
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  setLoginTab(tab) {
+    this.loginTab = tab;
+    this.render();
+  }
+
+  onLoginDeptChange(dept) {
+    this.loginDept = dept;
+    const deptObj = this.departments.find(d => d.name === dept) || { faculty: [] };
+    const facultyList = deptObj.faculty || [];
+    this.loginFaculty = facultyList.length > 0 ? (typeof facultyList[0] === 'string' ? facultyList[0] : facultyList[0].name) : '';
+
+    const facSelect = document.getElementById('login-fac-name');
+    if (facSelect) {
+      facSelect.innerHTML = facultyList.length === 0
+        ? '<option value="">-- No faculty found in department --</option>'
+        : facultyList.map(f => {
+            const name = typeof f === 'string' ? f : f.name;
+            return `<option value="${this.escapeHtml(name)}" ${name === this.loginFaculty ? 'selected' : ''}>${this.escapeHtml(name)}</option>`;
+          }).join('');
+      facSelect.value = this.loginFaculty;
+    }
+  }
+
+  onLoginFacultyChange(fac) {
+    this.loginFaculty = fac;
+  }
+
+  togglePasswordVisibility(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.type = el.type === 'password' ? 'text' : 'password';
+  }
+
+  async loginFaculty(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const dept = document.getElementById('login-fac-dept')?.value || this.loginDept;
+    const fac = document.getElementById('login-fac-name')?.value || this.loginFaculty;
+    const pass = document.getElementById('login-fac-password')?.value || '123';
+    const errEl = document.getElementById('login-error-msg');
+    const btn = document.getElementById('login-submit-btn');
+
+    if (!dept) {
+      if (errEl) {
+        errEl.querySelector('.error-text').textContent = 'Please select your department.';
+        errEl.classList.remove('hidden');
+      }
+      return;
+    }
+    if (!fac) {
+      if (errEl) {
+        errEl.querySelector('.error-text').textContent = 'Please select your faculty name.';
+        errEl.classList.remove('hidden');
+      }
+      return;
+    }
+
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = `<span class="inline-block animate-spin mr-2">⏳</span> Signing in...`;
+    }
+
+    try {
+      const res = await fetch('api/course_plan.php?action=login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          role: 'faculty',
+          department_name: dept,
+          faculty_name: fac,
+          password: pass
+        })
+      });
+      const data = await res.json();
+      if (data.success && data.user) {
+        this.currentUser = data.user;
+        this.selectedDept = data.user.department_name;
+        this.navigateTo('/course-plan/dashboard');
+      } else {
+        if (errEl) {
+          errEl.querySelector('.error-text').textContent = data.error || 'Authentication failed. Please verify credentials.';
+          errEl.classList.remove('hidden');
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      if (errEl) {
+        errEl.querySelector('.error-text').textContent = 'Network or server error while connecting to authentication service.';
+        errEl.classList.remove('hidden');
+      }
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `<span>Sign In to Faculty Portal</span> <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>`;
+        if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
+      }
+    }
+  }
+
+  async loginHOD(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const dept = document.getElementById('login-hod-dept')?.value;
+    const pass = document.getElementById('login-hod-password')?.value || '123';
+    const errEl = document.getElementById('login-error-msg');
+    const btn = document.getElementById('login-hod-btn');
+
+    if (!dept) {
+      if (errEl) {
+        errEl.querySelector('.error-text').textContent = 'Please select your department.';
+        errEl.classList.remove('hidden');
+      }
+      return;
+    }
+
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = `<span class="inline-block animate-spin mr-2">⏳</span> Signing in...`;
+    }
+
+    try {
+      const res = await fetch('api/course_plan.php?action=login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          role: 'hod',
+          department_name: dept,
+          password: pass
+        })
+      });
+      const data = await res.json();
+      if (data.success && data.user) {
+        this.currentUser = data.user;
+        this.selectedDept = data.user.department_name;
+        this.navigateTo('/course-plan/hod');
+      } else {
+        if (errEl) {
+          errEl.querySelector('.error-text').textContent = data.error || 'HOD Authentication failed.';
+          errEl.classList.remove('hidden');
+        }
+      }
+    } catch (err) {
+      if (errEl) {
+        errEl.querySelector('.error-text').textContent = 'Network or server error.';
+        errEl.classList.remove('hidden');
+      }
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `<span>Sign In as Head of Department</span> <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>`;
+        if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
+      }
+    }
+  }
+
+  async loginAdmin(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const username = document.getElementById('login-admin-user')?.value || 'admin';
+    const pass = document.getElementById('login-admin-password')?.value || '';
+    const errEl = document.getElementById('login-error-msg');
+    const btn = document.getElementById('login-admin-btn');
+
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = `<span class="inline-block animate-spin mr-2">⏳</span> Signing in...`;
+    }
+
+    try {
+      const res = await fetch('api/course_plan.php?action=login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          role: 'admin',
+          username: username,
+          password: pass
+        })
+      });
+      const data = await res.json();
+      if (data.success && data.user) {
+        this.currentUser = data.user;
+        this.navigateTo('/course-plan/admin');
+      } else {
+        if (errEl) {
+          errEl.querySelector('.error-text').textContent = data.error || 'Admin Authentication failed.';
+          errEl.classList.remove('hidden');
+        }
+      }
+    } catch (err) {
+      if (errEl) {
+        errEl.querySelector('.error-text').textContent = 'Network or server error.';
+        errEl.classList.remove('hidden');
+      }
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `<span>Sign In as IQAC Admin</span> <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>`;
+        if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
+      }
+    }
+  }
+
+  async loadPlanForEdit(id) {
+    try {
+      const res = await fetch(`api/course_plan.php?action=get&id=${id}`);
+      const json = await res.json();
+      if (json.success && json.data) {
+        this.activePlan = json.data;
+      } else {
+        this.activePlan = this.plans.find(p => String(p.id) === String(id)) || this.createDefaultPlan();
+      }
+    } catch (e) {
+      this.activePlan = this.plans.find(p => String(p.id) === String(id)) || this.createDefaultPlan();
+    }
+  }
+
+  async loadPlanForPrint(id) {
+    await this.loadPlanForEdit(id);
+  }
+
+  // ================= 1. PERSONAL FACULTY DASHBOARD =================
+  renderFacultyDashboardHtml() {
+    const user = this.currentUser || { display_name: 'Professor', department_name: this.selectedDept };
+    const myPlans = this.plans || [];
+
+    const totalSubmitted = myPlans.filter(p => p.status === 'Submitted' || p.hod_status === 'Approved' || p.hod_status === 'Pending').length;
+    const totalApproved = myPlans.filter(p => p.hod_status === 'Approved').length;
+    const totalDrafts = myPlans.filter(p => p.status === 'Draft' || !p.status).length;
+    const totalRevisions = myPlans.filter(p => p.hod_status === 'Revision Needed').length;
+
+    return `
+      <div class="space-y-6 animate-fadeIn w-full max-w-7xl mx-auto">
+        <!-- Faculty Dashboard Welcome Banner -->
+        <div class="bg-gradient-to-r from-blue-900 via-indigo-900 to-indigo-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-indigo-700/50 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div class="space-y-2">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400 text-indigo-950 text-xs font-black uppercase tracking-wider shadow-sm">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Faculty Portal
+              </span>
+              <span class="text-indigo-200 text-xs font-bold bg-white/10 px-3 py-1 rounded-full border border-white/15">
+                ${this.escapeHtml(user.department_name || this.selectedDept)}
+              </span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-white">
+              Welcome, ${this.escapeHtml(user.display_name || user.faculty_name || 'Professor')}!
+            </h1>
+            <p class="text-xs sm:text-sm text-indigo-100 max-w-2xl font-medium leading-relaxed">
+              Academic Year 2026–2027 (Even Semester) • Prepare theory course plans, track review status with your Head of Department (HOD), and export official IQAC documentation.
             </p>
           </div>
 
-          <div class="flex items-center gap-2.5 flex-wrap">
+          <div class="flex items-center gap-3 flex-wrap">
             <button 
               type="button" 
-              onclick="coursePlanApp.createNewPlan()" 
-              class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition shadow-sm shadow-indigo-600/25 flex items-center gap-2 cursor-pointer active:scale-95"
+              onclick="coursePlanApp.navigateTo('/course-plan/new')" 
+              class="px-5 py-3 bg-amber-400 hover:bg-amber-300 text-indigo-950 font-black rounded-2xl text-xs sm:text-sm transition shadow-lg shadow-amber-400/20 flex items-center gap-2 cursor-pointer active:scale-95"
             >
-              <i data-lucide="plus-circle" class="w-4 h-4"></i>
-              <span>+ Fill New Course Plan</span>
+              <i data-lucide="plus-circle" class="w-5 h-5"></i>
+              <span>+ Create New Course Plan</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.logout()" 
+              class="px-4 py-3 bg-white/10 hover:bg-white/20 text-white font-bold rounded-2xl text-xs transition border border-white/20 flex items-center gap-1.5 cursor-pointer"
+            >
+              <i data-lucide="log-out" class="w-4 h-4"></i>
+              <span>Sign Out</span>
             </button>
           </div>
         </div>
 
-        <!-- Department Quick Switcher & Stats -->
-        <div class="bg-slate-100/80 p-4 rounded-2xl border border-slate-200 flex flex-wrap items-center justify-between gap-4">
-          <div class="flex items-center gap-3">
-            <label class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-              <i data-lucide="building" class="w-4 h-4 text-indigo-600"></i>
-              <span>Select Your Department:</span>
-            </label>
-            <select 
-              onchange="coursePlanApp.switchDepartment(this.value)" 
-              class="text-xs font-bold px-3 py-2 bg-white rounded-xl border border-slate-300 text-slate-900 focus:outline-none focus:border-indigo-600 shadow-2xs cursor-pointer"
-            >
-              ${this.departments.map(d => `
-                <option value="${d.name}" ${d.name === this.selectedDept ? 'selected' : ''}>
-                  ${d.name} (${d.faculty_count} Faculty)
-                </option>
-              `).join('')}
-            </select>
+        <!-- Quick Stats Cards -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-1">
+            <div class="text-[11px] font-bold uppercase text-slate-500 tracking-wider">Total Plans</div>
+            <div class="text-2xl font-black text-slate-900">${myPlans.length}</div>
+            <div class="text-[10px] text-slate-400 font-medium">Even Semester 2026-27</div>
           </div>
-
-          <div class="flex items-center gap-3 text-xs">
-            <span class="font-bold text-slate-600">${plans.length} Course Plan(s) in this Department</span>
-            <span class="px-2.5 py-0.5 rounded-full font-bold bg-amber-100 text-amber-800 text-[11px]">${plans.filter(p => p.hod_status === 'Pending').length} Awaiting HOD</span>
-            <span class="px-2.5 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800 text-[11px]">${plans.filter(p => p.hod_status === 'Approved').length} HOD Approved</span>
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-1">
+            <div class="text-[11px] font-bold uppercase text-amber-600 tracking-wider">Under HOD Review</div>
+            <div class="text-2xl font-black text-amber-600">${totalSubmitted}</div>
+            <div class="text-[10px] text-amber-700 font-medium">Pending approval</div>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-1">
+            <div class="text-[11px] font-bold uppercase text-emerald-600 tracking-wider">HOD Approved</div>
+            <div class="text-2xl font-black text-emerald-600">${totalApproved}</div>
+            <div class="text-[10px] text-emerald-700 font-medium">Published to IQAC</div>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-1">
+            <div class="text-[11px] font-bold uppercase text-slate-500 tracking-wider">Drafts</div>
+            <div class="text-2xl font-black text-slate-700">${totalDrafts}</div>
+            <div class="text-[10px] text-slate-400 font-medium">In progress</div>
           </div>
         </div>
 
-        <!-- Course Plans List Table -->
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden w-full">
-          <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-            <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
-              <i data-lucide="file-spreadsheet" class="w-4 h-4 text-indigo-600"></i>
-              <span>Submitted & Draft Course Plans (${this.selectedDept})</span>
-            </h2>
-            <button type="button" onclick="coursePlanApp.fetchPlans().then(() => coursePlanApp.render())" class="text-xs text-indigo-600 hover:underline font-bold flex items-center gap-1">
-              <i data-lucide="refresh-cw" class="w-3 h-3"></i> Refresh List
-            </button>
-          </div>
-
-          ${plans.length === 0 ? `
-            <div class="p-12 text-center space-y-3">
-              <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto">
-                <i data-lucide="file-plus" class="w-6 h-6"></i>
-              </div>
-              <h3 class="text-base font-bold text-slate-800">No Course Plans Added for ${this.selectedDept}</h3>
-              <p class="text-xs text-slate-500 max-w-md mx-auto">
-                Click below to begin filling out a theory course plan. Select your name from the faculty roster and complete Part I, II, and III as per the IQAC syllabus format.
+        <!-- My Course Plans Table -->
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="p-6 border-b border-slate-200 flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h2 class="text-base font-black text-slate-900 flex items-center gap-2">
+                <i data-lucide="layers" class="w-5 h-5 text-indigo-600"></i>
+                <span>My Course Plans</span>
+              </h2>
+              <p class="text-xs text-slate-500 font-medium mt-0.5">
+                All theory course plans prepared by you for ${this.escapeHtml(user.department_name || this.selectedDept)}
               </p>
+            </div>
+
+            <div class="flex items-center gap-3">
               <button 
                 type="button" 
-                onclick="coursePlanApp.createNewPlan()" 
-                class="mt-2 inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 text-white font-bold rounded-xl text-xs hover:bg-indigo-700 transition"
+                onclick="coursePlanApp.fetchPlans().then(() => coursePlanApp.render())" 
+                class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
+              >
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                <span>Refresh</span>
+              </button>
+              <button 
+                type="button" 
+                onclick="coursePlanApp.navigateTo('/course-plan/new')" 
+                class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition shadow-sm flex items-center gap-1.5 cursor-pointer"
               >
                 <i data-lucide="plus" class="w-4 h-4"></i>
-                <span>Fill Course Plan</span>
+                <span>+ New Plan</span>
+              </button>
+            </div>
+          </div>
+
+          ${myPlans.length === 0 ? `
+            <div class="p-12 text-center space-y-4">
+              <div class="w-16 h-16 rounded-3xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto shadow-inner">
+                <i data-lucide="clipboard-list" class="w-8 h-8"></i>
+              </div>
+              <div class="space-y-1">
+                <h3 class="text-base font-black text-slate-900">No Course Plans Created Yet</h3>
+                <p class="text-xs text-slate-500 max-w-md mx-auto leading-relaxed font-medium">
+                  You haven't prepared any course plans for Even Semester 2026–2027 yet. Click the button below to select your semester, programme, and course to get started!
+                </p>
+              </div>
+              <button 
+                type="button" 
+                onclick="coursePlanApp.navigateTo('/course-plan/new')" 
+                class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition shadow-md shadow-indigo-600/25 cursor-pointer"
+              >
+                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                <span>+ Create Your First Course Plan</span>
               </button>
             </div>
           ` : `
-            <div class="overflow-x-auto w-full">
-              <table class="w-full text-left text-xs border-collapse">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs border-collapse mobile-card-table">
                 <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold uppercase text-[11px]">
                   <tr>
-                    <th class="p-3 text-center w-12">S.No</th>
-                    <th class="p-3">Course Code & Title</th>
-                    <th class="p-3">Programme / Year</th>
-                    <th class="p-3">Faculty Member</th>
-                    <th class="p-3 text-center">Hours/Wk</th>
-                    <th class="p-3 text-center">Submission Status</th>
-                    <th class="p-3 text-center">HOD Approval</th>
-                    <th class="p-3 text-center">Actions</th>
+                    <th class="p-3.5 w-12 text-center">S.No</th>
+                    <th class="p-3.5">Course Code & Title</th>
+                    <th class="p-3.5">Programme & Year</th>
+                    <th class="p-3.5">Semester & Section</th>
+                    <th class="p-3.5 text-center">Hours & Credits</th>
+                    <th class="p-3.5 text-center">HOD Review Status</th>
+                    <th class="p-3.5 text-center">Last Updated</th>
+                    <th class="p-3.5 text-center w-40">Actions</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 font-medium">
-                  ${plans.map((p, idx) => `
-                    <tr class="hover:bg-slate-50/70 transition">
-                      <td class="p-3 text-center font-bold text-slate-400">${idx + 1}</td>
-                      <td class="p-3 cursor-pointer group" onclick="coursePlanApp.editPlan(${p.id})" title="Click to view/edit this course plan">
-                        <div class="font-bold text-slate-900 group-hover:text-indigo-600 transition flex items-center gap-1.5">
-                          <span>${p.course_code || '—'}</span>
-                          <i data-lucide="external-link" class="w-3 h-3 text-slate-400 group-hover:text-indigo-600 opacity-0 group-hover:opacity-100 transition"></i>
+                  ${myPlans.map((p, idx) => `
+                    <tr class="hover:bg-slate-50/80 transition">
+                      <td class="p-3.5 text-center font-bold text-slate-400" data-label="S.No">${idx + 1}</td>
+                      <td class="p-3.5" data-label="Course Code & Title">
+                        <div class="font-black text-indigo-950 text-[13px] flex items-center gap-1.5">
+                          <span>${this.escapeHtml(p.course_code || '—')}</span>
+                          <span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded">${this.escapeHtml(p.course_category || 'Core')}</span>
                         </div>
-                        <div class="text-slate-600 text-[11px] font-semibold group-hover:text-indigo-900">${p.course_title || 'Untitled Course'}</div>
+                        <div class="text-slate-600 font-bold text-xs mt-0.5">${this.escapeHtml(p.course_title || 'Untitled Course')}</div>
                       </td>
-                      <td class="p-3 text-slate-700">
-                        <div class="font-semibold">${p.programme || '—'}</div>
-                        <div class="text-[11px] text-slate-400">${p.year_class || ''}</div>
+                      <td class="p-3.5" data-label="Programme & Year">
+                        <div class="font-bold text-slate-800">${this.escapeHtml(p.programme || '—')}</div>
+                        <div class="text-[11px] text-slate-500 font-medium">${this.escapeHtml(p.year_class || '')}</div>
                       </td>
-                      <td class="p-3 text-slate-900 font-bold">${p.faculty_name || '—'}</td>
-                      <td class="p-3 text-center font-mono font-bold">${p.teaching_hours || '—'}</td>
-                      <td class="p-3 text-center">
-                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
-                          p.status === 'Submitted' 
-                            ? 'bg-blue-100 text-blue-800 border border-blue-200' 
-                            : 'bg-slate-100 text-slate-700 border border-slate-200'
-                        }">
-                          ${p.status || 'Draft'}
-                        </span>
+                      <td class="p-3.5" data-label="Semester & Section">
+                        <div class="font-bold text-slate-800">Sem ${this.escapeHtml(p.semester || 'II')}</div>
+                        <div class="text-[11px] text-slate-500 font-medium">${this.escapeHtml(p.section || 'N/A')}</div>
                       </td>
-                      <td class="p-3 text-center">
-                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                      <td class="p-3.5 text-center font-mono font-bold" data-label="Hours & Credits">
+                        <div class="text-slate-800">${p.teaching_hours || '—'}h / wk</div>
+                        <div class="text-[10px] text-slate-500">${p.credits || '—'} Credits</div>
+                      </td>
+                      <td class="p-3.5 text-center" data-label="HOD Status">
+                        <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[11px] font-extrabold ${
                           p.hod_status === 'Approved'
                             ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
                             : p.hod_status === 'Revision Needed'
                             ? 'bg-rose-100 text-rose-800 border border-rose-300'
-                            : 'bg-amber-100 text-amber-800 border border-amber-300'
+                            : (p.status === 'Submitted' || p.hod_status === 'Pending')
+                            ? 'bg-amber-100 text-amber-800 border border-amber-300'
+                            : 'bg-slate-100 text-slate-700 border border-slate-200'
                         }">
-                          ${p.hod_status === 'Approved' ? '✓ HOD Approved' : p.hod_status === 'Revision Needed' ? '⚠ Revision Requested' : '⏳ Pending Review'}
+                          <i data-lucide="${
+                            p.hod_status === 'Approved' ? 'check-circle' :
+                            p.hod_status === 'Revision Needed' ? 'alert-triangle' :
+                            (p.status === 'Submitted' || p.hod_status === 'Pending') ? 'clock' : 'file-edit'
+                          }" class="w-3.5 h-3.5"></i>
+                          <span>${
+                            p.hod_status === 'Approved' ? 'HOD Approved' :
+                            p.hod_status === 'Revision Needed' ? 'Revision Needed' :
+                            (p.status === 'Submitted' || p.hod_status === 'Pending') ? 'Under Review' : 'Draft'
+                          }</span>
                         </span>
                       </td>
-                      <td class="p-3 text-center">
+                      <td class="p-3.5 text-center text-slate-500 text-[11px] font-mono" data-label="Last Updated">
+                        ${this.formatDateToDDMMYYYY(p.updated_at ? p.updated_at.split(' ')[0] : '') || '—'}
+                      </td>
+                      <td class="p-3.5 text-center" data-label="Actions">
                         <div class="inline-flex items-center gap-1.5">
                           <button 
                             type="button" 
-                            onclick="coursePlanApp.editPlan(${p.id})" 
-                            class="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold rounded-lg transition"
+                            onclick="coursePlanApp.navigateTo('/course-plan/edit?id=${p.id}')" 
+                            class="px-2.5 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs transition flex items-center gap-1 cursor-pointer"
+                            title="Edit / Update Course Plan"
                           >
-                            Edit
+                            <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                            <span>Edit</span>
                           </button>
                           <button 
                             type="button" 
-                            onclick="coursePlanApp.previewPlan(${p.id})" 
-                            class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg transition"
+                            onclick="coursePlanApp.navigateTo('/course-plan/view?id=${p.id}')" 
+                            class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center gap-1 cursor-pointer"
+                            title="Print Preview / Export PDF"
                           >
-                            View / Print
+                            <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                            <span>Print</span>
                           </button>
-                          ${p.status === 'Draft' ? `
+                          ${(p.status === 'Draft' || !p.status) ? `
                             <button 
                               type="button" 
                               onclick="coursePlanApp.deletePlan(${p.id})" 
-                              class="p-1 text-slate-400 hover:text-red-600 rounded" 
+                              class="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition cursor-pointer"
                               title="Delete Draft"
                             >
                               <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
@@ -2657,6 +3281,17 @@ class CoursePlanApp {
 
           <!-- Action Buttons Next to Tabs -->
           <div class="flex items-center gap-2 flex-wrap shrink-0">
+            <!-- Back to Dashboard Button -->
+            <button 
+              type="button" 
+              onclick="coursePlanApp.backToDashboard()" 
+              class="text-xs px-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold rounded-xl transition flex items-center gap-1.5 border border-indigo-200 shadow-2xs cursor-pointer active:scale-95"
+              title="Return to your Dashboard"
+            >
+              <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+              <span>Dashboard</span>
+            </button>
+
             <!-- New Form Button -->
             <button 
               type="button" 
@@ -2745,43 +3380,75 @@ class CoursePlanApp {
               <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">A. General Details</h4>
               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 
-                <!-- Department Dropdown -->
+                <!-- Department Dropdown / Locked Display -->
                 <div>
-                  <label class="block text-[11px] font-bold text-slate-700 mb-1">Department *</label>
-                  <select 
-                    id="cp-dept-name" 
-                    onchange="coursePlanApp.onFormDeptChange(this.value)" 
-                    class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl bg-white font-bold text-slate-900 focus:border-indigo-600 focus:outline-none"
-                  >
-                    ${this.departments.map(d => `
-                      <option value="${d.name}" ${d.name === (plan.department_name || this.selectedDept) ? 'selected' : ''}>
-                        ${d.name}
-                      </option>
-                    `).join('')}
-                  </select>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1 flex items-center justify-between">
+                    <span>Department *</span>
+                    ${(this.currentUser && this.currentUser.role === 'faculty') ? `<span class="text-[10px] text-indigo-700 bg-indigo-50 font-bold px-2 py-0.5 rounded border border-indigo-200 flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i> Locked</span>` : ''}
+                  </label>
+                  ${(this.currentUser && this.currentUser.role === 'faculty') ? `
+                    <input 
+                      type="text" 
+                      id="cp-dept-name" 
+                      value="${this.escapeHtml(this.currentUser.department_name)}" 
+                      readonly 
+                      class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl bg-slate-100 font-bold text-slate-800 cursor-not-allowed"
+                    />
+                  ` : `
+                    <select 
+                      id="cp-dept-name" 
+                      onchange="coursePlanApp.onFormDeptChange(this.value)" 
+                      class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl bg-white font-bold text-slate-900 focus:border-indigo-600 focus:outline-none"
+                    >
+                      ${this.departments.map(d => `
+                        <option value="${d.name}" ${d.name === (plan.department_name || this.selectedDept) ? 'selected' : ''}>
+                          ${d.name}
+                        </option>
+                      `).join('')}
+                    </select>
+                  `}
                 </div>
 
-                <!-- Faculty Name Dropdown (Populated from Excel) -->
+                <!-- Faculty Name Dropdown / Locked Display -->
                 <div>
-                  <label class="block text-[11px] font-bold text-slate-700 mb-1">Name of the Faculty Member *</label>
-                  <select 
-                    id="cp-faculty-name" 
-                    onchange="coursePlanApp.onFormFacultyChange(this.value)" 
-                    class="w-full text-xs px-3 py-2 border border-indigo-400 bg-indigo-50/30 rounded-xl font-bold text-slate-900 focus:border-indigo-600 focus:outline-none"
-                  >
-                    <option value="">-- Choose Faculty Member (${facultyList.length}) --</option>
-                    ${facultyList.map(f => `
-                      <option value="${f.name}" ${f.name === plan.faculty_name ? 'selected' : ''}>
-                        ${f.name} ${f.shift ? `(Shift ${f.shift})` : ''}
-                      </option>
-                    `).join('')}
-                  </select>
-                  <div id="cp-faculty-email-hint" class="text-[10px] text-slate-500 mt-1 font-mono">
-                    ${plan.faculty_email || ''}
-                  </div>
-                  <div id="cp-faculty-welcome-inline" class="${plan.faculty_name ? '' : 'hidden'} mt-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 inline-flex items-center gap-1.5">
-                    ${plan.faculty_name ? `<i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-600"></i> Welcome, <strong>${plan.faculty_name}</strong>!` : ''}
-                  </div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1 flex items-center justify-between">
+                    <span>Name of the Faculty Member *</span>
+                    ${(this.currentUser && this.currentUser.role === 'faculty') ? `<span class="text-[10px] text-indigo-700 bg-indigo-50 font-bold px-2 py-0.5 rounded border border-indigo-200 flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i> Locked</span>` : ''}
+                  </label>
+                  ${(this.currentUser && this.currentUser.role === 'faculty') ? `
+                    <input 
+                      type="text" 
+                      id="cp-faculty-name" 
+                      value="${this.escapeHtml(this.currentUser.faculty_name)}" 
+                      readonly 
+                      class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl bg-slate-100 font-bold text-slate-800 cursor-not-allowed"
+                    />
+                    <div id="cp-faculty-email-hint" class="text-[10px] text-slate-500 mt-1 font-mono">
+                      ${this.currentUser.faculty_email || plan.faculty_email || ''}
+                    </div>
+                    <div id="cp-faculty-welcome-inline" class="mt-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 inline-flex items-center gap-1.5">
+                      <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-600"></i> Welcome, <strong>${this.escapeHtml(this.currentUser.faculty_name)}</strong>!
+                    </div>
+                  ` : `
+                    <select 
+                      id="cp-faculty-name" 
+                      onchange="coursePlanApp.onFormFacultyChange(this.value)" 
+                      class="w-full text-xs px-3 py-2 border border-indigo-400 bg-indigo-50/30 rounded-xl font-bold text-slate-900 focus:border-indigo-600 focus:outline-none"
+                    >
+                      <option value="">-- Choose Faculty Member (${facultyList.length}) --</option>
+                      ${facultyList.map(f => `
+                        <option value="${f.name}" ${f.name === plan.faculty_name ? 'selected' : ''}>
+                          ${f.name} ${f.shift ? `(Shift ${f.shift})` : ''}
+                        </option>
+                      `).join('')}
+                    </select>
+                    <div id="cp-faculty-email-hint" class="text-[10px] text-slate-500 mt-1 font-mono">
+                      ${plan.faculty_email || ''}
+                    </div>
+                    <div id="cp-faculty-welcome-inline" class="${plan.faculty_name ? '' : 'hidden'} mt-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 inline-flex items-center gap-1.5">
+                      ${plan.faculty_name ? `<i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-600"></i> Welcome, <strong>${plan.faculty_name}</strong>!` : ''}
+                    </div>
+                  `}
                 </div>
 
                 <!-- Semester (Strictly II, IV, VI only) -->
@@ -4333,36 +5000,15 @@ class CoursePlanApp {
 
   // ================= DATA LOGIC & ACTIONS =================
   createNewPlan() {
-    this.activePlan = this.createDefaultPlan();
-    this.viewMode = 'form';
-    this.activeFormTab = 'part1';
-    this.render();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.navigateTo('/course-plan/new');
   }
 
   async editPlan(id) {
-    try {
-      const res = await fetch(`api/course_plan.php?action=get&id=${id}`);
-      const json = await res.json();
-      if (json.success && json.data) {
-        this.activePlan = json.data;
-      } else {
-        this.activePlan = this.plans.find(p => p.id === id) || this.createDefaultPlan();
-      }
-    } catch (e) {
-      this.activePlan = this.plans.find(p => p.id === id) || this.createDefaultPlan();
-    }
-    this.viewMode = 'form';
-    this.activeFormTab = 'part1';
-    this.render();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.navigateTo(`/course-plan/edit?id=${id}`);
   }
 
   async previewPlan(id) {
-    await this.editPlan(id);
-    this.viewMode = 'print';
-    this.render();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.navigateTo(`/course-plan/view?id=${id}`);
   }
 
   previewCurrentPlan() {
@@ -4383,15 +5029,16 @@ class CoursePlanApp {
 
   backToDashboard() {
     if (!this.currentUser) {
-      this.viewMode = 'form';
-      this.activeFormTab = 'part1';
-      this.render();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      this.navigateTo('/course-plan/login');
       return;
     }
-    this.viewMode = 'dashboard';
-    this.fetchPlans().then(() => this.render());
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (this.currentUser.role === 'hod') {
+      this.navigateTo('/course-plan/hod');
+    } else if (this.currentUser.role === 'admin') {
+      this.navigateTo('/course-plan/admin');
+    } else {
+      this.navigateTo('/course-plan/dashboard');
+    }
   }
 
   switchDepartment(deptName) {
@@ -4476,11 +5123,12 @@ class CoursePlanApp {
   }
 
   createDefaultPlan() {
+    const isFaculty = this.currentUser && this.currentUser.role === 'faculty';
     const p = {
       id: null,
-      department_name: this.selectedDept,
-      faculty_name: '',
-      faculty_email: '',
+      department_name: isFaculty ? this.currentUser.department_name : this.selectedDept,
+      faculty_name: isFaculty ? this.currentUser.faculty_name : '',
+      faculty_email: isFaculty ? (this.currentUser.faculty_email || '') : '',
       programme: '',
       year_class: '',
       section: '',
@@ -5053,8 +5701,14 @@ class CoursePlanApp {
   harvestFormInputs() {
     if (!this.activePlan) this.activePlan = this.createDefaultPlan();
 
-    this.activePlan.department_name = document.getElementById('cp-dept-name')?.value || this.selectedDept;
-    this.activePlan.faculty_name = document.getElementById('cp-faculty-name')?.value || '';
+    if (this.currentUser && this.currentUser.role === 'faculty') {
+      this.activePlan.department_name = this.currentUser.department_name;
+      this.activePlan.faculty_name = this.currentUser.faculty_name;
+      this.activePlan.faculty_email = this.currentUser.faculty_email || '';
+    } else {
+      this.activePlan.department_name = document.getElementById('cp-dept-name')?.value || this.selectedDept;
+      this.activePlan.faculty_name = document.getElementById('cp-faculty-name')?.value || '';
+    }
     this.activePlan.programme = document.getElementById('cp-programme')?.value || '';
     this.activePlan.year_class = document.getElementById('cp-year-class')?.value || 'I UG';
     this.activePlan.section = document.getElementById('cp-section')?.value || 'N/A';
@@ -5237,10 +5891,18 @@ class CoursePlanApp {
           <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
             <button 
               type="button" 
-              onclick="coursePlanApp.submitNextCourse()" 
+              onclick="coursePlanApp.navigateTo('/course-plan/dashboard')" 
               class="w-full sm:w-auto px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold rounded-xl text-sm transition shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2 cursor-pointer active:scale-95"
             >
-              <i data-lucide="plus-circle" class="w-4 h-4"></i>
+              <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+              <span>Go to My Dashboard</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.submitNextCourse()" 
+              class="w-full sm:w-auto px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-sm transition border border-slate-300 flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+            >
+              <i data-lucide="plus-circle" class="w-4 h-4 text-slate-500"></i>
               <span>Submit for Next Course</span>
             </button>
             <button 
@@ -5271,26 +5933,24 @@ class CoursePlanApp {
     if (el) el.innerHTML = '';
     
     // Retain department, faculty name and email for quick sequential entry
-    const curDept = this.activePlan ? this.activePlan.department_name : this.selectedDept;
-    const curFac = this.activePlan ? this.activePlan.faculty_name : '';
-    const curEmail = this.activePlan ? this.activePlan.faculty_email : '';
+    const isFaculty = this.currentUser && this.currentUser.role === 'faculty';
+    const curDept = isFaculty ? this.currentUser.department_name : (this.activePlan ? this.activePlan.department_name : this.selectedDept);
+    const curFac = isFaculty ? this.currentUser.faculty_name : (this.activePlan ? this.activePlan.faculty_name : '');
+    const curEmail = isFaculty ? (this.currentUser.faculty_email || '') : (this.activePlan ? this.activePlan.faculty_email : '');
     const curSem = this.activePlan ? this.activePlan.semester : 'II';
     const curProg = this.activePlan ? this.activePlan.programme : '';
 
     this.activePlan = this.createDefaultPlan();
     this.activePlan.department_name = curDept;
-    this.activePlan.faculty_name = '';
-    this.activePlan.faculty_email = '';
+    this.activePlan.faculty_name = curFac;
+    this.activePlan.faculty_email = curEmail;
     this.activePlan.semester = curSem;
     this.activePlan.programme = curProg;
     if (this.activePlan.declaration) {
       this.activePlan.declaration.faculty_signature = curFac;
     }
     
-    this.viewMode = 'form';
-    this.activeFormTab = 'part1';
-    this.render();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.navigateTo('/course-plan/new');
   }
 
   closeCurrentTab() {
@@ -5611,11 +6271,12 @@ class CoursePlanApp {
     try {
       await fetch('api/course_plan.php?action=logout');
       this.currentUser = null;
-      await this.fetchPlans();
-      this.render();
+      this.plans = [];
+      this.navigateTo('/course-plan/login');
     } catch (e) {
       this.currentUser = null;
-      this.render();
+      this.plans = [];
+      this.navigateTo('/course-plan/login');
     }
   }
 }
