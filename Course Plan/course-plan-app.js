@@ -59,8 +59,8 @@ class CoursePlanApp {
     this.viewMode = 'login'; // Display login page by default when browsing
     this.activeFormTab = 'part1'; // 'part1' | 'part2' | 'part3' | 'declaration'
     this.loginTab = 'faculty'; // 'faculty' | 'hod' | 'admin'
-    this.loginDept = '';
-    this.loginFaculty = '';
+    this.selectedLoginDept = '';
+    this.selectedLoginFaculty = '';
     this.adminFilter = 'Approved';
     this.adminDeptFilter = 'all';
     this.adminTab = 'dept';
@@ -72,12 +72,13 @@ class CoursePlanApp {
 
   async init() {
     await this.loadDepartmentsData();
-    await this.loadSyllabusData();
+    // Load syllabus data asynchronously in background so login screen renders instantly
+    this.loadSyllabusData();
     await this.checkAuth();
 
     // Set default login dept
-    if (!this.loginDept && this.departments.length > 0) {
-      this.loginDept = this.selectedDept || this.departments[0].name;
+    if (!this.selectedLoginDept && this.departments.length > 0) {
+      this.selectedLoginDept = this.selectedDept || this.departments[0].name;
     }
 
     // Listen to browser Back / Forward buttons for clean URL navigation
@@ -1400,26 +1401,17 @@ class CoursePlanApp {
         </div>
       `;
     } else {
-      authStatusEl.innerHTML = `
-        <button 
-          type="button" 
-          onclick="coursePlanApp.navigateTo('/course-plan/login')" 
-          class="px-3 py-1.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 font-bold rounded-xl text-xs border border-indigo-200 flex items-center gap-1.5 cursor-pointer"
-        >
-          <i data-lucide="log-in" class="w-3.5 h-3.5"></i>
-          <span>Sign In</span>
-        </button>
-      `;
+      authStatusEl.innerHTML = ``;
     }
   }
 
   // ================= 0. AUTHENTICATION & LOGIN VIEW =================
   renderLoginHtml() {
     const tab = this.loginTab || 'faculty';
-    const deptObj = this.departments.find(d => d.name === (this.loginDept || this.selectedDept)) || this.departments[0] || { name: '', faculty: [] };
+    const deptObj = this.departments.find(d => d.name === (this.selectedLoginDept || this.selectedDept)) || this.departments[0] || { name: '', faculty: [] };
     const facultyList = deptObj.faculty || [];
     const currentDeptName = deptObj.name;
-    const currentFacName = this.loginFaculty || (facultyList.length > 0 ? (typeof facultyList[0] === 'string' ? facultyList[0] : facultyList[0].name) : '');
+    const currentFacName = this.selectedLoginFaculty || (facultyList.length > 0 ? (typeof facultyList[0] === 'string' ? facultyList[0] : facultyList[0].name) : '');
 
     return `
       <div class="min-h-[80vh] flex items-center justify-center py-10 px-4 animate-fadeIn">
@@ -1482,7 +1474,7 @@ class CoursePlanApp {
 
               ${tab === 'faculty' ? `
                 <!-- 1. Faculty Login Form -->
-                <form onsubmit="coursePlanApp.loginFaculty(event)" class="space-y-4">
+                <form onsubmit="event.preventDefault(); coursePlanApp.loginFaculty(event);" class="space-y-4">
                   <div class="space-y-1">
                     <h2 class="text-lg font-black text-slate-900">Faculty Sign In</h2>
                     <p class="text-xs text-slate-500 font-medium">Select your department and name to manage your course plans.</p>
@@ -1566,6 +1558,7 @@ class CoursePlanApp {
                     <button 
                       type="submit" 
                       id="login-submit-btn" 
+                      onclick="coursePlanApp.loginFaculty(event)"
                       class="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-extrabold rounded-2xl shadow-lg shadow-indigo-600/30 transition flex items-center justify-center gap-2 cursor-pointer active:scale-98"
                     >
                       <span>Sign In to Faculty Portal</span>
@@ -1575,7 +1568,7 @@ class CoursePlanApp {
                 </form>
               ` : tab === 'hod' ? `
                 <!-- 2. HOD Login Form -->
-                <form onsubmit="coursePlanApp.loginHOD(event)" class="space-y-4">
+                <form onsubmit="event.preventDefault(); coursePlanApp.loginHOD(event);" class="space-y-4">
                   <div class="space-y-1">
                     <h2 class="text-lg font-black text-slate-900">Head of Department (HOD) Sign In</h2>
                     <p class="text-xs text-slate-500 font-medium">Access your department review dashboard to approve or review faculty submissions.</p>
@@ -1630,6 +1623,7 @@ class CoursePlanApp {
                     <button 
                       type="submit" 
                       id="login-hod-btn" 
+                      onclick="coursePlanApp.loginHOD(event)"
                       class="w-full py-3.5 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-extrabold rounded-2xl shadow-lg shadow-amber-600/30 transition flex items-center justify-center gap-2 cursor-pointer active:scale-98"
                     >
                       <span>Sign In as Head of Department</span>
@@ -1639,7 +1633,7 @@ class CoursePlanApp {
                 </form>
               ` : `
                 <!-- 3. Admin Login Form -->
-                <form onsubmit="coursePlanApp.loginAdmin(event)" class="space-y-4">
+                <form onsubmit="event.preventDefault(); coursePlanApp.loginAdmin(event);" class="space-y-4">
                   <div class="space-y-1">
                     <h2 class="text-lg font-black text-slate-900">IQAC Admin Portal</h2>
                     <p class="text-xs text-slate-500 font-medium">Institution-wide course plan monitoring, analytics, and department oversight.</p>
@@ -1690,6 +1684,7 @@ class CoursePlanApp {
                     <button 
                       type="submit" 
                       id="login-admin-btn" 
+                      onclick="coursePlanApp.loginAdmin(event)"
                       class="w-full py-3.5 bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 text-white font-extrabold rounded-2xl shadow-lg shadow-purple-600/30 transition flex items-center justify-center gap-2 cursor-pointer active:scale-98"
                     >
                       <span>Sign In as IQAC Admin</span>
@@ -1717,10 +1712,10 @@ class CoursePlanApp {
   }
 
   onLoginDeptChange(dept) {
-    this.loginDept = dept;
+    this.selectedLoginDept = dept;
     const deptObj = this.departments.find(d => d.name === dept) || { faculty: [] };
     const facultyList = deptObj.faculty || [];
-    this.loginFaculty = facultyList.length > 0 ? (typeof facultyList[0] === 'string' ? facultyList[0] : facultyList[0].name) : '';
+    this.selectedLoginFaculty = facultyList.length > 0 ? (typeof facultyList[0] === 'string' ? facultyList[0] : facultyList[0].name) : '';
 
     const facSelect = document.getElementById('login-fac-name');
     if (facSelect) {
@@ -1728,14 +1723,14 @@ class CoursePlanApp {
         ? '<option value="">-- No faculty found in department --</option>'
         : facultyList.map(f => {
             const name = typeof f === 'string' ? f : f.name;
-            return `<option value="${this.escapeHtml(name)}" ${name === this.loginFaculty ? 'selected' : ''}>${this.escapeHtml(name)}</option>`;
+            return `<option value="${this.escapeHtml(name)}" ${name === this.selectedLoginFaculty ? 'selected' : ''}>${this.escapeHtml(name)}</option>`;
           }).join('');
-      facSelect.value = this.loginFaculty;
+      facSelect.value = this.selectedLoginFaculty;
     }
   }
 
   onLoginFacultyChange(fac) {
-    this.loginFaculty = fac;
+    this.selectedLoginFaculty = fac;
   }
 
   togglePasswordVisibility(id) {
@@ -1746,8 +1741,8 @@ class CoursePlanApp {
 
   async loginFaculty(e) {
     if (e && e.preventDefault) e.preventDefault();
-    const dept = document.getElementById('login-fac-dept')?.value || this.loginDept;
-    const fac = document.getElementById('login-fac-name')?.value || this.loginFaculty;
+    const dept = document.getElementById('login-fac-dept')?.value || this.selectedLoginDept;
+    const fac = document.getElementById('login-fac-name')?.value || this.selectedLoginFaculty;
     const pass = document.getElementById('login-fac-password')?.value || '123';
     const errEl = document.getElementById('login-error-msg');
     const btn = document.getElementById('login-submit-btn');
