@@ -3,6 +3,34 @@
 // Academic Year 2026-2027 (Even Semester)
 
 class CoursePlanApp {
+  static LEARNING_ACTIVITIES = [
+    'Quizzes (MCQs, Short Answer)',
+    'Class Polls / Clicker Questions',
+    'Reflective Journals / Learning Logs',
+    'Think-Pair-Share',
+    'Concept Maps',
+    'Exit Tickets / Minute Papers',
+    'In-class Exercises / Problem-solving',
+    'Group Discussions / Seminars',
+    'Draft Submissions',
+    'Term Papers / Essays',
+    'Projects (Individual/Group)',
+    'Lab Reports / Practical Exams',
+    'Presentations / Viva Voce',
+    'Capstone Projects / Theses',
+    'Case Study Analysis',
+    'Portfolios (Print or Digital)',
+    'Open-Book Exams',
+    'Peer Assessment',
+    'Self-Assessment',
+    'Role Plays / Simulations',
+    'Infographics / Visual Projects',
+    'Blogs / Podcasts / Digital Narratives',
+    'Community-Based Learning Reports',
+    'Gamified Assessments / Interactive Quests',
+    'Other:'
+  ];
+
   static TEACHING_METHODOLOGIES = [
     'Lecture-based Learning',
     'Experiential Learning',
@@ -3238,74 +3266,83 @@ class CoursePlanApp {
               <div class="flex items-center justify-between">
                 <div>
                   <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">A. Learning Activities</h4>
-                  <p class="text-[11px] text-slate-500 italic">Select suitable activities based on the nature of the course.</p>
+                  <p class="text-[11px] text-slate-500 italic">Click "+ Add Activity" to open the interactive form, select from 25 activities, and optionally convert to CIA assessment.</p>
                 </div>
                 <button 
                   type="button" 
-                  onclick="coursePlanApp.addActivityRow()" 
-                  class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-xs flex items-center gap-1 border border-slate-200"
+                  onclick="coursePlanApp.openActivityModal()" 
+                  class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm cursor-pointer transition active:scale-95"
                 >
-                  <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Activity
+                  <i data-lucide="plus" class="w-4 h-4"></i> Add Activity
                 </button>
               </div>
 
               <div class="overflow-x-auto rounded-xl border border-slate-200">
-                <table class="w-full text-left text-xs border-collapse">
+                <table class="w-full text-left text-xs border-collapse mobile-card-table">
                   <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
                     <tr>
                       <th class="p-2.5 w-12 text-center">S.No</th>
-                      <th class="p-2.5 w-60">Learning Activity</th>
-                      <th class="p-2.5">Related Unit / Topic</th>
+                      <th class="p-2.5 w-72">Learning Activity</th>
+                      <th class="p-2.5 w-44">Related Unit / Topic</th>
                       <th class="p-2.5">Expected Learning Outcome</th>
-                      <th class="p-2.5 w-36">Proposed Date</th>
-                      <th class="p-2.5 w-12 text-center">Action</th>
+                      <th class="p-2.5 w-28">Proposed Date</th>
+                      <th class="p-2.5 w-44 text-center">Assessment Status</th>
+                      <th class="p-2.5 w-20 text-center">Action</th>
                     </tr>
                   </thead>
                   <tbody id="cp-acts-tbody" class="divide-y divide-slate-100 font-medium">
-                    ${acts.map((act, idx) => `
+                    ${acts.length === 0 ? `
                       <tr>
-                        <td class="p-2 text-center font-bold text-slate-400">${idx + 1}</td>
-                        <td class="p-2">
-                          <div class="space-y-1.5">
-                            <select 
-                              class="act-name-select w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded font-bold bg-white focus:border-indigo-600 focus:outline-none" 
-                              onchange="coursePlanApp.onActivityDropdownChange(this)"
-                            >
-                              <option value="Assignment" ${act.selected_type === 'Assignment' || act.activity === 'Assignment' ? 'selected' : ''}>Assignment</option>
-                              <option value="Group Discussion" ${act.selected_type === 'Group Discussion' || act.activity === 'Group Discussion' ? 'selected' : ''}>Group Discussion</option>
-                              <option value="Seminar / Presentation" ${act.selected_type === 'Seminar / Presentation' || (act.activity && act.activity.includes('Seminar')) ? 'selected' : ''}>Seminar / Presentation</option>
-                              <option value="Case Study" ${act.selected_type === 'Case Study' || (act.activity && act.activity.includes('Case Study')) ? 'selected' : ''}>Case Study</option>
-                              <option value="Problem-Solving Exercise" ${act.selected_type === 'Problem-Solving Exercise' || (act.activity && act.activity.includes('Problem-Solving')) ? 'selected' : ''}>Problem-Solving Exercise</option>
-                              <option value="Project / Practical Activity" ${act.selected_type === 'Project / Practical Activity' || (act.activity && act.activity.includes('Project')) ? 'selected' : ''}>Project / Practical Activity</option>
-                              <option value="Quiz / Online Test" ${act.selected_type === 'Quiz / Online Test' || (act.activity && act.activity.includes('Quiz')) ? 'selected' : ''}>Quiz / Online Test</option>
-                              <option value="Role Play / Simulation" ${act.selected_type === 'Role Play / Simulation' || (act.activity && act.activity.includes('Role Play')) ? 'selected' : ''}>Role Play / Simulation</option>
-                              <option value="Flipped Classroom Activity" ${act.selected_type === 'Flipped Classroom Activity' || (act.activity && act.activity.includes('Flipped')) ? 'selected' : ''}>Flipped Classroom Activity</option>
-                              <option value="Peer Teaching" ${act.selected_type === 'Peer Teaching' || (act.activity && act.activity.includes('Peer')) ? 'selected' : ''}>Peer Teaching</option>
-                              <option value="Hands-on Coding / Practical" ${act.selected_type === 'Hands-on Coding / Practical' || (act.activity && act.activity.includes('Coding')) ? 'selected' : ''}>Hands-on Coding / Practical</option>
-                              <option value="Literature / Library Review" ${act.selected_type === 'Literature / Library Review' || (act.activity && act.activity.includes('Literature')) ? 'selected' : ''}>Literature / Library Review</option>
-                              <option value="Others" ${act.selected_type === 'Others' || (act.activity && !['Assignment', 'Group Discussion', 'Seminar / Presentation', 'Case Study', 'Problem-Solving Exercise', 'Project / Practical Activity', 'Quiz / Online Test', 'Role Play / Simulation', 'Flipped Classroom Activity', 'Peer Teaching', 'Hands-on Coding / Practical', 'Literature / Library Review'].includes(act.activity)) ? 'selected' : ''}>Others (Specify below)</option>
-                            </select>
-                            <input 
-                              type="text" 
-                              class="act-other-name w-full text-xs px-2.5 py-1.5 border border-indigo-400 bg-indigo-50/40 rounded font-semibold focus:border-indigo-600 focus:outline-none ${(act.selected_type === 'Others' || (act.activity && !['Assignment', 'Group Discussion', 'Seminar / Presentation', 'Case Study', 'Problem-Solving Exercise', 'Project / Practical Activity', 'Quiz / Online Test', 'Role Play / Simulation', 'Flipped Classroom Activity', 'Peer Teaching', 'Hands-on Coding / Practical', 'Literature / Library Review'].includes(act.activity))) ? '' : 'hidden'}" 
-                              placeholder="Enter Custom Learning Activity..." 
-                              value="${act.other_text || act.activity || ''}" 
-                            />
+                        <td colspan="7" class="p-6 text-center text-slate-400 italic font-semibold">
+                          No learning activities added yet. Click "+ Add Activity" above to add your first activity.
+                        </td>
+                      </tr>
+                    ` : acts.map((act, idx) => `
+                      <tr class="hover:bg-slate-50/50 transition">
+                        <td class="p-2.5 text-center font-bold text-slate-400" data-label="S.No">${idx + 1}</td>
+                        <td class="p-2.5" data-label="Learning Activity">
+                          <div class="flex flex-wrap gap-1">
+                            ${(act.activity || '').split(',').map(s => s.trim()).filter(Boolean).map(item => `
+                              <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold bg-indigo-50 text-indigo-800 border border-indigo-200">
+                                ${this.escapeHtml(item)}
+                              </span>
+                            `).join('') || '<span class="text-slate-400 italic">No activity specified</span>'}
                           </div>
                         </td>
-                        <td class="p-2">
-                          <input type="text" class="act-topic w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded" value="${act.topic || ''}" placeholder="Unit / Topic..." />
+                        <td class="p-2.5 font-bold text-slate-800" data-label="Unit / Topic">${this.escapeHtml(act.topic || '—')}</td>
+                        <td class="p-2.5 text-slate-600 text-xs leading-relaxed" data-label="Expected Outcome">${this.escapeHtml(act.outcome || '—')}</td>
+                        <td class="p-2.5 font-mono text-slate-700 font-bold whitespace-nowrap" data-label="Proposed Date">${this.formatDateToDDMMYYYY(act.proposed_date) || '—'}</td>
+                        <td class="p-2.5 text-center" data-label="Assessment Status">
+                          ${act.is_assessment ? `
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10.5px] font-black bg-amber-100 text-amber-900 border border-amber-300 shadow-2xs">
+                              <i data-lucide="award" class="w-3.5 h-3.5 text-amber-700"></i>
+                              <span>${this.escapeHtml(act.cia_component || 'CIA')} (${this.escapeHtml(act.cia_marks || '10')}M)</span>
+                            </span>
+                          ` : `
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-500">
+                              Learning Activity
+                            </span>
+                          `}
                         </td>
-                        <td class="p-2">
-                          <input type="text" class="act-outcome w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded" value="${act.outcome || ''}" placeholder="Outcome..." />
-                        </td>
-                        <td class="p-2">
-                          <input type="date" class="act-date w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-mono" value="${act.proposed_date || ''}" />
-                        </td>
-                        <td class="p-2 text-center">
-                          <button type="button" onclick="coursePlanApp.deleteActivityRow(${idx})" class="p-1 text-slate-400 hover:text-red-600 rounded">
-                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                          </button>
+                        <td class="p-2.5 text-center" data-label="Action">
+                          <div class="flex items-center justify-center gap-1">
+                            <button 
+                              type="button" 
+                              onclick="coursePlanApp.openActivityModal(${idx})" 
+                              class="p-1.5 text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 rounded-lg transition cursor-pointer" 
+                              title="Edit Activity"
+                            >
+                              <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <button 
+                              type="button" 
+                              onclick="coursePlanApp.deleteActivityRow(${idx})" 
+                              class="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition cursor-pointer" 
+                              title="Delete Activity"
+                            >
+                              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     `).join('')}
@@ -3314,172 +3351,98 @@ class CoursePlanApp {
               </div>
             </div>
 
-            <!-- B. Assessment Plan -->
+            <!-- B. Assessment Plan (Completely Uneditable, Auto-populated from Section A) -->
             <div class="space-y-3 pt-4 border-t border-slate-100">
-              <div class="flex items-center justify-between">
+              <div class="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">B. Assessment Plan</h4>
-                  <p class="text-[11px] text-slate-500 italic">Plan assessments in accordance with institutional examination regulations.</p>
+                  <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+                    <span>B. Assessment Plan</span>
+                    <span class="text-[10px] bg-emerald-50 text-emerald-800 font-bold px-2 py-0.5 rounded-md border border-emerald-200 inline-flex items-center gap-1">
+                      <i data-lucide="lock" class="w-3 h-3 text-emerald-600"></i> Auto-synced from Section A • Completely Uneditable
+                    </span>
+                  </h4>
+                  <p class="text-[11px] text-slate-500 italic">
+                    Displays activities marked as CIA Assessments in Section A above. Completely uneditable.
+                  </p>
                 </div>
-                <button 
-                  type="button" 
-                  onclick="coursePlanApp.addAssessmentRow()" 
-                  class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-xs flex items-center gap-1 border border-slate-200"
-                >
-                  <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add CIA Row
-                </button>
               </div>
 
-              <div class="overflow-x-auto rounded-xl border border-slate-200">
-                <table class="w-full text-left text-xs border-collapse">
-                  <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
-                    <tr>
-                      <th class="p-2.5 w-12 text-center">S.No</th>
-                      <th class="p-2.5 w-44">CIA Component</th>
-                      <th class="p-2.5 w-20 text-center">Marks</th>
-                      <th class="p-2.5 w-48">Assessment Category</th>
-                      <th class="p-2.5">Unit / Syllabus Coverage</th>
-                      <th class="p-2.5 w-28">From Date</th>
-                      <th class="p-2.5 w-28">To Date</th>
-                      <th class="p-2.5 w-24 text-center">COs</th>
-                      <th class="p-2.5 w-12 text-center">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody id="cp-assts-tbody" class="divide-y divide-slate-100 font-medium">
-                    ${assts.map((asst, idx) => {
-                      const isLocked = asst.uneditable || ['1', '2', '7'].includes(String(asst.sno));
-                      const isPG = plan.is_pg || (plan.year_class && plan.year_class.includes('PG')) || (plan.programme && plan.programme.startsWith('M.'));
-                      const isSno5 = String(asst.sno) === '5';
-                      
-                      // Auto compute marks if standard
-                      let currentMarks = asst.marks;
-                      if (String(asst.sno) === '1') currentMarks = '15';
-                      if (String(asst.sno) === '2') currentMarks = '30';
-                      if (String(asst.sno) === '3') currentMarks = isPG ? '6' : '10';
-                      if (String(asst.sno) === '4') currentMarks = isPG ? '6' : '10';
-                      if (String(asst.sno) === '5') currentMarks = isPG ? '8' : '—';
-                      if (String(asst.sno) === '6') currentMarks = '5';
-                      if (String(asst.sno) === '7') currentMarks = '30';
+              ${(() => {
+                const assessedActs = acts.filter(a => a.is_assessment);
+                if (assessedActs.length === 0) {
+                  return `
+                    <div class="p-6 text-center border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/60 space-y-2">
+                      <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto">
+                        <i data-lucide="clipboard-check" class="w-5 h-5"></i>
+                      </div>
+                      <h5 class="text-xs font-bold text-slate-800">No Assessment Plan Created Yet</h5>
+                      <p class="text-[11px] text-slate-500 max-w-md mx-auto">
+                        In <strong>A. Learning Activities</strong> above, click <strong>"+ Add Activity"</strong> (or click the edit pencil icon on an activity) and tick <strong>"Convert it as assessment"</strong> to assign CIA components and marks.
+                      </p>
+                    </div>
+                  `;
+                }
 
-                      if (isSno5 && !isPG) {
-                        return `
-                          <tr class="bg-slate-50/60 opacity-60">
-                            <td class="p-2 text-center font-bold text-slate-400">5</td>
-                            <td class="p-2">
-                              <span class="font-bold text-slate-500 text-xs">C2 - K6 (Creative Model / Review)</span>
-                            </td>
-                            <td class="p-2 text-center">
-                              <span class="px-2 py-1 bg-slate-200 text-slate-500 text-xs font-bold rounded">N/A</span>
-                            </td>
-                            <td class="p-2" colspan="5">
-                              <span class="text-[11px] text-amber-700 font-bold bg-amber-50 px-2.5 py-1 rounded-md border border-amber-200">
-                                ℹ K6 Cognitive Component is applicable ONLY for Postgraduate (PG) courses.
+                const totalMarks = assessedActs.reduce((sum, a) => sum + (parseFloat(a.cia_marks) || 0), 0);
+
+                return `
+                  <div class="overflow-x-auto rounded-xl border border-slate-200">
+                    <table class="w-full text-left text-xs border-collapse mobile-card-table">
+                      <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
+                        <tr>
+                          <th class="p-2.5 w-12 text-center">S.No</th>
+                          <th class="p-2.5 w-44">CIA Component</th>
+                          <th class="p-2.5 w-24 text-center">Marks</th>
+                          <th class="p-2.5">Learning Activity / Assessment Category</th>
+                          <th class="p-2.5 w-44">Unit Coverage</th>
+                          <th class="p-2.5 w-32">Proposed Date</th>
+                          <th class="p-2.5">Expected Outcome</th>
+                        </tr>
+                      </thead>
+                      <tbody id="cp-assts-tbody" class="divide-y divide-slate-100 font-medium bg-slate-50/30">
+                        ${assessedActs.map((asst, idx) => `
+                          <tr>
+                            <td class="p-2.5 text-center font-bold text-slate-400" data-label="S.No">${idx + 1}</td>
+                            <td class="p-2.5" data-label="CIA Component">
+                              <span class="inline-flex items-center gap-1.5 font-black text-indigo-950 text-xs">
+                                <i data-lucide="award" class="w-3.5 h-3.5 text-indigo-600"></i>
+                                <span>${this.escapeHtml(asst.cia_component || ('C' + (idx + 1)))}</span>
                               </span>
                             </td>
-                            <td class="p-2 text-center text-slate-300">—</td>
+                            <td class="p-2.5 text-center" data-label="Marks">
+                              <span class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white font-black text-xs shadow-2xs">
+                                ${this.escapeHtml(asst.cia_marks || '10')} Marks
+                              </span>
+                            </td>
+                            <td class="p-2.5 font-bold text-slate-800" data-label="Assessment Category">
+                              ${this.escapeHtml(asst.activity || '—')}
+                            </td>
+                            <td class="p-2.5 text-slate-700 font-medium" data-label="Unit Coverage">
+                              ${this.escapeHtml(asst.topic || '—')}
+                            </td>
+                            <td class="p-2.5 font-mono text-slate-700 font-bold" data-label="Proposed Date">
+                              ${this.formatDateToDDMMYYYY(asst.proposed_date) || '—'}
+                            </td>
+                            <td class="p-2.5 text-slate-600 text-[11px]" data-label="Expected Outcome">
+                              ${this.escapeHtml(asst.outcome || '—')}
+                            </td>
                           </tr>
-                        `;
-                      }
-
-                      return `
-                        <tr class="${isLocked ? 'bg-slate-50/70' : 'hover:bg-slate-50/40'}">
-                          <td class="p-2 text-center font-bold text-slate-400">${asst.sno || (idx + 1)}</td>
-                          <td class="p-2">
-                            ${isLocked ? `
-                              <div class="flex items-center gap-1.5 font-bold text-slate-900 text-xs">
-                                <span>${asst.component || ''}</span>
-                                <i data-lucide="lock" class="w-3 h-3 text-slate-400" title="Institutional Standard (Uneditable)"></i>
-                              </div>
-                              <input type="hidden" class="asst-comp" value="${asst.component || ''}" />
-                            ` : `
-                              <input type="text" class="asst-comp w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-bold" value="${asst.component || ''}" />
-                            `}
+                        `).join('')}
+                        <tr class="bg-indigo-50/70 border-t-2 border-indigo-200 font-bold text-indigo-950">
+                          <td class="p-2.5 text-center">Σ</td>
+                          <td class="p-2.5 font-black">Total CIA Plan</td>
+                          <td class="p-2.5 text-center font-black">
+                            ${totalMarks} Marks
                           </td>
-                          <td class="p-2 text-center">
-                            ${isLocked ? `
-                              <span class="px-2 py-1 rounded bg-slate-200/80 font-black text-slate-800 text-xs">${currentMarks}</span>
-                              <input type="hidden" class="asst-marks" value="${currentMarks}" />
-                            ` : `
-                              <input type="text" class="asst-marks w-full text-xs px-1.5 py-1.5 border border-indigo-300 bg-indigo-50/20 rounded font-black text-center text-indigo-900" value="${currentMarks}" />
-                            `}
-                          </td>
-                          <td class="p-2">
-                            ${isLocked ? `
-                              <span class="text-xs text-slate-800 font-bold">${asst.category || ''}</span>
-                              <input type="hidden" class="asst-cat" value="${asst.category || ''}" />
-                            ` : (() => {
-                              const catOptions = [
-                                'Assignment', 'Seminar / Presentation', 'Problem Solving / Case Analysis',
-                                'Mini Project / Field Work', 'Library Notes / Reference Work',
-                                'Creative Model / Simulation', 'Review / Term Paper',
-                                'MCQ through JosTEL', 'Written Examination'
-                              ];
-                              const curCat = asst.category || 'Assignment';
-                              const isOther = !catOptions.includes(curCat);
-                              return `
-                                <select 
-                                  class="asst-cat-select w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-semibold bg-white"
-                                  onchange="coursePlanApp.onAsstCatChange(this)"
-                                >
-                                  ${catOptions.map(opt => `<option value="${opt}" ${curCat === opt ? 'selected' : ''}>${opt}</option>`).join('')}
-                                  <option value="Others" ${isOther ? 'selected' : ''}>Others (Specify)</option>
-                                </select>
-                                <input 
-                                  type="text" 
-                                  class="asst-cat-other w-full text-xs px-2 py-1 border border-indigo-400 rounded mt-1 ${isOther ? '' : 'hidden'}" 
-                                  placeholder="Specify category..." 
-                                  value="${isOther ? curCat : ''}"
-                                />
-                              `;
-                            })()}
-                          </td>
-                          <td class="p-2">
-                            ${isLocked ? `
-                              <span class="text-xs text-slate-600 font-semibold">${asst.unit_coverage || ''}</span>
-                              <input type="hidden" class="asst-cov" value="${asst.unit_coverage || ''}" />
-                            ` : `
-                              <input type="text" class="asst-cov w-full text-xs px-2 py-1.5 border border-slate-300 rounded" value="${asst.unit_coverage || ''}" />
-                            `}
-                          </td>
-                          <td class="p-2">
-                            ${isLocked ? `
-                              <span class="text-xs font-mono font-bold text-slate-800">${this.formatDateToDDMMYYYY(asst.from_date)}</span>
-                              <input type="hidden" class="asst-from" value="${this.formatDateToDDMMYYYY(asst.from_date)}" />
-                            ` : `
-                              <input type="text" class="asst-from w-full text-xs px-1.5 py-1.5 border border-slate-300 rounded font-mono text-center font-bold" value="${this.formatDateToDDMMYYYY(asst.from_date)}" placeholder="DD-MM-YYYY" />
-                            `}
-                          </td>
-                          <td class="p-2">
-                            ${isLocked ? `
-                              <span class="text-xs font-mono font-bold text-slate-800">${this.formatDateToDDMMYYYY(asst.to_date)}</span>
-                              <input type="hidden" class="asst-to" value="${this.formatDateToDDMMYYYY(asst.to_date)}" />
-                            ` : `
-                              <input type="text" class="asst-to w-full text-xs px-1.5 py-1.5 border border-slate-300 rounded font-mono text-center font-bold" value="${this.formatDateToDDMMYYYY(asst.to_date)}" placeholder="DD-MM-YYYY" />
-                            `}
-                          </td>
-                          <td class="p-2 text-center">
-                            ${isLocked ? `
-                              <span class="text-xs font-bold text-slate-700">${asst.cos_assessed || ''}</span>
-                              <input type="hidden" class="asst-cos" value="${asst.cos_assessed || ''}" />
-                            ` : `
-                              <input type="text" class="asst-cos w-full text-xs px-1.5 py-1.5 border border-slate-300 rounded font-bold text-center" value="${asst.cos_assessed || ''}" />
-                            `}
-                          </td>
-                          <td class="p-2 text-center">
-                            ${isLocked ? `
-                              <span class="text-slate-300 text-xs">—</span>
-                            ` : `
-                              <button type="button" onclick="coursePlanApp.deleteAssessmentRow(${idx})" class="p-1 text-slate-400 hover:text-red-600 rounded">
-                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                              </button>
-                            `}
+                          <td class="p-2.5 italic text-slate-500 text-[11px]" colspan="4">
+                            Auto-synchronized with Section A above • Completely Uneditable
                           </td>
                         </tr>
-                      `;
-                    }).join('')}
-                  </tbody>
-                </table>
-              </div>
+                      </tbody>
+                    </table>
+                  </div>
+                `;
+              })()}
             </div>
 
             <!-- C. Digital Resources -->
@@ -3863,23 +3826,23 @@ class CoursePlanApp {
             <div class="text-xs pl-2 space-y-1.5">
               <div class="font-bold text-slate-700">A. Learning Activities</div>
               <table class="w-full text-xs border border-slate-300 border-collapse">
-                <thead class="bg-slate-100 font-bold">
+                <thead class="bg-slate-100 font-bold text-[11px]">
                   <tr>
-                    <th class="border border-slate-300 p-1.5 w-12 text-center">S.No</th>
+                    <th class="border border-slate-300 p-1.5 w-10 text-center">S.No</th>
                     <th class="border border-slate-300 p-1.5">Activity</th>
-                    <th class="border border-slate-300 p-1.5">Related Unit / Topic</th>
-                    <th class="border border-slate-300 p-1.5">Expected Learning Outcome</th>
-                    <th class="border border-slate-300 p-1.5 text-center">Proposed Date</th>
+                    <th class="border border-slate-300 p-1.5">Topic</th>
+                    <th class="border border-slate-300 p-1.5">Outcome</th>
+                    <th class="border border-slate-300 p-1.5 text-center">Date</th>
                   </tr>
                 </thead>
                 <tbody>
-                  ${acts.map((a, i) => `
+                  ${(plan.learning_activities || []).map((act, i) => `
                     <tr>
                       <td class="border border-slate-300 p-1.5 text-center font-bold">${i + 1}</td>
-                      <td class="border border-slate-300 p-1.5 font-bold">${a.activity}</td>
-                      <td class="border border-slate-300 p-1.5">${a.topic || '—'}</td>
-                      <td class="border border-slate-300 p-1.5">${a.outcome || '—'}</td>
-                      <td class="border border-slate-300 p-1.5 text-center font-mono">${a.proposed_date || '—'}</td>
+                      <td class="border border-slate-300 p-1.5 font-bold">${this.escapeHtml(act.activity || '—')}</td>
+                      <td class="border border-slate-300 p-1.5">${this.escapeHtml(act.topic || '—')}</td>
+                      <td class="border border-slate-300 p-1.5">${this.escapeHtml(act.outcome || '—')}</td>
+                      <td class="border border-slate-300 p-1.5 text-center font-mono">${this.formatDateToDDMMYYYY(act.proposed_date) || '—'}</td>
                     </tr>
                   `).join('')}
                 </tbody>
@@ -3887,39 +3850,36 @@ class CoursePlanApp {
             </div>
 
             <div class="text-xs pl-2 pt-2 space-y-1.5">
-              <div class="font-bold text-slate-700">B. Assessment Plan</div>
+              <div class="font-bold text-slate-700">B. Assessment Plan (CIA)</div>
               <table class="w-full text-xs border border-slate-300 border-collapse">
                 <thead class="bg-slate-100 font-bold text-[11px]">
                   <tr>
                     <th class="border border-slate-300 p-1.5 w-10 text-center">S.No</th>
                     <th class="border border-slate-300 p-1.5">CIA Component</th>
                     <th class="border border-slate-300 p-1.5 text-center">Marks</th>
-                    <th class="border border-slate-300 p-1.5">Category</th>
-                    <th class="border border-slate-300 p-1.5">Coverage</th>
-                    <th class="border border-slate-300 p-1.5 text-center">Proposed Dates</th>
-                    <th class="border border-slate-300 p-1.5 text-center">COs</th>
+                    <th class="border border-slate-300 p-1.5">Assessment Category / Activity</th>
+                    <th class="border border-slate-300 p-1.5">Unit Coverage</th>
+                    <th class="border border-slate-300 p-1.5 text-center">Date</th>
+                    <th class="border border-slate-300 p-1.5">Expected Outcome</th>
                   </tr>
                 </thead>
                 <tbody>
-                  ${assts.map((asst, i) => `
+                  ${((plan.learning_activities || []).filter(a => a.is_assessment)).map((asst, i) => `
                     <tr>
                       <td class="border border-slate-300 p-1.5 text-center font-bold">${i + 1}</td>
-                      <td class="border border-slate-300 p-1.5 font-bold">${asst.component}</td>
-                      <td class="border border-slate-300 p-1.5 text-center font-bold">${asst.marks}</td>
-                      <td class="border border-slate-300 p-1.5">${asst.category}</td>
-                      <td class="border border-slate-300 p-1.5">${asst.unit_coverage || '—'}</td>
-                      <td class="border border-slate-300 p-1.5 text-center text-[10px] whitespace-nowrap font-mono font-bold">
-                        ${this.formatDateToDDMMYYYY(asst.from_date) || ''} ${asst.to_date ? 'to ' + this.formatDateToDDMMYYYY(asst.to_date) : ''}
-                      </td>
-                      <td class="border border-slate-300 p-1.5 text-center font-bold">${asst.cos_assessed || '—'}</td>
+                      <td class="border border-slate-300 p-1.5 font-bold">${this.escapeHtml(asst.cia_component || '—')}</td>
+                      <td class="border border-slate-300 p-1.5 text-center font-bold">${this.escapeHtml(asst.cia_marks || '—')}</td>
+                      <td class="border border-slate-300 p-1.5 font-bold">${this.escapeHtml(asst.activity || '—')}</td>
+                      <td class="border border-slate-300 p-1.5">${this.escapeHtml(asst.topic || '—')}</td>
+                      <td class="border border-slate-300 p-1.5 text-center font-mono">${this.formatDateToDDMMYYYY(asst.proposed_date) || '—'}</td>
+                      <td class="border border-slate-300 p-1.5">${this.escapeHtml(asst.outcome || '—')}</td>
                     </tr>
                   `).join('')}
                 </tbody>
               </table>
             </div>
 
-            <div class="text-xs pl-2 pt-2 space-y-1.5">
-              <div class="font-bold text-slate-700">C. Digital Resources and ICT Integration</div>
+            <div class="font-bold text-slate-700">C. Digital Resources and ICT Integration</div>
               <table class="w-full text-xs border border-slate-300 border-collapse">
                 <thead class="bg-slate-100 font-bold">
                   <tr>
@@ -4174,61 +4134,26 @@ class CoursePlanApp {
     }
 
     // A. Learning Activities
-    const actRows = document.querySelectorAll('#cp-acts-tbody tr');
-    let emptyActName = 0, emptyActTopic = 0, emptyActOutcome = 0, emptyActDate = 0;
-    actRows.forEach(row => {
-      const selEl = row.querySelector('.act-name-select');
-      const othEl = row.querySelector('.act-other-name');
-      const topEl = row.querySelector('.act-topic');
-      const outEl = row.querySelector('.act-outcome');
-      const dtEl = row.querySelector('.act-date');
+    const acts = this.activePlan.learning_activities || [];
+    if (acts.length === 0) {
+      errors.push('Learning Activities: At least one learning activity must be added in Section A');
+    } else {
+      let emptyTopic = 0, emptyOutcome = 0, emptyDate = 0;
+      acts.forEach(a => {
+        if (!a.topic || !a.topic.trim()) emptyTopic++;
+        if (!a.outcome || !a.outcome.trim()) emptyOutcome++;
+        if (!a.proposed_date || !a.proposed_date.trim()) emptyDate++;
+      });
+      if (emptyTopic > 0) errors.push(`Learning Activities: Topic/Unit missing in ${emptyTopic} activity entry(ies)`);
+      if (emptyOutcome > 0) errors.push(`Learning Activities: Expected Outcome missing in ${emptyOutcome} activity entry(ies)`);
+      if (emptyDate > 0) errors.push(`Learning Activities: Proposed Date missing in ${emptyDate} activity entry(ies)`);
+    }
 
-      if (selEl && selEl.value === 'Others' && (!othEl || !othEl.value.trim())) {
-        emptyActName++; if (othEl) invalidEls.push(othEl);
-      } else if (!selEl || !selEl.value.trim()) {
-        emptyActName++; if (selEl) invalidEls.push(selEl);
-      }
-
-      if (!topEl || !topEl.value.trim()) { emptyActTopic++; if (topEl) invalidEls.push(topEl); }
-      if (!outEl || !outEl.value.trim()) { emptyActOutcome++; if (outEl) invalidEls.push(outEl); }
-      if (!dtEl || !dtEl.value.trim()) { emptyActDate++; if (dtEl) invalidEls.push(dtEl); }
-    });
-
-    if (emptyActName > 0) errors.push(`Learning Activities: Activity selection missing in ${emptyActName} row(s)`);
-    if (emptyActTopic > 0) errors.push(`Learning Activities: Topic/Unit missing in ${emptyActTopic} row(s)`);
-    if (emptyActOutcome > 0) errors.push(`Learning Activities: Expected Outcome missing in ${emptyActOutcome} row(s)`);
-    if (emptyActDate > 0) errors.push(`Learning Activities: Proposed Date missing in ${emptyActDate} row(s)`);
-
-    // B. Assessment Plan
-    const asstRows = document.querySelectorAll('#cp-assts-tbody tr');
-    let emptyAsstMarks = 0, emptyAsstCat = 0, emptyAsstCov = 0, emptyAsstDates = 0, emptyAsstCos = 0;
-    asstRows.forEach(row => {
-      if (row.classList.contains('opacity-60')) return;
-
-      const compEl = row.querySelector('.asst-comp');
-      const marksEl = row.querySelector('.asst-marks');
-      const catEl = row.querySelector('.asst-cat-select');
-      const covEl = row.querySelector('.asst-cov');
-      const fromEl = row.querySelector('.asst-from');
-      const toEl = row.querySelector('.asst-to');
-      const cosEl = row.querySelector('.asst-cos');
-
-      if (!marksEl || !marksEl.value.trim()) { emptyAsstMarks++; if (marksEl) invalidEls.push(marksEl); }
-      if (!catEl || !catEl.value.trim()) { emptyAsstCat++; if (catEl) invalidEls.push(catEl); }
-      if (!covEl || !covEl.value.trim()) { emptyAsstCov++; if (covEl) invalidEls.push(covEl); }
-      if (!fromEl || !fromEl.value || !toEl || !toEl.value) {
-        emptyAsstDates++;
-        if (fromEl && !fromEl.value) invalidEls.push(fromEl);
-        if (toEl && !toEl.value) invalidEls.push(toEl);
-      }
-      if (!cosEl || !cosEl.value.trim()) { emptyAsstCos++; if (cosEl) invalidEls.push(cosEl); }
-    });
-
-    if (emptyAsstMarks > 0) errors.push(`Assessment Plan: Marks missing in ${emptyAsstMarks} component(s)`);
-    if (emptyAsstCat > 0) errors.push(`Assessment Plan: Category missing in ${emptyAsstCat} component(s)`);
-    if (emptyAsstCov > 0) errors.push(`Assessment Plan: Unit Coverage missing in ${emptyAsstCov} component(s)`);
-    if (emptyAsstDates > 0) errors.push(`Assessment Plan: Dates missing in ${emptyAsstDates} component(s)`);
-    if (emptyAsstCos > 0) errors.push(`Assessment Plan: COs Assessed missing in ${emptyAsstCos} component(s)`);
+    // B. Assessment Plan (Must have at least one activity converted to assessment)
+    const assts = (this.activePlan.learning_activities || []).filter(a => a.is_assessment);
+    if (assts.length === 0) {
+      errors.push('Assessment Plan: Please convert at least one Learning Activity in Section A into an assessment (tick "Convert it as assessment")');
+    }
 
     // C. Digital Resources and ICT Integration
     const ictRows = document.querySelectorAll('#cp-icts-tbody tr');
@@ -4547,13 +4472,17 @@ class CoursePlanApp {
         { unit: 'Unit V', planned_hours: '15', actual_hours: '15', target_date: '' }
       ],
       learning_activities: [
-        { sno: '1', activity: 'Assignment', topic: '', outcome: '', proposed_date: '' },
-        { sno: '2', activity: 'Group Discussion / Seminar', topic: '', outcome: '', proposed_date: '' },
-        { sno: '3', activity: 'Case Study / Problem-Solving Exercise', topic: '', outcome: '', proposed_date: '' },
-        { sno: '4', activity: 'Project / Practical Activity', topic: '', outcome: '', proposed_date: '' },
-        { sno: '5', activity: 'Quiz / Presentation / Other Activity', topic: '', outcome: '', proposed_date: '' }
+        { sno: '1', activity: 'Quizzes (MCQs, Short Answer)', topic: 'Unit I & II', outcome: 'Recall and understand foundational concepts (K1, K2)', proposed_date: '2027-01-11', is_assessment: true, cia_component: 'C1 – K1, K2', cia_marks: '15' },
+        { sno: '2', activity: 'In-class Exercises / Problem-solving, Assignment', topic: 'Unit III', outcome: 'Apply principles to analyze real-world problems (K4)', proposed_date: '2027-02-05', is_assessment: true, cia_component: 'C2 - K4', cia_marks: '10' },
+        { sno: '3', activity: 'Case Study Analysis, Group Discussions / Seminars', topic: 'Unit IV', outcome: 'Critical evaluation and synthesis of findings (K5)', proposed_date: '2027-02-20', is_assessment: true, cia_component: 'C2 - K5', cia_marks: '10' },
+        { sno: '4', activity: 'Think-Pair-Share, Concept Maps', topic: 'Unit II', outcome: 'Interactive peer engagement and conceptual clarity', proposed_date: '2027-01-18', is_assessment: false, cia_component: '', cia_marks: '' },
+        { sno: '5', activity: 'Projects (Individual/Group), Presentations / Viva Voce', topic: 'Unit V', outcome: 'Design, implement, and present practical solutions', proposed_date: '2027-03-05', is_assessment: false, cia_component: '', cia_marks: '' }
       ],
-      assessment_plan: this.getDefaultAssessmentPlan(false),
+      assessment_plan: [
+        { sno: '1', component: 'C1 – K1, K2', marks: '15', category: 'Quizzes (MCQs, Short Answer)', unit_coverage: 'Unit I & II', from_date: '2027-01-11', to_date: '2027-01-11', cos_assessed: 'Recall and understand foundational concepts (K1, K2)', uneditable: true },
+        { sno: '2', component: 'C2 - K4', marks: '10', category: 'In-class Exercises / Problem-solving, Assignment', unit_coverage: 'Unit III', from_date: '2027-02-05', to_date: '2027-02-05', cos_assessed: 'Apply principles to analyze real-world problems (K4)', uneditable: true },
+        { sno: '3', component: 'C2 - K5', marks: '10', category: 'Case Study Analysis, Group Discussions / Seminars', unit_coverage: 'Unit IV', from_date: '2027-02-20', to_date: '2027-02-20', cos_assessed: 'Critical evaluation and synthesis of findings (K5)', uneditable: true }
+      ],
       ict_integration: [
         { sno: '1', topic: '', tool: 'PPT / Interactive Slides', platform: 'JosTEL', purpose: '' },
         { sno: '2', topic: '', tool: 'Video Lecture', platform: 'JosTEL', purpose: '' },
@@ -4616,16 +4545,453 @@ class CoursePlanApp {
     this.render();
   }
 
-  addActivityRow() {
-    this.harvestFormInputs();
-    const count = (this.activePlan.learning_activities || []).length + 1;
-    this.activePlan.learning_activities.push({ sno: String(count), activity: '', topic: '', outcome: '', proposed_date: '' });
+
+  openActivityModal(actIndex = null) {
+    const isEdit = (actIndex !== null && actIndex !== undefined && actIndex >= 0);
+    const existing = isEdit ? (this.activePlan.learning_activities[actIndex] || {}) : null;
+
+    let modal = document.getElementById('activity-entry-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'activity-entry-modal';
+      document.body.appendChild(modal);
+    }
+
+    const isPG = this.activePlan?.is_pg || (this.activePlan?.year_class && this.activePlan.year_class.includes('PG')) || (this.activePlan?.programme && this.activePlan.programme.startsWith('M.'));
+
+    // Prepopulate selected activities
+    let selectedActs = [];
+    let customOtherText = '';
+    if (existing && existing.activity) {
+      selectedActs = existing.activity.split(',').map(s => s.trim()).filter(Boolean);
+      const otherItem = selectedActs.find(s => s.startsWith('Other:') || (!CoursePlanApp.LEARNING_ACTIVITIES.includes(s) && s !== 'Other:'));
+      if (otherItem) {
+        customOtherText = otherItem.startsWith('Other:') ? otherItem.replace('Other:', '').trim() : otherItem;
+      }
+    }
+
+    const isAssessment = existing ? !!existing.is_assessment : false;
+    const curCiaComp = existing?.cia_component || (isPG ? 'C2 - K4 (6 Marks)' : 'C2 - K4 (10 Marks)');
+    const curCiaMarks = existing?.cia_marks || (isPG ? '6' : '10');
+
+    modal.innerHTML = `
+      <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-fadeIn">
+        <div class="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl border border-slate-200 animate-scaleIn space-y-4 max-h-[90vh] overflow-y-auto">
+          
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div class="flex items-center gap-2.5">
+              <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold shadow-sm">
+                <i data-lucide="layers" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h3 class="text-sm font-black text-slate-900">${isEdit ? 'Edit Learning Activity' : 'Add Learning Activity'}</h3>
+                <p class="text-[11px] text-slate-500">Part-III: Formative learning tasks & CIA assessment linkage</p>
+              </div>
+            </div>
+            <button type="button" onclick="document.getElementById('activity-entry-modal').remove()" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 font-bold text-sm">✕</button>
+          </div>
+
+          <form onsubmit="event.preventDefault(); coursePlanApp.saveActivityFromModal(${isEdit ? actIndex : 'null'});" class="space-y-4 text-xs">
+            
+            <!-- Learning Activity Multi-Select Autocomplete -->
+            <div class="space-y-1.5">
+              <label class="block font-black text-slate-800">
+                Learning Activity * <span class="font-normal text-slate-500">(Search & select one or more)</span>
+              </label>
+
+              <!-- Selected Activity Badges Container -->
+              <div id="modal-act-badges" class="min-h-[38px] p-2 border border-slate-300 rounded-xl bg-slate-50/50 flex flex-wrap items-center gap-1.5">
+                ${selectedActs.length === 0 ? `
+                  <span class="text-slate-400 text-[11px] italic">No activities selected yet. Pick from list below.</span>
+                ` : `
+                  ${selectedActs.map(act => `
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-100 text-indigo-900 border border-indigo-200 shadow-2xs">
+                      <span>${this.escapeHtml(act)}</span>
+                      <button type="button" onclick="coursePlanApp.removeModalActivityItem('${this.escapeHtml(act)}')" class="text-indigo-400 hover:text-indigo-800 font-black ml-0.5">✕</button>
+                    </span>
+                  `).join('')}
+                `}
+              </div>
+
+              <!-- Search Autocomplete Filter Input -->
+              <div class="relative">
+                <input 
+                  type="text" 
+                  id="modal-act-search" 
+                  placeholder="🔍 Type to filter 25 learning activities..." 
+                  oninput="coursePlanApp.filterModalActivityList(this.value)" 
+                  class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl focus:border-indigo-600 focus:outline-none bg-white font-medium"
+                />
+              </div>
+
+              <!-- Scrollable Options List -->
+              <div id="modal-act-options-list" class="max-h-44 overflow-y-auto border border-slate-200 rounded-xl p-1.5 space-y-0.5 divide-y divide-slate-100 bg-white">
+                ${CoursePlanApp.LEARNING_ACTIVITIES.map(opt => {
+                  const isChecked = opt === 'Other:' ? selectedActs.some(s => s === 'Other:' || s.startsWith('Other:')) : selectedActs.includes(opt);
+                  return `
+                    <label class="modal-act-opt-item flex items-center gap-2.5 px-2.5 py-1.5 hover:bg-indigo-50/70 rounded-lg cursor-pointer text-xs font-semibold text-slate-800">
+                      <input 
+                        type="checkbox" 
+                        class="modal-act-checkbox rounded text-indigo-600 focus:ring-0 cursor-pointer" 
+                        value="${opt}" 
+                        ${isChecked ? 'checked' : ''} 
+                        onchange="coursePlanApp.toggleModalActivityCheckbox('${opt}', this.checked)"
+                      />
+                      <span class="act-name-label">${opt}</span>
+                    </label>
+                  `;
+                }).join('')}
+              </div>
+
+              <!-- Custom Other Input -->
+              <div id="modal-act-other-container" class="${selectedActs.some(s => s === 'Other:' || s.startsWith('Other:')) ? '' : 'hidden'} pt-1">
+                <label class="block text-[11px] font-bold text-slate-700 mb-1">Specify Custom Activity *</label>
+                <input 
+                  type="text" 
+                  id="modal-act-other-input" 
+                  placeholder="e.g. Design Sprint / Interactive Simulation" 
+                  value="${this.escapeHtml(customOtherText)}" 
+                  oninput="coursePlanApp.onModalOtherActivityInput(this.value)" 
+                  class="w-full text-xs px-3 py-2 border border-indigo-400 bg-indigo-50/30 rounded-xl font-bold focus:border-indigo-600 focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <!-- Unit / Topic -->
+            <div>
+              <label class="block font-black text-slate-800 mb-1">Related Unit / Topic *</label>
+              <input 
+                type="text" 
+                id="modal-act-topic" 
+                value="${this.escapeHtml(existing?.topic || '')}" 
+                placeholder="e.g. Unit II - Dynamic Programming & Trees" 
+                class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-medium focus:border-indigo-600 focus:outline-none"
+              />
+            </div>
+
+            <!-- Expected Learning Outcome -->
+            <div>
+              <label class="block font-black text-slate-800 mb-1">Expected Learning Outcome *</label>
+              <textarea 
+                id="modal-act-outcome" 
+                rows="2" 
+                placeholder="e.g. Ability to analyze problem constraints, develop recursive logic, and formulate state transitions (CO3, K4)" 
+                class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl leading-relaxed font-medium focus:border-indigo-600 focus:outline-none"
+              >${this.escapeHtml(existing?.outcome || '')}</textarea>
+            </div>
+
+            <!-- Proposed Date -->
+            <div>
+              <label class="block font-black text-slate-800 mb-1">Proposed Date *</label>
+              <input 
+                type="date" 
+                id="modal-act-date" 
+                value="${existing?.proposed_date || ''}" 
+                class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-mono font-bold focus:border-indigo-600 focus:outline-none"
+              />
+            </div>
+
+            <!-- Convert it as assessment Toggle / Checkbox -->
+            <div class="pt-2">
+              <label class="flex items-center gap-3 p-3 bg-gradient-to-r from-indigo-50 to-amber-50/40 border-2 border-indigo-200 rounded-2xl cursor-pointer hover:border-indigo-400 transition shadow-2xs">
+                <input 
+                  type="checkbox" 
+                  id="modal-act-is-assessment" 
+                  ${isAssessment ? 'checked' : ''} 
+                  onchange="coursePlanApp.toggleModalAssessmentSection(this.checked)" 
+                  class="w-4 h-4 text-indigo-600 rounded focus:ring-0 cursor-pointer"
+                />
+                <div class="flex-1">
+                  <div class="font-black text-indigo-950 text-xs flex items-center gap-1.5">
+                    <i data-lucide="award" class="w-4 h-4 text-amber-600"></i>
+                    <span>Convert it as assessment</span>
+                  </div>
+                  <div class="text-[10.5px] text-slate-500 font-medium">If ticked, automatically links to Part III-B Assessment Plan with CIA component & marks</div>
+                </div>
+              </label>
+            </div>
+
+            <!-- CIA Component and Marks Section (shown only when Convert it as assessment is ticked) -->
+            <div id="modal-act-assessment-fields" class="${isAssessment ? '' : 'hidden'} p-4 bg-amber-50/80 border-2 border-amber-300 rounded-2xl space-y-3.5 animate-fadeIn">
+              <div class="flex items-center justify-between border-b border-amber-200 pb-2">
+                <span class="text-xs font-black uppercase text-amber-900 tracking-wider flex items-center gap-1">
+                  <i data-lucide="check-circle" class="w-3.5 h-3.5 text-amber-700"></i>
+                  <span>CIA Assessment Details</span>
+                </span>
+                <span class="text-[10px] bg-amber-200 text-amber-950 font-extrabold px-2 py-0.5 rounded-full">
+                  ${isPG ? 'Postgraduate (PG) Scale' : 'Undergraduate (UG) Scale'}
+                </span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <!-- CIA Component Select -->
+                <div>
+                  <label class="block font-black text-amber-950 mb-1">CIA Component *</label>
+                  <select 
+                    id="modal-act-cia-comp" 
+                    onchange="coursePlanApp.onModalCiaCompChange(this.value)" 
+                    class="w-full text-xs px-3 py-2 border border-amber-300 rounded-xl bg-white font-bold text-slate-900 focus:border-amber-600 focus:outline-none cursor-pointer"
+                  >
+                    <option value="C2 - K4" ${curCiaComp.includes('K4') ? 'selected' : ''}>C2 - K4 (Assignment / Test)</option>
+                    <option value="C2 - K5" ${curCiaComp.includes('K5') ? 'selected' : ''}>C2 - K5 (Problem Solving / Case Study)</option>
+                    ${isPG ? `<option value="C2 - K6" ${curCiaComp.includes('K6') ? 'selected' : ''}>C2 - K6 (Creative Model / Mini Project)</option>` : ''}
+                    <option value="C1 – K1, K2" ${curCiaComp.includes('C1') ? 'selected' : ''}>C1 – K1, K2 (JosTEL MCQ / Online Test)</option>
+                    <option value="Library Referencing - K3" ${curCiaComp.includes('Library') ? 'selected' : ''}>Library Referencing - K3</option>
+                    <option value="Mid Sem Test" ${curCiaComp.includes('Mid Sem') ? 'selected' : ''}>Mid Sem Test</option>
+                    <option value="End Sem Exam" ${curCiaComp.includes('End Sem') ? 'selected' : ''}>End Sem Exam</option>
+                    <option value="Additional Assessment" ${(!curCiaComp.includes('C1') && !curCiaComp.includes('C2') && !curCiaComp.includes('Mid') && !curCiaComp.includes('End') && !curCiaComp.includes('Library')) ? 'selected' : ''}>Other Assessment Component</option>
+                  </select>
+                </div>
+
+                <!-- Marks Input -->
+                <div>
+                  <label class="block font-black text-amber-950 mb-1">Allocated Marks *</label>
+                  <input 
+                    type="number" 
+                    id="modal-act-cia-marks" 
+                    value="${curCiaMarks}" 
+                    class="w-full text-xs px-3 py-2 border border-amber-300 rounded-xl bg-white font-black text-slate-900 text-center focus:border-amber-600 focus:outline-none"
+                    placeholder="Marks"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
+              <button 
+                type="button" 
+                onclick="document.getElementById('activity-entry-modal').remove()" 
+                class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button 
+                type="submit" 
+                class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl text-xs transition flex items-center gap-1.5 shadow-md shadow-indigo-600/25 cursor-pointer active:scale-95"
+              >
+                <i data-lucide="check" class="w-4 h-4"></i>
+                <span>${isEdit ? 'Update Activity' : 'Save Activity'}</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    `;
+
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
+    }
+  }
+
+  filterModalActivityList(query) {
+    const q = (query || '').toLowerCase().trim();
+    const items = document.querySelectorAll('#modal-act-options-list .modal-act-opt-item');
+    items.forEach(el => {
+      const txt = el.textContent.toLowerCase();
+      if (!q || txt.includes(q)) {
+        el.style.display = 'flex';
+      } else {
+        el.style.display = 'none';
+      }
+    });
+  }
+
+  toggleModalActivityCheckbox(option, isChecked) {
+    let currentActs = this.getModalSelectedActivities();
+    if (option === 'Other:') {
+      const otherContainer = document.getElementById('modal-act-other-container');
+      const otherInput = document.getElementById('modal-act-other-input');
+      if (isChecked) {
+        if (otherContainer) otherContainer.classList.remove('hidden');
+        if (otherInput) otherInput.focus();
+        if (!currentActs.some(s => s === 'Other:' || s.startsWith('Other:'))) {
+          const val = otherInput?.value?.trim() || '';
+          currentActs.push(val ? `Other: ${val}` : 'Other:');
+        }
+      } else {
+        if (otherContainer) otherContainer.classList.add('hidden');
+        currentActs = currentActs.filter(s => s !== 'Other:' && !s.startsWith('Other:'));
+      }
+    } else {
+      if (isChecked) {
+        if (!currentActs.includes(option)) currentActs.push(option);
+      } else {
+        currentActs = currentActs.filter(s => s !== option);
+      }
+    }
+
+    this.renderModalActivityBadges(currentActs);
+  }
+
+  onModalOtherActivityInput(val) {
+    let currentActs = this.getModalSelectedActivities();
+    const trimmed = val.trim();
+    const entry = trimmed ? `Other: ${trimmed}` : 'Other:';
+    const idx = currentActs.findIndex(s => s === 'Other:' || s.startsWith('Other:'));
+    if (idx >= 0) {
+      currentActs[idx] = entry;
+    } else {
+      currentActs.push(entry);
+    }
+    this.renderModalActivityBadges(currentActs);
+  }
+
+  removeModalActivityItem(item) {
+    let currentActs = this.getModalSelectedActivities();
+    if (item === 'Other:' || item.startsWith('Other:')) {
+      currentActs = currentActs.filter(s => s !== 'Other:' && !s.startsWith('Other:'));
+      const chk = document.querySelector('#modal-act-options-list input[value="Other:"]');
+      if (chk) chk.checked = false;
+      const otherContainer = document.getElementById('modal-act-other-container');
+      if (otherContainer) otherContainer.classList.add('hidden');
+    } else {
+      currentActs = currentActs.filter(s => s !== item);
+      const chk = document.querySelector(`#modal-act-options-list input[value="${item}"]`);
+      if (chk) chk.checked = false;
+    }
+    this.renderModalActivityBadges(currentActs);
+  }
+
+  getModalSelectedActivities() {
+    const badges = document.querySelectorAll('#modal-act-badges [data-act-val]');
+    const list = [];
+    badges.forEach(b => {
+      const v = b.getAttribute('data-act-val');
+      if (v) list.push(v);
+    });
+    return list;
+  }
+
+  renderModalActivityBadges(list) {
+    const container = document.getElementById('modal-act-badges');
+    if (!container) return;
+
+    if (list.length === 0) {
+      container.innerHTML = `<span class="text-slate-400 text-[11px] italic">No activities selected yet. Pick from list below.</span>`;
+      return;
+    }
+
+    container.innerHTML = list.map(item => `
+      <span data-act-val="${this.escapeHtml(item)}" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-100 text-indigo-900 border border-indigo-200 shadow-2xs">
+        <span>${this.escapeHtml(item)}</span>
+        <button type="button" onclick="coursePlanApp.removeModalActivityItem('${this.escapeHtml(item)}')" class="text-indigo-400 hover:text-indigo-800 font-black ml-0.5">✕</button>
+      </span>
+    `).join('');
+  }
+
+  toggleModalAssessmentSection(isChecked) {
+    const section = document.getElementById('modal-act-assessment-fields');
+    if (section) {
+      if (isChecked) {
+        section.classList.remove('hidden');
+      } else {
+        section.classList.add('hidden');
+      }
+    }
+  }
+
+  onModalCiaCompChange(comp) {
+    const marksInput = document.getElementById('modal-act-cia-marks');
+    if (!marksInput) return;
+    const isPG = this.activePlan?.is_pg || (this.activePlan?.year_class && this.activePlan.year_class.includes('PG')) || (this.activePlan?.programme && this.activePlan.programme.startsWith('M.'));
+
+    if (comp.includes('C1')) {
+      marksInput.value = '15';
+    } else if (comp.includes('Mid Sem') || comp.includes('End Sem')) {
+      marksInput.value = '30';
+    } else if (comp.includes('Library')) {
+      marksInput.value = '5';
+    } else if (comp.includes('K6')) {
+      marksInput.value = isPG ? '8' : '10';
+    } else if (comp.includes('K4') || comp.includes('K5')) {
+      marksInput.value = isPG ? '6' : '10';
+    } else {
+      marksInput.value = '10';
+    }
+  }
+
+  saveActivityFromModal(actIndex = null) {
+    const acts = this.getModalSelectedActivities();
+    if (acts.length === 0) {
+      alert('Please select at least one Learning Activity.');
+      return;
+    }
+
+    const topic = document.getElementById('modal-act-topic')?.value?.trim() || '';
+    const outcome = document.getElementById('modal-act-outcome')?.value?.trim() || '';
+    const date = document.getElementById('modal-act-date')?.value || '';
+    const isAssessment = document.getElementById('modal-act-is-assessment')?.checked || false;
+    const ciaComp = document.getElementById('modal-act-cia-comp')?.value || 'C2 - K4';
+    const ciaMarks = document.getElementById('modal-act-cia-marks')?.value || '10';
+
+    if (!topic) {
+      alert('Please enter Related Unit / Topic.');
+      document.getElementById('modal-act-topic')?.focus();
+      return;
+    }
+    if (!outcome) {
+      alert('Please enter Expected Learning Outcome.');
+      document.getElementById('modal-act-outcome')?.focus();
+      return;
+    }
+    if (!date) {
+      alert('Please select Proposed Date.');
+      document.getElementById('modal-act-date')?.focus();
+      return;
+    }
+
+    if (!this.activePlan.learning_activities) this.activePlan.learning_activities = [];
+
+    const activityObj = {
+      sno: String((actIndex !== null ? actIndex : this.activePlan.learning_activities.length) + 1),
+      activity: acts.join(', '),
+      topic,
+      outcome,
+      proposed_date: date,
+      is_assessment: isAssessment,
+      cia_component: isAssessment ? ciaComp : '',
+      cia_marks: isAssessment ? ciaMarks : ''
+    };
+
+    if (actIndex !== null && actIndex >= 0 && actIndex < this.activePlan.learning_activities.length) {
+      this.activePlan.learning_activities[actIndex] = activityObj;
+    } else {
+      this.activePlan.learning_activities.push(activityObj);
+    }
+
+    // Automatically synchronize Section B (Assessment Plan)
+    this.syncAssessmentPlanFromActivities();
+
+    const modal = document.getElementById('activity-entry-modal');
+    if (modal) modal.remove();
+
     this.render();
+  }
+
+  syncAssessmentPlanFromActivities() {
+    const assessed = (this.activePlan.learning_activities || []).filter(a => a.is_assessment);
+    this.activePlan.assessment_plan = assessed.map((a, idx) => ({
+      sno: String(idx + 1),
+      component: a.cia_component || ('C2 - K' + (idx <= 1 ? idx + 4 : 4)),
+      marks: String(a.cia_marks || '10'),
+      category: a.activity,
+      unit_coverage: a.topic || '—',
+      from_date: a.proposed_date || '',
+      to_date: a.proposed_date || '',
+      cos_assessed: a.outcome || '—',
+      uneditable: true
+    }));
+  }
+
+  addActivityRow() {
+    this.openActivityModal();
   }
 
   deleteActivityRow(idx) {
     this.harvestFormInputs();
     this.activePlan.learning_activities.splice(idx, 1);
+    this.syncAssessmentPlanFromActivities();
     this.render();
   }
 
@@ -4721,45 +5087,8 @@ class CoursePlanApp {
     });
     if (ucp.length > 0) this.activePlan.unit_completion_plan = ucp;
 
-    // Learning Activities
-    const actRows = document.querySelectorAll('#cp-acts-tbody tr');
-    const acts = [];
-    actRows.forEach((tr, i) => {
-      const selectVal = tr.querySelector('.act-name-select')?.value || '';
-      const otherVal = tr.querySelector('.act-other-name')?.value || '';
-      const finalAct = (selectVal === 'Others' ? otherVal : selectVal) || tr.querySelector('.act-name')?.value || '';
-      acts.push({
-        sno: String(i + 1),
-        activity: finalAct,
-        selected_type: selectVal,
-        other_text: otherVal,
-        topic: tr.querySelector('.act-topic')?.value || '',
-        outcome: tr.querySelector('.act-outcome')?.value || '',
-        proposed_date: tr.querySelector('.act-date')?.value || ''
-      });
-    });
-    if (acts.length > 0) this.activePlan.learning_activities = acts;
-
-    // Assessment Plan
-    const asstRows = document.querySelectorAll('#cp-assts-tbody tr');
-    const assts = [];
-    asstRows.forEach((tr, i) => {
-      assts.push({
-        sno: String(i + 1),
-        component: tr.querySelector('.asst-comp')?.value || '',
-        marks: tr.querySelector('.asst-marks')?.value || '',
-        category: (tr.querySelector('.asst-cat-select')
-          ? (tr.querySelector('.asst-cat-select').value === 'Others'
-              ? (tr.querySelector('.asst-cat-other')?.value || 'Others')
-              : tr.querySelector('.asst-cat-select').value)
-          : (tr.querySelector('.asst-cat')?.value || '')),
-        unit_coverage: tr.querySelector('.asst-cov')?.value || '',
-        from_date: tr.querySelector('.asst-from')?.value || '',
-        to_date: tr.querySelector('.asst-to')?.value || '',
-        cos_assessed: tr.querySelector('.asst-cos')?.value || ''
-      });
-    });
-    if (assts.length > 0) this.activePlan.assessment_plan = assts;
+    // Learning Activities & Assessment Plan (Section B is auto-synced from Section A)
+    this.syncAssessmentPlanFromActivities();
 
     // ICT Integration
     const ictRows = document.querySelectorAll('#cp-icts-tbody tr');
