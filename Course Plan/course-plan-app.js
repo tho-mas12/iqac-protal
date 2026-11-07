@@ -3,6 +3,25 @@
 // Academic Year 2026-2027 (Even Semester)
 
 class CoursePlanApp {
+  static TEACHING_METHODOLOGIES = [
+    'Lecture-based Learning',
+    'Experiential Learning',
+    'Problem-Based Learning (PBL)',
+    'Case-Based Learning',
+    'Collaborative & Cooperative Learning',
+    'Flipped Classroom',
+    'Inquiry-Based Learning',
+    'Socratic Dialogue / Critical Pedagogy',
+    'Project-Based Learning',
+    'Service Learning',
+    'Studio / Workshop-Based Learning',
+    'Role Play and Dramatization',
+    'Peer Teaching and Evaluation',
+    'Differentiated Instruction',
+    'Data-Driven Instruction',
+    'Other:'
+  ];
+
   constructor() {
     this.departments = [];
     this.selectedDept = localStorage.getItem('CP_SELECTED_DEPT') || 'Computer Science';
@@ -195,19 +214,21 @@ class CoursePlanApp {
     this.harvestFormInputs();
     this.activePlan.programme = newProg;
 
-    const isPG = newProg.startsWith('M.') || newProg.includes('MCA') || newProg.includes('Master');
+    const isPG = newProg.startsWith('M.') || newProg.includes('MCA') || newProg.includes('Master') || newProg.includes('Post');
     this.activePlan.is_pg = isPG;
 
-    // Update Year & Class dropdown default
-    const sem = this.activePlan.semester || 'Semester II';
-    if (sem.includes('IV')) {
-      this.activePlan.year_class = isPG ? 'II PG' : 'II UG';
-    } else if (sem.includes('VI')) {
-      this.activePlan.year_class = 'III UG';
+    // Update Year & Class dropdown default according to UG vs PG
+    if (isPG) {
+      if (!this.activePlan.year_class || this.activePlan.year_class.includes('UG')) {
+        this.activePlan.year_class = 'I PG';
+      }
     } else {
-      this.activePlan.year_class = isPG ? 'I PG' : 'I UG';
+      if (!this.activePlan.year_class || this.activePlan.year_class.includes('PG')) {
+        this.activePlan.year_class = 'I UG';
+      }
     }
 
+    this.applyAssessmentRules(isPG);
     this.render();
   }
 
@@ -218,6 +239,7 @@ class CoursePlanApp {
 
     const isPG = newYc.includes('PG') || newYc.includes('MCA');
     this.activePlan.is_pg = isPG;
+    this.activePlan.is_auto_fetched = true;
     this.applyAssessmentRules(isPG);
     this.render();
   }
@@ -279,6 +301,7 @@ class CoursePlanApp {
       target_date: (this.activePlan.unit_completion_plan && this.activePlan.unit_completion_plan[i]) ? this.activePlan.unit_completion_plan[i].target_date : ''
     }));
 
+    this.activePlan.is_auto_fetched = true;
     this.applyAssessmentRules(isPG);
     this.render();
 
@@ -382,6 +405,225 @@ class CoursePlanApp {
       { sno: '6', component: 'Library Referencing - K3', marks: '5', category: 'Library Notes / Reference Work', unit_coverage: 'Units I - V', from_date: '', to_date: '', cos_assessed: 'CO3' },
       { sno: '7', component: 'End Sem', marks: '30', category: 'Written Examination', unit_coverage: 'All Units (I - V)', from_date: '16-03-2027', to_date: '24-03-2027', cos_assessed: isPG ? 'CO1 to CO6' : 'CO1 to CO5', uneditable: true }
     ];
+  }
+
+
+  escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  toggleMethodDropdown(rowIdx, event) {
+    if (event) event.stopPropagation();
+    const menu = document.getElementById(`dtp-method-menu-${rowIdx}`);
+    if (!menu) return;
+    const isHidden = menu.classList.contains('hidden');
+    // Close any other open dropdowns
+    document.querySelectorAll('[id^="dtp-method-menu-"]').forEach(m => m.classList.add('hidden'));
+    if (isHidden) {
+      menu.classList.remove('hidden');
+    }
+  }
+
+  closeMethodDropdown(rowIdx) {
+    const menu = document.getElementById(`dtp-method-menu-${rowIdx}`);
+    if (menu) menu.classList.add('hidden');
+  }
+
+  filterMethodOptions(rowIdx, query) {
+    const container = document.getElementById(`dtp-method-list-${rowIdx}`);
+    if (!container) return;
+    const q = (query || '').toLowerCase().trim();
+    const labels = container.querySelectorAll('.dtp-method-opt');
+    labels.forEach(lbl => {
+      const text = lbl.textContent.toLowerCase();
+      if (!q || text.includes(q)) {
+        lbl.style.display = 'flex';
+      } else {
+        lbl.style.display = 'none';
+      }
+    });
+  }
+
+  onMethodCheckboxToggle(rowIdx, option, isChecked) {
+    const hiddenVal = document.querySelector(`#dtp-method-box-${rowIdx} .dtp-method-value`);
+    if (!hiddenVal) return;
+    let list = (hiddenVal.value || '').split(',').map(s => s.trim()).filter(Boolean);
+
+    if (option === 'Other:') {
+      const otherContainer = document.getElementById(`dtp-method-other-container-${rowIdx}`);
+      const otherInput = otherContainer ? otherContainer.querySelector('.dtp-method-other-input') : null;
+      if (isChecked) {
+        if (otherContainer) otherContainer.classList.remove('hidden');
+        const customText = otherInput ? otherInput.value.trim() : '';
+        const itemVal = customText ? `Other: ${customText}` : 'Other:';
+        if (!list.some(s => s === 'Other:' || s.startsWith('Other:'))) {
+          list.push(itemVal);
+        }
+        if (otherInput) otherInput.focus();
+      } else {
+        if (otherContainer) otherContainer.classList.add('hidden');
+        list = list.filter(s => s !== 'Other:' && !s.startsWith('Other:'));
+      }
+    } else {
+      if (isChecked) {
+        if (!list.includes(option)) list.push(option);
+      } else {
+        list = list.filter(s => s !== option);
+      }
+    }
+
+    hiddenVal.value = list.join(', ');
+    this.updateMethodDisplayTags(rowIdx, list);
+  }
+
+  onMethodOtherInput(rowIdx, text) {
+    const hiddenVal = document.querySelector(`#dtp-method-box-${rowIdx} .dtp-method-value`);
+    if (!hiddenVal) return;
+    let list = (hiddenVal.value || '').split(',').map(s => s.trim()).filter(Boolean);
+    const custom = text.trim();
+    const entry = custom ? `Other: ${custom}` : 'Other:';
+
+    const idx = list.findIndex(s => s === 'Other:' || s.startsWith('Other:'));
+    if (idx >= 0) {
+      list[idx] = entry;
+    } else {
+      list.push(entry);
+    }
+    hiddenVal.value = list.join(', ');
+    this.updateMethodDisplayTags(rowIdx, list);
+  }
+
+  removeMethodItem(rowIdx, item) {
+    const hiddenVal = document.querySelector(`#dtp-method-box-${rowIdx} .dtp-method-value`);
+    if (!hiddenVal) return;
+    let list = (hiddenVal.value || '').split(',').map(s => s.trim()).filter(Boolean);
+
+    const isOther = item === 'Other:' || item.startsWith('Other:');
+    if (isOther) {
+      list = list.filter(s => s !== 'Other:' && !s.startsWith('Other:'));
+      const otherContainer = document.getElementById(`dtp-method-other-container-${rowIdx}`);
+      if (otherContainer) otherContainer.classList.add('hidden');
+      const chk = document.querySelector(`#dtp-method-list-${rowIdx} input[value="Other:"]`);
+      if (chk) chk.checked = false;
+    } else {
+      list = list.filter(s => s !== item);
+      const chk = document.querySelector(`#dtp-method-list-${rowIdx} input[value="${item}"]`);
+      if (chk) chk.checked = false;
+    }
+
+    hiddenVal.value = list.join(', ');
+    this.updateMethodDisplayTags(rowIdx, list);
+  }
+
+  updateMethodDisplayTags(rowIdx, list) {
+    const container = document.querySelector(`#dtp-method-box-${rowIdx} .dtp-method-tags`);
+    if (!container) return;
+
+    if (list.length === 0) {
+      container.innerHTML = `<span class="text-slate-400 text-[11px] italic pl-1">Select methodology (multiple)...</span>`;
+      return;
+    }
+
+    container.innerHTML = list.map(item => {
+      const isOtherVal = item === 'Other:' || item.startsWith('Other:');
+      const displayLabel = isOtherVal ? (item.length > 6 ? item : 'Other: Custom') : item;
+      return `
+        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10.5px] font-bold bg-indigo-50 text-indigo-800 border border-indigo-200">
+          <span>${this.escapeHtml(displayLabel)}</span>
+          <button type="button" onclick="event.stopPropagation(); coursePlanApp.removeMethodItem(${rowIdx}, '${this.escapeHtml(item)}')" class="text-indigo-400 hover:text-indigo-800 font-bold ml-0.5">✕</button>
+        </span>
+      `;
+    }).join('');
+  }
+
+  renderMethodologyMultiSelect(rowIdx, currentVal) {
+    const list = (currentVal || '').split(',').map(s => s.trim()).filter(Boolean);
+    const otherItem = list.find(s => s.startsWith('Other:') || (!CoursePlanApp.TEACHING_METHODOLOGIES.includes(s) && s !== 'Other:'));
+    const hasOther = list.some(s => s === 'Other:' || s.startsWith('Other:'));
+    const otherCustomText = otherItem ? (otherItem.startsWith('Other:') ? otherItem.replace('Other:', '').trim() : otherItem) : '';
+
+    return `
+      <div class="dtp-method-container relative w-full" id="dtp-method-box-${rowIdx}">
+        <input type="hidden" class="dtp-method-value" value="${this.escapeHtml(currentVal || '')}" />
+        
+        <!-- Clickable tags trigger -->
+        <div 
+          onclick="coursePlanApp.toggleMethodDropdown(${rowIdx}, event)" 
+          class="min-h-[34px] w-full p-1.5 border border-slate-300 rounded-lg bg-white flex flex-wrap items-center gap-1 cursor-pointer hover:border-indigo-500 transition"
+        >
+          <div class="dtp-method-tags flex flex-wrap items-center gap-1 flex-1">
+            ${list.length === 0 ? `
+              <span class="text-slate-400 text-[11px] italic pl-1">Select methodology (multiple)...</span>
+            ` : `
+              ${list.map(item => {
+                const isOtherVal = item === 'Other:' || item.startsWith('Other:');
+                const displayLabel = isOtherVal ? (item.length > 6 ? item : 'Other: Custom') : item;
+                return `
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10.5px] font-bold bg-indigo-50 text-indigo-800 border border-indigo-200">
+                    <span>${this.escapeHtml(displayLabel)}</span>
+                    <button type="button" onclick="event.stopPropagation(); coursePlanApp.removeMethodItem(${rowIdx}, '${this.escapeHtml(item)}')" class="text-indigo-400 hover:text-indigo-800 font-bold ml-0.5">✕</button>
+                  </span>
+                `;
+              }).join('')}
+            `}
+          </div>
+          <span class="text-slate-400 text-xs pr-1 shrink-0">▾</span>
+        </div>
+
+        <!-- Autocomplete Dropdown Menu -->
+        <div 
+          id="dtp-method-menu-${rowIdx}" 
+          class="hidden absolute left-0 top-full mt-1 bg-white border border-slate-300 rounded-xl shadow-2xl z-40 p-2 space-y-2 w-72 sm:w-80"
+          onclick="event.stopPropagation()"
+        >
+          <div class="relative">
+            <input 
+              type="text" 
+              placeholder="Search 16 methodologies..." 
+              oninput="coursePlanApp.filterMethodOptions(${rowIdx}, this.value)" 
+              class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded-lg focus:border-indigo-600 focus:outline-none"
+            />
+          </div>
+          <div class="max-h-48 overflow-y-auto space-y-0.5 divide-y divide-slate-100" id="dtp-method-list-${rowIdx}">
+            ${CoursePlanApp.TEACHING_METHODOLOGIES.map(opt => {
+              const isChecked = opt === 'Other:' ? hasOther : list.includes(opt);
+              return `
+                <label class="dtp-method-opt flex items-center gap-2 px-2 py-1.5 hover:bg-indigo-50 rounded-lg cursor-pointer text-xs font-medium text-slate-800">
+                  <input 
+                    type="checkbox" 
+                    class="rounded text-indigo-600 focus:ring-0" 
+                    value="${opt}" 
+                    ${isChecked ? 'checked' : ''} 
+                    onchange="coursePlanApp.onMethodCheckboxToggle(${rowIdx}, '${opt}', this.checked)" 
+                  />
+                  <span class="opt-label">${opt}</span>
+                </label>
+              `;
+            }).join('')}
+          </div>
+          <div id="dtp-method-other-container-${rowIdx}" class="${hasOther ? '' : 'hidden'} pt-1 border-t border-slate-200">
+            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Specify Other Methodology *</label>
+            <input 
+              type="text" 
+              class="dtp-method-other-input w-full text-xs px-2 py-1 border border-indigo-400 rounded-lg font-medium" 
+              placeholder="e.g. Gamification / Concept Mapping" 
+              value="${this.escapeHtml(otherCustomText)}" 
+              oninput="coursePlanApp.onMethodOtherInput(${rowIdx}, this.value)"
+            />
+          </div>
+          <div class="flex justify-between items-center pt-1 border-t border-slate-100 text-[10px]">
+            <span class="text-slate-500 font-bold">${list.length} selected</span>
+            <button type="button" onclick="coursePlanApp.closeMethodDropdown(${rowIdx})" class="px-2.5 py-1 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700">Done</button>
+          </div>
+        </div>
+      </div>
+    `;
   }
 
   formatDateToDDMMYYYY(dateStr) {
@@ -1022,6 +1264,58 @@ class CoursePlanApp {
     const plans = this.plans;
 
     return `
+      
+<style>
+  .is-invalid-field {
+    border-color: #ef4444 !important;
+    background-color: #fef2f2 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25) !important;
+    animation: fieldShake 0.4s ease-in-out !important;
+  }
+  @keyframes fieldShake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-4px); }
+    40%, 80% { transform: translateX(4px); }
+  }
+
+  /* Compact Card View for Mobile Screens */
+  @media (max-width: 768px) {
+    .mobile-card-table thead {
+      display: none !important;
+    }
+    .mobile-card-table, 
+    .mobile-card-table tbody, 
+    .mobile-card-table tr, 
+    .mobile-card-table td {
+      display: block !important;
+      width: 100% !important;
+    }
+    .mobile-card-table tr {
+      margin-bottom: 1rem !important;
+      background: #ffffff !important;
+      border: 1.5px solid #e2e8f0 !important;
+      border-radius: 1rem !important;
+      padding: 0.85rem !important;
+      box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.06) !important;
+    }
+    .mobile-card-table td {
+      padding: 0.35rem 0 !important;
+      border: none !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 0.25rem !important;
+    }
+    .mobile-card-table td::before {
+      content: attr(data-label);
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #64748b;
+      letter-spacing: 0.03em;
+    }
+  }
+</style>
+
       <div class="space-y-6 animate-fadeIn w-full">
         <!-- Faculty Instructions Banner -->
         <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-5">
@@ -1215,6 +1509,58 @@ class CoursePlanApp {
     const approvedFacultyNames = new Set(approvedPlans.map(p => p.faculty_name));
 
     return `
+      
+<style>
+  .is-invalid-field {
+    border-color: #ef4444 !important;
+    background-color: #fef2f2 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25) !important;
+    animation: fieldShake 0.4s ease-in-out !important;
+  }
+  @keyframes fieldShake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-4px); }
+    40%, 80% { transform: translateX(4px); }
+  }
+
+  /* Compact Card View for Mobile Screens */
+  @media (max-width: 768px) {
+    .mobile-card-table thead {
+      display: none !important;
+    }
+    .mobile-card-table, 
+    .mobile-card-table tbody, 
+    .mobile-card-table tr, 
+    .mobile-card-table td {
+      display: block !important;
+      width: 100% !important;
+    }
+    .mobile-card-table tr {
+      margin-bottom: 1rem !important;
+      background: #ffffff !important;
+      border: 1.5px solid #e2e8f0 !important;
+      border-radius: 1rem !important;
+      padding: 0.85rem !important;
+      box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.06) !important;
+    }
+    .mobile-card-table td {
+      padding: 0.35rem 0 !important;
+      border: none !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 0.25rem !important;
+    }
+    .mobile-card-table td::before {
+      content: attr(data-label);
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #64748b;
+      letter-spacing: 0.03em;
+    }
+  }
+</style>
+
       <div class="space-y-6 animate-fadeIn w-full">
         <!-- HOD Management Header -->
         <div class="bg-gradient-to-r from-amber-900 to-slate-900 text-white rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-5">
@@ -1509,6 +1855,58 @@ class CoursePlanApp {
     });
 
     return `
+      
+<style>
+  .is-invalid-field {
+    border-color: #ef4444 !important;
+    background-color: #fef2f2 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25) !important;
+    animation: fieldShake 0.4s ease-in-out !important;
+  }
+  @keyframes fieldShake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-4px); }
+    40%, 80% { transform: translateX(4px); }
+  }
+
+  /* Compact Card View for Mobile Screens */
+  @media (max-width: 768px) {
+    .mobile-card-table thead {
+      display: none !important;
+    }
+    .mobile-card-table, 
+    .mobile-card-table tbody, 
+    .mobile-card-table tr, 
+    .mobile-card-table td {
+      display: block !important;
+      width: 100% !important;
+    }
+    .mobile-card-table tr {
+      margin-bottom: 1rem !important;
+      background: #ffffff !important;
+      border: 1.5px solid #e2e8f0 !important;
+      border-radius: 1rem !important;
+      padding: 0.85rem !important;
+      box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.06) !important;
+    }
+    .mobile-card-table td {
+      padding: 0.35rem 0 !important;
+      border: none !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 0.25rem !important;
+    }
+    .mobile-card-table td::before {
+      content: attr(data-label);
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #64748b;
+      letter-spacing: 0.03em;
+    }
+  }
+</style>
+
       <div class="space-y-6 animate-fadeIn w-full">
         <!-- Admin Header -->
         <div class="bg-gradient-to-r from-purple-900 to-indigo-900 text-white rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-5">
@@ -2078,8 +2476,62 @@ class CoursePlanApp {
 
     const isDeclarationTab = (this.activeFormTab === 'declaration');
     const canPrintAndSubmit = isDeclarationTab && !part4Locked;
+    const isCourseLocked = !!(plan.course_code && (plan.is_auto_fetched || (this.syllabusCourses || []).some(c => c.course_code.toLowerCase().trim() === (plan.course_code || '').toLowerCase().trim())));
+    const isUGProg = !plan.programme || (!plan.programme.startsWith('M.') && !plan.programme.includes('MCA') && !plan.programme.includes('Master') && !plan.programme.includes('Post'));
 
     return `
+      
+<style>
+  .is-invalid-field {
+    border-color: #ef4444 !important;
+    background-color: #fef2f2 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25) !important;
+    animation: fieldShake 0.4s ease-in-out !important;
+  }
+  @keyframes fieldShake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-4px); }
+    40%, 80% { transform: translateX(4px); }
+  }
+
+  /* Compact Card View for Mobile Screens */
+  @media (max-width: 768px) {
+    .mobile-card-table thead {
+      display: none !important;
+    }
+    .mobile-card-table, 
+    .mobile-card-table tbody, 
+    .mobile-card-table tr, 
+    .mobile-card-table td {
+      display: block !important;
+      width: 100% !important;
+    }
+    .mobile-card-table tr {
+      margin-bottom: 1rem !important;
+      background: #ffffff !important;
+      border: 1.5px solid #e2e8f0 !important;
+      border-radius: 1rem !important;
+      padding: 0.85rem !important;
+      box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.06) !important;
+    }
+    .mobile-card-table td {
+      padding: 0.35rem 0 !important;
+      border: none !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 0.25rem !important;
+    }
+    .mobile-card-table td::before {
+      content: attr(data-label);
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #64748b;
+      letter-spacing: 0.03em;
+    }
+  }
+</style>
+
       <div class="space-y-6 animate-fadeIn w-full">
         <!-- Institutional Header Banner (matching PDF Header) -->
         <div class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white rounded-2xl p-6 shadow-md text-center space-y-1.5">
@@ -2322,7 +2774,7 @@ class CoursePlanApp {
                   </select>
                 </div>
 
-                <!-- Year and Class Dropdown -->
+                <!-- Year and Class Dropdown (Dynamically filtered by Programme) -->
                 <div>
                   <label class="block text-[11px] font-bold text-slate-700 mb-1">Year and Class *</label>
                   <select 
@@ -2330,16 +2782,15 @@ class CoursePlanApp {
                     onchange="coursePlanApp.onYearClassChange(this.value)" 
                     class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl bg-white font-bold text-slate-900 focus:border-indigo-600 focus:outline-none cursor-pointer"
                   >
-                    <optgroup label="Undergraduate (UG)">
+                    ${isUGProg ? `
                       <option value="I UG" ${plan.year_class === 'I UG' ? 'selected' : ''}>I UG</option>
                       <option value="II UG" ${plan.year_class === 'II UG' ? 'selected' : ''}>II UG</option>
                       <option value="III UG" ${plan.year_class === 'III UG' ? 'selected' : ''}>III UG</option>
-                    </optgroup>
-                    <optgroup label="Postgraduate (PG)">
+                    ` : `
                       <option value="I PG" ${plan.year_class === 'I PG' ? 'selected' : ''}>I PG</option>
                       <option value="II PG" ${plan.year_class === 'II PG' ? 'selected' : ''}>II PG</option>
-                      <option value="III PG" ${plan.year_class === 'III PG' ? 'selected' : ''}>III PG</option>
-                    </optgroup>
+                      ${(plan.programme && plan.programme.includes('MCA')) ? `<option value="III PG" ${plan.year_class === 'III PG' ? 'selected' : ''}>III PG</option>` : ''}
+                    `}
                   </select>
                 </div>
 
@@ -2390,56 +2841,51 @@ class CoursePlanApp {
                   </p>
                 </div>
 
-                <!-- Course Code Input & Manual Fetch Button -->
+                <!-- Course Code Input (Read-only once auto-fetched from syllabus) -->
                 <div>
                   <label class="block text-[11px] font-bold text-slate-700 mb-1 flex items-center justify-between">
                     <span>Course Code *</span>
-                    <button 
-                      type="button" 
-                      onclick="coursePlanApp.fetchByCodeInput()" 
-                      class="text-[10px] text-indigo-600 hover:text-indigo-800 font-bold underline flex items-center gap-0.5 cursor-pointer"
-                      title="Fetch title, credits, hours, category & COs from syllabus"
-                    >
-                      <i data-lucide="sparkles" class="w-3 h-3"></i> Auto-Fetch
-                    </button>
+                    ${isCourseLocked ? `<span class="text-[10px] text-emerald-700 font-bold flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i> Auto-locked</span>` : ''}
                   </label>
-                  <div class="flex gap-1.5">
-                    <input 
-                      type="text" 
-                      id="cp-course-code" 
-                      value="${plan.course_code || ''}" 
-                      onchange="coursePlanApp.onCourseCodeInputChange(this.value)"
-                      class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-mono font-bold focus:border-indigo-600 focus:outline-none" 
-                      placeholder="e.g. 25UCS21CC03"
-                    />
-                    <button 
-                      type="button" 
-                      onclick="coursePlanApp.fetchByCodeInput()" 
-                      class="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1 shrink-0 shadow-sm cursor-pointer"
-                      title="Fetch syllabus details"
-                    >
-                      <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-                      <span>Fetch</span>
-                    </button>
-                  </div>
+                  <input 
+                    type="text" 
+                    id="cp-course-code" 
+                    value="${plan.course_code || ''}" 
+                    onchange="coursePlanApp.onCourseCodeInputChange(this.value)"
+                    class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-mono font-bold ${isCourseLocked ? 'bg-slate-100 cursor-not-allowed text-slate-700' : 'bg-white focus:border-indigo-600 focus:outline-none'}" 
+                    ${isCourseLocked ? 'readonly' : ''}
+                    placeholder="e.g. 25UCS21CC03"
+                  />
                 </div>
 
-                <!-- Course Title -->
+                <!-- Course Title (Uneditable when auto-fetched) -->
                 <div class="md:col-span-2">
-                  <label class="block text-[11px] font-bold text-slate-700 mb-1">Course Title *</label>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1 flex items-center justify-between">
+                    <span>Course Title *</span>
+                    ${isCourseLocked ? `<span class="text-[10px] text-emerald-700 font-bold flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i> Auto-locked</span>` : ''}
+                  </label>
                   <input 
                     type="text" 
                     id="cp-course-title" 
                     value="${plan.course_title || ''}" 
-                    class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-bold focus:border-indigo-600 focus:outline-none" 
+                    class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-bold ${isCourseLocked ? 'bg-slate-100 cursor-not-allowed text-slate-700' : 'bg-white focus:border-indigo-600 focus:outline-none'}" 
+                    ${isCourseLocked ? 'readonly' : ''}
                     placeholder="e.g. Data Structures and Algorithms"
                   />
                 </div>
 
-                <!-- Course Category (Auto-filled on course select) -->
+                <!-- Course Category (Uneditable when auto-fetched) -->
                 <div>
-                  <label class="block text-[11px] font-bold text-slate-700 mb-1">Course Category</label>
-                  <select id="cp-course-category" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl bg-white font-bold text-slate-800 focus:border-indigo-600 focus:outline-none cursor-pointer">
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1 flex items-center justify-between">
+                    <span>Course Category</span>
+                    ${isCourseLocked ? `<span class="text-[10px] text-emerald-700 font-bold flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i> Auto-locked</span>` : ''}
+                  </label>
+                  ${isCourseLocked ? `<input type="hidden" id="cp-course-category-hidden" value="${plan.course_category || 'Core'}" />` : ''}
+                  <select 
+                    id="cp-course-category" 
+                    class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-bold ${isCourseLocked ? 'bg-slate-100 cursor-not-allowed text-slate-700' : 'bg-white text-slate-800 focus:border-indigo-600 focus:outline-none cursor-pointer'}"
+                    ${isCourseLocked ? 'disabled' : ''}
+                  >
                     <option value="Core" ${plan.course_category === 'Core' ? 'selected' : ''}>Core</option>
                     <option value="Elective" ${plan.course_category === 'Elective' ? 'selected' : ''}>Elective</option>
                     <option value="Allied" ${plan.course_category === 'Allied' ? 'selected' : ''}>Allied</option>
@@ -2453,27 +2899,35 @@ class CoursePlanApp {
                   </select>
                 </div>
 
-                <!-- Teaching Hours -->
+                <!-- Teaching Hours (Uneditable when auto-fetched) -->
                 <div>
-                  <label class="block text-[11px] font-bold text-slate-700 mb-1">Total Teaching Hours & Hours/Week</label>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1 flex items-center justify-between">
+                    <span>Total Teaching Hours & Hours/Week</span>
+                    ${isCourseLocked ? `<span class="text-[10px] text-emerald-700 font-bold flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i> Auto-locked</span>` : ''}
+                  </label>
                   <input 
                     type="text" 
                     id="cp-teaching-hours" 
                     value="${plan.teaching_hours || ''}" 
-                    class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl focus:border-indigo-600 focus:outline-none" 
+                    class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-mono font-bold ${isCourseLocked ? 'bg-slate-100 cursor-not-allowed text-slate-700' : 'bg-white focus:border-indigo-600 focus:outline-none'}" 
+                    ${isCourseLocked ? 'readonly' : ''}
                     placeholder="e.g. 60 Hours & 4 Hours/Week"
                   />
                 </div>
 
-                <!-- Course Credits -->
+                <!-- Course Credits (Uneditable when auto-fetched) -->
                 <div>
-                  <label class="block text-[11px] font-bold text-slate-700 mb-1">Course Credits</label>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1 flex items-center justify-between">
+                    <span>Credits *</span>
+                    ${isCourseLocked ? `<span class="text-[10px] text-emerald-700 font-bold flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i> Auto-locked</span>` : ''}
+                  </label>
                   <input 
                     type="text" 
                     id="cp-credits" 
                     value="${plan.credits || ''}" 
-                    class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-bold focus:border-indigo-600 focus:outline-none" 
-                    placeholder="e.g. 4"
+                    class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-bold ${isCourseLocked ? 'bg-slate-100 cursor-not-allowed text-slate-700' : 'bg-white focus:border-indigo-600 focus:outline-none'}" 
+                    ${isCourseLocked ? 'readonly' : ''}
+                    placeholder="e.g. 3 or 4"
                   />
                 </div>
               </div>
@@ -2486,36 +2940,51 @@ class CoursePlanApp {
                   <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">B. Course Outcomes (COs)</h4>
                   <p class="text-[11px] text-slate-500 italic">List the Course Outcomes as specified in the approved syllabus.</p>
                 </div>
-                <button 
-                  type="button" 
-                  onclick="coursePlanApp.addCORow()" 
-                  class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-xs flex items-center gap-1 border border-slate-200"
-                >
-                  <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add CO
-                </button>
+                ${isCourseLocked ? `
+                  <span class="text-[10px] bg-emerald-50 text-emerald-800 font-bold px-2.5 py-1 rounded-lg border border-emerald-200 inline-flex items-center gap-1">
+                    <i data-lucide="lock" class="w-3.5 h-3.5 text-emerald-600"></i> Syllabus COs Locked
+                  </span>
+                ` : `
+                  <button 
+                    type="button" 
+                    onclick="coursePlanApp.addCORow()" 
+                    class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-xs flex items-center gap-1 border border-slate-200 cursor-pointer"
+                  >
+                    <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add CO
+                  </button>
+                `}
               </div>
 
               <div class="overflow-x-auto rounded-xl border border-slate-200">
-                <table class="w-full text-left text-xs border-collapse">
+                <table class="w-full text-left text-xs border-collapse mobile-card-table">
                   <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
                     <tr>
                       <th class="p-2.5 w-24">CO Code</th>
-                      <th class="p-2.5">Course Outcome</th>
-                      <th class="p-2.5 w-44">K-Levels</th>
+                      <th class="p-2.5">Course Outcome *</th>
+                      <th class="p-2.5 w-44">K-Levels *</th>
                       <th class="p-2.5 w-12 text-center">Action</th>
                     </tr>
                   </thead>
                   <tbody id="cp-cos-tbody" class="divide-y divide-slate-100">
                     ${cos.map((co, idx) => `
                       <tr>
-                        <td class="p-2">
-                          <input type="text" class="co-code w-full text-xs px-2 py-1.5 font-bold font-mono border border-slate-300 rounded bg-slate-50" value="${co.code || 'CO' + (idx + 1)}" />
+                        <td class="p-2" data-label="CO Code">
+                          <input type="text" class="co-code w-full text-xs px-2 py-1.5 font-bold font-mono border border-slate-200 bg-slate-50 rounded text-center text-slate-700" value="${co.code || 'CO' + (idx + 1)}" readonly />
                         </td>
-                        <td class="p-2">
-                          <textarea class="co-outcome w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded focus:border-indigo-600 focus:outline-none" rows="2" placeholder="State outcome statement...">${co.outcome || ''}</textarea>
+                        <td class="p-2" data-label="Course Outcome Description">
+                          <textarea 
+                            class="co-outcome w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded leading-relaxed ${isCourseLocked ? 'bg-slate-100 cursor-not-allowed text-slate-700 font-medium' : 'bg-white focus:border-indigo-600 focus:outline-none'}" 
+                            rows="2" 
+                            ${isCourseLocked ? 'readonly' : ''}
+                            placeholder="State outcome statement..."
+                          >${co.outcome || ''}</textarea>
                         </td>
-                        <td class="p-2">
-                          <select class="co-klevel w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-semibold bg-white">
+                        <td class="p-2" data-label="Cognitive Level (Bloom's)">
+                          ${isCourseLocked ? `<input type="hidden" class="co-klevel-hidden" value="${co.k_level || 'K1'}" />` : ''}
+                          <select 
+                            class="co-klevel w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-semibold ${isCourseLocked ? 'bg-slate-100 cursor-not-allowed text-slate-700 font-bold' : 'bg-white focus:border-indigo-600 focus:outline-none cursor-pointer'}"
+                            ${isCourseLocked ? 'disabled' : ''}
+                          >
                             <option value="K1" ${co.k_level === 'K1' ? 'selected' : ''}>K1 - Remember</option>
                             <option value="K2" ${co.k_level === 'K2' ? 'selected' : ''}>K2 - Understand</option>
                             <option value="K3" ${co.k_level === 'K3' ? 'selected' : ''}>K3 - Apply</option>
@@ -2527,17 +2996,22 @@ class CoursePlanApp {
                             <option value="K5, K6" ${co.k_level === 'K5, K6' ? 'selected' : ''}>K5, K6</option>
                           </select>
                         </td>
-                        <td class="p-2 text-center">
-                          <button type="button" onclick="coursePlanApp.deleteCORow(${idx})" class="p-1 text-slate-400 hover:text-red-600 rounded">
-                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                          </button>
+                        <td class="p-2 text-center" data-label="Action">
+                          ${isCourseLocked ? `
+                            <span class="text-slate-400 font-bold" title="Locked from syllabus master">🔒</span>
+                          ` : `
+                            <button type="button" onclick="coursePlanApp.deleteCORow(${idx})" class="p-1 text-slate-400 hover:text-red-600 rounded">
+                              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            </button>
+                          `}
                         </td>
                       </tr>
                     `).join('')}
                   </tbody>
                 </table>
               </div>
-              <datalist id="dtp-units-datalist">
+            </div>
+            <datalist id="dtp-units-datalist">
                 <option value="Unit I">
                 <option value="Unit II">
                 <option value="Unit III">
@@ -2586,90 +3060,63 @@ class CoursePlanApp {
               <div class="flex items-center justify-between">
                 <div>
                   <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">A. Detailed Teaching Plan</h4>
-                  <p class="text-[11px] text-slate-500">Instruction: Divide each unit into manageable topics and allocate appropriate teaching hours.</p>
+                  <p class="text-[11px] text-slate-500">Instruction: Divide each unit into manageable topics (From & To) and allocate appropriate teaching hours.</p>
                 </div>
                 <button 
                   type="button" 
                   onclick="coursePlanApp.addTeachingPlanRow()" 
-                  class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-xs flex items-center gap-1 border border-slate-200"
+                  class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-xs flex items-center gap-1 border border-slate-200 cursor-pointer"
                 >
                   <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Topic Row
                 </button>
               </div>
 
-              <div class="overflow-x-auto rounded-xl border border-slate-200 max-h-[500px] scrollbar-thin">
-                <table class="w-full text-left text-xs border-collapse">
+              <div class="overflow-x-auto rounded-xl border border-slate-200 max-h-[580px] scrollbar-thin">
+                <table class="w-full text-left text-xs border-collapse mobile-card-table">
                   <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold sticky top-0 z-10">
                     <tr>
-                      <th class="p-2.5 w-32">Month / Days</th>
+                      <th class="p-2.5 w-28">Month / Days</th>
                       <th class="p-2.5 w-24">Unit</th>
-                      <th class="p-2.5">Topics to Be Covered</th>
-                      <th class="p-2.5 w-28">From Date</th>
-                      <th class="p-2.5 w-28">To Date</th>
-                      <th class="p-2.5 w-20 text-center">Hours</th>
-                      <th class="p-2.5 w-20 text-center">COs</th>
-                      <th class="p-2.5 w-44">Teaching Methodology</th>
-                      <th class="p-2.5 w-36">Learning Resources</th>
+                      <th class="p-2.5 w-44">From (Topic) *</th>
+                      <th class="p-2.5 w-44">To (Topic) *</th>
+                      <th class="p-2.5 w-16 text-center">Hours *</th>
+                      <th class="p-2.5 w-16 text-center">COs *</th>
+                      <th class="p-2.5 w-60">Teaching Methodology *</th>
+                      <th class="p-2.5 w-36">Learning Resources *</th>
                       <th class="p-2.5 w-12 text-center">Action</th>
                     </tr>
                   </thead>
                   <tbody id="cp-dtp-tbody" class="divide-y divide-slate-100">
                     ${dtp.map((row, idx) => `
                       <tr>
-                        <td class="p-1.5">
-                          <input type="text" class="dtp-month w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-bold" value="${row.month_days || ''}" placeholder="e.g. November/10" />
+                        <td class="p-1.5" data-label="Month / Days">
+                          <input type="text" class="dtp-month w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-bold" value="${row.month_days || ''}" placeholder="e.g. November" />
                         </td>
-                        <td class="p-1.5">
+                        <td class="p-1.5" data-label="Unit">
                           <input 
                             list="dtp-units-datalist" 
                             class="dtp-unit w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-bold bg-white focus:border-indigo-600 focus:outline-none" 
                             value="${row.unit || 'Unit I'}" 
-                            placeholder="e.g. Unit I & II" 
+                            placeholder="e.g. Unit I" 
                             title="Multiple units can be specified for a month (e.g. Unit I & II)"
                           />
                         </td>
-                        <td class="p-1.5">
-                          <textarea class="dtp-topics w-full text-xs px-2 py-1.5 border border-slate-300 rounded" rows="2" placeholder="List topics...">${row.topics || ''}</textarea>
+                        <td class="p-1.5" data-label="From (Topic)">
+                          <textarea class="dtp-from-topic w-full text-xs px-2 py-1.5 border border-slate-300 rounded focus:border-indigo-600 focus:outline-none" rows="2" placeholder="Start topic / concept...">${row.from_topic || row.topics || ''}</textarea>
                         </td>
-                        <td class="p-1.5">
-                          <input type="date" class="dtp-from w-full text-xs px-1.5 py-1.5 border border-slate-300 rounded font-mono" value="${row.from_date || ''}" />
+                        <td class="p-1.5" data-label="To (Topic)">
+                          <textarea class="dtp-to-topic w-full text-xs px-2 py-1.5 border border-slate-300 rounded focus:border-indigo-600 focus:outline-none" rows="2" placeholder="End topic / concept...">${row.to_topic || ''}</textarea>
                         </td>
-                        <td class="p-1.5">
-                          <input type="date" class="dtp-to w-full text-xs px-1.5 py-1.5 border border-slate-300 rounded font-mono" value="${row.to_date || ''}" />
+                        <td class="p-1.5 text-center" data-label="Lecture Hours">
+                          <input type="number" class="dtp-hours w-full text-xs px-1.5 py-1.5 border border-slate-300 rounded font-bold text-center focus:border-indigo-600 focus:outline-none" value="${row.hours || ''}" placeholder="Hrs" />
                         </td>
-                        <td class="p-1.5 text-center">
-                          <input type="number" class="dtp-hours w-full text-xs px-1.5 py-1.5 border border-slate-300 rounded font-bold text-center" value="${row.hours || ''}" placeholder="Hrs" />
+                        <td class="p-1.5 text-center" data-label="COs Mapped">
+                          <input type="text" class="dtp-cos w-full text-xs px-1.5 py-1.5 border border-slate-300 rounded font-bold text-center focus:border-indigo-600 focus:outline-none" value="${row.cos || 'CO1'}" />
                         </td>
-                        <td class="p-1.5 text-center">
-                          <input type="text" class="dtp-cos w-full text-xs px-1.5 py-1.5 border border-slate-300 rounded font-bold text-center" value="${row.cos || 'CO1'}" />
+                        <td class="p-1.5" data-label="Teaching Methodology">
+                          ${this.renderMethodologyMultiSelect(idx, row.methodology)}
                         </td>
-                        <td class="p-1.5">
-                          ${(() => {
-                            const methodOptions = [
-                              'Lecture / PPT', 'Chalk & Talk', 'Demonstration / Hands-on',
-                              'Group Discussion / Collaborative', 'Problem Solving / Tutorial',
-                              'Case Study Method', 'Flipped Classroom', 'Seminar / Presentation'
-                            ];
-                            const curMethod = row.methodology || 'Lecture / PPT';
-                            const isOther = !methodOptions.includes(curMethod);
-                            return `
-                              <select 
-                                class="dtp-method-select w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-semibold bg-white"
-                                onchange="coursePlanApp.onDtpMethodChange(this)"
-                              >
-                                ${methodOptions.map(opt => `<option value="${opt}" ${curMethod === opt ? 'selected' : ''}>${opt}</option>`).join('')}
-                                <option value="Others" ${isOther ? 'selected' : ''}>Others (Specify)</option>
-                              </select>
-                              <input 
-                                type="text" 
-                                class="dtp-method-other w-full text-xs px-2 py-1 border border-indigo-400 rounded mt-1 ${isOther ? '' : 'hidden'}" 
-                                placeholder="Specify methodology..." 
-                                value="${isOther ? curMethod : ''}"
-                              />
-                            `;
-                          })()}
-                        </td>
-                        <td class="p-1.5">
+                        <td class="p-1.5" data-label="Learning Resources">
                           ${(() => {
                             const resOptions = [
                               'Text Book / Reference Book', 'PPT / Lecture Notes', 'JosTEL LMS / E-Content',
@@ -2695,7 +3142,7 @@ class CoursePlanApp {
                             `;
                           })()}
                         </td>
-                        <td class="p-1.5 text-center">
+                        <td class="p-1.5 text-center" data-label="Action">
                           <button type="button" onclick="coursePlanApp.deleteTeachingPlanRow(${idx})" class="p-1 text-slate-400 hover:text-red-600 rounded">
                             <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                           </button>
@@ -2711,11 +3158,11 @@ class CoursePlanApp {
             <div class="space-y-3 pt-4 border-t border-slate-100">
               <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">B. Unit Completion Plan</h4>
               <p class="text-[11px] text-slate-500 italic">
-                Note: This section provides an overview of the time allocated to each unit. Helps the faculty member and Head of the Department monitor syllabus coverage.
+                Note: This section provides an overview of the time allocated to each unit. Actual hours are fetched from syllabus and locked from editing.
               </p>
 
               <div class="overflow-x-auto rounded-xl border border-slate-200">
-                <table class="w-full text-left text-xs border-collapse">
+                <table class="w-full text-left text-xs border-collapse mobile-card-table">
                   <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
                     <tr>
                       <th class="p-2.5 w-36">Unit</th>
@@ -2727,15 +3174,22 @@ class CoursePlanApp {
                   <tbody id="cp-ucp-tbody" class="divide-y divide-slate-100 font-medium">
                     ${ucp.map((u, idx) => `
                       <tr>
-                        <td class="p-2.5 font-bold text-slate-800">${u.unit}</td>
-                        <td class="p-2 text-center">
-                          <input type="number" class="ucp-planned w-28 text-xs px-2 py-1.5 border border-slate-300 rounded font-bold text-center" value="${u.planned_hours || ''}" onchange="coursePlanApp.calculateTotalHours()" placeholder="0" />
+                        <td class="p-2.5 font-bold text-slate-800" data-label="Unit">${u.unit}</td>
+                        <td class="p-2 text-center" data-label="Planned Hours">
+                          <input type="number" class="ucp-planned w-28 text-xs px-2 py-1.5 border border-slate-300 rounded font-bold text-center focus:border-indigo-600 focus:outline-none" value="${u.planned_hours || ''}" onchange="coursePlanApp.calculateTotalHours()" placeholder="0" />
                         </td>
-                        <td class="p-2 text-center">
-                          <input type="number" class="ucp-actual w-28 text-xs px-2 py-1.5 border border-slate-300 rounded font-bold text-center" value="${u.actual_hours || ''}" onchange="coursePlanApp.calculateTotalHours()" placeholder="0" />
+                        <td class="p-2 text-center" data-label="Actual Hours">
+                          <input 
+                            type="number" 
+                            class="ucp-actual w-28 text-xs px-2 py-1.5 border border-slate-200 bg-slate-100 cursor-not-allowed rounded font-bold text-center text-slate-700" 
+                            value="${u.actual_hours || ''}" 
+                            readonly 
+                            title="Actual hours fetched from syllabus master"
+                            placeholder="0" 
+                          />
                         </td>
-                        <td class="p-2">
-                          <input type="date" class="ucp-date w-48 text-xs px-2.5 py-1.5 border border-slate-300 rounded font-mono" value="${u.target_date || ''}" />
+                        <td class="p-2" data-label="Target Date">
+                          <input type="date" class="ucp-date w-48 text-xs px-2.5 py-1.5 border border-slate-300 rounded font-mono focus:border-indigo-600 focus:outline-none" value="${u.target_date || ''}" />
                         </td>
                       </tr>
                     `).join('')}
@@ -3353,8 +3807,8 @@ class CoursePlanApp {
                   <tr>
                     <th class="border border-slate-300 p-1.5">Month/Days</th>
                     <th class="border border-slate-300 p-1.5">Unit</th>
-                    <th class="border border-slate-300 p-1.5">Topics Covered</th>
-                    <th class="border border-slate-300 p-1.5 text-center">Dates</th>
+                    <th class="border border-slate-300 p-1.5">From (Topic)</th>
+                    <th class="border border-slate-300 p-1.5">To (Topic)</th>
                     <th class="border border-slate-300 p-1.5 text-center">Hours</th>
                     <th class="border border-slate-300 p-1.5 text-center">COs</th>
                     <th class="border border-slate-300 p-1.5">Methodology</th>
@@ -3364,12 +3818,10 @@ class CoursePlanApp {
                 <tbody>
                   ${dtp.map(row => `
                     <tr>
-                      <td class="border border-slate-300 p-1.5 font-bold">${row.month_days}</td>
-                      <td class="border border-slate-300 p-1.5">${row.unit}</td>
-                      <td class="border border-slate-300 p-1.5">${row.topics || '—'}</td>
-                      <td class="border border-slate-300 p-1.5 text-center text-[10px] whitespace-nowrap">
-                        ${row.from_date || ''} ${row.to_date ? 'to ' + row.to_date : ''}
-                      </td>
+                      <td class="border border-slate-300 p-1.5 font-bold">${row.month_days || '—'}</td>
+                      <td class="border border-slate-300 p-1.5">${row.unit || '—'}</td>
+                      <td class="border border-slate-300 p-1.5">${row.from_topic || row.topics || '—'}</td>
+                      <td class="border border-slate-300 p-1.5">${row.to_topic || '—'}</td>
                       <td class="border border-slate-300 p-1.5 text-center font-bold">${row.hours || '—'}</td>
                       <td class="border border-slate-300 p-1.5 text-center font-bold">${row.cos || '—'}</td>
                       <td class="border border-slate-300 p-1.5">${row.methodology || '—'}</td>
@@ -3653,29 +4105,23 @@ class CoursePlanApp {
     if (dtpRows.length === 0) {
       errors.push('Detailed Teaching Plan entries');
     } else {
-      let emptyTopics = 0, emptyDates = 0, emptyHours = 0, emptyMethods = 0, emptyRes = 0;
+      let emptyFromTopic = 0, emptyToTopic = 0, emptyHours = 0, emptyMethods = 0, emptyRes = 0;
       dtpRows.forEach((row) => {
-        const topEl = row.querySelector('.dtp-topics');
-        const fromEl = row.querySelector('.dtp-from');
-        const toEl = row.querySelector('.dtp-to');
+        const fromEl = row.querySelector('.dtp-from-topic');
+        const toEl = row.querySelector('.dtp-to-topic');
         const hrEl = row.querySelector('.dtp-hours');
-        const methEl = row.querySelector('.dtp-method-select');
-        const methOther = row.querySelector('.dtp-method-other');
+        const methVal = row.querySelector('.dtp-method-value');
         const resEl = row.querySelector('.dtp-res-select');
         const resOther = row.querySelector('.dtp-res-other');
 
-        if (!topEl || !topEl.value.trim()) { emptyTopics++; if (topEl) invalidEls.push(topEl); }
-        if (!fromEl || !fromEl.value || !toEl || !toEl.value) {
-          emptyDates++;
-          if (fromEl && !fromEl.value) invalidEls.push(fromEl);
-          if (toEl && !toEl.value) invalidEls.push(toEl);
-        }
+        if (!fromEl || !fromEl.value.trim()) { emptyFromTopic++; if (fromEl) invalidEls.push(fromEl); }
+        if (!toEl || !toEl.value.trim()) { emptyToTopic++; if (toEl) invalidEls.push(toEl); }
         if (!hrEl || !hrEl.value.trim()) { emptyHours++; if (hrEl) invalidEls.push(hrEl); }
 
-        if (methEl && methEl.value === 'Others' && (!methOther || !methOther.value.trim())) {
-          emptyMethods++; if (methOther) invalidEls.push(methOther);
-        } else if (!methEl || !methEl.value.trim()) {
-          emptyMethods++; if (methEl) invalidEls.push(methEl);
+        if (!methVal || !methVal.value.trim()) {
+          emptyMethods++;
+          const box = row.querySelector('.dtp-method-container');
+          if (box) invalidEls.push(box);
         }
 
         if (resEl && resEl.value === 'Others' && (!resOther || !resOther.value.trim())) {
@@ -3685,8 +4131,8 @@ class CoursePlanApp {
         }
       });
 
-      if (emptyTopics > 0) errors.push(`Detailed Teaching Plan: Topic(s) missing in ${emptyTopics} row(s)`);
-      if (emptyDates > 0) errors.push(`Detailed Teaching Plan: From/To Date(s) missing in ${emptyDates} row(s)`);
+      if (emptyFromTopic > 0) errors.push(`Detailed Teaching Plan: 'From (Topic)' missing in ${emptyFromTopic} row(s)`);
+      if (emptyToTopic > 0) errors.push(`Detailed Teaching Plan: 'To (Topic)' missing in ${emptyToTopic} row(s)`);
       if (emptyHours > 0) errors.push(`Detailed Teaching Plan: Lecture Hour(s) missing in ${emptyHours} row(s)`);
       if (emptyMethods > 0) errors.push(`Detailed Teaching Plan: Teaching Methodology missing in ${emptyMethods} row(s)`);
       if (emptyRes > 0) errors.push(`Detailed Teaching Plan: Learning Resource missing in ${emptyRes} row(s)`);
@@ -4082,11 +4528,16 @@ class CoursePlanApp {
         { code: 'CO6', outcome: '', k_level: 'K6' }
       ],
       detailed_teaching_plan: [
-        { month_days: 'November/10', unit: 'Unit I', topics: '', from_date: '', to_date: '', hours: '', cos: 'CO1', methodology: 'Lecture / PPT', resources: 'Text Book / PPT' },
-        { month_days: 'December/19', unit: 'Unit II', topics: '', from_date: '', to_date: '', hours: '', cos: 'CO2', methodology: 'Lecture / PPT', resources: 'Text Book / PPT' },
-        { month_days: 'January/13', unit: 'Unit III', topics: '', from_date: '', to_date: '', hours: '', cos: 'CO3', methodology: 'Demonstration / Case Study', resources: 'Reference Book / Web Link' },
-        { month_days: 'February/22', unit: 'Unit IV', topics: '', from_date: '', to_date: '', hours: '', cos: 'CO4', methodology: 'Group Discussion / Problem Solving', resources: 'Case Study Material' },
-        { month_days: 'March/12', unit: 'Unit V', topics: '', from_date: '', to_date: '', hours: '', cos: 'CO5', methodology: 'Blended / Seminar', resources: 'Online Resources / NPTEL' }
+        { month_days: 'November', unit: 'Unit I', from_topic: '', to_topic: '', hours: '', cos: 'CO1', methodology: 'Lecture-based Learning', resources: 'Text Book / Reference Book' },
+        { month_days: 'November', unit: 'Unit I', from_topic: '', to_topic: '', hours: '', cos: 'CO1', methodology: 'Problem-Based Learning (PBL)', resources: 'PPT / Lecture Notes' },
+        { month_days: 'December', unit: 'Unit II', from_topic: '', to_topic: '', hours: '', cos: 'CO2', methodology: 'Lecture-based Learning', resources: 'Text Book / Reference Book' },
+        { month_days: 'December', unit: 'Unit II', from_topic: '', to_topic: '', hours: '', cos: 'CO2', methodology: 'Collaborative & Cooperative Learning', resources: 'JosTEL LMS / E-Content' },
+        { month_days: 'January', unit: 'Unit III', from_topic: '', to_topic: '', hours: '', cos: 'CO3', methodology: 'Experiential Learning', resources: 'Reference Book / Web Links' },
+        { month_days: 'January', unit: 'Unit III', from_topic: '', to_topic: '', hours: '', cos: 'CO3', methodology: 'Case-Based Learning', resources: 'Web Links / Online Repositories' },
+        { month_days: 'February', unit: 'Unit IV', from_topic: '', to_topic: '', hours: '', cos: 'CO4', methodology: 'Flipped Classroom', resources: 'NPTEL / SWAYAM / Coursera' },
+        { month_days: 'February', unit: 'Unit IV', from_topic: '', to_topic: '', hours: '', cos: 'CO4', methodology: 'Inquiry-Based Learning', resources: 'Research Papers / Journal Articles' },
+        { month_days: 'March', unit: 'Unit V', from_topic: '', to_topic: '', hours: '', cos: 'CO5', methodology: 'Project-Based Learning', resources: 'Lab Manual / Software Tools' },
+        { month_days: 'March', unit: 'Unit V', from_topic: '', to_topic: '', hours: '', cos: 'CO5', methodology: 'Peer Teaching and Evaluation', resources: 'Online Resources / NPTEL' }
       ],
       unit_completion_plan: [
         { unit: 'Unit I', planned_hours: '15', actual_hours: '15', target_date: '' },
@@ -4226,26 +4677,29 @@ class CoursePlanApp {
       cos.push({
         code: tr.querySelector('.co-code')?.value || '',
         outcome: tr.querySelector('.co-outcome')?.value || '',
-        k_level: tr.querySelector('.co-klevel')?.value || ''
+        k_level: tr.querySelector('.co-klevel')?.value || tr.querySelector('.co-klevel-hidden')?.value || 'K1'
       });
     });
     if (cos.length > 0) this.activePlan.course_outcomes = cos;
+
+    // Course Category fallback to hidden input if disabled
+    this.activePlan.course_category = document.getElementById('cp-course-category')?.value || document.getElementById('cp-course-category-hidden')?.value || 'Core';
 
     // Detailed Teaching Plan
     const dtpRows = document.querySelectorAll('#cp-dtp-tbody tr');
     const dtp = [];
     dtpRows.forEach(tr => {
+      const fromTopic = tr.querySelector('.dtp-from-topic')?.value || '';
+      const toTopic = tr.querySelector('.dtp-to-topic')?.value || '';
       dtp.push({
         month_days: tr.querySelector('.dtp-month')?.value || '',
         unit: tr.querySelector('.dtp-unit')?.value || 'Unit I',
-        topics: tr.querySelector('.dtp-topics')?.value || '',
-        from_date: tr.querySelector('.dtp-from')?.value || '',
-        to_date: tr.querySelector('.dtp-to')?.value || '',
+        from_topic: fromTopic,
+        to_topic: toTopic,
+        topics: fromTopic + (toTopic ? ' to ' + toTopic : ''),
         hours: tr.querySelector('.dtp-hours')?.value || '',
         cos: tr.querySelector('.dtp-cos')?.value || '',
-        methodology: (tr.querySelector('.dtp-method-select')?.value === 'Others' 
-          ? (tr.querySelector('.dtp-method-other')?.value || 'Others') 
-          : (tr.querySelector('.dtp-method-select')?.value || '')),
+        methodology: tr.querySelector('.dtp-method-value')?.value || '',
         resources: (tr.querySelector('.dtp-res-select')?.value === 'Others' 
           ? (tr.querySelector('.dtp-res-other')?.value || 'Others') 
           : (tr.querySelector('.dtp-res-select')?.value || ''))
@@ -4467,8 +4921,8 @@ class CoursePlanApp {
 
     this.activePlan = this.createDefaultPlan();
     this.activePlan.department_name = curDept;
-    this.activePlan.faculty_name = curFac;
-    this.activePlan.faculty_email = curEmail;
+    this.activePlan.faculty_name = '';
+    this.activePlan.faculty_email = '';
     this.activePlan.semester = curSem;
     this.activePlan.programme = curProg;
     if (this.activePlan.declaration) {
@@ -4810,3 +5264,11 @@ class CoursePlanApp {
 
 // Global instance
 window.coursePlanApp = new CoursePlanApp();
+
+
+// Global click handler to close open teaching methodology autocomplete dropdowns
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.dtp-method-container')) {
+    document.querySelectorAll('[id^="dtp-method-menu-"]').forEach(m => m.classList.add('hidden'));
+  }
+});
