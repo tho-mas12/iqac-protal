@@ -3115,68 +3115,92 @@ class CoursePlanApp {
                     </tr>
                   </thead>
                   <tbody id="cp-dtp-tbody" class="divide-y divide-slate-100">
-                    ${dtp.map((row, idx) => `
-                      <tr>
-                        <td class="p-1.5" data-label="Month / Days">
-                          <input type="text" class="dtp-month w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-bold" value="${row.month_days || ''}" placeholder="e.g. November" />
-                        </td>
-                        <td class="p-1.5" data-label="Unit">
-                          <input 
-                            list="dtp-units-datalist" 
-                            class="dtp-unit w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-bold bg-white focus:border-indigo-600 focus:outline-none" 
-                            value="${row.unit || 'Unit I'}" 
-                            placeholder="e.g. Unit I" 
-                            title="Multiple units can be specified for a month (e.g. Unit I & II)"
-                          />
-                        </td>
-                        <td class="p-1.5" data-label="From (Topic)">
-                          <textarea class="dtp-from-topic w-full text-xs px-2 py-1.5 border border-slate-300 rounded focus:border-indigo-600 focus:outline-none" rows="2" placeholder="Start topic / concept...">${row.from_topic || row.topics || ''}</textarea>
-                        </td>
-                        <td class="p-1.5" data-label="To (Topic)">
-                          <textarea class="dtp-to-topic w-full text-xs px-2 py-1.5 border border-slate-300 rounded focus:border-indigo-600 focus:outline-none" rows="2" placeholder="End topic / concept...">${row.to_topic || ''}</textarea>
-                        </td>
-                        <td class="p-1.5 text-center" data-label="Lecture Hours">
-                          <input type="number" class="dtp-hours w-full text-xs px-1.5 py-1.5 border border-slate-300 rounded font-bold text-center focus:border-indigo-600 focus:outline-none" value="${row.hours || ''}" placeholder="Hrs" />
-                        </td>
-                        <td class="p-1.5 text-center" data-label="COs Mapped">
-                          <input type="text" class="dtp-cos w-full text-xs px-1.5 py-1.5 border border-slate-300 rounded font-bold text-center focus:border-indigo-600 focus:outline-none" value="${row.cos || 'CO1'}" />
-                        </td>
-                        <td class="p-1.5" data-label="Teaching Methodology">
-                          ${this.renderMethodologyMultiSelect(idx, row.methodology)}
-                        </td>
-                        <td class="p-1.5" data-label="Learning Resources">
-                          ${(() => {
-                            const resOptions = [
-                              'Text Book / Reference Book', 'PPT / Lecture Notes', 'JosTEL LMS / E-Content',
-                              'NPTEL / SWAYAM / Coursera', 'Research Papers / Journal Articles',
-                              'Lab Manual / Software Tools', 'Web Links / Online Repositories'
-                            ];
-                            const curRes = row.resources || 'PPT / Lecture Notes';
-                            const isOther = !resOptions.includes(curRes);
-                            return `
-                              <select 
-                                class="dtp-res-select w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-semibold bg-white"
-                                onchange="coursePlanApp.onDtpResourceChange(this)"
-                              >
-                                ${resOptions.map(opt => `<option value="${opt}" ${curRes === opt ? 'selected' : ''}>${opt}</option>`).join('')}
-                                <option value="Others" ${isOther ? 'selected' : ''}>Others (Specify)</option>
-                              </select>
-                              <input 
-                                type="text" 
-                                class="dtp-res-other w-full text-xs px-2 py-1 border border-indigo-400 rounded mt-1 ${isOther ? '' : 'hidden'}" 
-                                placeholder="Specify resource..." 
-                                value="${isOther ? curRes : ''}"
-                              />
-                            `;
-                          })()}
-                        </td>
-                        <td class="p-1.5 text-center" data-label="Action">
-                          <button type="button" onclick="coursePlanApp.deleteTeachingPlanRow(${idx})" class="p-1 text-slate-400 hover:text-red-600 rounded">
-                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                          </button>
-                        </td>
-                      </tr>
-                    `).join('')}
+                    ${dtp.map((row, idx) => {
+                      const isFirstInMonth = (idx === 0 || row.month_days !== dtp[idx - 1].month_days);
+                      let span = 1;
+                      if (isFirstInMonth) {
+                        for (let j = idx + 1; j < dtp.length; j++) {
+                          if (dtp[j].month_days === row.month_days) span++;
+                          else break;
+                        }
+                      }
+
+                      return `
+                        <tr>
+                          ${isFirstInMonth ? `
+                            <td rowspan="${span}" class="p-2.5 font-bold text-slate-800 bg-slate-50/70 border-r border-slate-200 text-center align-middle whitespace-nowrap hidden md:table-cell select-none" data-label="Month / Days">
+                              <div class="px-2.5 py-1.5 rounded-xl bg-white border border-slate-300 shadow-2xs font-black text-indigo-950 text-xs inline-block">
+                                ${this.escapeHtml(row.month_days || '—')}
+                              </div>
+                              <input type="hidden" class="dtp-month" value="${this.escapeHtml(row.month_days || '')}" />
+                            </td>
+                          ` : ''}
+
+                          <!-- Mobile-only Month/Days cell so mobile card clearly shows month -->
+                          <td class="md:hidden p-1.5" data-label="Month / Days">
+                            <span class="font-black text-indigo-950 text-xs">${this.escapeHtml(row.month_days || '—')}</span>
+                            <input type="hidden" class="dtp-month" value="${this.escapeHtml(row.month_days || '')}" />
+                          </td>
+
+                          <td class="p-1.5" data-label="Unit">
+                            <input 
+                              list="dtp-units-datalist" 
+                              class="dtp-unit w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-bold bg-white focus:border-indigo-600 focus:outline-none" 
+                              value="${row.unit || 'Unit I'}" 
+                              placeholder="e.g. Unit I" 
+                              title="Multiple units can be specified for a month (e.g. Unit I & II)"
+                            />
+                          </td>
+                          <td class="p-1.5" data-label="From (Topic)">
+                            <textarea class="dtp-from-topic w-full text-xs px-2 py-1.5 border border-slate-300 rounded focus:border-indigo-600 focus:outline-none" rows="2" placeholder="Start topic / portion...">${row.from_topic || row.topics || ''}</textarea>
+                          </td>
+                          <td class="p-1.5" data-label="To (Topic)">
+                            <textarea class="dtp-to-topic w-full text-xs px-2 py-1.5 border border-slate-300 rounded focus:border-indigo-600 focus:outline-none" rows="2" placeholder="End topic / portion...">${row.to_topic || ''}</textarea>
+                          </td>
+                          <td class="p-1.5 text-center" data-label="Lecture Hours">
+                            <input type="number" class="dtp-hours w-full text-xs px-1.5 py-1.5 border border-slate-300 rounded font-bold text-center focus:border-indigo-600 focus:outline-none" value="${row.hours || ''}" placeholder="Hrs" />
+                          </td>
+                          <td class="p-1.5 text-center" data-label="COs Mapped">
+                            <input type="text" class="dtp-cos w-full text-xs px-1.5 py-1.5 border border-slate-300 rounded font-bold text-center focus:border-indigo-600 focus:outline-none" value="${row.cos || 'CO1'}" />
+                          </td>
+                          <td class="p-1.5" data-label="Teaching Methodology">
+                            ${this.renderMethodologyMultiSelect(idx, row.methodology)}
+                          </td>
+                          <td class="p-1.5" data-label="Learning Resources">
+                            ${(() => {
+                              const resOptions = [
+                                'Text Book / Reference Book', 'PPT / Lecture Notes', 'JosTEL LMS / E-Content',
+                                'NPTEL / SWAYAM / Coursera', 'Research Papers / Journal Articles',
+                                'Lab Manual / Software Tools', 'Web Links / Online Repositories'
+                              ];
+                              const curRes = row.resources || '';
+                              const isOther = curRes && !resOptions.includes(curRes);
+                              return `
+                                <select 
+                                  class="dtp-res-select w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-semibold bg-white"
+                                  onchange="coursePlanApp.onDtpResourceChange(this)"
+                                >
+                                  <option value="" ${!curRes ? 'selected' : ''}>-- Select Resource --</option>
+                                  ${resOptions.map(opt => `<option value="${opt}" ${curRes === opt ? 'selected' : ''}>${opt}</option>`).join('')}
+                                  <option value="Others" ${isOther ? 'selected' : ''}>Others (Specify)</option>
+                                </select>
+                                <input 
+                                  type="text" 
+                                  class="dtp-res-other w-full text-xs px-2 py-1 border border-indigo-400 rounded mt-1 ${isOther ? '' : 'hidden'}" 
+                                  placeholder="Specify resource..." 
+                                  value="${isOther ? curRes : ''}"
+                                />
+                              `;
+                            })()}
+                          </td>
+                          <td class="p-1.5 text-center" data-label="Action">
+                            <button type="button" onclick="coursePlanApp.deleteTeachingPlanRow(${idx})" class="p-1 text-slate-400 hover:text-red-600 rounded">
+                              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      `;
+                    }).join('')}
                   </tbody>
                 </table>
               </div>
@@ -3779,18 +3803,32 @@ class CoursePlanApp {
                   </tr>
                 </thead>
                 <tbody>
-                  ${dtp.map(row => `
-                    <tr>
-                      <td class="border border-slate-300 p-1.5 font-bold">${row.month_days || '—'}</td>
-                      <td class="border border-slate-300 p-1.5">${row.unit || '—'}</td>
-                      <td class="border border-slate-300 p-1.5">${row.from_topic || row.topics || '—'}</td>
-                      <td class="border border-slate-300 p-1.5">${row.to_topic || '—'}</td>
-                      <td class="border border-slate-300 p-1.5 text-center font-bold">${row.hours || '—'}</td>
-                      <td class="border border-slate-300 p-1.5 text-center font-bold">${row.cos || '—'}</td>
-                      <td class="border border-slate-300 p-1.5">${row.methodology || '—'}</td>
-                      <td class="border border-slate-300 p-1.5">${row.resources || '—'}</td>
-                    </tr>
-                  `).join('')}
+                  ${dtp.map((row, idx) => {
+                    const isFirstInMonth = (idx === 0 || row.month_days !== dtp[idx - 1].month_days);
+                    let span = 1;
+                    if (isFirstInMonth) {
+                      for (let j = idx + 1; j < dtp.length; j++) {
+                        if (dtp[j].month_days === row.month_days) span++;
+                        else break;
+                      }
+                    }
+                    return `
+                      <tr>
+                        ${isFirstInMonth ? `
+                          <td rowspan="${span}" class="border border-slate-300 p-1.5 font-bold text-center align-middle whitespace-nowrap bg-slate-50">
+                            ${row.month_days || '—'}
+                          </td>
+                        ` : ''}
+                        <td class="border border-slate-300 p-1.5">${row.unit || '—'}</td>
+                        <td class="border border-slate-300 p-1.5">${row.from_topic || row.topics || '—'}</td>
+                        <td class="border border-slate-300 p-1.5">${row.to_topic || '—'}</td>
+                        <td class="border border-slate-300 p-1.5 text-center font-bold">${row.hours || '—'}</td>
+                        <td class="border border-slate-300 p-1.5 text-center font-bold">${row.cos || '—'}</td>
+                        <td class="border border-slate-300 p-1.5">${row.methodology || '—'}</td>
+                        <td class="border border-slate-300 p-1.5">${row.resources || '—'}</td>
+                      </tr>
+                    `;
+                  }).join('')}
                 </tbody>
               </table>
             </div>
@@ -4453,16 +4491,16 @@ class CoursePlanApp {
         { code: 'CO6', outcome: '', k_level: 'K6' }
       ],
       detailed_teaching_plan: [
-        { month_days: 'November', unit: 'Unit I', from_topic: '', to_topic: '', hours: '', cos: 'CO1', methodology: 'Lecture-based Learning', resources: 'Text Book / Reference Book' },
-        { month_days: 'November', unit: 'Unit I', from_topic: '', to_topic: '', hours: '', cos: 'CO1', methodology: 'Problem-Based Learning (PBL)', resources: 'PPT / Lecture Notes' },
-        { month_days: 'December', unit: 'Unit II', from_topic: '', to_topic: '', hours: '', cos: 'CO2', methodology: 'Lecture-based Learning', resources: 'Text Book / Reference Book' },
-        { month_days: 'December', unit: 'Unit II', from_topic: '', to_topic: '', hours: '', cos: 'CO2', methodology: 'Collaborative & Cooperative Learning', resources: 'JosTEL LMS / E-Content' },
-        { month_days: 'January', unit: 'Unit III', from_topic: '', to_topic: '', hours: '', cos: 'CO3', methodology: 'Experiential Learning', resources: 'Reference Book / Web Links' },
-        { month_days: 'January', unit: 'Unit III', from_topic: '', to_topic: '', hours: '', cos: 'CO3', methodology: 'Case-Based Learning', resources: 'Web Links / Online Repositories' },
-        { month_days: 'February', unit: 'Unit IV', from_topic: '', to_topic: '', hours: '', cos: 'CO4', methodology: 'Flipped Classroom', resources: 'NPTEL / SWAYAM / Coursera' },
-        { month_days: 'February', unit: 'Unit IV', from_topic: '', to_topic: '', hours: '', cos: 'CO4', methodology: 'Inquiry-Based Learning', resources: 'Research Papers / Journal Articles' },
-        { month_days: 'March', unit: 'Unit V', from_topic: '', to_topic: '', hours: '', cos: 'CO5', methodology: 'Project-Based Learning', resources: 'Lab Manual / Software Tools' },
-        { month_days: 'March', unit: 'Unit V', from_topic: '', to_topic: '', hours: '', cos: 'CO5', methodology: 'Peer Teaching and Evaluation', resources: 'Online Resources / NPTEL' }
+        { month_days: 'November / 10', unit: 'Unit I', from_topic: '', to_topic: '', hours: '', cos: 'CO1', methodology: '', resources: '' },
+        { month_days: 'November / 10', unit: 'Unit I', from_topic: '', to_topic: '', hours: '', cos: 'CO1', methodology: '', resources: '' },
+        { month_days: 'December / 19', unit: 'Unit II', from_topic: '', to_topic: '', hours: '', cos: 'CO2', methodology: '', resources: '' },
+        { month_days: 'December / 19', unit: 'Unit II', from_topic: '', to_topic: '', hours: '', cos: 'CO2', methodology: '', resources: '' },
+        { month_days: 'January / 13', unit: 'Unit III', from_topic: '', to_topic: '', hours: '', cos: 'CO3', methodology: '', resources: '' },
+        { month_days: 'January / 13', unit: 'Unit III', from_topic: '', to_topic: '', hours: '', cos: 'CO3', methodology: '', resources: '' },
+        { month_days: 'February / 22', unit: 'Unit IV', from_topic: '', to_topic: '', hours: '', cos: 'CO4', methodology: '', resources: '' },
+        { month_days: 'February / 22', unit: 'Unit IV', from_topic: '', to_topic: '', hours: '', cos: 'CO4', methodology: '', resources: '' },
+        { month_days: 'March / 12', unit: 'Unit V', from_topic: '', to_topic: '', hours: '', cos: 'CO5', methodology: '', resources: '' },
+        { month_days: 'March / 12', unit: 'Unit V', from_topic: '', to_topic: '', hours: '', cos: 'CO5', methodology: '', resources: '' }
       ],
       unit_completion_plan: [
         { unit: 'Unit I', planned_hours: '15', actual_hours: '15', target_date: '' },
