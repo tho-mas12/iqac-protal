@@ -127,33 +127,45 @@ class CoursePlanApp {
       return;
     }
 
+    if (r.name === 'new') {
+      this.activePlan = this.createDefaultPlan();
+      this.viewMode = 'form';
+      this.activeFormTab = 'part1';
+      this.render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (r.name === 'edit' && r.id) {
+      await this.loadPlanForEdit(r.id);
+      this.viewMode = 'form';
+      this.activeFormTab = 'part1';
+      this.render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (r.name === 'view' && r.id) {
+      await this.loadPlanForPrint(r.id);
+      this.viewMode = 'print';
+      this.render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    // Dashboard views
+    this.viewMode = 'dashboard';
     if (this.currentUser.role === 'faculty') {
-      if (r.name === 'new') {
-        this.createNewPlan();
-        this.viewMode = 'form';
-        this.activeFormTab = 'part1';
-      } else if (r.name === 'edit' && r.id) {
-        await this.loadPlanForEdit(r.id);
-        this.viewMode = 'form';
-        this.activeFormTab = 'part1';
-      } else if (r.name === 'view' && r.id) {
-        await this.loadPlanForPrint(r.id);
-        this.viewMode = 'print';
-      } else {
-        this.viewMode = 'dashboard';
-        if (r.name !== 'dashboard') {
-          window.history.replaceState(null, '', '/course-plan/dashboard');
-        }
-        await this.fetchPlans();
+      if (r.name !== 'dashboard') {
+        window.history.replaceState(null, '', '/course-plan/dashboard');
       }
+      await this.fetchPlans();
     } else if (this.currentUser.role === 'hod') {
-      this.viewMode = 'dashboard';
       if (r.name !== 'hod' && r.name !== 'dashboard') {
         window.history.replaceState(null, '', '/course-plan/hod');
       }
       await this.fetchPlans();
     } else if (this.currentUser.role === 'admin') {
-      this.viewMode = 'dashboard';
       if (r.name !== 'admin' && r.name !== 'dashboard') {
         window.history.replaceState(null, '', '/course-plan/admin');
       }
