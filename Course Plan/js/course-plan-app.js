@@ -6398,12 +6398,10 @@ class CoursePlanApp {
                     <option value="C2 - K4" ${curCiaComp.includes('K4') ? 'selected' : ''}>C2 - K4 (Assignment / Test)</option>
                     <option value="C2 - K5" ${curCiaComp.includes('K5') ? 'selected' : ''}>C2 - K5 (Problem Solving / Case Study)</option>
                     ${isPG ? `<option value="C2 - K6" ${curCiaComp.includes('K6') ? 'selected' : ''}>C2 - K6 (Creative Model / Mini Project)</option>` : ''}
-                    <option value="C1 – K1, K2" ${curCiaComp.includes('C1') ? 'selected' : ''}>C1 – K1, K2 (JosTEL MCQ / Online Test)</option>
                     <option value="Library Referencing - K3" ${curCiaComp.includes('Library') ? 'selected' : ''}>Library Referencing - K3</option>
-                    <option value="Mid Sem Test" ${curCiaComp.includes('Mid Sem') ? 'selected' : ''}>Mid Sem Test</option>
-                    <option value="End Sem Exam" ${curCiaComp.includes('End Sem') ? 'selected' : ''}>End Sem Exam</option>
-                    <option value="Additional Assessment" ${(!curCiaComp.includes('C1') && !curCiaComp.includes('C2') && !curCiaComp.includes('Mid') && !curCiaComp.includes('End') && !curCiaComp.includes('Library')) ? 'selected' : ''}>Other Assessment Component</option>
+                    <option value="Additional Assessment" ${(!curCiaComp.includes('C2') && !curCiaComp.includes('Library')) ? 'selected' : ''}>Other Assessment Component</option>
                   </select>
+                  <div class="text-[10px] text-amber-800/80 font-medium mt-1">C1, Mid Sem & End Sem are fixed institutional exams and pre-filled by default.</div>
                 </div>
 
                 <!-- Marks Input -->
