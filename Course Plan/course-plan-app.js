@@ -270,10 +270,10 @@ class CoursePlanApp {
     }
 
     const paths = [
-      '/course-plan/data/syllabus_master.json?v=20261109F',
-      '/course-plan/syllabus_master.json?v=20261109F',
-      'data/syllabus_master.json?v=20261109F',
-      'syllabus_master.json?v=20261109F'
+      '/course-plan/data/syllabus_master.json?v=20261109G',
+      '/course-plan/syllabus_master.json?v=20261109G',
+      'data/syllabus_master.json?v=20261109G',
+      'syllabus_master.json?v=20261109G'
     ];
 
     for (const p of paths) {
@@ -356,6 +356,40 @@ class CoursePlanApp {
       'Human Excellence': ['Human Excellence & Value Education']
     };
 
+    // Full list of UG programmes across the college for Language & Foundation faculties
+    const allCollegeUGProgrammes = [
+      'B.A. Economics',
+      'B.A. English',
+      'B.A. History',
+      'B.A. Tamil',
+      'B.B.A (Business Administration)',
+      'B.Com. Commerce',
+      'B.Com. Commerce with Computer Applications',
+      'B.Com. Business Analytics',
+      'B.Com. Honours',
+      'B.Com. Strategic Finance',
+      'B.Sc. Computer Science',
+      'B.C.A (Computer Applications)',
+      'B.Sc. Mathematics',
+      'B.Sc. Physics',
+      'B.Sc. Chemistry',
+      'B.Sc. Botany',
+      'B.Sc. Biotechnology',
+      'B.Sc. Artificial Intelligence and Machine Learning',
+      'B.Sc. Visual Communication',
+      'B.Voc. Software Development & System Administration',
+      'B.Voc. Viscom Technology',
+      'B.Sc. Electronics',
+      'B.Sc. Physical Education'
+    ];
+
+    const isLanguageOrFoundationDept = /^(English|Tamil|French|Hindi|Sanskrit|Human Excellence)$/i.test(dept);
+    if (isLanguageOrFoundationDept) {
+      const ownProgs = specialMap[dept] || [dept + ' Programme'];
+      const otherProgs = allCollegeUGProgrammes.filter(p => !ownProgs.includes(p));
+      return [...ownProgs, ...otherProgs];
+    }
+
     if (specialMap[dept]) return specialMap[dept];
 
     // Otherwise derive from syllabus master
@@ -371,13 +405,13 @@ class CoursePlanApp {
 
   getSemesterNum(sem) {
     if (!sem) return 2;
-    const s = String(sem).toUpperCase();
-    if (s === 'VI' || s.includes('VI') || s.includes('6')) return 6;
-    if (s === 'V' || s.includes('V') || s.includes('5')) return 5;
-    if (s === 'IV' || s.includes('IV') || s.includes('4')) return 4;
-    if (s === 'III' || s.includes('III') || s.includes('3')) return 3;
-    if (s === 'II' || s.includes('II') || s.includes('2')) return 2;
-    if (s === 'I' || s.includes('I') || s.includes('1')) return 1;
+    const s = String(sem).trim().toUpperCase();
+    if (s === 'VI' || s === '6' || s.includes('VI') || s.includes('SEM 6') || s.includes('SEM-6')) return 6;
+    if (s === 'IV' || s === '4' || s.includes('IV') || s.includes('SEM 4') || s.includes('SEM-4')) return 4;
+    if (s === 'V' || s === '5' || s.includes('SEM 5') || s.includes('SEM-5')) return 5;
+    if (s === 'III' || s === '3' || s.includes('III') || s.includes('SEM 3') || s.includes('SEM-3')) return 3;
+    if (s === 'II' || s === '2' || s.includes('II') || s.includes('SEM 2') || s.includes('SEM-2')) return 2;
+    if (s === 'I' || s === '1' || s.includes('SEM 1') || s.includes('SEM-1')) return 1;
     return 2;
   }
 
@@ -417,27 +451,113 @@ class CoursePlanApp {
     const prog = (this.activePlan && this.activePlan.programme) ? this.activePlan.programme : '';
     const semNum = this.getSemesterNum(sem);
 
-    return this.syllabusCourses.filter(c => {
-      // 1. Department match: for B.Voc SD & SA, any course having 'USS' matches directly
-      const dLower = (dept || '').toLowerCase();
-      const isBVocDept = dLower.includes('voc') || dLower.includes('sd') || dLower.includes('sa') || dLower.includes('software') || dLower.includes('uss');
-      const deptMatches = isBVocDept ? (c.course_code && c.course_code.includes('USS')) : this.isDeptMatch(c.department, dept);
-      if (!deptMatches) return false;
+    const dLower = (dept || '').toLowerCase().trim();
+    const pLower = (prog || '').toLowerCase().trim();
 
-      // 2. Semester filtering (only show courses for corresponding semester II, IV, or VI)
+    const isBVocDept = dLower.includes('voc') || dLower.includes('sd') || dLower.includes('sa') || dLower.includes('software') || dLower.includes('uss');
+    const isEng = dLower === 'english';
+    const isTam = dLower === 'tamil';
+    const isFrench = dLower.includes('french');
+    const isHindi = dLower.includes('hindi');
+    const isSanskrit = dLower.includes('sanskrit');
+
+    const isOwnMajor = (isEng && pLower.includes('english')) || (isTam && pLower.includes('tamil'));
+    const isPG = pLower.startsWith('m.') || pLower.includes('mca') || pLower.includes('master') || pLower.includes('post');
+
+    let list = this.syllabusCourses.filter(c => {
+      // 1. Semester filtering (only show courses for corresponding semester II, IV, or VI)
       if (c.semester_num && c.semester_num !== semNum) return false;
 
-      // 3. Optional Programme match (if user has selected a specific programme)
+      const code = (c.course_code || '').toUpperCase();
+      const title = (c.course_title || '');
+      const cat = (c.course_category || '');
+
+      // 2. B.Voc SD & SA
+      if (isBVocDept) {
+        return code.includes('USS');
+      }
+
+      // 3. English Department
+      if (isEng) {
+        if (isPG) {
+          return this.isDeptMatch(c.department, 'English') && (code.startsWith('25PEN') || code.includes('PEN'));
+        }
+        if (isOwnMajor) {
+          return this.isDeptMatch(c.department, 'English');
+        }
+        // English faculty teaching outside UG programme: General English courses
+        return this.isDeptMatch(c.department, 'English') && (code.includes('GE') || cat === 'General English' || title.toLowerCase().includes('general english'));
+      }
+
+      // 4. Tamil Department
+      if (isTam) {
+        if (isPG) {
+          return this.isDeptMatch(c.department, 'Tamil') && (code.startsWith('25PTA') || code.includes('PTA'));
+        }
+        if (isOwnMajor) {
+          return this.isDeptMatch(c.department, 'Tamil');
+        }
+        // Tamil faculty teaching outside UG programme: General Tamil courses (exclude SL Self Learning)
+        return this.isDeptMatch(c.department, 'Tamil') && !code.includes('SL') && (code.includes('GL') || cat === 'General Language' || title.toLowerCase().includes('general tamil') || title.includes('பொதுத்தமிழ்') || title.includes('பபொதுத்தமிழ்'));
+      }
+
+      // 5. Other Language & Foundation Departments (French, Hindi, Sanskrit, Human Excellence)
+      if (isFrench || isHindi || isSanskrit || dLower.includes('human excellence')) {
+        return this.isDeptMatch(c.department, dept);
+      }
+
+      // 6. Standard Departments
+      const deptMatches = this.isDeptMatch(c.department, dept);
+      if (!deptMatches) return false;
+
       if (prog && dept === 'Computer Science') {
-        if (prog.includes('MCA') && !c.course_code.includes('PCA')) return false;
-        if (prog.includes('B.Sc') && !c.course_code.includes('UCS')) return false;
+        if (prog.includes('MCA') && !code.includes('PCA')) return false;
+        if (prog.includes('B.Sc') && !code.includes('UCS')) return false;
       } else if (prog && dept === 'Information Technology') {
-        if (prog.includes('M.Sc') && !c.course_code.includes('PCS')) return false;
-        if ((prog.includes('BCA') || prog.includes('B.C.A')) && !c.course_code.includes('UBC')) return false;
+        if (prog.includes('M.Sc') && !code.includes('PCS')) return false;
+        if ((prog.includes('BCA') || prog.includes('B.C.A')) && !code.includes('UBC')) return false;
       }
 
       return true;
     });
+
+    // Stream-based prioritization for General English & General Tamil in Semester IV
+    if (semNum === 4 && (isEng || isTam) && !isOwnMajor && !isPG) {
+      const isSci = /sc|bca|voc|math|phys|chem|bot|bio|ai|elec/i.test(pLower);
+      const isCom = /com|bba|bus|hon|fin/i.test(pLower);
+      const isArt = /art|econ|hist|lit|lang/i.test(pLower);
+
+      list.sort((a, b) => {
+        const ca = (a.course_code || '').toUpperCase();
+        const cb = (b.course_code || '').toUpperCase();
+        if (isEng) {
+          if (isSci) {
+            if (ca.includes('GE04B')) return -1;
+            if (cb.includes('GE04B')) return 1;
+          } else if (isCom) {
+            if (ca.includes('GE04C')) return -1;
+            if (cb.includes('GE04C')) return 1;
+          } else if (isArt) {
+            if (ca.includes('GE04A')) return -1;
+            if (cb.includes('GE04A')) return 1;
+          }
+        } else if (isTam) {
+          if (isSci) {
+            if (ca.includes('GL04B')) return -1;
+            if (cb.includes('GL04B')) return 1;
+          } else if (isCom) {
+            if (ca.includes('GL04C')) return -1;
+            if (cb.includes('GL04C')) return 1;
+          } else if (isArt) {
+            if (ca.includes('GL04A')) return -1;
+            if (cb.includes('GL04A')) return 1;
+          }
+        }
+        return 0;
+      });
+    }
+
+    return list;
   }
 
   detectCourseCategory(code, title) {
