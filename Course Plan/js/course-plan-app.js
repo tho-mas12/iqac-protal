@@ -270,10 +270,10 @@ class CoursePlanApp {
     }
 
     const paths = [
-      '/course-plan/data/syllabus_master.json?v=20261109G',
-      '/course-plan/syllabus_master.json?v=20261109G',
-      'data/syllabus_master.json?v=20261109G',
-      'syllabus_master.json?v=20261109G'
+      '/course-plan/data/syllabus_master.json?v=20261109H',
+      '/course-plan/syllabus_master.json?v=20261109H',
+      'data/syllabus_master.json?v=20261109H',
+      'syllabus_master.json?v=20261109H'
     ];
 
     for (const p of paths) {
@@ -6139,12 +6139,14 @@ class CoursePlanApp {
     ictRows.forEach((row, idx) => {
       const topEl = row.querySelector('.ict-topic');
       const toolEl = row.querySelector('.ict-tool-select');
-      const platEl = row.querySelector('.ict-plat-select');
+      const toolOtherEl = row.querySelector('.ict-tool-other');
+      const platEl = row.querySelector('.ict-platform-select, .ict-plat-select');
+      const platOtherEl = row.querySelector('.ict-platform-other');
       const purpEl = row.querySelector('.ict-purpose');
 
       const topVal = topEl ? topEl.value.trim() : '';
-      const toolVal = toolEl ? toolEl.value.trim() : '';
-      const platVal = platEl ? platEl.value.trim() : '';
+      const toolVal = (toolEl && toolEl.value === 'Others') ? (toolOtherEl ? toolOtherEl.value.trim() : '') : (toolEl ? toolEl.value.trim() : '');
+      const platVal = (platEl && platEl.value === 'Others') ? (platOtherEl ? platOtherEl.value.trim() : '') : (platEl ? platEl.value.trim() : '');
       const purpVal = purpEl ? purpEl.value.trim() : '';
 
       const hasAny = topVal || toolVal || platVal || purpVal;
@@ -6155,8 +6157,16 @@ class CoursePlanApp {
       } else if (hasAny) {
         const missing = [];
         if (!topVal) { missing.push('Topic/Unit'); if (topEl) invalidEls.push(topEl); }
-        if (!toolVal) { missing.push('Tool'); if (toolEl) invalidEls.push(toolEl); }
-        if (!platVal) { missing.push('Platform'); if (platEl) invalidEls.push(platEl); }
+        if (!toolVal) {
+          missing.push('Tool');
+          if (toolEl && toolEl.value === 'Others' && toolOtherEl) invalidEls.push(toolOtherEl);
+          else if (toolEl) invalidEls.push(toolEl);
+        }
+        if (!platVal) {
+          missing.push('Platform');
+          if (platEl && platEl.value === 'Others' && platOtherEl) invalidEls.push(platOtherEl);
+          else if (platEl) invalidEls.push(platEl);
+        }
         if (!purpVal) { missing.push('Purpose'); if (purpEl) invalidEls.push(purpEl); }
         incompleteRowErrors.push(`Row ${idx + 1}: Missing ${missing.join(', ')}`);
       }
@@ -6168,7 +6178,7 @@ class CoursePlanApp {
       if (firstRow) {
         const t = firstRow.querySelector('.ict-topic');
         const tl = firstRow.querySelector('.ict-tool-select');
-        const p = firstRow.querySelector('.ict-plat-select');
+        const p = firstRow.querySelector('.ict-platform-select, .ict-plat-select');
         const pr = firstRow.querySelector('.ict-purpose');
         if (t && !t.value.trim()) invalidEls.push(t);
         if (tl && !tl.value.trim()) invalidEls.push(tl);
