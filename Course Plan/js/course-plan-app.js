@@ -140,9 +140,14 @@ class CoursePlanApp {
 
   async init() {
     await this.loadDepartmentsData();
-    // Load syllabus data asynchronously in background so login screen renders instantly
-    this.loadSyllabusData();
+    // Start syllabus data fetch
+    this.syllabusPromise = this.loadSyllabusData();
     await this.checkAuth();
+
+    // Sync selectedDept from authenticated user
+    if (this.currentUser && this.currentUser.department_name) {
+      this.selectedDept = this.currentUser.department_name;
+    }
 
     // Set default login dept
     if (!this.selectedLoginDept && this.departments.length > 0) {
@@ -153,6 +158,12 @@ class CoursePlanApp {
     window.addEventListener('popstate', () => {
       this.handleRoute();
     });
+
+    // If directly entering a route that requires syllabus (new, edit, view) or already authenticated, await syllabus
+    const r = this.getRoute();
+    if (r.name === 'new' || r.name === 'edit' || r.name === 'view' || this.currentUser) {
+      await this.syllabusPromise;
+    }
 
     // Dispatch route based on URL
     await this.handleRoute();
@@ -174,13 +185,22 @@ class CoursePlanApp {
     return { name: 'root' };
   }
 
-  navigateTo(url, replace = false) {
+  async navigateTo(url, replace = false) {
     if (replace) {
       window.history.replaceState(null, '', url);
     } else {
       window.history.pushState(null, '', url);
     }
-    this.handleRoute();
+    if (url.includes('/new') || url.includes('/edit') || url.includes('/view')) {
+      if (!this.syllabusLoaded || !this.syllabusCourses || this.syllabusCourses.length === 0) {
+        if (this.syllabusPromise) {
+          await this.syllabusPromise;
+        } else {
+          await this.loadSyllabusData();
+        }
+      }
+    }
+    await this.handleRoute();
   }
 
   async handleRoute() {
@@ -245,20 +265,60 @@ class CoursePlanApp {
   }
 
   async loadSyllabusData() {
-    try {
-      let res = await fetch('data/syllabus_master.json');
-      if (!res.ok) res = await fetch('syllabus_master.json');
-      this.syllabusCourses = await res.json();
-      this.syllabusLoaded = true;
-    } catch (e) {
+    if (this.syllabusLoaded && this.syllabusCourses && this.syllabusCourses.length > 0) {
+      return this.syllabusCourses;
+    }
+
+    const paths = [
+      '/course-plan/data/syllabus_master.json?v=20261109F',
+      '/course-plan/syllabus_master.json?v=20261109F',
+      'data/syllabus_master.json?v=20261109F',
+      'syllabus_master.json?v=20261109F'
+    ];
+
+    for (const p of paths) {
       try {
-        const res2 = await fetch('syllabus_master.json');
-        this.syllabusCourses = await res2.json();
-        this.syllabusLoaded = true;
+        const res = await fetch(p);
+        if (res.ok) {
+          const contentType = (res.headers.get('content-type') || '').toLowerCase();
+          if (contentType.includes('json') || contentType === '' || p.includes('.json')) {
+            const data = await res.json();
+            if (Array.isArray(data) && data.length > 0) {
+              this.syllabusCourses = data;
+              this.syllabusLoaded = true;
+              console.log(`[CoursePlanApp] Successfully loaded ${data.length} syllabus courses from ${p}`);
+              if (this.viewMode === 'form') {
+                this.refreshSyllabusCourseDropdown();
+              }
+              return data;
+            }
+          }
+        }
       } catch (err) {
-        console.warn('Could not load syllabus_master.json', err);
-        this.syllabusCourses = [];
+        console.warn(`[CoursePlanApp] Failed loading syllabus from ${p}:`, err);
       }
+    }
+  }
+
+  refreshSyllabusCourseDropdown() {
+    const selectEl = document.getElementById('cp-course-select');
+    if (!selectEl) return;
+    const relevantCourses = this.getRelevantSyllabusCourses();
+    const curVal = selectEl.value || (this.activePlan && this.activePlan.course_code) || '';
+
+    let html = `<option value="">-- Choose Course to Auto-Fill Details (${relevantCourses.length} available) --</option>`;
+    relevantCourses.forEach(c => {
+      const isSel = (c.course_code === curVal) ? 'selected' : '';
+      html += `<option value="${this.escapeHtml(c.course_code)}" ${isSel}>
+        ${this.escapeHtml(c.course_code)} - ${this.escapeHtml(c.course_title)} (${c.credits || 3} Credits, ${c.hours || 4}h/wk)
+      </option>`;
+    });
+    selectEl.innerHTML = html;
+
+    const badge = selectEl.closest('.bg-indigo-50\\/70')?.querySelector('.bg-indigo-600') || selectEl.parentElement?.querySelector('.bg-indigo-600');
+    if (badge) {
+      const semNum = this.getSemesterNum(this.activePlan ? this.activePlan.semester : 'II');
+      badge.textContent = `${relevantCourses.length} courses in Semester ${semNum}`;
     }
   }
 
@@ -327,13 +387,26 @@ class CoursePlanApp {
     const sd = selectedDept.toLowerCase().trim();
     if (cd === sd) return true;
     if (cd.includes(sd) || sd.includes(cd)) return true;
-    const isSdSa = (s) => (s.includes('b.voc') || s.includes('bvoc') || s.includes('software')) && (s.includes('sd') || s.includes('sa') || s.includes('software') || s.includes('uss'));
-    if (isSdSa(cd) && isSdSa(sd)) return true;
-    if (sd.includes('counselling') && cd.includes('counselling')) return true;
-    if (sd.includes('visual') && cd.includes('visual')) return true;
-    if (sd.includes('human resource') && cd.includes('hrm')) return true;
-    if (sd.includes('hrm') && cd.includes('human resource')) return true;
-    if (sd.includes('human excellence') && cd.includes('human excellence')) return true;
+
+    // Normalization (strip punctuation, dots, dashes, underscores, and normalize &)
+    const norm = (s) => (s || '').toLowerCase().replace(/[_\.\-]/g, ' ').replace(/&amp;/g, 'and').replace(/&/g, 'and').replace(/\s+/g, ' ').trim();
+    const ncd = norm(courseDept);
+    const nsd = norm(selectedDept);
+    if (ncd === nsd || ncd.includes(nsd) || nsd.includes(ncd)) return true;
+
+    // Robust B.Voc SD & SA matching
+    const isSdSa = (s) => (s.includes('voc') || s.includes('software') || s.includes('uss')) && 
+                          (s.includes('sd') || s.includes('sa') || s.includes('software') || s.includes('uss') || s.includes('system'));
+    if (isSdSa(ncd) && isSdSa(nsd)) return true;
+
+    if (nsd.includes('counselling') && ncd.includes('counselling')) return true;
+    if (nsd.includes('visual') && ncd.includes('visual')) return true;
+    if ((nsd.includes('human resource') || nsd.includes('hrm')) && (ncd.includes('human resource') || ncd.includes('hrm'))) return true;
+    if (nsd.includes('human excellence') && ncd.includes('human excellence')) return true;
+    if (nsd.includes('physical education') && ncd.includes('physical education')) return true;
+    if (nsd.includes('data science') && ncd.includes('data science')) return true;
+    if (nsd.includes('artificial intelligence') && (ncd.includes('artificial intelligence') || ncd.includes('ai'))) return true;
+
     return false;
   }
 
@@ -345,8 +418,11 @@ class CoursePlanApp {
     const semNum = this.getSemesterNum(sem);
 
     return this.syllabusCourses.filter(c => {
-      // 1. Department match
-      if (!this.isDeptMatch(c.department, dept)) return false;
+      // 1. Department match: for B.Voc SD & SA, any course having 'USS' matches directly
+      const dLower = (dept || '').toLowerCase();
+      const isBVocDept = dLower.includes('voc') || dLower.includes('sd') || dLower.includes('sa') || dLower.includes('software') || dLower.includes('uss');
+      const deptMatches = isBVocDept ? (c.course_code && c.course_code.includes('USS')) : this.isDeptMatch(c.department, dept);
+      if (!deptMatches) return false;
 
       // 2. Semester filtering (only show courses for corresponding semester II, IV, or VI)
       if (c.semester_num && c.semester_num !== semNum) return false;
@@ -358,8 +434,6 @@ class CoursePlanApp {
       } else if (prog && dept === 'Information Technology') {
         if (prog.includes('M.Sc') && !c.course_code.includes('PCS')) return false;
         if ((prog.includes('BCA') || prog.includes('B.C.A')) && !c.course_code.includes('UBC')) return false;
-      } else if (dept.includes('B.Voc SD & SA') || dept.toLowerCase().includes('sd & sa') || dept.toLowerCase().includes('software')) {
-        if (!c.course_code.includes('USS')) return false;
       }
 
       return true;
@@ -1968,7 +2042,7 @@ class CoursePlanApp {
       const json = await res.json();
       if (json.success && json.authenticated) {
         this.currentUser = json.user;
-        if (this.currentUser.role === 'hod' && this.currentUser.department_name) {
+        if (this.currentUser.department_name) {
           this.selectedDept = this.currentUser.department_name;
         }
       } else {
@@ -6198,14 +6272,18 @@ class CoursePlanApp {
 
   createDefaultPlan() {
     const isFaculty = this.currentUser && this.currentUser.role === 'faculty';
+    const curDept = isFaculty ? this.currentUser.department_name : this.selectedDept;
+    const progs = this.getDepartmentProgrammes(curDept);
+    const defaultProg = (progs && progs.length > 0) ? progs[0] : '';
+    const defaultYc = (defaultProg.startsWith('M.') || defaultProg.includes('MCA') || defaultProg.includes('Master')) ? 'I PG' : 'I UG';
     const p = {
       id: null,
-      department_name: isFaculty ? this.currentUser.department_name : this.selectedDept,
+      department_name: curDept,
       faculty_name: isFaculty ? this.currentUser.faculty_name : '',
       faculty_email: isFaculty ? (this.currentUser.faculty_email || '') : '',
-      programme: '',
-      year_class: '',
-      section: '',
+      programme: defaultProg,
+      year_class: defaultYc,
+      section: 'N/A',
       semester: 'II',
       academic_year: '2026 - 2027',
       course_code: '',
