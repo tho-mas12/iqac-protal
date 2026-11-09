@@ -425,6 +425,161 @@ try {
         exit;
     }
 
+    // ================= 7. SAVE / UPDATE TL PRACTICES & E-CONTENT =================
+    if ($action === 'save_tl_practices' && $method === 'POST') {
+        $raw = file_get_contents('php://input');
+        $data = json_decode($raw, true);
+
+        if (!$data) {
+            echo json_encode(['success' => false, 'error' => 'Invalid JSON payload']);
+            exit;
+        }
+
+        $id = isset($data['id']) && $data['id'] ? (int)$data['id'] : null;
+        $facultyName = isset($data['faculty_name']) ? trim($data['faculty_name']) : '';
+        $facultyEmail = isset($data['faculty_email']) ? trim($data['faculty_email']) : '';
+        $deptName = isset($data['department_name']) ? trim($data['department_name']) : '';
+        $academicYear = isset($data['academic_year']) ? trim($data['academic_year']) : '2026 - 2027';
+        $semester = isset($data['semester']) ? trim($data['semester']) : 'ODD Sem 2026 - 2027';
+
+        if (!$facultyName || !$deptName) {
+            echo json_encode(['success' => false, 'error' => 'Faculty Name and Department are required']);
+            exit;
+        }
+
+        $tl1 = isset($data['tl_practice_1']) ? json_encode($data['tl_practice_1'], JSON_UNESCAPED_UNICODE) : null;
+        $tl2 = isset($data['tl_practice_2']) ? json_encode($data['tl_practice_2'], JSON_UNESCAPED_UNICODE) : null;
+        $ass1 = isset($data['assessment_practice_1']) ? json_encode($data['assessment_practice_1'], JSON_UNESCAPED_UNICODE) : null;
+        $ass2 = isset($data['assessment_practice_2']) ? json_encode($data['assessment_practice_2'], JSON_UNESCAPED_UNICODE) : null;
+        $econtent = isset($data['econtent']) ? json_encode($data['econtent'], JSON_UNESCAPED_UNICODE) : null;
+        $status = isset($data['status']) ? trim($data['status']) : 'Submitted';
+
+        if ($id) {
+            $stmt = $pdo->prepare("
+                UPDATE course_plan_tl_practices SET
+                    faculty_name = :faculty,
+                    faculty_email = :email,
+                    department_name = :dept,
+                    academic_year = :acad_year,
+                    semester = :semester,
+                    tl_practice_1 = :tl1,
+                    tl_practice_2 = :tl2,
+                    assessment_practice_1 = :ass1,
+                    assessment_practice_2 = :ass2,
+                    econtent = :econtent,
+                    status = :status,
+                    updated_at = NOW()
+                WHERE id = :id
+            ");
+            $stmt->execute([
+                ':faculty' => $facultyName,
+                ':email' => $facultyEmail,
+                ':dept' => $deptName,
+                ':acad_year' => $academicYear,
+                ':semester' => $semester,
+                ':tl1' => $tl1,
+                ':tl2' => $tl2,
+                ':ass1' => $ass1,
+                ':ass2' => $ass2,
+                ':econtent' => $econtent,
+                ':status' => $status,
+                ':id' => $id
+            ]);
+            $savedId = $id;
+        } else {
+            $stmt = $pdo->prepare("
+                INSERT INTO course_plan_tl_practices (
+                    faculty_name, faculty_email, department_name, academic_year, semester,
+                    tl_practice_1, tl_practice_2, assessment_practice_1, assessment_practice_2,
+                    econtent, status
+                ) VALUES (
+                    :faculty, :email, :dept, :acad_year, :semester,
+                    :tl1, :tl2, :ass1, :ass2,
+                    :econtent, :status
+                )
+            ");
+            $stmt->execute([
+                ':faculty' => $facultyName,
+                ':email' => $facultyEmail,
+                ':dept' => $deptName,
+                ':acad_year' => $academicYear,
+                ':semester' => $semester,
+                ':tl1' => $tl1,
+                ':tl2' => $tl2,
+                ':ass1' => $ass1,
+                ':ass2' => $ass2,
+                ':econtent' => $econtent,
+                ':status' => $status
+            ]);
+            $savedId = (int)$pdo->lastInsertId();
+        }
+
+        echo json_encode([
+            'success' => true,
+            'id' => $savedId,
+            'message' => 'Teaching-Learning Practices, Assessment Components & E-Content saved successfully!'
+        ]);
+        exit;
+    }
+
+    // ================= 8. GET TL PRACTICES (BY ID OR FACULTY) =================
+    if ($action === 'get_tl_practices' && $method === 'GET') {
+        $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+        $faculty = isset($_GET['faculty_name']) ? trim($_GET['faculty_name']) : '';
+        $dept = isset($_GET['department_name']) ? trim($_GET['department_name']) : '';
+
+        $currentUser = isset($_SESSION['cp_user']) ? $_SESSION['cp_user'] : null;
+        if (!$faculty && $currentUser && $currentUser['role'] === 'faculty') {
+            $faculty = $currentUser['faculty_name'];
+            $dept = $currentUser['department_name'];
+        }
+
+        if ($id > 0) {
+            $stmt = $pdo->prepare("SELECT * FROM course_plan_tl_practices WHERE id = :id LIMIT 1");
+            $stmt->execute([':id' => $id]);
+        } else if ($faculty && $dept) {
+            $stmt = $pdo->prepare("SELECT * FROM course_plan_tl_practices WHERE faculty_name = :faculty AND department_name = :dept ORDER BY id DESC LIMIT 1");
+            $stmt->execute([':faculty' => $faculty, ':dept' => $dept]);
+        } else if ($faculty) {
+            $stmt = $pdo->prepare("SELECT * FROM course_plan_tl_practices WHERE faculty_name = :faculty ORDER BY id DESC LIMIT 1");
+            $stmt->execute([':faculty' => $faculty]);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Please provide id or faculty_name']);
+            exit;
+        }
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row) {
+            $jsonCols = ['tl_practice_1', 'tl_practice_2', 'assessment_practice_1', 'assessment_practice_2', 'econtent'];
+            foreach ($jsonCols as $col) {
+                if (isset($row[$col]) && $row[$col] !== null) {
+                    $row[$col] = json_decode($row[$col], true);
+                }
+            }
+        }
+
+        echo json_encode(['success' => true, 'data' => $row ?: null]);
+        exit;
+    }
+
+    // ================= 9. LIST ALL TL PRACTICES (FOR ADMIN / HOD) =================
+    if ($action === 'list_tl_practices' && $method === 'GET') {
+        $dept = isset($_GET['department']) ? trim($_GET['department']) : '';
+        $sql = "SELECT id, faculty_name, faculty_email, department_name, academic_year, semester, status, created_at, updated_at FROM course_plan_tl_practices WHERE 1=1";
+        $params = [];
+        if ($dept && $dept !== 'All Departments') {
+            $sql .= " AND department_name = :dept";
+            $params[':dept'] = $dept;
+        }
+        $sql .= " ORDER BY updated_at DESC";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+        $list = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        echo json_encode(['success' => true, 'data' => $list]);
+        exit;
+    }
+
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);

@@ -62,6 +62,56 @@ class CoursePlanApp {
     'Other:'
   ];
 
+  static TL_APPROACHES = [
+    'Lecture-based Learning',
+    'Experiential Learning',
+    'Problem-Based Learning (PBL)',
+    'Case - Based Learning',
+    'Collaborative & Cooperative Learning',
+    'Flipped Classroom',
+    'Inquiry-Based Learning',
+    'Socratic Dialogue / Critical Pedagogy',
+    'Project-Based Learning',
+    'Service Learning',
+    'Studio / Workshop-Based Learning',
+    'Role Play and Dramatization',
+    'Peer Teaching and Evaluation',
+    'Differentiated Instruction',
+    'Data-Driven Instruction',
+    'Other'
+  ];
+
+  static TL_ASSESSMENT_COMPONENTS = [
+    'Quizzes (MCQs, Short Answer)',
+    'Class Polls / Clicker Questions',
+    'Reflective Journals / Learning Logs',
+    'Think-Pair-Share',
+    'Concept Maps',
+    'Exit Tickets / Minute Papers',
+    'In-class Exercises / Problem-solving',
+    'Group Discussions / Seminars',
+    'Draft Submissions',
+    'End-Semester Exams',
+    'Mid-Semester Tests',
+    'Term Papers / Essays',
+    'Projects (Individual/Group)',
+    'Lab Reports / Practical Exams',
+    'Presentations / Viva Voce',
+    'Capstone Projects / Theses',
+    'Case Study Analysis',
+    'Portfolios (Print or Digital)',
+    'Open-Book Exams',
+    'Peer Assessment',
+    'Self-Assessment',
+    'Role Plays / Simulations',
+    'Infographics / Visual Projects',
+    'Blogs / Podcasts / Digital Narratives',
+    'Community-Based Learning Reports',
+    'Gamified Assessments / Interactive Quests',
+    'Other'
+  ];
+
+
   constructor() {
     this.departments = [];
     this.selectedDept = localStorage.getItem('CP_SELECTED_DEPT') || 'Computer Science';
@@ -2609,6 +2659,15 @@ class CoursePlanApp {
             </button>
             <button 
               type="button" 
+              onclick="coursePlanApp.openTLPracticesModal()" 
+              class="px-5 py-3 bg-gradient-to-r from-indigo-700 via-indigo-600 to-indigo-800 hover:from-indigo-600 hover:to-indigo-700 text-white font-extrabold rounded-2xl text-xs sm:text-sm transition shadow-lg shadow-indigo-950/40 flex items-center gap-2 cursor-pointer border border-indigo-400/40 active:scale-95"
+              title="Open Teaching-Learning Practices, Assessment Components & E-Content planned form"
+            >
+              <i data-lucide="sparkles" class="w-4 h-4 text-amber-300"></i>
+              <span>TL Practices, Assessment Components, E-Content</span>
+            </button>
+            <button 
+              type="button" 
               onclick="coursePlanApp.logout()" 
               class="px-4 py-3 bg-white/10 hover:bg-white/20 text-white font-bold rounded-2xl text-xs transition border border-white/20 flex items-center gap-1.5 cursor-pointer"
             >
@@ -2655,7 +2714,16 @@ class CoursePlanApp {
               </p>
             </div>
 
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2.5 flex-wrap">
+              <button 
+                type="button" 
+                onclick="coursePlanApp.openTLPracticesModal()" 
+                class="px-3.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer border border-indigo-200 shadow-2xs"
+                title="Teaching-Learning Practices, Assessment Components & E-Content planned"
+              >
+                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-indigo-600"></i>
+                <span>TL Practices, Assessment Components, E-Content</span>
+              </button>
               <button 
                 type="button" 
                 onclick="coursePlanApp.fetchPlans().then(() => coursePlanApp.render())" 
@@ -7239,6 +7307,855 @@ class CoursePlanApp {
       console.error(e);
       alert('Network or server error during sign in.');
     }
+  }
+
+
+  // ================= TL PRACTICES, ASSESSMENT COMPONENTS & E-CONTENT =================
+  getFacultyPlannedCourses() {
+    const plans = (this.plans || []).filter(p => p.course_code && p.course_title);
+    const seen = new Set();
+    const list = [];
+    for (const p of plans) {
+      const code = (p.course_code || '').trim();
+      const title = (p.course_title || '').trim();
+      const key = `${code} - ${title}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        list.push({
+          code: code,
+          title: title,
+          key: key,
+          classSection: p.year_class || p.programme || '',
+          semester: p.semester || ''
+        });
+      }
+    }
+    return list;
+  }
+
+  renderTLCourseSelect(fieldId, targetClassInputId, selectedValue = '') {
+    const courses = this.getFacultyPlannedCourses();
+    let optionsHtml = `<option value="">-- Select Planned Course --</option>`;
+    
+    if (courses.length === 0) {
+      optionsHtml += `<option value="" disabled>No planned courses found (Create a Course Plan first)</option>`;
+    } else {
+      courses.forEach(c => {
+        const isSel = (selectedValue && selectedValue.trim().toLowerCase() === c.key.trim().toLowerCase()) ? 'selected' : '';
+        const label = `${c.code} - ${c.title}${c.classSection ? ` (${c.classSection})` : ''}`;
+        optionsHtml += `<option value="${this.escapeHtml(c.key)}" data-class="${this.escapeHtml(c.classSection)}" ${isSel}>${this.escapeHtml(label)}</option>`;
+      });
+    }
+    
+    const isCustom = selectedValue && !courses.some(c => c.key.trim().toLowerCase() === selectedValue.trim().toLowerCase());
+    optionsHtml += `<option value="__custom__" ${isCustom ? 'selected' : ''}>➕ Enter another course manually...</option>`;
+
+    return `
+      <div class="space-y-1.5">
+        <select 
+          id="${fieldId}" 
+          onchange="coursePlanApp.onTLCourseSelect('${fieldId}', '${targetClassInputId}', this)" 
+          class="w-full px-3 py-2 text-xs font-semibold bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-800 shadow-2xs cursor-pointer"
+        >
+          ${optionsHtml}
+        </select>
+        <input 
+          type="text" 
+          id="${fieldId}_custom" 
+          value="${isCustom ? this.escapeHtml(selectedValue) : ''}" 
+          placeholder="Type Course Code & Title (e.g. 25USS230203 - Object Oriented Programming)" 
+          class="w-full px-3 py-2 text-xs font-medium bg-amber-50/50 border border-amber-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-amber-500 transition text-slate-800 ${isCustom ? '' : 'hidden'}"
+        />
+      </div>
+    `;
+  }
+
+  onTLCourseSelect(fieldId, targetClassInputId, selectEl) {
+    const val = selectEl.value;
+    const customInput = document.getElementById(`${fieldId}_custom`);
+    if (val === '__custom__') {
+      if (customInput) {
+        customInput.classList.remove('hidden');
+        customInput.focus();
+      }
+    } else {
+      if (customInput) customInput.classList.add('hidden');
+      if (targetClassInputId) {
+        const targetEl = document.getElementById(targetClassInputId);
+        const selectedOption = selectEl.options[selectEl.selectedIndex];
+        const classData = selectedOption ? selectedOption.getAttribute('data-class') : '';
+        if (targetEl && classData) {
+          targetEl.value = classData;
+        }
+      }
+    }
+  }
+
+  renderTLSelectWithOptions(fieldId, optionsList, otherInputId, selectedValue = '') {
+    let hasCustomVal = false;
+    let isStandard = optionsList.some(o => o.toLowerCase().trim() === (selectedValue || '').toLowerCase().trim());
+    if (selectedValue && !isStandard) {
+      hasCustomVal = true;
+    }
+    
+    let html = `<option value="">-- Select Option --</option>`;
+    optionsList.forEach(opt => {
+      let isSel = false;
+      if (opt === 'Other') {
+        isSel = hasCustomVal || selectedValue === 'Other';
+      } else {
+        isSel = (selectedValue || '').toLowerCase().trim() === opt.toLowerCase().trim();
+      }
+      html += `<option value="${this.escapeHtml(opt)}" ${isSel ? 'selected' : ''}>${this.escapeHtml(opt)}</option>`;
+    });
+
+    const customText = hasCustomVal ? selectedValue : '';
+
+    return `
+      <div class="space-y-1.5">
+        <select 
+          id="${fieldId}" 
+          onchange="coursePlanApp.onTLSelectChange(this, '${otherInputId}')" 
+          class="w-full px-3 py-2 text-xs font-semibold bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-800 shadow-2xs cursor-pointer"
+        >
+          ${html}
+        </select>
+        <input 
+          type="text" 
+          id="${otherInputId}" 
+          value="${this.escapeHtml(customText)}" 
+          placeholder="Please specify..." 
+          class="w-full px-3 py-2 text-xs font-medium bg-amber-50/50 border border-amber-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-amber-500 transition text-slate-800 ${(hasCustomVal || selectedValue === 'Other') ? '' : 'hidden'}"
+        />
+      </div>
+    `;
+  }
+
+  onTLSelectChange(selectEl, otherInputId) {
+    const otherInput = document.getElementById(otherInputId);
+    if (!otherInput) return;
+    if (selectEl.value === 'Other') {
+      otherInput.classList.remove('hidden');
+      otherInput.focus();
+    } else {
+      otherInput.classList.add('hidden');
+    }
+  }
+
+  async openTLPracticesModal() {
+    const user = this.currentUser || {};
+    const facultyName = user.faculty_name || user.display_name || '';
+    const deptName = user.department_name || this.selectedDept || '';
+
+    let existingData = null;
+    try {
+      const res = await fetch(`api/course_plan.php?action=get_tl_practices&faculty_name=${encodeURIComponent(facultyName)}&department_name=${encodeURIComponent(deptName)}`);
+      const json = await res.json();
+      if (json.success && json.data) {
+        existingData = json.data;
+      }
+    } catch (e) {
+      console.warn('Could not fetch existing TL practices:', e);
+    }
+
+    const d = existingData || {};
+    const tl1 = d.tl_practice_1 || {};
+    const tl2 = d.tl_practice_2 || {};
+    const ass1 = d.assessment_practice_1 || {};
+    const ass2 = d.assessment_practice_2 || {};
+    const ec = d.econtent || {};
+
+    document.getElementById('tl-practices-modal')?.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'tl-practices-modal';
+    modal.className = 'fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 animate-fadeIn';
+
+    modal.innerHTML = `
+      <div class="bg-white rounded-3xl max-w-5xl w-full max-h-[94vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden" onclick="event.stopPropagation()">
+        
+        <!-- Header -->
+        <div class="p-5 sm:p-6 bg-gradient-to-r from-indigo-900 via-blue-900 to-indigo-950 text-white flex items-start justify-between gap-4 shrink-0 shadow-md">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2 flex-wrap mb-1">
+              <span class="font-bold text-[10px] sm:text-xs px-2.5 py-0.5 rounded-full bg-amber-400 text-indigo-950 uppercase tracking-wider shadow-xs">
+                IQAC Quality Initiative
+              </span>
+              <span class="text-xs text-indigo-200 font-semibold">
+                ODD Sem 2026 - 2027
+              </span>
+              ${d.id ? `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 flex items-center gap-1"><i data-lucide="check" class="w-3 h-3"></i> Previously Submitted (#${d.id})</span>` : ''}
+            </div>
+            <h2 class="text-lg sm:text-xl font-black tracking-tight text-white flex items-center gap-2">
+              <i data-lucide="sparkles" class="w-5 h-5 text-amber-300"></i>
+              <span>Teaching - Learning Practices, Assessment Components &amp; E - Contents Planned</span>
+            </h2>
+            <p class="text-xs text-indigo-200 max-w-3xl leading-relaxed font-medium">
+              St. Joseph's College (Autonomous), Tiruchirappalli • Internal Quality Assurance Cell (IQAC). Document your planned pedagogical approaches, continuous assessment components, and 4-quadrant e-content.
+            </p>
+          </div>
+
+          <button 
+            type="button" 
+            onclick="coursePlanApp.closeTLPracticesModal()" 
+            class="p-2 text-indigo-200 hover:text-white hover:bg-white/10 rounded-2xl transition cursor-pointer shrink-0"
+            title="Close Form"
+          >
+            <i data-lucide="x" class="w-6 h-6"></i>
+          </button>
+        </div>
+
+        <!-- Form Body (Scrollable) -->
+        <form id="tl-practices-form" onsubmit="coursePlanApp.saveTLPracticesForm(event)" class="flex-1 overflow-y-auto p-4 sm:p-7 space-y-6 bg-slate-50/70">
+          <input type="hidden" id="tl_id" value="${d.id || ''}" />
+
+          <!-- Card 1: Faculty Information -->
+          <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-2xs space-y-4">
+            <div class="flex items-center gap-2 text-slate-800 font-black text-xs sm:text-sm border-b border-slate-100 pb-3">
+              <i data-lucide="user-check" class="w-4 h-4 text-indigo-600"></i>
+              <span>Faculty &amp; Department Information</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">
+                  Name of the Faculty <span class="text-rose-500">*</span>
+                </label>
+                <input 
+                  type="text" 
+                  id="tl_fac_name" 
+                  value="${this.escapeHtml(d.faculty_name || facultyName)}" 
+                  required 
+                  class="w-full px-3.5 py-2 text-xs font-bold bg-slate-100 border border-slate-300 rounded-xl text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 transition"
+                />
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">
+                  Department <span class="text-rose-500">*</span>
+                </label>
+                <input 
+                  type="text" 
+                  id="tl_dept_name" 
+                  value="${this.escapeHtml(d.department_name || deptName)}" 
+                  required 
+                  class="w-full px-3.5 py-2 text-xs font-bold bg-slate-100 border border-slate-300 rounded-xl text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 transition"
+                />
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">
+                  Institutional E-mail ID <span class="text-rose-500">*</span>
+                </label>
+                <input 
+                  type="email" 
+                  id="tl_fac_email" 
+                  value="${this.escapeHtml(d.faculty_email || user.faculty_email || user.username || '')}" 
+                  placeholder="e.g. yourname@sjctni.edu" 
+                  required 
+                  class="w-full px-3.5 py-2 text-xs font-semibold bg-white border border-slate-300 rounded-xl text-slate-800 focus:ring-2 focus:ring-indigo-500 transition"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Section A: Teaching - Learning Practices -->
+          <div class="bg-white p-5 sm:p-6 rounded-2xl border border-blue-200/80 shadow-2xs space-y-5">
+            <div class="flex items-center justify-between border-b border-blue-100 pb-3 flex-wrap gap-2">
+              <div class="flex items-center gap-2">
+                <span class="w-6 h-6 rounded-lg bg-blue-600 text-white font-black text-xs flex items-center justify-center">A</span>
+                <h3 class="text-sm font-black text-slate-900">Section A: Teaching - Learning Practices</h3>
+              </div>
+              <span class="text-[11px] font-semibold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200">
+                Course dropdown displays only your planned courses
+              </span>
+            </div>
+
+            <!-- Practice 1 -->
+            <div class="p-4 sm:p-5 rounded-2xl bg-blue-50/40 border border-blue-100 space-y-3">
+              <div class="flex items-center gap-2 font-black text-xs text-blue-900">
+                <i data-lucide="bookmark" class="w-3.5 h-3.5 text-blue-600"></i>
+                <span>Practice – 1</span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Course Code - Course Title <span class="text-rose-500">*</span>
+                  </label>
+                  ${this.renderTLCourseSelect('tl_a1_course', 'tl_a1_class', tl1.course_code_title || '')}
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Class with section <span class="text-rose-500">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    id="tl_a1_class" 
+                    value="${this.escapeHtml(tl1.class_section || '')}" 
+                    placeholder="e.g. I B.Voc Software Development 'A'" 
+                    required 
+                    class="w-full px-3 py-2 text-xs font-semibold bg-white border border-slate-300 rounded-xl text-slate-800 focus:ring-2 focus:ring-indigo-500 transition shadow-2xs"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Teaching Method / Strategy <span class="text-rose-500">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    id="tl_a1_method" 
+                    value="${this.escapeHtml(tl1.teaching_method || '')}" 
+                    placeholder="e.g. Flipped Classroom, Think-Pair-Share, Live coding demos" 
+                    required 
+                    class="w-full px-3 py-2 text-xs font-semibold bg-white border border-slate-300 rounded-xl text-slate-800 focus:ring-2 focus:ring-indigo-500 transition shadow-2xs"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Approach <span class="text-rose-500">*</span>
+                  </label>
+                  ${this.renderTLSelectWithOptions('tl_a1_approach', CoursePlanApp.TL_APPROACHES, 'tl_a1_approach_other', tl1.approach || '')}
+                </div>
+              </div>
+            </div>
+
+            <!-- Practice 2 -->
+            <div class="p-4 sm:p-5 rounded-2xl bg-blue-50/40 border border-blue-100 space-y-3">
+              <div class="flex items-center gap-2 font-black text-xs text-blue-900">
+                <i data-lucide="bookmark" class="w-3.5 h-3.5 text-blue-600"></i>
+                <span>Practice – 2</span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Course Code - Course Title
+                  </label>
+                  ${this.renderTLCourseSelect('tl_a2_course', 'tl_a2_class', tl2.course_code_title || '')}
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Class with section
+                  </label>
+                  <input 
+                    type="text" 
+                    id="tl_a2_class" 
+                    value="${this.escapeHtml(tl2.class_section || '')}" 
+                    placeholder="e.g. II B.Voc Software Development" 
+                    class="w-full px-3 py-2 text-xs font-semibold bg-white border border-slate-300 rounded-xl text-slate-800 focus:ring-2 focus:ring-indigo-500 transition shadow-2xs"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Teaching Method / Strategy
+                  </label>
+                  <input 
+                    type="text" 
+                    id="tl_a2_method" 
+                    value="${this.escapeHtml(tl2.teaching_method || '')}" 
+                    placeholder="e.g. Case-based discussions, Industry problem solving" 
+                    class="w-full px-3 py-2 text-xs font-semibold bg-white border border-slate-300 rounded-xl text-slate-800 focus:ring-2 focus:ring-indigo-500 transition shadow-2xs"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Approach
+                  </label>
+                  ${this.renderTLSelectWithOptions('tl_a2_approach', CoursePlanApp.TL_APPROACHES, 'tl_a2_approach_other', tl2.approach || '')}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Section B: Assessment Components -->
+          <div class="bg-white p-5 sm:p-6 rounded-2xl border border-purple-200/80 shadow-2xs space-y-5">
+            <div class="flex items-center justify-between border-b border-purple-100 pb-3 flex-wrap gap-2">
+              <div class="flex items-center gap-2">
+                <span class="w-6 h-6 rounded-lg bg-purple-600 text-white font-black text-xs flex items-center justify-center">B</span>
+                <h3 class="text-sm font-black text-slate-900">Section B: Assessment Components</h3>
+              </div>
+              <span class="text-[11px] font-semibold text-purple-700 bg-purple-50 px-2.5 py-1 rounded-full border border-purple-200">
+                Formative &amp; Continuous Assessment Components
+              </span>
+            </div>
+
+            <!-- Assessment Practice 1 -->
+            <div class="p-4 sm:p-5 rounded-2xl bg-purple-50/40 border border-purple-100 space-y-3">
+              <div class="flex items-center gap-2 font-black text-xs text-purple-900">
+                <i data-lucide="check-circle" class="w-3.5 h-3.5 text-purple-600"></i>
+                <span>Practice – 1</span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Course Code - Course Title <span class="text-rose-500">*</span>
+                  </label>
+                  ${this.renderTLCourseSelect('tl_b1_course', 'tl_b1_class', ass1.course_code_title || '')}
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Class with section <span class="text-rose-500">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    id="tl_b1_class" 
+                    value="${this.escapeHtml(ass1.class_section || '')}" 
+                    placeholder="e.g. I B.Voc Software Development" 
+                    required 
+                    class="w-full px-3 py-2 text-xs font-semibold bg-white border border-slate-300 rounded-xl text-slate-800 focus:ring-2 focus:ring-indigo-500 transition shadow-2xs"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Component <span class="text-rose-500">*</span>
+                  </label>
+                  ${this.renderTLSelectWithOptions('tl_b1_comp', CoursePlanApp.TL_ASSESSMENT_COMPONENTS, 'tl_b1_comp_other', ass1.component || '')}
+                </div>
+              </div>
+            </div>
+
+            <!-- Assessment Practice 2 -->
+            <div class="p-4 sm:p-5 rounded-2xl bg-purple-50/40 border border-purple-100 space-y-3">
+              <div class="flex items-center gap-2 font-black text-xs text-purple-900">
+                <i data-lucide="check-circle" class="w-3.5 h-3.5 text-purple-600"></i>
+                <span>Practice – 2</span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Course Code - Course Title
+                  </label>
+                  ${this.renderTLCourseSelect('tl_b2_course', 'tl_b2_class', ass2.course_code_title || '')}
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Class
+                  </label>
+                  <input 
+                    type="text" 
+                    id="tl_b2_class" 
+                    value="${this.escapeHtml(ass2.class_section || '')}" 
+                    placeholder="e.g. II B.Voc Software Development" 
+                    class="w-full px-3 py-2 text-xs font-semibold bg-white border border-slate-300 rounded-xl text-slate-800 focus:ring-2 focus:ring-indigo-500 transition shadow-2xs"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Component
+                  </label>
+                  ${this.renderTLSelectWithOptions('tl_b2_comp', CoursePlanApp.TL_ASSESSMENT_COMPONENTS, 'tl_b2_comp_other', ass2.component || '')}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: Section C: E - Content (4 Quadrant Approach) -->
+          <div class="bg-white p-5 sm:p-6 rounded-2xl border border-emerald-200/80 shadow-2xs space-y-4">
+            <div class="flex items-center justify-between border-b border-emerald-100 pb-3 flex-wrap gap-2">
+              <div class="flex items-center gap-2">
+                <span class="w-6 h-6 rounded-lg bg-emerald-600 text-white font-black text-xs flex items-center justify-center">C</span>
+                <h3 class="text-sm font-black text-slate-900">Section C: E - Content (4 Quadrant Approach)</h3>
+              </div>
+              <span class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                Quadrants: e-Tutorial, e-Content/Text, Self-Assessment, Discussion
+              </span>
+            </div>
+
+            <div class="p-4 sm:p-5 rounded-2xl bg-emerald-50/40 border border-emerald-100 space-y-3">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Course Code - Course Title <span class="text-rose-500">*</span>
+                  </label>
+                  ${this.renderTLCourseSelect('tl_c_course', '', ec.course_code_title || '')}
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Unit <span class="text-rose-500">*</span>
+                  </label>
+                  <select 
+                    id="tl_c_unit" 
+                    class="w-full px-3 py-2 text-xs font-semibold bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 transition text-slate-800 shadow-2xs cursor-pointer"
+                  >
+                    <option value="">-- Select Unit --</option>
+                    ${['I', 'II', 'III', 'IV', 'V'].map(u => `<option value="${u}" ${(ec.unit === u) ? 'selected' : ''}>Unit ${u}</option>`).join('')}
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    E-Content Topic <span class="text-rose-500">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    id="tl_c_topic" 
+                    value="${this.escapeHtml(ec.topic || '')}" 
+                    placeholder="e.g. Object-Oriented Polymorphism, Virtual Functions & Templates" 
+                    required 
+                    class="w-full px-3 py-2 text-xs font-semibold bg-white border border-slate-300 rounded-xl text-slate-800 focus:ring-2 focus:ring-indigo-500 transition shadow-2xs"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="tl-modal-feedback" class="hidden"></div>
+        </form>
+
+        <!-- Footer -->
+        <div class="p-4 sm:p-5 bg-white border-t border-slate-200 flex flex-wrap items-center justify-between gap-3 shrink-0">
+          <button 
+            type="button" 
+            onclick="coursePlanApp.printTLPracticesSummary()" 
+            class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center gap-1.5 cursor-pointer border border-slate-200"
+            title="Print or preview a clean institutional summary"
+          >
+            <i data-lucide="printer" class="w-4 h-4 text-slate-500"></i>
+            <span>Print Summary</span>
+          </button>
+
+          <div class="flex items-center gap-3">
+            <button 
+              type="button" 
+              onclick="coursePlanApp.closeTLPracticesModal()" 
+              class="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs transition border border-slate-300 cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button 
+              type="submit" 
+              form="tl-practices-form" 
+              id="tl-submit-btn" 
+              class="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-extrabold rounded-xl text-xs sm:text-sm transition shadow-lg shadow-indigo-600/30 flex items-center gap-2 cursor-pointer active:scale-95"
+            >
+              <i data-lucide="send" class="w-4 h-4"></i>
+              <span>Save &amp; Submit Details</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
+  }
+
+  closeTLPracticesModal() {
+    document.getElementById('tl-practices-modal')?.remove();
+  }
+
+  async saveTLPracticesForm(e) {
+    e.preventDefault();
+    const btn = document.getElementById('tl-submit-btn');
+    const feedback = document.getElementById('tl-modal-feedback');
+
+    const getVal = (id) => (document.getElementById(id)?.value || '').trim();
+    const getCourseVal = (id) => {
+      const selectVal = getVal(id);
+      if (selectVal === '__custom__') {
+        return getVal(`${id}_custom`);
+      }
+      return selectVal;
+    };
+    const getOptionVal = (selectId, otherId) => {
+      const sel = getVal(selectId);
+      if (sel === 'Other') {
+        const otherVal = getVal(otherId);
+        return otherVal ? `Other: ${otherVal}` : 'Other';
+      }
+      return sel;
+    };
+
+    const id = getVal('tl_id');
+    const facName = getVal('tl_fac_name');
+    const deptName = getVal('tl_dept_name');
+    const facEmail = getVal('tl_fac_email');
+
+    const tl1 = {
+      course_code_title: getCourseVal('tl_a1_course'),
+      class_section: getVal('tl_a1_class'),
+      teaching_method: getVal('tl_a1_method'),
+      approach: getOptionVal('tl_a1_approach', 'tl_a1_approach_other')
+    };
+
+    const tl2 = {
+      course_code_title: getCourseVal('tl_a2_course'),
+      class_section: getVal('tl_a2_class'),
+      teaching_method: getVal('tl_a2_method'),
+      approach: getOptionVal('tl_a2_approach', 'tl_a2_approach_other')
+    };
+
+    const ass1 = {
+      course_code_title: getCourseVal('tl_b1_course'),
+      class_section: getVal('tl_b1_class'),
+      component: getOptionVal('tl_b1_comp', 'tl_b1_comp_other')
+    };
+
+    const ass2 = {
+      course_code_title: getCourseVal('tl_b2_course'),
+      class_section: getVal('tl_b2_class'),
+      component: getOptionVal('tl_b2_comp', 'tl_b2_comp_other')
+    };
+
+    const ec = {
+      course_code_title: getCourseVal('tl_c_course'),
+      unit: getVal('tl_c_unit'),
+      topic: getVal('tl_c_topic')
+    };
+
+    if (!tl1.course_code_title || !tl1.class_section || !tl1.teaching_method || !tl1.approach) {
+      alert('Please fill all mandatory fields for Section A (Practice 1).');
+      return;
+    }
+    if (!ass1.course_code_title || !ass1.class_section || !ass1.component) {
+      alert('Please fill all mandatory fields for Section B (Practice 1).');
+      return;
+    }
+    if (!ec.course_code_title || !ec.unit || !ec.topic) {
+      alert('Please fill all mandatory fields for Section C (E-Content).');
+      return;
+    }
+
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Submitting...`;
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    try {
+      const payload = {
+        id: id ? parseInt(id, 10) : null,
+        faculty_name: facName,
+        faculty_email: facEmail,
+        department_name: deptName,
+        academic_year: '2026 - 2027',
+        semester: 'ODD Sem 2026 - 2027',
+        tl_practice_1: tl1,
+        tl_practice_2: tl2,
+        assessment_practice_1: ass1,
+        assessment_practice_2: ass2,
+        econtent: ec,
+        status: 'Submitted'
+      };
+
+      const res = await fetch('api/course_plan.php?action=save_tl_practices', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        if (document.getElementById('tl_id')) {
+          document.getElementById('tl_id').value = data.id || '';
+        }
+        if (feedback) {
+          feedback.className = 'p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-2';
+          feedback.innerHTML = `<i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600 shrink-0"></i> <span>${data.message || 'Saved successfully!'}</span>`;
+          feedback.classList.remove('hidden');
+          if (window.lucide) window.lucide.createIcons();
+        }
+        setTimeout(() => {
+          this.closeTLPracticesModal();
+          alert('Teaching-Learning Practices, Assessment Components & E-Content submitted successfully!');
+        }, 1200);
+      } else {
+        alert(data.error || 'Failed to save submission. Please try again.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('An error occurred while saving: ' + err.message);
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> <span>Save &amp; Submit Details</span>`;
+        if (window.lucide) window.lucide.createIcons();
+      }
+    }
+  }
+
+  printTLPracticesSummary() {
+    const getVal = (id) => (document.getElementById(id)?.value || '').trim();
+    const getCourseVal = (id) => {
+      const selectVal = getVal(id);
+      return (selectVal === '__custom__') ? getVal(`${id}_custom`) : selectVal;
+    };
+    const getOptionVal = (selectId, otherId) => {
+      const sel = getVal(selectId);
+      return (sel === 'Other') ? `Other: ${getVal(otherId)}` : sel;
+    };
+
+    const facName = getVal('tl_fac_name') || (this.currentUser && this.currentUser.faculty_name) || '';
+    const deptName = getVal('tl_dept_name') || (this.currentUser && this.currentUser.department_name) || '';
+    const facEmail = getVal('tl_fac_email') || '';
+
+    const tl1Course = getCourseVal('tl_a1_course');
+    const tl1Class = getVal('tl_a1_class');
+    const tl1Method = getVal('tl_a1_method');
+    const tl1Approach = getOptionVal('tl_a1_approach', 'tl_a1_approach_other');
+
+    const tl2Course = getCourseVal('tl_a2_course');
+    const tl2Class = getVal('tl_a2_class');
+    const tl2Method = getVal('tl_a2_method');
+    const tl2Approach = getOptionVal('tl_a2_approach', 'tl_a2_approach_other');
+
+    const ass1Course = getCourseVal('tl_b1_course');
+    const ass1Class = getVal('tl_b1_class');
+    const ass1Comp = getOptionVal('tl_b1_comp', 'tl_b1_comp_other');
+
+    const ass2Course = getCourseVal('tl_b2_course');
+    const ass2Class = getVal('tl_b2_class');
+    const ass2Comp = getOptionVal('tl_b2_comp', 'tl_b2_comp_other');
+
+    const ecCourse = getCourseVal('tl_c_course');
+    const ecUnit = getVal('tl_c_unit');
+    const ecTopic = getVal('tl_c_topic');
+
+    const printWin = window.open('', '_blank', 'width=900,height=900');
+    if (!printWin) {
+      alert('Please allow popups to print the TL Practices summary.');
+      return;
+    }
+
+    printWin.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>TL Practices & Assessment Components - ${this.escapeHtml(facName)}</title>
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; margin: 30px; color: #1e293b; line-height: 1.5; font-size: 13px; }
+          .header { text-align: center; border-bottom: 2px solid #0f172a; padding-bottom: 12px; margin-bottom: 20px; }
+          .header h1 { margin: 0; font-size: 18px; color: #1e1b4b; text-transform: uppercase; }
+          .header h2 { margin: 4px 0; font-size: 14px; color: #312e81; font-weight: 700; }
+          .header p { margin: 2px 0; font-size: 12px; color: #64748b; }
+          .meta-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; margin-bottom: 20px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+          .meta-item strong { display: block; font-size: 11px; text-transform: uppercase; color: #64748b; }
+          .section-title { background: #312e81; color: white; padding: 6px 12px; font-weight: bold; font-size: 13px; border-radius: 6px; margin: 20px 0 10px 0; }
+          table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+          th, td { border: 1px solid #cbd5e1; padding: 8px 10px; text-align: left; }
+          th { background: #f1f5f9; font-weight: bold; font-size: 12px; color: #334155; }
+          .practice-head { background: #e0e7ff; font-weight: bold; color: #1e1b4b; }
+          .footer { margin-top: 40px; display: flex; justify-content: space-between; font-weight: bold; font-size: 12px; padding-top: 30px; }
+          @media print { body { margin: 15mm; } button { display: none; } }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>St. Joseph's College (Autonomous)</h1>
+          <p>Affiliated to Bharathidasan University • Tiruchirappalli - 620 002</p>
+          <h2>Teaching - Learning Practices, Assessment Components & E-Contents Planned</h2>
+          <p>Academic Year: ODD Sem 2026 - 2027 • IQAC Documentation</p>
+        </div>
+
+        <div class="meta-box">
+          <div class="meta-item"><strong>Faculty Name</strong> ${this.escapeHtml(facName)}</div>
+          <div class="meta-item"><strong>Department</strong> ${this.escapeHtml(deptName)}</div>
+          <div class="meta-item"><strong>Institutional Email</strong> ${this.escapeHtml(facEmail)}</div>
+        </div>
+
+        <div class="section-title">Section A: Teaching - Learning Practices</div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 15%;">Practice</th>
+              <th style="width: 30%;">Course Code &amp; Title</th>
+              <th style="width: 20%;">Class with Section</th>
+              <th style="width: 20%;">Teaching Method / Strategy</th>
+              <th style="width: 15%;">Approach</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="practice-head">Practice 1</td>
+              <td><strong>${this.escapeHtml(tl1Course || '—')}</strong></td>
+              <td>${this.escapeHtml(tl1Class || '—')}</td>
+              <td>${this.escapeHtml(tl1Method || '—')}</td>
+              <td>${this.escapeHtml(tl1Approach || '—')}</td>
+            </tr>
+            <tr>
+              <td class="practice-head">Practice 2</td>
+              <td><strong>${this.escapeHtml(tl2Course || '—')}</strong></td>
+              <td>${this.escapeHtml(tl2Class || '—')}</td>
+              <td>${this.escapeHtml(tl2Method || '—')}</td>
+              <td>${this.escapeHtml(tl2Approach || '—')}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="section-title">Section B: Assessment Components</div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 15%;">Practice</th>
+              <th style="width: 35%;">Course Code &amp; Title</th>
+              <th style="width: 25%;">Class with Section</th>
+              <th style="width: 25%;">Assessment Component</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="practice-head">Practice 1</td>
+              <td><strong>${this.escapeHtml(ass1Course || '—')}</strong></td>
+              <td>${this.escapeHtml(ass1Class || '—')}</td>
+              <td>${this.escapeHtml(ass1Comp || '—')}</td>
+            </tr>
+            <tr>
+              <td class="practice-head">Practice 2</td>
+              <td><strong>${this.escapeHtml(ass2Course || '—')}</strong></td>
+              <td>${this.escapeHtml(ass2Class || '—')}</td>
+              <td>${this.escapeHtml(ass2Comp || '—')}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="section-title">Section C: E-Content (4 Quadrant Approach)</div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 40%;">Course Code &amp; Title</th>
+              <th style="width: 15%;">Unit</th>
+              <th style="width: 45%;">E-Content Topic</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>${this.escapeHtml(ecCourse || '—')}</strong></td>
+              <td>Unit ${this.escapeHtml(ecUnit || '—')}</td>
+              <td>${this.escapeHtml(ecTopic || '—')}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="footer">
+          <div>Signature of the Faculty</div>
+          <div>Signature of the Head of the Department</div>
+          <div>Director / Coordinator - IQAC</div>
+        </div>
+
+        <script>
+          window.onload = function() { window.print(); };
+        </script>
+      </body>
+      </html>
+    `);
+    printWin.document.close();
   }
 
   async logout() {
