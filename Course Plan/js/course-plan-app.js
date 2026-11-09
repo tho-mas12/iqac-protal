@@ -5209,8 +5209,8 @@ class CoursePlanApp {
             <div class="space-y-3 pt-4 border-t border-slate-100">
               <div class="flex items-center justify-between">
                 <div>
-                  <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">C. Digital Resources and ICT Integration</h4>
-                  <p class="text-[11px] text-slate-500">JosTEL LMS, PPT, online quizzes, and simulation software.</p>
+                  <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">C. Digital Resources and ICT Integration <span class="text-indigo-600 font-semibold text-[11px] normal-case">(Minimum 1 row mandatory)</span></h4>
+                  <p class="text-[11px] text-slate-500">JosTEL LMS, PPT, online quizzes, and simulation software. Minimum 1 row is required.</p>
                 </div>
                 <button 
                   type="button" 
@@ -5937,25 +5937,55 @@ class CoursePlanApp {
       errors.push('Assessment Plan: Please convert at least one Learning Activity in Section A into an assessment (tick "Convert it as assessment")');
     }
 
-    // C. Digital Resources and ICT Integration
+    // C. Digital Resources and ICT Integration (Min 1 row is mandatory)
     const ictRows = document.querySelectorAll('#cp-icts-tbody tr');
-    let emptyIctTopic = 0, emptyIctTool = 0, emptyIctPlat = 0, emptyIctPurpose = 0;
-    ictRows.forEach(row => {
+    let completedIctRows = 0;
+    let incompleteRowErrors = [];
+
+    ictRows.forEach((row, idx) => {
       const topEl = row.querySelector('.ict-topic');
       const toolEl = row.querySelector('.ict-tool-select');
       const platEl = row.querySelector('.ict-plat-select');
       const purpEl = row.querySelector('.ict-purpose');
 
-      if (!topEl || !topEl.value.trim()) { emptyIctTopic++; if (topEl) invalidEls.push(topEl); }
-      if (!toolEl || !toolEl.value.trim()) { emptyIctTool++; if (toolEl) invalidEls.push(toolEl); }
-      if (!platEl || !platEl.value.trim()) { emptyIctPlat++; if (platEl) invalidEls.push(platEl); }
-      if (!purpEl || !purpEl.value.trim()) { emptyIctPurpose++; if (purpEl) invalidEls.push(purpEl); }
+      const topVal = topEl ? topEl.value.trim() : '';
+      const toolVal = toolEl ? toolEl.value.trim() : '';
+      const platVal = platEl ? platEl.value.trim() : '';
+      const purpVal = purpEl ? purpEl.value.trim() : '';
+
+      const hasAny = topVal || toolVal || platVal || purpVal;
+      const isComplete = topVal && toolVal && platVal && purpVal;
+
+      if (isComplete) {
+        completedIctRows++;
+      } else if (hasAny) {
+        const missing = [];
+        if (!topVal) { missing.push('Topic/Unit'); if (topEl) invalidEls.push(topEl); }
+        if (!toolVal) { missing.push('Tool'); if (toolEl) invalidEls.push(toolEl); }
+        if (!platVal) { missing.push('Platform'); if (platEl) invalidEls.push(platEl); }
+        if (!purpVal) { missing.push('Purpose'); if (purpEl) invalidEls.push(purpEl); }
+        incompleteRowErrors.push(`Row ${idx + 1}: Missing ${missing.join(', ')}`);
+      }
     });
 
-    if (emptyIctTopic > 0) errors.push(`Digital Resources / ICT: Topic/Unit missing in ${emptyIctTopic} row(s)`);
-    if (emptyIctTool > 0) errors.push(`Digital Resources / ICT: Tool missing in ${emptyIctTool} row(s)`);
-    if (emptyIctPlat > 0) errors.push(`Digital Resources / ICT: Platform missing in ${emptyIctPlat} row(s)`);
-    if (emptyIctPurpose > 0) errors.push(`Digital Resources / ICT: Purpose missing in ${emptyIctPurpose} row(s)`);
+    if (completedIctRows === 0) {
+      errors.push('Digital Resources and ICT Integration: Minimum 1 row is mandatory. Please provide Topic/Unit, Tool, Platform, and Purpose.');
+      const firstRow = ictRows[0];
+      if (firstRow) {
+        const t = firstRow.querySelector('.ict-topic');
+        const tl = firstRow.querySelector('.ict-tool-select');
+        const p = firstRow.querySelector('.ict-plat-select');
+        const pr = firstRow.querySelector('.ict-purpose');
+        if (t && !t.value.trim()) invalidEls.push(t);
+        if (tl && !tl.value.trim()) invalidEls.push(tl);
+        if (p && !p.value.trim()) invalidEls.push(p);
+        if (pr && !pr.value.trim()) invalidEls.push(pr);
+      }
+    }
+
+    if (incompleteRowErrors.length > 0) {
+      incompleteRowErrors.forEach(err => errors.push(`Digital Resources / ICT: ${err}`));
+    }
 
     return { valid: errors.length === 0, errors, invalidEls };
   }
@@ -6213,10 +6243,7 @@ class CoursePlanApp {
       learning_activities: [],
       assessment_plan: [],
       ict_integration: [
-        { sno: '1', topic: '', tool: '', platform: '', purpose: '' },
-        { sno: '2', topic: '', tool: '', platform: '', purpose: '' },
-        { sno: '3', topic: '', tool: '', platform: '', purpose: '' },
-        { sno: '4', topic: '', tool: '', platform: '', purpose: '' }
+        { sno: '1', topic: '', tool: '', platform: '', purpose: '' }
       ],
       declaration: {
         confirmed: false,
@@ -6839,7 +6866,9 @@ class CoursePlanApp {
         purpose: tr.querySelector('.ict-purpose')?.value || ''
       });
     });
-    if (icts.length > 0) this.activePlan.ict_integration = icts;
+    // Keep rows that have at least one field filled, or at least 1 row
+    const filledIcts = icts.filter(r => (r.topic || '').trim() || (r.tool || '').trim() || (r.platform || '').trim() || (r.purpose || '').trim());
+    this.activePlan.ict_integration = (filledIcts.length > 0) ? filledIcts : (icts.slice(0, 1).length > 0 ? icts.slice(0, 1) : [{ sno: '1', topic: '', tool: '', platform: '', purpose: '' }]);
 
     // Declaration
     const declCheckEl = document.getElementById('cp-decl-check');
