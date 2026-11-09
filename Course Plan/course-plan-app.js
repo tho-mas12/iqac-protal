@@ -50,6 +50,18 @@ class CoursePlanApp {
     'Other:'
   ];
 
+  static LEARNING_RESOURCES = [
+    'Text Book / Study Material',
+    'Reference Book / Standard Reference',
+    'PPT / Interactive Lecture Slides',
+    'JosTEL LMS / E-Content / Moodle',
+    'NPTEL / SWAYAM / Coursera MOOCs',
+    'Research Papers / Journal Articles',
+    'Lab Manual / Simulation Software',
+    'Web Links / Online Repositories',
+    'Other:'
+  ];
+
   constructor() {
     this.departments = [];
     this.selectedDept = localStorage.getItem('CP_SELECTED_DEPT') || 'Computer Science';
@@ -782,6 +794,595 @@ class CoursePlanApp {
       </div>
     `;
   }
+
+  toggleResourceDropdown(rowIdx, event) {
+    if (event) event.stopPropagation();
+    const menu = document.getElementById(`dtp-res-menu-${rowIdx}`);
+    if (!menu) return;
+    const isHidden = menu.classList.contains('hidden');
+    document.querySelectorAll('[id^="dtp-res-menu-"]').forEach(m => m.classList.add('hidden'));
+    document.querySelectorAll('[id^="dtp-method-menu-"]').forEach(m => m.classList.add('hidden'));
+    if (isHidden) {
+      menu.classList.remove('hidden');
+    }
+  }
+
+  closeResourceDropdown(rowIdx) {
+    const menu = document.getElementById(`dtp-res-menu-${rowIdx}`);
+    if (menu) menu.classList.add('hidden');
+  }
+
+  filterResourceOptions(rowIdx, query) {
+    const container = document.getElementById(`dtp-res-list-${rowIdx}`);
+    if (!container) return;
+    const q = (query || '').toLowerCase().trim();
+    const labels = container.querySelectorAll('.dtp-res-opt');
+    labels.forEach(lbl => {
+      const text = lbl.textContent.toLowerCase();
+      if (!q || text.includes(q)) {
+        lbl.style.display = 'flex';
+      } else {
+        lbl.style.display = 'none';
+      }
+    });
+  }
+
+  onResourceCheckboxToggle(rowIdx, option, isChecked) {
+    const hiddenVal = document.querySelector(`#dtp-res-box-${rowIdx} .dtp-res-value`);
+    if (!hiddenVal) return;
+    let list = (hiddenVal.value || '').split(',').map(s => s.trim()).filter(Boolean);
+
+    if (option === 'Other:') {
+      const otherContainer = document.getElementById(`dtp-res-other-container-${rowIdx}`);
+      const otherInput = otherContainer ? otherContainer.querySelector('.dtp-res-other-input') : null;
+      if (isChecked) {
+        if (otherContainer) otherContainer.classList.remove('hidden');
+        if (otherInput) {
+          otherInput.focus();
+          const custom = otherInput.value.trim();
+          if (custom && !list.includes(custom)) {
+            list.push(custom);
+          } else if (!list.some(s => s === 'Other:' || s.startsWith('Other:'))) {
+            list.push('Other:');
+          }
+        }
+      } else {
+        if (otherContainer) otherContainer.classList.add('hidden');
+        list = list.filter(s => !s.startsWith('Other:') && CoursePlanApp.LEARNING_RESOURCES.includes(s));
+      }
+    } else {
+      if (isChecked) {
+        if (!list.includes(option)) list.push(option);
+      } else {
+        list = list.filter(s => s !== option);
+      }
+    }
+
+    hiddenVal.value = list.join(', ');
+    this.updateResourceDisplayTags(rowIdx, list);
+  }
+
+  onResourceOtherInput(rowIdx, text) {
+    const hiddenVal = document.querySelector(`#dtp-res-box-${rowIdx} .dtp-res-value`);
+    if (!hiddenVal) return;
+    let list = (hiddenVal.value || '').split(',').map(s => s.trim()).filter(Boolean);
+    list = list.filter(s => CoursePlanApp.LEARNING_RESOURCES.includes(s) && s !== 'Other:');
+    const custom = text.trim();
+    if (custom) {
+      list.push(`Other: ${custom}`);
+    } else {
+      list.push('Other:');
+    }
+    hiddenVal.value = list.join(', ');
+    this.updateResourceDisplayTags(rowIdx, list);
+  }
+
+  removeResourceItem(rowIdx, item) {
+    const hiddenVal = document.querySelector(`#dtp-res-box-${rowIdx} .dtp-res-value`);
+    if (!hiddenVal) return;
+    let list = (hiddenVal.value || '').split(',').map(s => s.trim()).filter(Boolean);
+
+    const isOther = item === 'Other:' || item.startsWith('Other:') || !CoursePlanApp.LEARNING_RESOURCES.includes(item);
+    if (isOther) {
+      list = list.filter(s => s !== 'Other:' && !s.startsWith('Other:') && CoursePlanApp.LEARNING_RESOURCES.includes(s));
+      const otherContainer = document.getElementById(`dtp-res-other-container-${rowIdx}`);
+      if (otherContainer) otherContainer.classList.add('hidden');
+      const chk = document.querySelector(`#dtp-res-list-${rowIdx} input[value="Other:"]`);
+      if (chk) chk.checked = false;
+    } else {
+      list = list.filter(s => s !== item);
+      const chk = document.querySelector(`#dtp-res-list-${rowIdx} input[value="${item}"]`);
+      if (chk) chk.checked = false;
+    }
+
+    hiddenVal.value = list.join(', ');
+    this.updateResourceDisplayTags(rowIdx, list);
+  }
+
+  updateResourceDisplayTags(rowIdx, list) {
+    const container = document.querySelector(`#dtp-res-box-${rowIdx} .dtp-res-tags`);
+    if (!container) return;
+
+    if (list.length === 0) {
+      container.innerHTML = `<span class="text-slate-400 text-[11px] italic pl-1">Select resources (multiple)...</span>`;
+      return;
+    }
+
+    container.innerHTML = list.map(item => {
+      const isOtherVal = item === 'Other:' || item.startsWith('Other:');
+      const displayLabel = isOtherVal ? (item.length > 6 ? item : 'Other: Custom') : item;
+      return `
+        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10.5px] font-bold bg-amber-50 text-amber-900 border border-amber-200">
+          <span class="max-w-[130px] truncate" title="${this.escapeHtml(displayLabel)}">${this.escapeHtml(displayLabel)}</span>
+          <button type="button" onclick="event.stopPropagation(); coursePlanApp.removeResourceItem(${rowIdx}, '${this.escapeHtml(item)}')" class="text-amber-500 hover:text-amber-900 font-bold ml-0.5">✕</button>
+        </span>
+      `;
+    }).join('');
+  }
+
+  renderResourceMultiSelect(rowIdx, currentVal) {
+    const list = (currentVal || '').split(',').map(s => s.trim()).filter(Boolean);
+    const otherItem = list.find(s => s.startsWith('Other:') || (!CoursePlanApp.LEARNING_RESOURCES.includes(s) && s !== 'Other:'));
+    const hasOther = list.some(s => s === 'Other:' || s.startsWith('Other:'));
+    const otherCustomText = otherItem ? (otherItem.startsWith('Other:') ? otherItem.replace('Other:', '').trim() : otherItem) : '';
+
+    return `
+      <div class="dtp-res-container relative w-full" id="dtp-res-box-${rowIdx}">
+        <input type="hidden" class="dtp-res-value" value="${this.escapeHtml(currentVal || '')}" />
+        
+        <!-- Clickable tags trigger -->
+        <div 
+          onclick="coursePlanApp.toggleResourceDropdown(${rowIdx}, event)" 
+          class="min-h-[34px] w-full p-1.5 border border-slate-300 rounded-lg bg-white flex flex-wrap items-center gap-1 cursor-pointer hover:border-amber-500 transition"
+          title="Click to select or enter multiple learning resources"
+        >
+          <div class="dtp-res-tags flex flex-wrap items-center gap-1 flex-1">
+            ${list.length === 0 ? `
+              <span class="text-slate-400 text-[11px] italic pl-1">Select resources (multiple)...</span>
+            ` : `
+              ${list.map(item => {
+                const isOtherVal = item === 'Other:' || item.startsWith('Other:');
+                const displayLabel = isOtherVal ? (item.length > 6 ? item : 'Other: Custom') : item;
+                return `
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10.5px] font-bold bg-amber-50 text-amber-900 border border-amber-200">
+                    <span class="max-w-[130px] truncate" title="${this.escapeHtml(displayLabel)}">${this.escapeHtml(displayLabel)}</span>
+                    <button type="button" onclick="event.stopPropagation(); coursePlanApp.removeResourceItem(${rowIdx}, '${this.escapeHtml(item)}')" class="text-amber-500 hover:text-amber-900 font-bold ml-0.5">✕</button>
+                  </span>
+                `;
+              }).join('')}
+            `}
+          </div>
+          <span class="text-slate-400 text-xs pr-1 shrink-0">▾</span>
+        </div>
+
+        <!-- Autocomplete Dropdown Menu -->
+        <div 
+          id="dtp-res-menu-${rowIdx}" 
+          class="hidden absolute left-0 sm:left-auto right-0 sm:right-auto top-full mt-1 bg-white border border-slate-300 rounded-xl shadow-2xl z-40 p-2 space-y-2 w-[calc(100vw-3rem)] max-w-xs sm:w-80"
+          onclick="event.stopPropagation()"
+        >
+          <div class="relative">
+            <input 
+              type="text" 
+              placeholder="Search learning resources..." 
+              oninput="coursePlanApp.filterResourceOptions(${rowIdx}, this.value)" 
+              class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded-lg focus:border-amber-600 focus:outline-none"
+            />
+          </div>
+          <div class="max-h-48 overflow-y-auto space-y-0.5 divide-y divide-slate-100" id="dtp-res-list-${rowIdx}">
+            ${CoursePlanApp.LEARNING_RESOURCES.map(opt => {
+              const isChecked = opt === 'Other:' ? hasOther : list.includes(opt);
+              return `
+                <label class="dtp-res-opt flex items-center gap-2 px-2 py-1.5 hover:bg-amber-50 rounded-lg cursor-pointer text-xs font-medium text-slate-800">
+                  <input 
+                    type="checkbox" 
+                    class="rounded text-amber-600 focus:ring-0" 
+                    value="${opt}" 
+                    ${isChecked ? 'checked' : ''} 
+                    onchange="coursePlanApp.onResourceCheckboxToggle(${rowIdx}, '${opt}', this.checked)" 
+                  />
+                  <span class="opt-label">${opt}</span>
+                </label>
+              `;
+            }).join('')}
+          </div>
+          <div id="dtp-res-other-container-${rowIdx}" class="${hasOther ? '' : 'hidden'} pt-1 border-t border-slate-200">
+            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Specify Book / Resource Title *</label>
+            <input 
+              type="text" 
+              class="dtp-res-other-input w-full text-xs px-2 py-1 border border-amber-400 rounded-lg font-medium" 
+              placeholder="e.g. Balagurusamy Java 6th Ed / Coursera" 
+              value="${this.escapeHtml(otherCustomText)}" 
+              oninput="coursePlanApp.onResourceOtherInput(${rowIdx}, this.value)"
+            />
+          </div>
+          <div class="flex justify-between items-center pt-1 border-t border-slate-100 text-[10px]">
+            <span class="text-slate-500 font-bold">${list.length} selected</span>
+            <button type="button" onclick="coursePlanApp.closeResourceDropdown(${rowIdx})" class="px-2.5 py-1 bg-amber-600 text-white font-bold rounded-lg hover:bg-amber-700">Done</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  addResourceToRow(rowIdx, resourceText) {
+    if (!resourceText) return;
+    const clean = resourceText.trim();
+    const hiddenVal = document.querySelector(`#dtp-res-box-${rowIdx} .dtp-res-value`);
+    if (!hiddenVal) return;
+    let list = (hiddenVal.value || '').split(',').map(s => s.trim()).filter(Boolean);
+    if (!list.includes(clean)) {
+      list.push(clean);
+      hiddenVal.value = list.join(', ');
+      this.updateResourceDisplayTags(rowIdx, list);
+    }
+  }
+
+  openCourseSyllabusReferenceModal() {
+    this.harvestFormInputs();
+    const curCode = (this.activePlan && this.activePlan.course_code) ? this.activePlan.course_code.trim() : '';
+    if (!curCode) {
+      alert('Please select or specify a Course Code in Part-I (Course Information) first to view its syllabus and reference content.');
+      this.switchFormTab('part1');
+      return;
+    }
+
+    const course = (this.syllabusCourses || []).find(c => c.course_code.toLowerCase().trim() === curCode.toLowerCase().trim()) || {
+      course_code: curCode,
+      course_title: this.activePlan.course_title || 'Selected Course',
+      department: this.activePlan.department_name || '',
+      semester: this.activePlan.semester || '',
+      credits: this.activePlan.credits || '',
+      hours: this.activePlan.teaching_hours || '',
+      cos: this.activePlan.course_outcomes || []
+    };
+
+    document.getElementById('course-syllabus-modal')?.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'course-syllabus-modal';
+    modal.className = 'fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 animate-fadeIn';
+
+    const units = course.units || [
+      { unit: 'Unit I', title: 'Foundations & Concepts', hours: '9 Hours', topics: 'Fundamental concepts, core terminology, theoretical framework, introductory principles.' },
+      { unit: 'Unit II', title: 'Methodologies & Implementation', hours: '9 Hours', topics: 'Detailed mechanisms, structural design, execution patterns, problem-solving techniques.' },
+      { unit: 'Unit III', title: 'Advanced Analysis & Applications', hours: '9 Hours', topics: 'Component interaction, practical application, case study evaluation, domain workflows.' },
+      { unit: 'Unit IV', title: 'Integration & Modern Tools', hours: '9 Hours', topics: 'System integration, modern industry standards, software tools, performance tuning.' },
+      { unit: 'Unit V', title: 'Emerging Trends & Capstone Projects', hours: '9 Hours', topics: 'Contemporary advances, security, scalability, comprehensive project implementation.' }
+    ];
+
+    const booksStudy = course.books_study || [
+      'Standard Department Textbook & Course Learning Material',
+      'Prescribed Institutional Study Modules & Lecture Notes'
+    ];
+
+    const booksRef = course.books_reference || [
+      'Standard Reference Handbook (Latest Edition)',
+      'ACM / IEEE Academic References & Monographs'
+    ];
+
+    const websites = course.websites || [
+      'https://swayam.gov.in - SWAYAM National MOOCs',
+      'https://nptel.ac.in - NPTEL Learning Repository',
+      'JosTEL LMS Portal - St. Joseph\'s College'
+    ];
+
+    const cos = (course.cos && course.cos.length > 0) ? course.cos : (this.activePlan.course_outcomes || []);
+
+    modal.innerHTML = `
+      <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden" onclick="event.stopPropagation()">
+        
+        <!-- Header -->
+        <div class="p-5 sm:p-6 bg-gradient-to-r from-indigo-900 via-blue-900 to-indigo-950 text-white flex items-start justify-between gap-4 shrink-0">
+          <div>
+            <div class="flex items-center gap-2 flex-wrap mb-1.5">
+              <span class="font-mono text-xs font-black px-2.5 py-1 rounded-lg bg-amber-400 text-indigo-950 uppercase tracking-wider shadow-sm">
+                ${this.escapeHtml(course.course_code)}
+              </span>
+              <span class="text-xs bg-white/15 px-2.5 py-1 rounded-lg font-bold text-indigo-100 border border-white/20">
+                ${this.escapeHtml(course.course_category || 'Core')}
+              </span>
+              <span class="text-xs bg-white/15 px-2.5 py-1 rounded-lg font-bold text-indigo-100 border border-white/20">
+                Sem ${this.escapeHtml(course.semester_num ? String(course.semester_num) : (course.semester || '—'))}
+              </span>
+              <span class="text-xs bg-white/15 px-2.5 py-1 rounded-lg font-bold text-indigo-100 border border-white/20">
+                ${this.escapeHtml(course.credits || '3')} Credits • ${this.escapeHtml(course.hours || '4')}h/wk
+              </span>
+            </div>
+            <h3 class="text-lg sm:text-xl font-black text-white tracking-tight">
+              ${this.escapeHtml(course.course_title || 'Course Syllabus')}
+            </h3>
+            <p class="text-xs text-indigo-200 mt-0.5">
+              ${this.escapeHtml(course.department || this.selectedDept)} • Reference Guide for Course Plan Part-II
+            </p>
+          </div>
+          <button 
+            type="button" 
+            onclick="document.getElementById('course-syllabus-modal').remove()" 
+            class="text-indigo-200 hover:text-white p-2 rounded-xl hover:bg-white/10 transition cursor-pointer shrink-0"
+          >
+            <i data-lucide="x" class="w-6 h-6"></i>
+          </button>
+        </div>
+
+        <!-- Scrollable Content -->
+        <div class="p-4 sm:p-6 overflow-y-auto space-y-6 flex-1 text-slate-800 text-xs">
+          
+          <!-- Instructions banner -->
+          <div class="bg-indigo-50 border border-indigo-200 rounded-2xl p-3.5 flex items-center justify-between gap-3 text-indigo-900">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0">
+                <i data-lucide="lightbulb" class="w-4 h-4 text-amber-300"></i>
+              </div>
+              <div class="text-xs">
+                <strong class="font-bold">Faculty Quick Fill:</strong> Click <strong>"Insert into Plan"</strong> or <strong>"Copy Topics"</strong> on any unit to populate your Detailed Teaching Plan, or click <strong>"Use as Resource"</strong> to add references directly!
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 1: Course Outcomes (CO1 to CO5) -->
+          <div class="space-y-2.5">
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
+              <i data-lucide="target" class="w-4 h-4 text-indigo-600"></i>
+              <span>Course Outcomes (COs) & Bloom's Levels</span>
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2">
+              ${cos.map(co => `
+                <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between space-y-1.5 hover:border-indigo-300 transition">
+                  <div class="flex items-center justify-between">
+                    <span class="font-mono font-black text-indigo-950 text-xs">${this.escapeHtml(co.code || 'CO')}</span>
+                    <span class="text-[9.5px] font-black px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-800">${this.escapeHtml(co.k_level || 'K1')}</span>
+                  </div>
+                  <p class="text-[11px] text-slate-600 line-clamp-3 leading-snug" title="${this.escapeHtml(co.outcome || '')}">
+                    ${this.escapeHtml(co.outcome || 'Course Outcome statement')}
+                  </p>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Section 2: Unit-wise Detailed Syllabus Topics -->
+          <div class="space-y-3">
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
+              <i data-lucide="layers" class="w-4 h-4 text-indigo-600"></i>
+              <span>Unit-wise Syllabus Content (Units I to V)</span>
+            </h4>
+            
+            <div class="space-y-2.5">
+              ${units.map((u, uIdx) => `
+                <div class="p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-indigo-400 hover:shadow-sm transition space-y-2">
+                  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 border-b border-slate-100 pb-2">
+                    <div class="flex items-center gap-2">
+                      <span class="px-2 py-0.5 rounded-md bg-indigo-600 text-white font-black text-[10.5px]">
+                        ${this.escapeHtml(u.unit)}
+                      </span>
+                      <strong class="text-xs font-black text-slate-900">
+                        ${this.escapeHtml(u.title || '')}
+                      </strong>
+                      <span class="text-[10px] text-slate-500 font-semibold bg-slate-100 px-2 py-0.5 rounded">
+                        ${this.escapeHtml(u.hours || '9 Hours')}
+                      </span>
+                    </div>
+
+                    <div class="flex items-center gap-1.5">
+                      <button 
+                        type="button" 
+                        onclick="coursePlanApp.copySyllabusText('${this.escapeHtml(u.topics).replace(/'/g, "\\'")}', this)" 
+                        class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-[11px] transition flex items-center gap-1 cursor-pointer"
+                        title="Copy unit topics to clipboard"
+                      >
+                        <i data-lucide="copy" class="w-3 h-3"></i> Copy Topics
+                      </button>
+                      <button 
+                        type="button" 
+                        onclick="coursePlanApp.insertUnitIntoTeachingPlan('${this.escapeHtml(u.unit)}', '${this.escapeHtml(u.topics).replace(/'/g, "\\'")}', '${uIdx + 1}')" 
+                        class="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 font-bold rounded-lg text-[11px] transition flex items-center gap-1 cursor-pointer"
+                        title="Add this unit as a row into Detailed Teaching Plan"
+                      >
+                        <i data-lucide="plus-circle" class="w-3 h-3"></i> Insert into Plan
+                      </button>
+                    </div>
+                  </div>
+
+                  <p class="text-xs text-slate-700 leading-relaxed font-sans select-all bg-slate-50/70 p-2.5 rounded-xl border border-slate-100">
+                    ${this.escapeHtml(u.topics)}
+                  </p>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Section 3: Learning Resources & References -->
+          <div class="space-y-3 pt-2 border-t border-slate-200">
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
+              <i data-lucide="book-marked" class="w-4 h-4 text-indigo-600"></i>
+              <span>Prescribed Books & Learning Resources</span>
+            </h4>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Books for Study -->
+              <div class="space-y-2 p-3.5 rounded-2xl bg-amber-50/50 border border-amber-200">
+                <div class="font-black text-amber-950 text-xs flex items-center gap-1.5">
+                  <i data-lucide="book" class="w-3.5 h-3.5 text-amber-700"></i>
+                  <span>Books for Study (Textbooks)</span>
+                </div>
+                <div class="space-y-2">
+                  ${booksStudy.map(b => `
+                    <div class="p-2.5 rounded-xl bg-white border border-amber-200 shadow-2xs flex flex-col justify-between gap-1.5">
+                      <div class="text-xs text-slate-800 font-medium leading-snug">${this.escapeHtml(b)}</div>
+                      <div class="flex justify-end">
+                        <button 
+                          type="button" 
+                          onclick="coursePlanApp.useResourceInTeachingPlan('${this.escapeHtml(b).replace(/'/g, "\\'")}')" 
+                          class="px-2 py-0.5 bg-amber-100 hover:bg-amber-200 text-amber-950 font-bold rounded text-[10.5px] transition flex items-center gap-1 cursor-pointer"
+                          title="Add this book to Detailed Teaching Plan Learning Resources"
+                        >
+                          <i data-lucide="plus" class="w-3 h-3"></i> Use as Resource
+                        </button>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+
+              <!-- Books for Reference -->
+              <div class="space-y-2 p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
+                <div class="font-black text-slate-900 text-xs flex items-center gap-1.5">
+                  <i data-lucide="bookmark" class="w-3.5 h-3.5 text-slate-700"></i>
+                  <span>Books for Reference</span>
+                </div>
+                <div class="space-y-2">
+                  ${booksRef.map(b => `
+                    <div class="p-2.5 rounded-xl bg-white border border-slate-200 shadow-2xs flex flex-col justify-between gap-1.5">
+                      <div class="text-xs text-slate-800 font-medium leading-snug">${this.escapeHtml(b)}</div>
+                      <div class="flex justify-end">
+                        <button 
+                          type="button" 
+                          onclick="coursePlanApp.useResourceInTeachingPlan('${this.escapeHtml(b).replace(/'/g, "\\'")}')" 
+                          class="px-2 py-0.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded text-[10.5px] transition flex items-center gap-1 cursor-pointer"
+                          title="Add this reference to Detailed Teaching Plan Learning Resources"
+                        >
+                          <i data-lucide="plus" class="w-3 h-3"></i> Use as Resource
+                        </button>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+
+            <!-- Websites and eLearning Sources -->
+            <div class="p-3.5 rounded-2xl bg-blue-50/50 border border-blue-200 space-y-2">
+              <div class="font-black text-blue-950 text-xs flex items-center gap-1.5">
+                <i data-lucide="globe" class="w-3.5 h-3.5 text-blue-700"></i>
+                <span>Websites & eLearning Sources</span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                ${websites.map(w => `
+                  <div class="p-2 rounded-xl bg-white border border-blue-200 shadow-2xs flex items-center justify-between gap-2">
+                    <span class="text-xs text-blue-800 truncate font-mono" title="${this.escapeHtml(w)}">
+                      ${this.escapeHtml(w)}
+                    </span>
+                    <button 
+                      type="button" 
+                      onclick="coursePlanApp.useResourceInTeachingPlan('${this.escapeHtml(w).replace(/'/g, "\\'")}')" 
+                      class="px-2 py-0.5 bg-blue-100 hover:bg-blue-200 text-blue-900 font-bold rounded text-[10.5px] transition shrink-0 cursor-pointer"
+                      title="Add web source to Detailed Teaching Plan"
+                    >
+                      Use
+                    </button>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between shrink-0">
+          <span class="text-slate-500 text-xs">
+            Tip: You can re-open this reference guide anytime while editing Part-II.
+          </span>
+          <button 
+            type="button" 
+            onclick="document.getElementById('course-syllabus-modal').remove()" 
+            class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition cursor-pointer"
+          >
+            Close Guide
+          </button>
+        </div>
+
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
+    }
+  }
+
+  copySyllabusText(text, btnEl) {
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => {
+      if (btnEl) {
+        const orig = btnEl.innerHTML;
+        btnEl.innerHTML = `<i data-lucide="check" class="w-3 h-3 text-emerald-600"></i> Copied!`;
+        setTimeout(() => { btnEl.innerHTML = orig; if (window.lucide) window.lucide.createIcons(); }, 1800);
+      }
+    }).catch(() => {
+      prompt('Copy unit topics:', text);
+    });
+  }
+
+  insertUnitIntoTeachingPlan(unit, topics, coNum) {
+    this.harvestFormInputs();
+    if (!this.activePlan.detailed_teaching_plan) this.activePlan.detailed_teaching_plan = [];
+
+    let targetRow = this.activePlan.detailed_teaching_plan.find(r => r.unit === unit && !r.from_topic && !r.to_topic);
+    if (targetRow) {
+      targetRow.from_topic = topics.length > 80 ? topics.slice(0, 75) + '...' : topics;
+      targetRow.to_topic = topics.length > 80 ? topics.slice(75) : '';
+      targetRow.hours = '2';
+      targetRow.cos = `CO${coNum}`;
+      if (!targetRow.resources) targetRow.resources = 'Text Book / Study Material';
+    } else {
+      this.activePlan.detailed_teaching_plan.push({
+        month_days: 'Ongoing',
+        unit: unit,
+        from_topic: topics.length > 80 ? topics.slice(0, 75) + '...' : topics,
+        to_topic: topics.length > 80 ? topics.slice(75) : '',
+        hours: '2',
+        cos: `CO${coNum}`,
+        methodology: 'Lecture-based Learning',
+        resources: 'Text Book / Study Material'
+      });
+    }
+
+    document.getElementById('course-syllabus-modal')?.remove();
+    this.render();
+    
+    const toast = document.createElement('div');
+    toast.className = 'fixed bottom-5 right-5 z-50 bg-emerald-600 text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-lg flex items-center gap-2 animate-fadeIn';
+    toast.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> ${unit} topics inserted into Teaching Plan!`;
+    document.body.appendChild(toast);
+    if (window.lucide) window.lucide.createIcons();
+    setTimeout(() => toast.remove(), 2500);
+  }
+
+  useResourceInTeachingPlan(resourceText) {
+    if (!resourceText) return;
+    this.harvestFormInputs();
+    const dtp = this.activePlan.detailed_teaching_plan || [];
+    if (dtp.length === 0) {
+      alert('Please add a row in the Detailed Teaching Plan table first.');
+      return;
+    }
+
+    let addedCount = 0;
+    dtp.forEach((row, i) => {
+      let list = (row.resources || '').split(',').map(s => s.trim()).filter(Boolean);
+      if (!list.includes(resourceText.trim())) {
+        list.push(resourceText.trim());
+        row.resources = list.join(', ');
+        addedCount++;
+        const hiddenVal = document.querySelector(`#dtp-res-box-${i} .dtp-res-value`);
+        if (hiddenVal) {
+          hiddenVal.value = row.resources;
+          this.updateResourceDisplayTags(i, list);
+        }
+      }
+    });
+
+    const toast = document.createElement('div');
+    toast.className = 'fixed bottom-5 right-5 z-50 bg-amber-600 text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-lg flex items-center gap-2 animate-fadeIn';
+    toast.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> Added to Learning Resources!`;
+    document.body.appendChild(toast);
+    if (window.lucide) window.lucide.createIcons();
+    setTimeout(() => toast.remove(), 2200);
+  }
+
 
   formatDateToDDMMYYYY(dateStr) {
     if (!dateStr) return '';
@@ -4177,18 +4778,29 @@ class CoursePlanApp {
 
             <!-- A. Detailed Teaching Plan -->
             <div class="space-y-3">
-              <div class="flex items-center justify-between">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                 <div>
                   <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">A. Detailed Teaching Plan</h4>
                   <p class="text-[11px] text-slate-500">Instruction: Divide each unit into manageable topics (From & To) and allocate appropriate teaching hours.</p>
                 </div>
-                <button 
-                  type="button" 
-                  onclick="coursePlanApp.addTeachingPlanRow()" 
-                  class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-xs flex items-center gap-1 border border-slate-200 cursor-pointer"
-                >
-                  <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Topic Row
-                </button>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <button 
+                    type="button" 
+                    onclick="coursePlanApp.openCourseSyllabusReferenceModal()" 
+                    class="px-3 py-1.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition cursor-pointer"
+                    title="View syllabus units, topics, textbooks and reference resources for this course"
+                  >
+                    <i data-lucide="book-open" class="w-3.5 h-3.5 text-amber-300"></i>
+                    <span>View Course Syllabus & References</span>
+                  </button>
+                  <button 
+                    type="button" 
+                    onclick="coursePlanApp.addTeachingPlanRow()" 
+                    class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-xs flex items-center gap-1 border border-slate-200 cursor-pointer"
+                  >
+                    <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Topic Row
+                  </button>
+                </div>
               </div>
 
               <div class="overflow-x-auto rounded-xl border border-slate-200 max-h-none md:max-h-[580px] scrollbar-thin">
@@ -4202,7 +4814,7 @@ class CoursePlanApp {
                       <th class="p-2.5 w-16 text-center">Hours *</th>
                       <th class="p-2.5 w-16 text-center">COs *</th>
                       <th class="p-2.5 w-60">Teaching Methodology *</th>
-                      <th class="p-2.5 w-36">Learning Resources *</th>
+                      <th class="p-2.5 w-60">Learning Resources *</th>
                       <th class="p-2.5 w-12 text-center">Action</th>
                     </tr>
                   </thead>
@@ -4259,31 +4871,7 @@ class CoursePlanApp {
                             ${this.renderMethodologyMultiSelect(idx, row.methodology)}
                           </td>
                           <td class="p-1.5" data-label="Learning Resources">
-                            ${(() => {
-                              const resOptions = [
-                                'Text Book / Reference Book', 'PPT / Lecture Notes', 'JosTEL LMS / E-Content',
-                                'NPTEL / SWAYAM / Coursera', 'Research Papers / Journal Articles',
-                                'Lab Manual / Software Tools', 'Web Links / Online Repositories'
-                              ];
-                              const curRes = row.resources || '';
-                              const isOther = curRes && !resOptions.includes(curRes);
-                              return `
-                                <select 
-                                  class="dtp-res-select w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-semibold bg-white"
-                                  onchange="coursePlanApp.onDtpResourceChange(this)"
-                                >
-                                  <option value="" ${!curRes ? 'selected' : ''}>-- Select Resource --</option>
-                                  ${resOptions.map(opt => `<option value="${opt}" ${curRes === opt ? 'selected' : ''}>${opt}</option>`).join('')}
-                                  <option value="Others" ${isOther ? 'selected' : ''}>Others (Specify)</option>
-                                </select>
-                                <input 
-                                  type="text" 
-                                  class="dtp-res-other w-full text-xs px-2 py-1 border border-indigo-400 rounded mt-1 ${isOther ? '' : 'hidden'}" 
-                                  placeholder="Specify resource..." 
-                                  value="${isOther ? curRes : ''}"
-                                />
-                              `;
-                            })()}
+                            ${this.renderResourceMultiSelect(idx, row.resources)}
                           </td>
                           <td class="p-1.5 text-center" data-label="Action">
                             <button type="button" onclick="coursePlanApp.deleteTeachingPlanRow(${idx})" class="p-1 text-slate-400 hover:text-red-600 rounded">
@@ -5203,7 +5791,14 @@ class CoursePlanApp {
           if (box) invalidEls.push(box);
         }
 
-        if (resEl && resEl.value === 'Others' && (!resOther || !resOther.value.trim())) {
+        const resVal = row.querySelector('.dtp-res-value');
+        if (resVal) {
+          if (!resVal.value.trim()) {
+            emptyRes++;
+            const box = row.querySelector('.dtp-res-container');
+            if (box) invalidEls.push(box);
+          }
+        } else if (resEl && resEl.value === 'Others' && (!resOther || !resOther.value.trim())) {
           emptyRes++; if (resOther) invalidEls.push(resOther);
         } else if (!resEl || !resEl.value.trim()) {
           emptyRes++; if (resEl) invalidEls.push(resEl);
@@ -6130,7 +6725,7 @@ class CoursePlanApp {
         hours: tr.querySelector('.dtp-hours')?.value || '',
         cos: tr.querySelector('.dtp-cos')?.value || '',
         methodology: tr.querySelector('.dtp-method-value')?.value || '',
-        resources: (tr.querySelector('.dtp-res-select')?.value === 'Others' 
+        resources: tr.querySelector('.dtp-res-value')?.value || (tr.querySelector('.dtp-res-select')?.value === 'Others' 
           ? (tr.querySelector('.dtp-res-other')?.value || 'Others') 
           : (tr.querySelector('.dtp-res-select')?.value || ''))
       });
@@ -6666,9 +7261,12 @@ class CoursePlanApp {
 window.coursePlanApp = new CoursePlanApp();
 
 
-// Global click handler to close open teaching methodology autocomplete dropdowns
+// Global click handler to close open teaching methodology and learning resources autocomplete dropdowns
 document.addEventListener('click', (e) => {
   if (!e.target.closest('.dtp-method-container')) {
     document.querySelectorAll('[id^="dtp-method-menu-"]').forEach(m => m.classList.add('hidden'));
+  }
+  if (!e.target.closest('.dtp-res-container')) {
+    document.querySelectorAll('[id^="dtp-res-menu-"]').forEach(m => m.classList.add('hidden'));
   }
 });

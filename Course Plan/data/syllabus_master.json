@@ -74568,6 +74568,58 @@
         "outcome": "Writing valid and concise script for web pages",
         "k_level": "K3"
       }
+    ],
+    "objectives": [
+      "To gain knowledge on the concepts and principles of HTML5 and CSS3.",
+      "To develop responsive user interfaces for modern web applications.",
+      "To master layout mechanisms including CSS Grid, Flexbox, and UI frameworks."
+    ],
+    "units": [
+      {
+        "unit": "Unit I",
+        "title": "Basic HTML Structure",
+        "hours": "9 Hours",
+        "topics": "HTML5 Introduction, doctype, html, head, title, meta, body tags, headings, paragraphs, lists, links, images, tables, semantic structural elements: header, nav, main, section, article, aside, footer."
+      },
+      {
+        "unit": "Unit II",
+        "title": "HTML Forms and Media",
+        "hours": "9 Hours",
+        "topics": "Forms, input types, attributes, validation, select, textarea, buttons, embedding audio, video, iframe, canvas, SVG basics."
+      },
+      {
+        "unit": "Unit III",
+        "title": "CSS3 Styling & Box Model",
+        "hours": "9 Hours",
+        "topics": "CSS Introduction, syntax, selectors (class, id, attribute, pseudo-classes), cascading, inheritance, colors, backgrounds, text formatting, fonts, CSS Box Model: margin, border, padding, width, height, box-sizing."
+      },
+      {
+        "unit": "Unit IV",
+        "title": "CSS Layouts: Flexbox & Grid",
+        "hours": "9 Hours",
+        "topics": "Display properties, position (static, relative, absolute, fixed, sticky), Flexbox container and item properties, CSS Grid layout, template rows/columns, gap, grid areas."
+      },
+      {
+        "unit": "Unit V",
+        "title": "Responsive Web Design & Transitions",
+        "hours": "9 Hours",
+        "topics": "Media queries, responsive typography, fluid images, mobile-first design, CSS3 transforms (2D & 3D), transitions, keyframe animations, UI framework integration basics."
+      }
+    ],
+    "books_study": [
+      "Lemay, L. (2022). Mastering HTML, CSS & JavaScript Web Publishing – 2022. BPB Publications.",
+      "Carey, P. M. (2021). New Perspectives on HTML5 and CSS: Comprehensive, 8th Edition. Cengage."
+    ],
+    "books_reference": [
+      "Ruvalcaba, Z., Boehm, A., & Delamater, M. (2024). Murach's HTML and CSS (6th Edition). Mike Murach & Associates.",
+      "Duckett, J. (2014). HTML and CSS: Design and Build Websites. John Wiley & Sons."
+    ],
+    "websites": [
+      "https://www.coursera.org/specializations/ui-ux-design",
+      "https://developer.mozilla.org/en-US/docs/Web/HTML",
+      "https://developer.mozilla.org/en-US/docs/Web/CSS",
+      "https://www.w3schools.com/html/",
+      "https://www.w3schools.com/css/"
     ]
   },
   {
@@ -74636,6 +74688,60 @@
         "outcome": "Acquire the knowledge in transportation problem",
         "k_level": "K2"
       }
+    ],
+    "objectives": [
+      "To understand the concepts of permutations and combinations.",
+      "To understand the concepts of probability and distributions.",
+      "To understand arithmetic and geometric progressions (A.P and G.P).",
+      "To provide linear programming problem formulation and solution methods.",
+      "To solve transportation problems using NW corner and least cost methods."
+    ],
+    "units": [
+      {
+        "unit": "Unit I",
+        "title": "Mathematical Preliminaries",
+        "hours": "9 Hours",
+        "topics": "Mathematical Preliminaries - Permutations - Combinations (concepts & simple problems only)."
+      },
+      {
+        "unit": "Unit II",
+        "title": "Probability",
+        "hours": "9 Hours",
+        "topics": "Events – Sample space - Probability Addition Theorem - Probability Multiplication Theorem (without proof, only simple relevant problems)."
+      },
+      {
+        "unit": "Unit III",
+        "title": "Progressions (A.P & G.P)",
+        "hours": "9 Hours",
+        "topics": "Arithmetic Progression - Sum of series in A.P - Geometric Progression - Sum of series in G.P (simple computational problems)."
+      },
+      {
+        "unit": "Unit IV",
+        "title": "Linear Programming Problem",
+        "hours": "9 Hours",
+        "topics": "Operations Research: Linear Programming Problem formulation - Graphical method - Simplex method (simple problems)."
+      },
+      {
+        "unit": "Unit V",
+        "title": "Transportation Problem",
+        "hours": "9 Hours",
+        "topics": "Transportation Problem formulation - Initial basic feasible solution - North West Corner Method - Least Cost Method."
+      }
+    ],
+    "books_study": [
+      "Pillai R.S.N and Bagavathi, (2008), Statistics. S. Chand Publications.",
+      "Sanchetti, D.C., & Kapoor, V.K. (2002) Business Mathematics, (11th Ed.). Sultan Chand and Sons, New Delhi.",
+      "Kanti Swarup, Gupta P.K, Man Mohan (2011) Operation Research (15th Ed.). Sultan Chand and Sons, New Delhi."
+    ],
+    "books_reference": [
+      "Alan Doerr, Kenneth, Levasseur, 'Applied Discrete Structure for Computer Science', Galgotia Pub., New Delhi, 1995.",
+      "David Gries, 'The Science of Programming', Narosa Pub. House, New Delhi, 1993."
+    ],
+    "websites": [
+      "https://openstax.org/books/contemporary-mathematics/pages/7-6-probability-with-permutations-and-combinations",
+      "https://courses.lumenlearning.com/mathforliberalartscorequisite/chapter/probability-using-permutations-and-combinations/",
+      "https://en.wikipedia.org/wiki/Transportation_theory_(mathematics)",
+      "https://www.khanacademy.org/math"
     ]
   },
   {
@@ -74772,6 +74878,56 @@
         "outcome": "Propose sustainable practices for natural resource management and conservation",
         "k_level": "K3"
       }
+    ],
+    "objectives": [
+      "To enable students connect themselves with nature and biodiversity.",
+      "To create awareness of the causes and consequences of environmental pollution.",
+      "To recognize available natural resources and sustain conservation practices."
+    ],
+    "units": [
+      {
+        "unit": "Unit I",
+        "title": "Introduction to Environmental Studies",
+        "hours": "6 Hours",
+        "topics": "Introduction - Subsystems of Earth - Scope and Importance - Various Recycling Methods - Environmental Movements in India – Eco-Feminism - Public awareness - Suggestions to conserve environment."
+      },
+      {
+        "unit": "Unit II",
+        "title": "Natural Resources",
+        "hours": "6 Hours",
+        "topics": "Food Resources - Land Resources - Forest resources - Mineral Resources - Water Resources - Energy Resources."
+      },
+      {
+        "unit": "Unit III",
+        "title": "Ecosystems, Biodiversity and Conservation",
+        "hours": "6 Hours",
+        "topics": "Kinds of Ecosystem - General structure - Energy flow and Ecological pyramids - Levels of Biodiversity - Hot spots of Biodiversity - Endangered and Endemic Species - Conservation of Biodiversity."
+      },
+      {
+        "unit": "Unit IV",
+        "title": "Environmental Pollution",
+        "hours": "6 Hours",
+        "topics": "Air Pollution - Water Pollution - Oil Pollution - Soil Pollution - Marine Pollution - Noise Pollution - Thermal Pollution - Radiation Pollution."
+      },
+      {
+        "unit": "Unit V",
+        "title": "Environmental Organizations and Treaties",
+        "hours": "6 Hours",
+        "topics": "United Nations Environment Program (UNEP) - International treaties - Ministry of Environment, Forest and Climate Change - Important National Environmental Acts - Environmental Impact Assessment."
+      }
+    ],
+    "books_study": [
+      "Department of Human Excellence, (2025). Environmental Studies. St. Joseph's College."
+    ],
+    "books_reference": [
+      "Rathor, V.S. & Rathor B.S. (2013). Management of Natural Resources for Sustainable Development. Daya Publishing House.",
+      "Sharma P.D. (2010). Ecology and Environment, (8th Ed.). Rastogi Publications.",
+      "Agrawal, A & Gibson, C.C. (2001). Introduction: The Role of Community in Natural Resource Conservation. Rutgers University Press."
+    ],
+    "websites": [
+      "https://www.unep.org/",
+      "http://moef.gov.in/en/",
+      "https://www.ipcc.ch/reports/"
     ]
   },
   {
@@ -75316,6 +75472,60 @@
         "outcome": "Develop RESTful web services using Spring Boot, differentiate JDBC & JPA, build web applications, and test APIs using Postman",
         "k_level": "K4"
       }
+    ],
+    "objectives": [
+      "To introduce fundamental concepts of Java programming, control structures and OOP.",
+      "To implement inheritance, polymorphism, abstract classes and interfaces.",
+      "To develop skills in exception handling, multi-threading and generics.",
+      "To provide hands-on experience with Spring framework, Dependency Injection and ORM.",
+      "To build web services, RESTful APIs and test APIs using Postman."
+    ],
+    "units": [
+      {
+        "unit": "Unit I",
+        "title": "Introduction to Java, Classes & Objects",
+        "hours": "9 Hours",
+        "topics": "Java Primaries – Control Statements. Classes and Objects: General form of a class – Creation of Objects – Usage of Constructors – 'this' keyword - Constructor Overloading - Copy constructors - Static Data Members – Static Methods - finalize() Method."
+      },
+      {
+        "unit": "Unit II",
+        "title": "Inheritance, Polymorphism & Interfaces",
+        "hours": "9 Hours",
+        "topics": "Inheriting Variables in a Class – Inheriting Methods in a Class – Inheritance and Constructors – Abstract Classes – Final Classes. Interfaces and Packages: Interfaces - Structure of an Interface – Implementation of an Interface – Interface Inheritance. Packages – Placing Classes in a Package – Package Hierarchy – Access Control Modifiers."
+      },
+      {
+        "unit": "Unit III",
+        "title": "Exception Handling & Multi-threading",
+        "hours": "9 Hours",
+        "topics": "Default Exception Handling – Exception and Error Classes – Catch Block Searching Pattern – 'throw' Statement – 'throws' Statement – Custom Exceptions. Threads: Life Cycle of a Thread – Creating and Running Threads – Methods in Thread Class – Thread Synchronization."
+      },
+      {
+        "unit": "Unit IV",
+        "title": "Introduction to Spring Framework",
+        "hours": "9 Hours",
+        "topics": "Introduction to Spring Framework - Dependency Injection – IoC Container – Spring AOP – Spring ORM Layer – Annotations – Spring Boot Architecture – JPA concepts."
+      },
+      {
+        "unit": "Unit V",
+        "title": "Web Services & REST APIs",
+        "hours": "9 Hours",
+        "topics": "Introduction to web services – Creating RESTful API – Difference between JDBC & JPA – Web apps using Spring Boot – API testing using Postman."
+      }
+    ],
+    "books_study": [
+      "Herbert Schildt, 'Java: The Complete Reference,' McGraw Hill, 13th Edition, 2023.",
+      "E. Balagurusamy, 'Programming with Java,' McGraw Hill, 6th Edition, 2021."
+    ],
+    "books_reference": [
+      "Cay S. Horstmann, 'Core Java Volume I – Fundamentals,' Prentice Hall, 12th Edition, 2022.",
+      "Bruce Eckel, 'Thinking in Java,' Pearson Education, 4th Edition, 2022.",
+      "Benjamin J. Evans & Jason Clark, 'Java in a Nutshell,' O'Reilly Media, 8th Edition, 2023."
+    ],
+    "websites": [
+      "https://docs.oracle.com/javase/tutorial/ - Official Java Documentation",
+      "https://www.w3schools.com/java/ - W3Schools Java Tutorial",
+      "https://www.javatpoint.com/java-tutorial - JavaTPoint Java Guide",
+      "https://spring.io/guides - Official Spring Boot Guides"
     ]
   },
   {
@@ -75384,6 +75594,56 @@
         "outcome": "Measure, evaluate, and compare OS components through instrumentation for performance analysis",
         "k_level": "K4"
       }
+    ],
+    "objectives": [
+      "To understand fundamentals of operating systems, system structures and architectures.",
+      "To gain knowledge of process management, CPU scheduling and synchronization.",
+      "To explore UNIX architecture, file systems, shell scripting concepts and Linux administration."
+    ],
+    "units": [
+      {
+        "unit": "Unit I",
+        "title": "OS Structures & System Calls",
+        "hours": "9 Hours",
+        "topics": "Operating System Concepts - OS Services - System Calls - System Programs - OS Structure: Monolithic, Layered, Microkernel, Modules - Virtual Machines - System Boot."
+      },
+      {
+        "unit": "Unit II",
+        "title": "Process Management & Scheduling",
+        "hours": "9 Hours",
+        "topics": "Process Concept - Process Scheduling - Operations on Processes - Interprocess Communication - Multi-threading Models - CPU Scheduling: FCFS, SJF, Priority, Round Robin - Process Synchronization - Critical Section Problem - Semaphores."
+      },
+      {
+        "unit": "Unit III",
+        "title": "Memory Management & Storage",
+        "hours": "9 Hours",
+        "topics": "Memory Management: Swapping, Contiguous Memory Allocation, Paging, Segmentation - Virtual Memory: Demand Paging, Page Replacement Algorithms (FIFO, LRU, Optimal) - Thrashing."
+      },
+      {
+        "unit": "Unit IV",
+        "title": "UNIX Architecture & Shell Programming",
+        "hours": "9 Hours",
+        "topics": "UNIX Architecture - Kernel and Shell - File System hierarchy - File permissions and access modes (chmod, chown) - Shell Environment - Shell Variables - Shell Scripting: test, if, case, while, for loops."
+      },
+      {
+        "unit": "Unit V",
+        "title": "Linux Commands & System Administration",
+        "hours": "9 Hours",
+        "topics": "Linux essential commands - grep, sed, awk text filters - Process management commands (ps, top, kill) - User and Group Administration - Package management - Cron automation jobs."
+      }
+    ],
+    "books_study": [
+      "Silberschatz, A., Galvin, P. B., & Gagne, G. (2023). 'Operating System Concepts' (10th Ed.). Wiley India Pvt. Ltd.",
+      "Forouzan, B. A. (2022). 'Unix and Shell Programming'. Cengage Learning India Pvt. Ltd."
+    ],
+    "books_reference": [
+      "Kochan, S. G. (2020). 'Unix Shell Programming' (4th Ed.). Pearson Education.",
+      "Negus, C. (2022). 'Linux Bible' (10th Ed.). Wiley India Pvt. Ltd."
+    ],
+    "websites": [
+      "https://tldp.org/guides.html - The Linux Documentation Project",
+      "https://www.gnu.org/home.en.html - GNU Operating System",
+      "https://help.ubuntu.com/ - Ubuntu Server Guide"
     ]
   },
   {
@@ -75792,6 +76052,56 @@
         "outcome": "Construct various types of networks for processing data",
         "k_level": "K4"
       }
+    ],
+    "objectives": [
+      "To understand underlying principles of computer networking.",
+      "To investigate network hardware, software components and OSI/TCP-IP models.",
+      "To analyze network architectures, routing algorithms and internet protocols."
+    ],
+    "units": [
+      {
+        "unit": "Unit I",
+        "title": "Introduction to Networks & Physical Layer",
+        "hours": "12 Hours",
+        "topics": "Introduction: Uses of Computer Networks - Network Hardware - Network Software - Reference Models: OSI Model, TCP/IP Model - Physical Layer: Transmission Media, Wireless Transmission."
+      },
+      {
+        "unit": "Unit II",
+        "title": "Data Link Layer & MAC Sublayer",
+        "hours": "12 Hours",
+        "topics": "Data Link Layer Design Issues - Error Detection and Correction - Elementary Data Link Protocols - Sliding Window Protocols - MAC Sublayer: Channel Allocation, Multiple Access Protocols (ALOHA, CSMA/CD), Ethernet."
+      },
+      {
+        "unit": "Unit III",
+        "title": "Network Layer & Routing Algorithms",
+        "hours": "12 Hours",
+        "topics": "Network Layer Design Issues - Routing Algorithms: Shortest Path Routing, Flooding, Distance Vector Routing, Link State Routing - Congestion Control Algorithms - IP Addressing, IPv4 and IPv6."
+      },
+      {
+        "unit": "Unit IV",
+        "title": "Transport Layer Protocols",
+        "hours": "12 Hours",
+        "topics": "Transport Service - Elements of Transport Protocols - Addressing, Connection Establishment, Connection Release - TCP Protocol: Segment header, Connection Management, Flow control - UDP Protocol."
+      },
+      {
+        "unit": "Unit V",
+        "title": "Application Layer & Network Security",
+        "hours": "12 Hours",
+        "topics": "DNS (Domain Name System) - Electronic Mail: SMTP, POP3, IMAP - World Wide Web: HTTP, HTTPS - Network Security: Cryptography, Symmetric and Asymmetric Key Algorithms, Firewalls."
+      }
+    ],
+    "books_study": [
+      "R.S. Rajesh, K.S. Eswarakumar & R. Balasubramanian, 'Computer Networks - Fundamentals and Applications', Vikas Publishing House Pvt. Ltd., 2002.",
+      "Andrew S. Tanenbaum, 'Computer Networks', Pearson Education, 5th Edition."
+    ],
+    "books_reference": [
+      "Behrouz A. Forouzan, 'Data Communications and Networking', McGraw Hill, 5th Edition.",
+      "William Stallings, 'Data and Computer Communications', Pearson Education, 10th Edition."
+    ],
+    "websites": [
+      "https://www.geeksforgeeks.org/computer-network-tutorials/",
+      "https://www.coursera.org/learn/computer-networking",
+      "https://nptel.ac.in/courses/106105081"
     ]
   },
   {
@@ -75860,6 +76170,57 @@
         "outcome": "Visualizing the results of analytics effectively",
         "k_level": "K4"
       }
+    ],
+    "objectives": [
+      "To understand important features of Python for data manipulation.",
+      "To define fundamentals of widely used packages: NumPy, Pandas, Matplotlib.",
+      "To perform data preprocessing, descriptive statistics, visualization and web integration with Flask."
+    ],
+    "units": [
+      {
+        "unit": "Unit I",
+        "title": "Python Language Essentials",
+        "hours": "12 Hours",
+        "topics": "Python Basics: Variables, Expressions, Data types, Control Flow, Functions, Lambdas, Lists, Tuples, Dictionaries, Sets, File I/O and Exception Handling."
+      },
+      {
+        "unit": "Unit II",
+        "title": "NumPy for Numerical Computing",
+        "hours": "12 Hours",
+        "topics": "Introduction to NumPy - NumPy Arrays, Understanding Data Types, Array Indexing, Slicing, Reshaping, Universal Functions, Aggregations, Broadcasting, Boolean Logic, Fancy Indexing, Sorting Arrays."
+      },
+      {
+        "unit": "Unit III",
+        "title": "Pandas for Data Manipulation",
+        "hours": "12 Hours",
+        "topics": "Introduction to Pandas Data Structures: Series and DataFrame - Essential Functionality: Reindexing, Dropping entries, Indexing, Selection, Filtering - Arithmetic and Data Alignment."
+      },
+      {
+        "unit": "Unit IV",
+        "title": "Data Preprocessing & Statistics",
+        "hours": "12 Hours",
+        "topics": "Summarizing and Computing Descriptive Statistics - Handling Missing Data (dropna, fillna) - Hierarchical Indexing - Data Wrangling: Combining, Merging, Reshaping - Matplotlib and Seaborn for Data Visualization."
+      },
+      {
+        "unit": "Unit V",
+        "title": "Flask Web Framework & Data Deployment",
+        "hours": "12 Hours",
+        "topics": "Flask Web Framework in Python: Introduction, Environment setup, Routes and View Functions, Request-Response Cycle, Jinja2 Template Engine, Web Forms, Flash messages, Database integration."
+      }
+    ],
+    "books_study": [
+      "Wesley J. Chun, 'Core Python Programming', Prentice Hall PTR, First Edition.",
+      "Wes McKinney, 'Python for Data Analysis', O'Reilly Media, 2nd Edition."
+    ],
+    "books_reference": [
+      "Jake VanderPlas, 'Python Data Science Handbook', O'Reilly Media.",
+      "Mark Lutz, 'Learning Python', O'Reilly Media, 5th Edition."
+    ],
+    "websites": [
+      "https://pandas.pydata.org/docs/",
+      "https://numpy.org/doc/stable/",
+      "https://matplotlib.org/stable/contents.html",
+      "https://flask.palletsprojects.com/"
     ]
   },
   {
@@ -75928,6 +76289,56 @@
         "outcome": "Apply java programming concepts in Android application development",
         "k_level": "K4"
       }
+    ],
+    "objectives": [
+      "To know evolutions of mobile computing and wireless communications.",
+      "To understand GSM, UMTS, mobile IP and wireless application protocols.",
+      "To design and develop native Android applications with UI components."
+    ],
+    "units": [
+      {
+        "unit": "Unit I",
+        "title": "Wireless Transmission & Mobile Concepts",
+        "hours": "12 Hours",
+        "topics": "Introduction: Applications, Simplified reference model - Wireless transmission: Frequencies, Signals, Antennas, Signal propagation, Multiplexing, Modulation, Spread spectrum, Cellular systems."
+      },
+      {
+        "unit": "Unit II",
+        "title": "Telecommunication & Network Layer",
+        "hours": "12 Hours",
+        "topics": "GSM (Global System for Mobile Communication) - UMTS - Wireless LAN: IEEE 802.11, Bluetooth architecture - Mobile Network Layer: Mobile IP, DHCP - Wireless Application Protocol (WAP) architecture."
+      },
+      {
+        "unit": "Unit III",
+        "title": "Getting Started with Android",
+        "hours": "12 Hours",
+        "topics": "What is Android? - Android Architecture - Installing Android Studio - Exploring IDE, Project Structure - Launching first application - Activities, Activity Lifecycle, Intents, Manifest file."
+      },
+      {
+        "unit": "Unit IV",
+        "title": "Android UI Design & Screen Components",
+        "hours": "12 Hours",
+        "topics": "Components of a Screen: Views and ViewGroups - Layouts: LinearLayout, RelativeLayout, FrameLayout, TableLayout, ScrollView - UI Controls: TextView, EditText, Button, CheckBox, RadioButton, Spinner."
+      },
+      {
+        "unit": "Unit V",
+        "title": "Menus, Notifications & Data Storage",
+        "hours": "12 Hours",
+        "topics": "Options Menu, Context Menu - Toast messages - Dialogs and Notifications - SQLite Database in Android - SharedPreferences - Publishing and deploying Android APK."
+      }
+    ],
+    "books_study": [
+      "Jochen Schiller, 'Mobile Communications', Pearson Education, Second Edition 2008.",
+      "Reto Meier, 'Professional Android 4 Application Development', Wrox (Wiley), 2012."
+    ],
+    "books_reference": [
+      "Bill Phillips & Chris Stewart, 'Android Programming: The Big Nerd Ranch Guide', 3rd Edition.",
+      "Pradeep Kothari, 'Android Application Development Black Book', Dreamtech Press."
+    ],
+    "websites": [
+      "https://developer.android.com/guide - Official Android Developers Guide",
+      "https://developer.android.com/courses - Google Android Training Courses",
+      "https://www.vogella.com/tutorials/android.html - Vogella Android Tutorials"
     ]
   },
   {
