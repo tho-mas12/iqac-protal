@@ -270,10 +270,10 @@ class CoursePlanApp {
     }
 
     const paths = [
-      '/course-plan/data/syllabus_master.json?v=20261109H',
-      '/course-plan/syllabus_master.json?v=20261109H',
-      'data/syllabus_master.json?v=20261109H',
-      'syllabus_master.json?v=20261109H'
+      '/course-plan/data/syllabus_master.json?v=20261109I',
+      '/course-plan/syllabus_master.json?v=20261109I',
+      'data/syllabus_master.json?v=20261109I',
+      'syllabus_master.json?v=20261109I'
     ];
 
     for (const p of paths) {
@@ -1784,7 +1784,101 @@ class CoursePlanApp {
 
   switchAdminTab(tab) {
     this.adminTab = tab;
+    if (tab === 'analytics' || tab === 'report') {
+      if (!this.analyticsData && !this.analyticsLoading) {
+        this.loadAnalyticsData();
+      }
+    }
     this.render();
+  }
+
+  async loadAnalyticsData(force = false) {
+    if (this.analyticsData && !force) return this.analyticsData;
+    this.analyticsLoading = true;
+    try {
+      let url = 'api/course_plan.php?action=analytics_data';
+      if (this.adminAnalyticsDept && this.adminAnalyticsDept !== 'all') {
+        url += `&department=${encodeURIComponent(this.adminAnalyticsDept)}`;
+      }
+      if (this.adminAnalyticsStatus && this.adminAnalyticsStatus !== 'all') {
+        url += `&status=${encodeURIComponent(this.adminAnalyticsStatus)}`;
+      }
+      const res = await fetch(url);
+      const json = await res.json();
+      if (json.success) {
+        this.analyticsData = json;
+      }
+    } catch (err) {
+      console.error('Failed to load analytics data:', err);
+    } finally {
+      this.analyticsLoading = false;
+      if (this.adminTab === 'analytics' || this.adminTab === 'report') {
+        this.render();
+      }
+    }
+    return this.analyticsData;
+  }
+
+  onAnalyticsFilterChange(filterType, val) {
+    if (filterType === 'status') this.adminAnalyticsStatus = val;
+    if (filterType === 'dept') this.adminAnalyticsDept = val;
+    if (filterType === 'stream') this.adminAnalyticsStream = val;
+    this.render();
+  }
+
+  printInstitutionalReport() {
+    if (this.adminTab !== 'report') {
+      this.switchAdminTab('report');
+      setTimeout(() => window.print(), 350);
+    } else {
+      window.print();
+    }
+  }
+
+  exportInstitutionalReportCSV() {
+    const rows = [
+      ['S.No', 'Department', 'Faculty Strength', 'Plans Submitted', 'Plans Approved', 'Master Syllabus Courses', 'Coverage (%)', 'Planned Teaching Hours', 'Audit Status']
+    ];
+    const data = this.analyticsData || {};
+    const deptStats = data.dept_stats || {};
+    
+    this.departments.forEach((d, idx) => {
+      const dStat = deptStats[d.name] || { total: 0, approved: 0, hours: 0, faculty_count: d.faculty ? d.faculty.length : 0 };
+      const sylCount = this.getDepartmentEvenSyllabusCount(d.name);
+      const covPct = sylCount > 0 ? Math.min(100, Math.round((dStat.approved / sylCount) * 100)) : (dStat.approved > 0 ? 100 : 0);
+      const statusText = dStat.approved > 0 ? 'Approved & Certified' : (dStat.total > 0 ? 'Under Review' : 'Pending Submission');
+      rows.push([
+        idx + 1,
+        `"${d.name.replace(/"/g, '""')}"`,
+        d.faculty ? d.faculty.length : (dStat.faculty_count || 0),
+        dStat.total,
+        dStat.approved,
+        sylCount,
+        `${covPct}%`,
+        dStat.hours,
+        statusText
+      ]);
+    });
+
+    const csvContent = 'data:text/csv;charset=utf-8,' + rows.map(r => r.join(',')).join('\\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', 'SJC_IQAC_Course_Plan_Institutional_Report_2026_27.csv');
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  }
+
+  getDepartmentEvenSyllabusCount(deptName) {
+    if (!this.syllabusCourses || this.syllabusCourses.length === 0) return 0;
+    let count = 0;
+    this.syllabusCourses.forEach(c => {
+      if (this.isDeptMatch(c.department, deptName) && [2, 4, 6].includes(Number(c.semester_num))) {
+        count++;
+      }
+    });
+    return count;
   }
 
   switchAdminManageSubTab(subTab) {
@@ -3514,11 +3608,28 @@ class CoursePlanApp {
             </p>
           </div>
 
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2.5 flex-wrap">
             <button 
               type="button" 
-              onclick="coursePlanApp.fetchPlans().then(() => coursePlanApp.render())" 
-              class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl text-xs transition border border-white/20 flex items-center gap-1.5"
+              onclick="coursePlanApp.switchAdminTab('analytics')" 
+              class="px-3.5 py-2 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white font-black rounded-xl text-xs transition shadow-md flex items-center gap-1.5 cursor-pointer"
+            >
+              <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+              <span>📊 Pedagogy & ICT Analytics</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchAdminTab('report')" 
+              class="px-3.5 py-2 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white font-black rounded-xl text-xs transition shadow-md flex items-center gap-1.5 cursor-pointer"
+            >
+              <i data-lucide="file-text" class="w-4 h-4"></i>
+              <span>🏛️ Institutional Report</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.fetchPlans().then(() => coursePlanApp.loadAnalyticsData(true)).then(() => coursePlanApp.render())" 
+              class="px-3 py-2 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl text-xs transition border border-white/20 flex items-center gap-1.5 cursor-pointer"
+              title="Refresh All Plans & Analytics"
             >
               <i data-lucide="refresh-cw" class="w-4 h-4"></i>
               <span>Refresh</span>
@@ -3572,6 +3683,22 @@ class CoursePlanApp {
             >
               <i data-lucide="book-open" class="w-4 h-4"></i>
               <span>3. Course-wise Monitoring (UG & PG Sem-wise)</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchAdminTab('analytics')" 
+              class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${this.adminTab === 'analytics' ? 'bg-purple-600 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}"
+            >
+              <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+              <span>4. 📊 Pedagogy & ICT Analytics</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchAdminTab('report')" 
+              class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${this.adminTab === 'report' ? 'bg-purple-600 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}"
+            >
+              <i data-lucide="file-text" class="w-4 h-4"></i>
+              <span>5. 🏛️ Institutional Report</span>
             </button>
           </div>
 
@@ -4196,7 +4323,13 @@ class CoursePlanApp {
           `;
         })() : ''}
 
-        <!-- ================= 4. MANAGE MASTER DATA (FACULTY / COURSES / DEPTS) ================= -->
+        <!-- ================= 4. PEDAGOGY & ICT ANALYTICS VIEW ================= -->
+        ${this.adminTab === 'analytics' ? this.renderAdminAnalyticsHtml() : ''}
+
+        <!-- ================= 5. INSTITUTIONAL COURSE PLAN REPORT VIEW ================= -->
+        ${this.adminTab === 'report' ? this.renderInstitutionalReportHtml() : ''}
+
+        <!-- ================= 6. MANAGE MASTER DATA (FACULTY / COURSES / DEPTS) ================= -->
         ${this.adminTab === 'manage' ? `
           <div class="space-y-5">
             <!-- Manage Sub-navigation -->
@@ -4412,6 +4545,899 @@ class CoursePlanApp {
             ` : ''}
           </div>
         ` : ''}
+      </div>
+    `;
+  }
+
+
+
+// ================= 3B. PEDAGOGY & ICT ANALYTICS (NAAC 2.3.1 & 2.3.2) =================
+  renderAdminAnalyticsHtml() {
+    const data = this.analyticsData;
+    if (!data) {
+      if (!this.analyticsLoading) this.loadAnalyticsData();
+      return `
+        <div class="bg-white rounded-3xl border border-slate-200 p-12 text-center space-y-4 shadow-sm">
+          <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-purple-600 border-t-transparent"></div>
+          <div class="text-base font-black text-slate-800">Synthesizing Institutional Pedagogy & ICT Analytics...</div>
+          <p class="text-xs text-slate-500 max-w-md mx-auto">Aggregating student-centric methodologies, JosTEL LMS integrations, digital tools, and Bloom's cognitive taxonomy across all 34 departments.</p>
+        </div>
+      `;
+    }
+
+    const rawPlans = (data.plans && data.plans.length > 0) ? data.plans : (this.plans || []);
+    
+    // Stream definition helper
+    const streams = {
+      science: ['mathematics', 'physics', 'chemistry', 'botany', 'biotechnology', 'electronics', 'physical education'],
+      computing: ['computer science', 'information technology', 'artificial intelligence', 'data science', 'voc'],
+      commerce: ['commerce', 'bba'],
+      arts: ['english', 'tamil', 'history', 'economics', 'counselling', 'hrm', 'visual communication', 'sanskrit', 'french', 'hindi']
+    };
+
+    const getStream = (dept) => {
+      const d = (dept || '').toLowerCase();
+      for (const [st, depts] of Object.entries(streams)) {
+        if (depts.some(x => d.includes(x))) return st;
+      }
+      return 'general';
+    };
+
+    // Filter plans according to UI selectors
+    const filteredPlans = rawPlans.filter(p => {
+      if (this.adminAnalyticsStatus === 'Approved' && p.hod_status !== 'Approved') return false;
+      if (this.adminAnalyticsDept !== 'all' && p.department_name !== this.adminAnalyticsDept) return false;
+      if (this.adminAnalyticsStream !== 'all') {
+        const st = getStream(p.department_name);
+        if (st !== this.adminAnalyticsStream) return false;
+      }
+      return true;
+    });
+
+    // Recompute statistics dynamically based on filtered set
+    let totalHours = 0;
+    let approvedCount = 0;
+    const facSet = new Set();
+    const deptSet = new Set();
+    const methodologies = {};
+    const ictPlatforms = {};
+    const ictTools = {};
+    const ictPurposes = {};
+    const assessmentTypes = {};
+    const bloom = { K1: 0, K2: 0, K3: 0, K4: 0, K5: 0, K6: 0 };
+
+    filteredPlans.forEach(p => {
+      totalHours += parseInt(p.teaching_hours || 0, 10) || 0;
+      if (p.hod_status === 'Approved') approvedCount++;
+      if (p.faculty_name) facSet.add(p.faculty_name);
+      if (p.department_name) deptSet.add(p.department_name);
+
+      // Methodologies
+      const dtp = Array.isArray(p.detailed_teaching_plan) ? p.detailed_teaching_plan : [];
+      dtp.forEach(r => {
+        const m = (r.methodology || '').trim();
+        if (m) methodologies[m] = (methodologies[m] || 0) + 1;
+      });
+
+      // Bloom's levels
+      const cos = Array.isArray(p.course_outcomes) ? p.course_outcomes : [];
+      cos.forEach(co => {
+        const lvl = (co.k_level || co.level || co.cognitive_level || '').toUpperCase();
+        if (lvl.includes('K1') || lvl.includes('REMEMBER')) bloom.K1++;
+        else if (lvl.includes('K2') || lvl.includes('UNDERSTAND')) bloom.K2++;
+        else if (lvl.includes('K3') || lvl.includes('APPLY')) bloom.K3++;
+        else if (lvl.includes('K4') || lvl.includes('ANALY')) bloom.K4++;
+        else if (lvl.includes('K5') || lvl.includes('EVALUAT')) bloom.K5++;
+        else if (lvl.includes('K6') || lvl.includes('CREATE') || lvl.includes('SYNTH')) bloom.K6++;
+      });
+
+      // ICT
+      const icts = Array.isArray(p.ict_integration) ? p.ict_integration : [];
+      icts.forEach(ict => {
+        const plat = (ict.platform || '').trim();
+        if (plat) ictPlatforms[plat] = (ictPlatforms[plat] || 0) + 1;
+        const tool = (ict.tool || '').trim();
+        if (tool) ictTools[tool] = (ictTools[tool] || 0) + 1;
+        const purp = (ict.purpose || '').trim();
+        if (purp) ictPurposes[purp] = (ictPurposes[purp] || 0) + 1;
+      });
+
+      // Assessments
+      const acts = Array.isArray(p.learning_activities) ? p.learning_activities : [];
+      acts.forEach(act => {
+        if (act.is_assessment || act.cia_component) {
+          const comp = (act.cia_component || 'CIA Component').trim();
+          assessmentTypes[comp] = (assessmentTypes[comp] || 0) + 1;
+        }
+      });
+    });
+
+    // Fallback to server pre-aggregates if filtered set is whole collection
+    const activeMethodologies = (filteredPlans.length === rawPlans.length && Object.keys(methodologies).length === 0) ? (data.pedagogy || {}) : methodologies;
+    const activePlatforms = (filteredPlans.length === rawPlans.length && Object.keys(ictPlatforms).length === 0) ? (data.ict_platforms || {}) : ictPlatforms;
+    const activeTools = (filteredPlans.length === rawPlans.length && Object.keys(ictTools).length === 0) ? (data.ict_tools || {}) : ictTools;
+    const activePurposes = (filteredPlans.length === rawPlans.length && Object.keys(ictPurposes).length === 0) ? (data.ict_purposes || {}) : ictPurposes;
+    const activeBloom = (filteredPlans.length === rawPlans.length && Object.values(bloom).reduce((a, b) => a + b, 0) === 0) ? (data.bloom_levels || bloom) : bloom;
+    const activeAssessments = (filteredPlans.length === rawPlans.length && Object.keys(assessmentTypes).length === 0) ? (data.assessment_types || {}) : assessmentTypes;
+
+    const totalPedagogySessions = Object.values(activeMethodologies).reduce((a, b) => a + b, 0);
+    const totalPlatformsCount = Object.values(activePlatforms).reduce((a, b) => a + b, 0);
+    const totalToolsCount = Object.values(activeTools).reduce((a, b) => a + b, 0);
+    const totalCosCount = Object.values(activeBloom).reduce((a, b) => a + b, 0);
+
+    const hotsCount = (activeBloom.K3 || 0) + (activeBloom.K4 || 0) + (activeBloom.K5 || 0) + (activeBloom.K6 || 0);
+    const lotsCount = (activeBloom.K1 || 0) + (activeBloom.K2 || 0);
+    const hotsPct = totalCosCount > 0 ? Math.round((hotsCount / totalCosCount) * 100) : 0;
+    const lotsPct = totalCosCount > 0 ? (100 - hotsPct) : 0;
+
+    let activeStudentCentricCount = 0;
+    Object.entries(activeMethodologies).forEach(([meth, cnt]) => {
+      const mLow = meth.toLowerCase();
+      if (!mLow.includes('lecture-based') || mLow.includes('problem') || mLow.includes('case') || mLow.includes('flipped') || mLow.includes('cooperative') || mLow.includes('project') || mLow.includes('experiential')) {
+        activeStudentCentricCount += cnt;
+      }
+    });
+    const activePedagogyPct = totalPedagogySessions > 0 ? Math.round((activeStudentCentricCount / totalPedagogySessions) * 100) : 0;
+
+    return `
+      <div class="space-y-6 animate-fadeIn w-full">
+        <!-- Control Header & Filters -->
+        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-purple-100 text-purple-800 border border-purple-200">
+                NAAC Criterion 2.3 & 2.6
+              </span>
+              <span class="text-slate-400">•</span>
+              <span class="text-xs font-bold text-slate-700">Institutional Analytics Engine</span>
+            </div>
+            <h2 class="text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+              <i data-lucide="bar-chart-3" class="w-5 h-5 text-purple-600"></i>
+              <span>Pedagogy, ICT Integration & OBE Analytics Dashboard</span>
+            </h2>
+            <p class="text-xs text-slate-500">
+              Interactive college-wide analysis of student-centric pedagogical modalities, JosTEL LMS digital integration, and Bloom's cognitive outcomes.
+            </p>
+          </div>
+
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchAdminTab('report')" 
+              class="px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white font-bold rounded-xl text-xs transition shadow-sm flex items-center gap-1.5 cursor-pointer"
+            >
+              <i data-lucide="file-text" class="w-4 h-4"></i>
+              <span>Generate Institutional Report →</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.loadAnalyticsData(true)" 
+              class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer"
+              title="Refresh Analytics"
+            >
+              <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+              <span>Sync</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter Toolbar -->
+        <div class="bg-gradient-to-r from-purple-50/60 via-indigo-50/40 to-slate-50 p-4 rounded-2xl border border-purple-100 shadow-2xs flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-3 flex-wrap">
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs font-bold text-slate-600">Stream:</span>
+              <div class="flex items-center bg-white p-1 rounded-xl border border-slate-200 shadow-2xs">
+                ${[
+                  { id: 'all', label: 'All Streams' },
+                  { id: 'science', label: '🔬 Sciences' },
+                  { id: 'computing', label: '💻 Computing & Voc' },
+                  { id: 'commerce', label: '📈 Commerce' },
+                  { id: 'arts', label: '📚 Arts & Hum' }
+                ].map(s => `
+                  <button 
+                    type="button" 
+                    onclick="coursePlanApp.onAnalyticsFilterChange('stream', '${s.id}')"
+                    class="px-2.5 py-1 rounded-lg text-xs font-bold transition ${this.adminAnalyticsStream === s.id ? 'bg-purple-600 text-white shadow-2xs' : 'text-slate-600 hover:bg-slate-100'}"
+                  >
+                    ${s.label}
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs font-bold text-slate-600">Status:</span>
+              <select 
+                onchange="coursePlanApp.onAnalyticsFilterChange('status', this.value)"
+                class="text-xs font-bold px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-2xs"
+              >
+                <option value="all" ${this.adminAnalyticsStatus === 'all' ? 'selected' : ''}>All Submissions (${filteredPlans.length})</option>
+                <option value="Approved" ${this.adminAnalyticsStatus === 'Approved' ? 'selected' : ''}>✓ Approved Only (${filteredPlans.filter(p => p.hod_status === 'Approved').length})</option>
+              </select>
+            </div>
+
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs font-bold text-slate-600">Department:</span>
+              <select 
+                onchange="coursePlanApp.onAnalyticsFilterChange('dept', this.value)"
+                class="text-xs font-bold px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-2xs max-w-[200px]"
+              >
+                <option value="all">All 34 Departments</option>
+                ${this.departments.map(d => `
+                  <option value="${d.name}" ${this.adminAnalyticsDept === d.name ? 'selected' : ''}>${d.name}</option>
+                `).join('')}
+              </select>
+            </div>
+          </div>
+
+          <div class="text-xs font-semibold text-slate-500 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Analyzing <strong>${filteredPlans.length}</strong> Course Plans across <strong>${deptSet.size}</strong> Depts</span>
+          </div>
+        </div>
+
+        <!-- Macro Analytics KPI Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+          <div class="bg-white p-5 rounded-2xl border border-purple-200/80 shadow-2xs bg-purple-50/20 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-[11px] font-bold text-purple-900 uppercase tracking-wider">Active Pedagogy Index</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 bg-purple-100 text-purple-800 rounded-full">NAAC 2.3.1</span>
+              </div>
+              <div class="text-3xl font-black text-purple-900">${activePedagogyPct}%</div>
+              <p class="text-[11px] text-slate-500 mt-1">Share of participatory / active learning sessions</p>
+            </div>
+            <div class="w-full bg-purple-100 h-2 rounded-full overflow-hidden mt-3">
+              <div class="bg-gradient-to-r from-purple-600 to-indigo-600 h-full rounded-full transition-all duration-500" style="width: ${activePedagogyPct}%"></div>
+            </div>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-indigo-200/80 shadow-2xs bg-indigo-50/20 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-[11px] font-bold text-indigo-900 uppercase tracking-wider">Digital & LMS Integrations</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 bg-indigo-100 text-indigo-800 rounded-full">NAAC 2.3.2</span>
+              </div>
+              <div class="text-3xl font-black text-indigo-900">${totalPlatformsCount}</div>
+              <p class="text-[11px] text-slate-500 mt-1">Total ICT platform usages logged across courses</p>
+            </div>
+            <div class="w-full bg-indigo-100 h-2 rounded-full overflow-hidden mt-3">
+              <div class="bg-gradient-to-r from-indigo-600 to-sky-600 h-full rounded-full" style="width: ${Math.min(100, totalPlatformsCount * 8)}%"></div>
+            </div>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-emerald-200/80 shadow-2xs bg-emerald-50/20 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-[11px] font-bold text-emerald-900 uppercase tracking-wider">Higher-Order Thinking (HOTS)</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full">OBE K3–K6</span>
+              </div>
+              <div class="text-3xl font-black text-emerald-900">${hotsPct}%</div>
+              <p class="text-[11px] text-slate-500 mt-1">${hotsCount} of ${totalCosCount} Course Outcomes mapped to HOTS</p>
+            </div>
+            <div class="w-full bg-emerald-100 h-2 rounded-full overflow-hidden mt-3 flex">
+              <div class="bg-emerald-600 h-full rounded-l-full" style="width: ${hotsPct}%" title="HOTS: ${hotsPct}%"></div>
+              <div class="bg-sky-400 h-full rounded-r-full" style="width: ${lotsPct}%" title="LOTS: ${lotsPct}%"></div>
+            </div>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-amber-200/80 shadow-2xs bg-amber-50/20 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-[11px] font-bold text-amber-900 uppercase tracking-wider">Planned Teaching Hours</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 bg-amber-100 text-amber-800 rounded-full">Curriculum Delivery</span>
+              </div>
+              <div class="text-3xl font-black text-amber-900">${totalHours} hrs</div>
+              <p class="text-[11px] text-slate-500 mt-1">Cumulative scheduled theory hours</p>
+            </div>
+            <div class="text-[10.5px] font-bold text-amber-700 mt-3 flex items-center justify-between">
+              <span>Avg per Course: <strong>${filteredPlans.length > 0 ? Math.round(totalHours / filteredPlans.length) : 0} hrs</strong></span>
+              <span><strong>${facSet.size}</strong> Faculty Members</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 1: TEACHING-LEARNING METHODOLOGIES BREAKDOWN -->
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-2xs overflow-hidden p-6 space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-purple-100 text-purple-800">NAAC Metric 2.3.1</span>
+                <h3 class="text-base font-black text-slate-900">Pedagogical Methodologies Deployment</h3>
+              </div>
+              <p class="text-xs text-slate-500 mt-0.5">Distribution of student-centric experiential, participative, and problem-solving teaching methods</p>
+            </div>
+            <span class="text-xs font-bold text-purple-700 bg-purple-50 px-3 py-1 rounded-xl border border-purple-200">
+              Total Logged Sessions: ${totalPedagogySessions}
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            ${Object.entries(activeMethodologies).map(([meth, count], idx) => {
+              const pct = totalPedagogySessions > 0 ? Math.round((count / totalPedagogySessions) * 100) : 0;
+              const isDirect = meth.toLowerCase() === 'lecture-based learning';
+              const colors = isDirect 
+                ? { bg: 'bg-slate-100', bar: 'bg-slate-500', text: 'text-slate-800', tag: 'Direct Instruction', tagBg: 'bg-slate-100 text-slate-600' }
+                : { bg: 'bg-purple-50', bar: 'bg-gradient-to-r from-purple-600 to-indigo-600', text: 'text-purple-950', tag: 'Student-Centric Participative', tagBg: 'bg-emerald-50 text-emerald-800 border border-emerald-200' };
+
+              return `
+                <div class="p-4 rounded-2xl border border-slate-200/80 bg-white hover:border-purple-300 transition shadow-2xs space-y-2">
+                  <div class="flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                      <span class="w-6 h-6 rounded-lg bg-slate-100 text-slate-700 font-black text-xs flex items-center justify-center shrink-0">
+                        ${idx + 1}
+                      </span>
+                      <span class="font-bold text-xs ${colors.text}">${this.escapeHtml(meth)}</span>
+                    </div>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${colors.tagBg}">${colors.tag}</span>
+                  </div>
+                  <div class="flex items-center justify-between text-xs font-semibold text-slate-500 pt-1">
+                    <span>${count} session plans</span>
+                    <span class="font-bold text-slate-800">${pct}% of curriculum</span>
+                  </div>
+                  <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                    <div class="${colors.bar} h-full rounded-full transition-all duration-500" style="width: ${Math.max(5, pct)}%"></div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+
+        <!-- SECTION 2: DIGITAL RESOURCES & ICT PLATFORMS INTEGRATION -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- ICT Platforms -->
+          <div class="bg-white rounded-3xl border border-slate-200 shadow-2xs p-6 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div>
+                <span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-indigo-100 text-indigo-800">NAAC Metric 2.3.2</span>
+                <h3 class="text-sm font-black text-slate-900 mt-1">E-Learning Platforms & LMS Utilization</h3>
+              </div>
+              <span class="text-xs font-bold text-indigo-600">${totalPlatformsCount} Deployments</span>
+            </div>
+
+            <div class="space-y-3">
+              ${Object.keys(activePlatforms).length === 0 ? `
+                <p class="text-xs text-slate-400 italic text-center py-6">No platform records found for current filter.</p>
+              ` : Object.entries(activePlatforms).map(([plat, cnt]) => {
+                const pct = totalPlatformsCount > 0 ? Math.round((cnt / totalPlatformsCount) * 100) : 0;
+                return `
+                  <div class="p-3 bg-slate-50/70 rounded-xl border border-slate-200 space-y-1.5">
+                    <div class="flex items-center justify-between text-xs">
+                      <span class="font-bold text-slate-900 flex items-center gap-1.5">
+                        <i data-lucide="monitor" class="w-3.5 h-3.5 text-indigo-600"></i>
+                        <span>${this.escapeHtml(plat)}</span>
+                      </span>
+                      <span class="font-black text-indigo-700">${cnt} courses (${pct}%)</span>
+                    </div>
+                    <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                      <div class="bg-indigo-600 h-full rounded-full" style="width: ${Math.max(6, pct)}%"></div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- Digital Tools & E-Content -->
+          <div class="bg-white rounded-3xl border border-slate-200 shadow-2xs p-6 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div>
+                <span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-100 text-emerald-800">E-Content Formats</span>
+                <h3 class="text-sm font-black text-slate-900 mt-1">Digital Tools & Multimedia Resources</h3>
+              </div>
+              <span class="text-xs font-bold text-emerald-600">${totalToolsCount} Tools</span>
+            </div>
+
+            <div class="space-y-3">
+              ${Object.keys(activeTools).length === 0 ? `
+                <p class="text-xs text-slate-400 italic text-center py-6">No digital tools records found for current filter.</p>
+              ` : Object.entries(activeTools).map(([tool, cnt]) => {
+                const pct = totalToolsCount > 0 ? Math.round((cnt / totalToolsCount) * 100) : 0;
+                return `
+                  <div class="p-3 bg-slate-50/70 rounded-xl border border-slate-200 space-y-1.5">
+                    <div class="flex items-center justify-between text-xs">
+                      <span class="font-bold text-slate-900 flex items-center gap-1.5">
+                        <i data-lucide="layers" class="w-3.5 h-3.5 text-emerald-600"></i>
+                        <span>${this.escapeHtml(tool)}</span>
+                      </span>
+                      <span class="font-black text-emerald-700">${cnt} usages (${pct}%)</span>
+                    </div>
+                    <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                      <div class="bg-emerald-600 h-full rounded-full" style="width: ${Math.max(6, pct)}%"></div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 3: OUTCOME-BASED EDUCATION (OBE) BLOOM'S TAXONOMY PROFILE -->
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-2xs p-6 space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-sky-100 text-sky-800">NAAC Criterion 2.6</span>
+                <h3 class="text-base font-black text-slate-900">Outcome-Based Education (OBE) Bloom's Cognitive Profile</h3>
+              </div>
+              <p class="text-xs text-slate-500 mt-0.5">Distribution of Course Outcomes (CO1–CO6) mapped across revised Bloom's taxonomy cognitive levels</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="px-3 py-1 bg-sky-50 text-sky-800 rounded-xl text-xs font-bold border border-sky-200">
+                LOTS (K1–K2): <strong>${lotsPct}%</strong>
+              </span>
+              <span class="px-3 py-1 bg-emerald-50 text-emerald-800 rounded-xl text-xs font-bold border border-emerald-200">
+                HOTS (K3–K6): <strong>${hotsPct}%</strong>
+              </span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            ${[
+              { k: 'K1', name: 'Remember', desc: 'Recall & Recognition', color: 'indigo', count: activeBloom.K1 || 0 },
+              { k: 'K2', name: 'Understand', desc: 'Comprehend & Explain', color: 'sky', count: activeBloom.K2 || 0 },
+              { k: 'K3', name: 'Apply', desc: 'Execute & Implement', color: 'teal', count: activeBloom.K3 || 0 },
+              { k: 'K4', name: 'Analyze', desc: 'Deconstruct & Differentiate', color: 'emerald', count: activeBloom.K4 || 0 },
+              { k: 'K5', name: 'Evaluate', desc: 'Appraise & Justify', color: 'amber', count: activeBloom.K5 || 0 },
+              { k: 'K6', name: 'Create', desc: 'Design & Synthesize', color: 'rose', count: activeBloom.K6 || 0 }
+            ].map(b => {
+              const pct = totalCosCount > 0 ? Math.round((b.count / totalCosCount) * 100) : 0;
+              return `
+                <div class="p-4 rounded-2xl border border-slate-200 bg-slate-50/50 hover:bg-white hover:border-purple-300 transition text-center space-y-1.5 shadow-2xs">
+                  <div class="inline-block px-2.5 py-0.5 rounded-full font-mono font-black text-xs bg-${b.color}-100 text-${b.color}-800 border border-${b.color}-200">
+                    ${b.k}
+                  </div>
+                  <div class="font-black text-slate-900 text-sm">${b.name}</div>
+                  <div class="text-[10px] text-slate-400 font-medium">${b.desc}</div>
+                  <div class="text-xl font-black text-slate-900 pt-2 border-t border-slate-200/60">${b.count}</div>
+                  <div class="text-[11px] font-bold text-slate-500">${pct}% of COs</div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+
+        <!-- SECTION 4: CONTINUOUS INTERNAL ASSESSMENT (CIA) BLUEPRINT -->
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-2xs p-6 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div>
+              <span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-amber-100 text-amber-800">Formative CIA Blueprint</span>
+              <h3 class="text-base font-black text-slate-900 mt-1">Continuous Internal Assessment (CIA) Components Planned</h3>
+            </div>
+            <span class="text-xs font-bold text-amber-700 bg-amber-50 px-3 py-1 rounded-xl border border-amber-200">
+              ${Object.values(activeAssessments).reduce((a, b) => a + b, 0)} Total CIA Evaluations
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            ${Object.keys(activeAssessments).length === 0 ? `
+              <p class="text-xs text-slate-400 italic col-span-full text-center py-6">No assessment entries recorded for current filter.</p>
+            ` : Object.entries(activeAssessments).map(([comp, cnt]) => `
+              <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-2 shadow-2xs">
+                <div>
+                  <div class="text-xs font-bold text-slate-800">${this.escapeHtml(comp)}</div>
+                  <div class="text-[10.5px] text-slate-500">Component</div>
+                </div>
+                <div class="text-base font-black text-purple-700 bg-purple-50 px-2.5 py-1 rounded-lg border border-purple-200">
+                  ${cnt}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // ================= 3C. INSTITUTIONAL COURSE PLAN REPORT (PRINTABLE & AUDIT DOSSIER) =================
+  renderInstitutionalReportHtml() {
+    const data = this.analyticsData || {};
+    const deptStats = data.dept_stats || {};
+    const rawPlans = (data.plans && data.plans.length > 0) ? data.plans : (this.plans || []);
+    const approvedPlans = rawPlans.filter(p => p.hod_status === 'Approved');
+
+    // Aggregate statistics across all 34 departments
+    let totalFaculty = 0;
+    let totalSubmitted = 0;
+    let totalApproved = 0;
+    let totalHours = 0;
+    let totalSyllabusEvenCourses = 0;
+
+    const deptRows = this.departments.map((d, idx) => {
+      const dStat = deptStats[d.name] || { total: 0, approved: 0, hours: 0, faculty_count: d.faculty ? d.faculty.length : 0 };
+      const fCount = d.faculty ? d.faculty.length : (dStat.faculty_count || 0);
+      const sylCount = this.getDepartmentEvenSyllabusCount(d.name);
+      const covPct = sylCount > 0 ? Math.min(100, Math.round((dStat.approved / sylCount) * 100)) : (dStat.approved > 0 ? 100 : 0);
+
+      totalFaculty += fCount;
+      totalSubmitted += dStat.total;
+      totalApproved += dStat.approved;
+      totalHours += dStat.hours;
+      totalSyllabusEvenCourses += sylCount;
+
+      return {
+        sno: idx + 1,
+        name: d.name,
+        facultyCount: fCount,
+        submitted: dStat.total,
+        approved: dStat.approved,
+        syllabusCount: sylCount,
+        coveragePct: covPct,
+        hours: dStat.hours,
+        status: dStat.approved > 0 ? 'Certified' : (dStat.total > 0 ? 'Under Review' : 'Pending')
+      };
+    });
+
+    const institutionalCoveragePct = totalSyllabusEvenCourses > 0 ? Math.round((totalApproved / totalSyllabusEvenCourses) * 100) : 0;
+    const generatedDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+    return `
+      <style>
+        @media print {
+          body {
+            background: #ffffff !important;
+            color: #000000 !important;
+            font-size: 11pt !important;
+          }
+          header, nav, #app-navbar, .no-print, button, select {
+            display: none !important;
+          }
+          #app-root, .main-container {
+            margin: 0 !important;
+            padding: 0 !important;
+            max-width: 100% !important;
+            width: 100% !important;
+          }
+          .institutional-report-page {
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+          }
+          .print-avoid-break {
+            page-break-inside: avoid !important;
+          }
+          table {
+            page-break-inside: auto;
+          }
+          tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+          }
+          thead {
+            display: table-header-group;
+          }
+          @page {
+            size: A4 portrait;
+            margin: 12mm 14mm 14mm 14mm;
+          }
+        }
+      </style>
+
+      <div class="space-y-6 animate-fadeIn w-full">
+        <!-- Floating Action Header (Hidden during Print) -->
+        <div class="no-print bg-white p-4 rounded-3xl border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+            <div>
+              <div class="text-xs font-bold text-slate-800">Official Institutional Report Dossier (A4 Ready)</div>
+              <div class="text-[11px] text-slate-500">Autonomous College Governance & NAAC Accreditation Compliance</div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <button 
+              type="button" 
+              onclick="coursePlanApp.printInstitutionalReport()" 
+              class="px-4 py-2 bg-indigo-900 hover:bg-indigo-800 text-white font-extrabold rounded-xl text-xs transition shadow-sm flex items-center gap-1.5 cursor-pointer"
+            >
+              <i data-lucide="printer" class="w-4 h-4"></i>
+              <span>🖨️ Print / Save as PDF</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.exportInstitutionalReportCSV()" 
+              class="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-600 text-white font-bold rounded-xl text-xs transition shadow-2xs flex items-center gap-1.5 cursor-pointer"
+            >
+              <i data-lucide="download" class="w-4 h-4"></i>
+              <span>📥 Export CSV</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchAdminTab('analytics')" 
+              class="px-3.5 py-2 bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 font-bold rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer"
+            >
+              <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+              <span>View Analytics</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchAdminTab('dept')" 
+              class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer"
+            >
+              <span>← Back to Hub</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- FORMAL INSTITUTIONAL REPORT DOCUMENT (A4 SHEET STYLED) -->
+        <div class="institutional-report-page bg-white p-8 sm:p-12 rounded-3xl border border-slate-300 shadow-md max-w-5xl mx-auto space-y-8 text-slate-900">
+          
+          <!-- OFFICIAL LETTERHEAD -->
+          <div class="border-b-2 border-slate-900 pb-6 text-center space-y-2">
+            <div class="flex items-center justify-center gap-3">
+              <span class="text-3xl">🏛️</span>
+              <div>
+                <h1 class="text-xl sm:text-2xl font-black uppercase tracking-tight text-slate-900">
+                  St. Joseph's College (Autonomous)
+                </h1>
+                <p class="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  Special Heritage Status awarded by UGC • Accredited at A++ Grade (Cycle IV) by NAAC
+                </p>
+                <p class="text-[11px] font-semibold text-slate-600">
+                  College with Potential for Excellence • Tiruchirappalli – 620 002, Tamil Nadu, India
+                </p>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between text-xs font-bold text-slate-600 gap-2">
+              <div class="bg-purple-50 text-purple-900 px-3 py-1 rounded-full border border-purple-200 text-[11px]">
+                INTERNAL QUALITY ASSURANCE CELL (IQAC)
+              </div>
+              <div class="font-mono text-[11px] text-slate-500">
+                Ref: SJC/IQAC/CP-REP/2026-27/EVEN • Date: ${generatedDate}
+              </div>
+            </div>
+
+            <div class="pt-2">
+              <h2 class="text-base sm:text-lg font-black tracking-tight text-indigo-950 uppercase">
+                Institutional Course Plan & Teaching–Learning Compliance Report
+              </h2>
+              <p class="text-xs font-bold text-slate-700">
+                Academic Year 2026–2027 • Even Semester (Dec 2026 – Apr 2027)
+              </p>
+            </div>
+          </div>
+
+          <!-- EXECUTIVE PREAMBLE -->
+          <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200 text-xs text-slate-700 space-y-2 leading-relaxed">
+            <div class="font-bold uppercase tracking-wider text-slate-900 text-[11px] flex items-center gap-1.5">
+              <span>📋</span>
+              <span>Executive Quality Assurance Declaration</span>
+            </div>
+            <p>
+              This institutional report certifies that theory course plans across all undergraduate (UG) and postgraduate (PG) programmes have been formulated in compliance with the <strong>UGC Learning Outcome-based Curriculum Framework (LOCF)</strong>, Revised Bloom's Taxonomy (Cognitive Levels K1–K6), and the autonomous academic regulations of St. Joseph's College.
+            </p>
+            <p>
+              Each course plan details 45 scheduled instructional hours across 5 units, incorporates student-centric participative methodologies (Problem-Based Learning, Case Studies, Flipped Classrooms), mandates campus <strong>JosTEL LMS</strong> digital integration, and institutes transparent Continuous Internal Assessment (CIA) rubrics.
+            </p>
+          </div>
+
+          <!-- MACRO INSTITUTIONAL SUMMARY (TABLEAU CARDS) -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+            <div class="p-4 rounded-xl border border-slate-200 bg-purple-50/40">
+              <div class="text-[10px] font-bold uppercase text-purple-900">Academic Departments</div>
+              <div class="text-2xl font-black text-purple-950 mt-1">${this.departments.length}</div>
+              <div class="text-[10px] text-slate-500 font-semibold">${totalFaculty} Faculty Members</div>
+            </div>
+            <div class="p-4 rounded-xl border border-slate-200 bg-indigo-50/40">
+              <div class="text-[10px] font-bold uppercase text-indigo-900">Master Catalog (Even Sem)</div>
+              <div class="text-2xl font-black text-indigo-950 mt-1">${totalSyllabusEvenCourses}</div>
+              <div class="text-[10px] text-slate-500 font-semibold">Semesters II, IV & VI</div>
+            </div>
+            <div class="p-4 rounded-xl border border-slate-200 bg-emerald-50/40">
+              <div class="text-[10px] font-bold uppercase text-emerald-900">Course Plans Submitted</div>
+              <div class="text-2xl font-black text-emerald-950 mt-1">${totalSubmitted}</div>
+              <div class="text-[10px] text-emerald-800 font-bold">${totalApproved} HOD-Approved</div>
+            </div>
+            <div class="p-4 rounded-xl border border-slate-200 bg-amber-50/40">
+              <div class="text-[10px] font-bold uppercase text-amber-900">Curriculum Hours Planned</div>
+              <div class="text-2xl font-black text-amber-950 mt-1">${totalHours} hrs</div>
+              <div class="text-[10px] text-slate-500 font-semibold">Scheduled Instructional Hours</div>
+            </div>
+          </div>
+
+          <!-- TABLE 1: DEPARTMENT-WISE AUDIT & SYLLABUS COVERAGE MATRIX -->
+          <div class="space-y-3 print-avoid-break">
+            <div class="flex items-center justify-between border-b border-slate-300 pb-2">
+              <h3 class="text-xs font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
+                <span>1. Department-wise Syllabus Coverage & Course Plan Audit</span>
+              </h3>
+              <span class="text-[11px] font-bold text-slate-500">All 34 Academic Departments</span>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs border border-slate-300 border-collapse">
+                <thead class="bg-slate-100 text-slate-900 font-black text-[10.5px] uppercase border-b border-slate-300">
+                  <tr>
+                    <th class="p-2 border border-slate-300 text-center w-8">#</th>
+                    <th class="p-2 border border-slate-300">Academic Department</th>
+                    <th class="p-2 border border-slate-300 text-center w-16">Faculty</th>
+                    <th class="p-2 border border-slate-300 text-center w-16">Submitted</th>
+                    <th class="p-2 border border-slate-300 text-center w-16">Approved</th>
+                    <th class="p-2 border border-slate-300 text-center w-20">Syllabus Courses</th>
+                    <th class="p-2 border border-slate-300 text-center w-16">Coverage</th>
+                    <th class="p-2 border border-slate-300 text-center w-20">Planned Hours</th>
+                    <th class="p-2 border border-slate-300 text-center w-24">Audit Status</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 text-[11px]">
+                  ${deptRows.map(r => `
+                    <tr class="hover:bg-slate-50 transition">
+                      <td class="p-1.5 border border-slate-300 text-center font-bold text-slate-500">${r.sno}</td>
+                      <td class="p-1.5 border border-slate-300 font-bold text-slate-900">${r.name}</td>
+                      <td class="p-1.5 border border-slate-300 text-center font-semibold">${r.facultyCount}</td>
+                      <td class="p-1.5 border border-slate-300 text-center font-semibold">${r.submitted}</td>
+                      <td class="p-1.5 border border-slate-300 text-center font-bold text-emerald-800">${r.approved}</td>
+                      <td class="p-1.5 border border-slate-300 text-center font-semibold">${r.syllabusCount}</td>
+                      <td class="p-1.5 border border-slate-300 text-center font-black ${r.coveragePct > 0 ? 'text-emerald-700' : 'text-slate-400'}">
+                        ${r.coveragePct}%
+                      </td>
+                      <td class="p-1.5 border border-slate-300 text-center font-semibold">${r.hours}</td>
+                      <td class="p-1.5 border border-slate-300 text-center">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold ${r.approved > 0 ? 'bg-emerald-100 text-emerald-900' : (r.submitted > 0 ? 'bg-amber-100 text-amber-900' : 'bg-slate-100 text-slate-500')}">
+                          ${r.status}
+                        </span>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+                <tfoot class="bg-slate-100 font-black text-[11px] border-t-2 border-slate-400">
+                  <tr>
+                    <td colspan="2" class="p-2 border border-slate-300 text-right uppercase">Institutional Total:</td>
+                    <td class="p-2 border border-slate-300 text-center">${totalFaculty}</td>
+                    <td class="p-2 border border-slate-300 text-center">${totalSubmitted}</td>
+                    <td class="p-2 border border-slate-300 text-center text-emerald-900">${totalApproved}</td>
+                    <td class="p-2 border border-slate-300 text-center">${totalSyllabusEvenCourses}</td>
+                    <td class="p-2 border border-slate-300 text-center text-emerald-900">${institutionalCoveragePct}%</td>
+                    <td class="p-2 border border-slate-300 text-center">${totalHours} hrs</td>
+                    <td class="p-2 border border-slate-300 text-center">✓ Verified</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+
+          <!-- TABLE 2: PEDAGOGICAL INNOVATIONS SUMMARY (NAAC CRITERION 2.3.1) -->
+          <div class="space-y-3 print-avoid-break">
+            <div class="flex items-center justify-between border-b border-slate-300 pb-2">
+              <h3 class="text-xs font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
+                <span>2. Pedagogical Methodologies Summary (NAAC Criterion 2.3.1)</span>
+              </h3>
+              <span class="text-[11px] font-bold text-purple-800">Student-Centric Participative Learning</span>
+            </div>
+
+            <table class="w-full text-left text-xs border border-slate-300 border-collapse">
+              <thead class="bg-slate-100 text-slate-900 font-black text-[10.5px] uppercase border-b border-slate-300">
+                <tr>
+                  <th class="p-2 border border-slate-300 text-center w-8">#</th>
+                  <th class="p-2 border border-slate-300">Instructional Methodology</th>
+                  <th class="p-2 border border-slate-300 text-center w-36">Pedagogical Classification</th>
+                  <th class="p-2 border border-slate-300 text-center w-24">Planned Sessions</th>
+                  <th class="p-2 border border-slate-300 text-center w-24">Curricular Share</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 text-[11px]">
+                ${(() => {
+                  const ped = data.pedagogy || {};
+                  const total = Object.values(ped).reduce((a, b) => a + b, 0);
+                  if (Object.keys(ped).length === 0) {
+                    return '<tr><td colspan="5" class="p-4 text-center text-slate-400 italic">No methodology records available.</td></tr>';
+                  }
+                  return Object.entries(ped).map(([meth, count], idx) => {
+                    const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+                    const isDirect = meth.toLowerCase().includes('lecture-based') && !meth.toLowerCase().includes('case') && !meth.toLowerCase().includes('problem');
+                    return `
+                      <tr>
+                        <td class="p-1.5 border border-slate-300 text-center font-bold text-slate-500">${idx + 1}</td>
+                        <td class="p-1.5 border border-slate-300 font-bold text-slate-900">${meth}</td>
+                        <td class="p-1.5 border border-slate-300 text-center">
+                          <span class="px-2 py-0.5 rounded text-[10px] font-bold ${isDirect ? 'bg-slate-100 text-slate-700' : 'bg-emerald-100 text-emerald-900'}">
+                            ${isDirect ? 'Direct Instruction' : 'Student-Centric Participative'}
+                          </span>
+                        </td>
+                        <td class="p-1.5 border border-slate-300 text-center font-semibold">${count}</td>
+                        <td class="p-1.5 border border-slate-300 text-center font-bold text-slate-900">${pct}%</td>
+                      </tr>
+                    `;
+                  }).join('');
+                })()}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- TABLE 3: DIGITAL PLATFORMS & ICT INTEGRATION (NAAC CRITERION 2.3.2) -->
+          <div class="space-y-3 print-avoid-break">
+            <div class="flex items-center justify-between border-b border-slate-300 pb-2">
+              <h3 class="text-xs font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
+                <span>3. Digital Resources & ICT Platform Adoption (NAAC Criterion 2.3.2)</span>
+              </h3>
+              <span class="text-[11px] font-bold text-indigo-800">LMS & E-Content Deployment</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <table class="w-full text-left text-xs border border-slate-300 border-collapse">
+                <thead class="bg-slate-100 text-slate-900 font-black text-[10.5px] uppercase border-b border-slate-300">
+                  <tr>
+                    <th class="p-2 border border-slate-300">ICT Platform / Portal</th>
+                    <th class="p-2 border border-slate-300 text-center w-24">Adoption Count</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 text-[11px]">
+                  ${(() => {
+                    const plats = data.ict_platforms || {};
+                    if (Object.keys(plats).length === 0) return '<tr><td colspan="2" class="p-2 text-center text-slate-400 italic">No records.</td></tr>';
+                    return Object.entries(plats).map(([p, cnt]) => `
+                      <tr>
+                        <td class="p-1.5 border border-slate-300 font-bold text-slate-900">${p}</td>
+                        <td class="p-1.5 border border-slate-300 text-center font-semibold">${cnt} courses</td>
+                      </tr>
+                    `).join('');
+                  })()}
+                </tbody>
+              </table>
+
+              <table class="w-full text-left text-xs border border-slate-300 border-collapse">
+                <thead class="bg-slate-100 text-slate-900 font-black text-[10.5px] uppercase border-b border-slate-300">
+                  <tr>
+                    <th class="p-2 border border-slate-300">Digital Tool / Format</th>
+                    <th class="p-2 border border-slate-300 text-center w-24">Usage Count</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 text-[11px]">
+                  ${(() => {
+                    const tools = data.ict_tools || {};
+                    if (Object.keys(tools).length === 0) return '<tr><td colspan="2" class="p-2 text-center text-slate-400 italic">No records.</td></tr>';
+                    return Object.entries(tools).map(([t, cnt]) => `
+                      <tr>
+                        <td class="p-1.5 border border-slate-300 font-bold text-slate-900">${t}</td>
+                        <td class="p-1.5 border border-slate-300 text-center font-semibold">${cnt} usages</td>
+                      </tr>
+                    `).join('');
+                  })()}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- FORMAL SIGN-OFF & AUTHENTICATION BLOCK -->
+          <div class="print-avoid-break pt-12 border-t-2 border-slate-900 space-y-8">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center text-xs">
+              <div class="space-y-1">
+                <div class="h-14 flex items-end justify-center font-signature font-bold text-slate-700 italic">
+                  [Verified Electronically]
+                </div>
+                <div class="font-black text-slate-900 text-xs">Dr. A. Rose Venis</div>
+                <div class="text-[10.5px] text-slate-600 font-semibold">Coordinator, IQAC</div>
+                <div class="text-[10px] text-slate-500">Internal Quality Assurance Cell</div>
+              </div>
+
+              <div class="space-y-1">
+                <div class="h-14 flex items-end justify-center font-signature font-bold text-slate-700 italic">
+                  [Recommended for BoS]
+                </div>
+                <div class="font-black text-slate-900 text-xs">Rev. Dr. S. Santiago SJ</div>
+                <div class="text-[10.5px] text-slate-600 font-semibold">Dean of Academics</div>
+                <div class="text-[10px] text-slate-500">St. Joseph's College (Autonomous)</div>
+              </div>
+
+              <div class="space-y-1">
+                <div class="h-14 flex items-end justify-center font-signature font-bold text-slate-700 italic">
+                  [Approved & Certified]
+                </div>
+                <div class="font-black text-slate-900 text-xs">Rev. Dr. M. Arockiasamy Xavier SJ</div>
+                <div class="text-[10.5px] text-slate-600 font-semibold">Principal</div>
+                <div class="text-[10px] text-slate-500">St. Joseph's College (Autonomous)</div>
+              </div>
+            </div>
+
+            <div class="text-center text-[10px] text-slate-400 font-mono pt-4 border-t border-slate-200">
+              Official Quality Assurance Record • St. Joseph's College (Autonomous), Tiruchirappalli • IQAC Portal Even Semester 2026–2027
+            </div>
+          </div>
+
+        </div>
       </div>
     `;
   }
@@ -7550,8 +8576,14 @@ class CoursePlanApp {
       const json = await res.json();
       if (json.success && json.user) {
         this.currentUser = json.user;
+        this.viewMode = 'dashboard';
         if (this.currentUser.role === 'hod' && this.currentUser.department_name) {
           this.selectedDept = this.currentUser.department_name;
+        }
+        if (this.currentUser.role === 'admin') {
+          window.history.replaceState(null, '', '/course-plan/admin');
+        } else if (this.currentUser.role === 'hod') {
+          window.history.replaceState(null, '', '/course-plan/hod');
         }
         document.getElementById('course-plan-login-modal')?.remove();
         await this.fetchPlans();

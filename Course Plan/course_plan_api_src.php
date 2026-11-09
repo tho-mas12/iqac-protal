@@ -237,7 +237,8 @@ try {
                     hod_status = 'Approved',
                     status = 'Approved by HOD',
                     hod_name = :hname,
-                    hod_comments = :hcomments,
+                    hod_remarks = :hcomments,
+                    hod_reviewed_at = NOW(),
                     approved_at = NOW()
                 WHERE id = :id
             ");
@@ -253,7 +254,8 @@ try {
                     hod_status = 'Revision Needed',
                     status = 'Needs Revision',
                     hod_name = :hname,
-                    hod_comments = :hcomments
+                    hod_remarks = :hcomments,
+                    hod_reviewed_at = NOW()
                 WHERE id = :id
             ");
             $stmt->execute([
@@ -577,6 +579,206 @@ try {
         $list = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         echo json_encode(['success' => true, 'data' => $list]);
+        exit;
+    }
+
+    // ================= 10. PEDAGOGY & ICT ANALYTICS & INSTITUTIONAL DATA =================
+    if ($action === 'analytics_data' && $method === 'GET') {
+        $currentUser = isset($_SESSION['cp_user']) ? $_SESSION['cp_user'] : null;
+        $filterDept = isset($_GET['department']) ? trim($_GET['department']) : '';
+        $filterStatus = isset($_GET['status']) ? trim($_GET['status']) : '';
+
+        $sql = "SELECT id, department_name, faculty_name, programme, year_class, semester, academic_year, course_code, course_title, course_category, teaching_hours, credits, status, hod_status, hod_name, hod_remarks, course_outcomes, detailed_teaching_plan, unit_completion_plan, learning_activities, assessment_plan, ict_integration, approved_at, updated_at FROM course_plan_2026_27 WHERE 1=1";
+        $params = [];
+
+        if ($currentUser && $currentUser['role'] === 'hod') {
+            $sql .= " AND department_name = :dept";
+            $params[':dept'] = $currentUser['department_name'];
+        } else if ($filterDept && $filterDept !== 'all' && $filterDept !== 'All Departments') {
+            $sql .= " AND department_name = :dept";
+            $params[':dept'] = $filterDept;
+        }
+
+        if ($filterStatus && $filterStatus !== 'all') {
+            $sql .= " AND hod_status = :hstatus";
+            $params[':hstatus'] = $filterStatus;
+        }
+
+        $sql .= " ORDER BY department_name ASC, course_code ASC";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+        $rawPlans = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Fetch TL Practices
+        $tlSql = "SELECT * FROM course_plan_tl_practices";
+        $tlStmt = $pdo->query($tlSql);
+        $tlRows = $tlStmt ? $tlStmt->fetchAll(PDO::FETCH_ASSOC) : [];
+
+        // Aggregations
+        $totalPlans = count($rawPlans);
+        $approvedPlans = 0;
+        $pendingPlans = 0;
+        $totalPlannedHours = 0;
+        $facultySet = [];
+        $deptPlanCounts = [];
+
+        $methodologies = [];
+        $bloomLevels = [
+            'K1' => 0, 'K2' => 0, 'K3' => 0,
+            'K4' => 0, 'K5' => 0, 'K6' => 0,
+            'Other' => 0
+        ];
+        $ictPlatforms = [];
+        $ictTools = [];
+        $ictPurposes = [];
+        $assessmentTypes = [];
+
+        $processedPlans = [];
+
+        foreach ($rawPlans as $p) {
+            if ($p['hod_status'] === 'Approved') $approvedPlans++;
+            else $pendingPlans++;
+
+            $hrs = (int)($p['teaching_hours'] ?: 0);
+            $totalPlannedHours += $hrs;
+
+            if (!empty($p['faculty_name'])) $facultySet[$p['faculty_name']] = true;
+
+            $dName = $p['department_name'] ?: 'Unknown';
+            if (!isset($deptPlanCounts[$dName])) {
+                $deptPlanCounts[$dName] = ['total' => 0, 'approved' => 0, 'hours' => 0, 'faculty' => []];
+            }
+            $deptPlanCounts[$dName]['total']++;
+            if ($p['hod_status'] === 'Approved') $deptPlanCounts[$dName]['approved']++;
+            $deptPlanCounts[$dName]['hours'] += $hrs;
+            if (!empty($p['faculty_name'])) $deptPlanCounts[$dName]['faculty'][$p['faculty_name']] = true;
+
+            // Decode JSON columns
+            $cos = !empty($p['course_outcomes']) ? json_decode($p['course_outcomes'], true) : [];
+            $dtp = !empty($p['detailed_teaching_plan']) ? json_decode($p['detailed_teaching_plan'], true) : [];
+            $acts = !empty($p['learning_activities']) ? json_decode($p['learning_activities'], true) : [];
+            $assts = !empty($p['assessment_plan']) ? json_decode($p['assessment_plan'], true) : [];
+            $icts = !empty($p['ict_integration']) ? json_decode($p['ict_integration'], true) : [];
+
+            // 1. Methodologies from DTP
+            if (is_array($dtp)) {
+                foreach ($dtp as $row) {
+                    $m = isset($row['methodology']) ? trim($row['methodology']) : '';
+                    if ($m) {
+                        $methodologies[$m] = ($methodologies[$m] ?? 0) + 1;
+                    }
+                }
+            }
+
+            // 2. Bloom Levels from COs
+            if (is_array($cos)) {
+                foreach ($cos as $co) {
+                    $lvl = isset($co['k_level']) ? trim($co['k_level']) : (isset($co['level']) ? trim($co['level']) : (isset($co['cognitive_level']) ? trim($co['cognitive_level']) : ''));
+                    if ($lvl) {
+                        $uLvl = strtoupper($lvl);
+                        if (strpos($uLvl, 'K1') !== false || stripos($uLvl, 'REMEMBER') !== false) $bloomLevels['K1']++;
+                        else if (strpos($uLvl, 'K2') !== false || stripos($uLvl, 'UNDERSTAND') !== false) $bloomLevels['K2']++;
+                        else if (strpos($uLvl, 'K3') !== false || stripos($uLvl, 'APPLY') !== false) $bloomLevels['K3']++;
+                        else if (strpos($uLvl, 'K4') !== false || stripos($uLvl, 'ANALY') !== false) $bloomLevels['K4']++;
+                        else if (strpos($uLvl, 'K5') !== false || stripos($uLvl, 'EVALUAT') !== false) $bloomLevels['K5']++;
+                        else if (strpos($uLvl, 'K6') !== false || stripos($uLvl, 'CREATE') !== false || stripos($uLvl, 'SYNTH') !== false) $bloomLevels['K6']++;
+                        else $bloomLevels['Other']++;
+                    }
+                }
+            }
+
+            // 3. ICT Platforms, Tools & Purpose
+            if (is_array($icts)) {
+                foreach ($icts as $ict) {
+                    $plat = isset($ict['platform']) ? trim($ict['platform']) : '';
+                    if ($plat) $ictPlatforms[$plat] = ($ictPlatforms[$plat] ?? 0) + 1;
+
+                    $tool = isset($ict['tool']) ? trim($ict['tool']) : '';
+                    if ($tool) $ictTools[$tool] = ($ictTools[$tool] ?? 0) + 1;
+
+                    $purp = isset($ict['purpose']) ? trim($ict['purpose']) : '';
+                    if ($purp) $ictPurposes[$purp] = ($ictPurposes[$purp] ?? 0) + 1;
+                }
+            }
+
+            // 4. Assessment Types
+            if (is_array($acts)) {
+                foreach ($acts as $act) {
+                    if (!empty($act['is_assessment']) || !empty($act['cia_component'])) {
+                        $comp = !empty($act['cia_component']) ? trim($act['cia_component']) : 'CIA Assessment';
+                        $assessmentTypes[$comp] = ($assessmentTypes[$comp] ?? 0) + 1;
+                    }
+                }
+            }
+
+            $p['course_outcomes'] = $cos;
+            $p['detailed_teaching_plan'] = $dtp;
+            $p['learning_activities'] = $acts;
+            $p['assessment_plan'] = $assts;
+            $p['ict_integration'] = $icts;
+            $processedPlans[] = $p;
+        }
+
+        // Sort frequencies descending
+        arsort($methodologies);
+        arsort($ictPlatforms);
+        arsort($ictTools);
+        arsort($ictPurposes);
+        arsort($assessmentTypes);
+
+        // Also aggregate tl_practices
+        $tlEcontentPlatforms = [];
+        $tlPracticesCounts = [];
+        foreach ($tlRows as $tl) {
+            $e = !empty($tl['econtent']) ? json_decode($tl['econtent'], true) : null;
+            if ($e && !empty($e['platform'])) {
+                $p = trim($e['platform']);
+                $tlEcontentPlatforms[$p] = ($tlEcontentPlatforms[$p] ?? 0) + 1;
+            }
+            $t1 = !empty($tl['tl_practice_1']) ? json_decode($tl['tl_practice_1'], true) : null;
+            if ($t1 && !empty($t1['tl_practice'])) {
+                $tp = trim($t1['tl_practice']);
+                $tlPracticesCounts[$tp] = ($tlPracticesCounts[$tp] ?? 0) + 1;
+            }
+            $t2 = !empty($tl['tl_practice_2']) ? json_decode($tl['tl_practice_2'], true) : null;
+            if ($t2 && !empty($t2['tl_practice'])) {
+                $tp = trim($t2['tl_practice']);
+                $tlPracticesCounts[$tp] = ($tlPracticesCounts[$tp] ?? 0) + 1;
+            }
+        }
+
+        // Convert dept faculty sets to counts
+        $finalDeptStats = [];
+        foreach ($deptPlanCounts as $deptKey => $dVal) {
+            $finalDeptStats[$deptKey] = [
+                'total' => $dVal['total'],
+                'approved' => $dVal['approved'],
+                'hours' => $dVal['hours'],
+                'faculty_count' => count($dVal['faculty'])
+            ];
+        }
+
+        echo json_encode([
+            'success' => true,
+            'summary' => [
+                'total_plans' => $totalPlans,
+                'approved_plans' => $approvedPlans,
+                'pending_plans' => $pendingPlans,
+                'total_hours' => $totalPlannedHours,
+                'faculty_count' => count($facultySet),
+                'depts_count' => count($deptPlanCounts)
+            ],
+            'pedagogy' => $methodologies,
+            'bloom_levels' => $bloomLevels,
+            'ict_platforms' => $ictPlatforms,
+            'ict_tools' => $ictTools,
+            'ict_purposes' => $ictPurposes,
+            'assessment_types' => $assessmentTypes,
+            'tl_practices' => $tlPracticesCounts,
+            'tl_econtent' => $tlEcontentPlatforms,
+            'dept_stats' => $finalDeptStats,
+            'plans' => $processedPlans
+        ]);
         exit;
     }
 
