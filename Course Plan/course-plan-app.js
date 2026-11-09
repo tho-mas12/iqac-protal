@@ -5936,7 +5936,7 @@ class CoursePlanApp {
       }, 300);
     }
 
-    const container = document.getElementById(sectionId) || document.getElementById(`section-${this.activeFormTab}`);
+    const container = document.getElementById(`section-${this.activeFormTab}`) || document.getElementById(sectionId);
     if (container) {
       let banner = document.getElementById('cp-validation-banner');
       if (!banner) {
