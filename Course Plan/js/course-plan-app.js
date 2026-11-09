@@ -2279,6 +2279,15 @@ class CoursePlanApp {
             <i data-lucide="${roleIcon}" class="w-3.5 h-3.5 shrink-0"></i>
             <span class="truncate">${this.escapeHtml(this.currentUser.display_name || this.currentUser.faculty_name || 'User')}</span>
           </span>
+          <a 
+            href="manual.html" 
+            target="_blank" 
+            class="px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition flex items-center gap-1 cursor-pointer shadow-2xs" 
+            title="Open User Manual with Screenshots"
+          >
+            <i data-lucide="book-open" class="w-3.5 h-3.5 text-indigo-600"></i>
+            <span>User Manual</span>
+          </a>
           <button 
             type="button" 
             onclick="coursePlanApp.logout()" 
@@ -2289,7 +2298,17 @@ class CoursePlanApp {
         </div>
       `;
     } else {
-      authStatusEl.innerHTML = ``;
+      authStatusEl.innerHTML = `
+        <a 
+          href="manual.html" 
+          target="_blank" 
+          class="px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition flex items-center gap-1 cursor-pointer shadow-2xs" 
+          title="Open User Manual with Screenshots"
+        >
+          <i data-lucide="book-open" class="w-3.5 h-3.5 text-indigo-600"></i>
+          <span>User Manual</span>
+        </a>
+      `;
     }
   }
 
