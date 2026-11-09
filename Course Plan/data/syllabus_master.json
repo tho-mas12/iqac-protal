@@ -1091,48 +1091,6 @@
     "course_category": "Value Added (VAC)"
   },
   {
-    "course_code": "25USS34SE01",
-    "course_title": "Skill Enhancement Course - 1: Soft Skills",
-    "semester": "Semester 3",
-    "semester_num": 3,
-    "hours": "2",
-    "credits": "1",
-    "department": "Human Excellence",
-    "programme": "B.A. ECONOMICS",
-    "syllabus_year": 2025,
-    "level": "UG",
-    "year_class": "II UG",
-    "cos": [
-      {
-        "code": "CO1",
-        "outcome": "Analyse problems directed at testing their cognitive abilities",
-        "k_level": "K1"
-      },
-      {
-        "code": "CO2",
-        "outcome": "Present the best of themselves as job seekers and communicate effectively in all contexts",
-        "k_level": "K2"
-      },
-      {
-        "code": "CO3",
-        "outcome": "Assess themselves, set goals, and manage conflicts that are expected of a good leader",
-        "k_level": "K3"
-      },
-      {
-        "code": "CO4",
-        "outcome": "Enhance numerical ability required for the employees for various transactions",
-        "k_level": "K4"
-      },
-      {
-        "code": "CO5",
-        "outcome": "Develop aptitude skills required by the employers",
-        "k_level": "K5"
-      }
-    ],
-    "offered_by_dept": "Human Excellence",
-    "course_category": "Skill Enhancement (SEC)"
-  },
-  {
     "course_code": "25UTA41GL04C",
     "course_title": "General Tamil – 4: வணிகத்தமிழ் (Business Tamil)",
     "semester": "Semester 4",
@@ -29146,246 +29104,6 @@
     "course_category": "Elective"
   },
   {
-    "course_code": "25USS130201",
-    "course_title": "Core Course – I: C Programming",
-    "semester": "Semester 1",
-    "semester_num": 1,
-    "hours": "3",
-    "credits": "3",
-    "department": "Human Excellence",
-    "programme": "B.VOC. SD & SA",
-    "syllabus_year": 2025,
-    "level": "UG",
-    "year_class": "I UG",
-    "cos": [],
-    "offered_by_dept": "Human Excellence",
-    "course_category": "Core"
-  },
-  {
-    "course_code": "25USS130401",
-    "course_title": "Allied Course-I: Mathematics -1",
-    "semester": "Semester 1",
-    "semester_num": 1,
-    "hours": "3",
-    "credits": "3",
-    "department": "Human Excellence",
-    "programme": "B.VOC. SD & SA",
-    "syllabus_year": 2025,
-    "level": "UG",
-    "year_class": "I UG",
-    "cos": [],
-    "offered_by_dept": "Human Excellence",
-    "course_category": "Allied"
-  },
-  {
-    "course_code": "25USS230203",
-    "course_title": "Core Course - II: User Interface Design",
-    "semester": "Semester 2",
-    "semester_num": 2,
-    "hours": "3",
-    "credits": "3",
-    "department": "Human Excellence",
-    "programme": "B.VOC. SD & SA",
-    "syllabus_year": 2025,
-    "level": "UG",
-    "year_class": "I UG",
-    "cos": [],
-    "offered_by_dept": "Human Excellence",
-    "course_category": "Core"
-  },
-  {
-    "course_code": "25USS230402",
-    "course_title": "Allied Course – II: Mathematics - II",
-    "semester": "Semester 2",
-    "semester_num": 2,
-    "hours": "3",
-    "credits": "3",
-    "department": "Human Excellence",
-    "programme": "B.VOC. SD & SA",
-    "syllabus_year": 2025,
-    "level": "UG",
-    "year_class": "I UG",
-    "cos": [],
-    "offered_by_dept": "Human Excellence",
-    "course_category": "Allied"
-  },
-  {
-    "course_code": "25USS240901",
-    "course_title": "Environmental Science",
-    "semester": "Semester 2",
-    "semester_num": 2,
-    "hours": "2",
-    "credits": "2",
-    "department": "Human Excellence",
-    "programme": "B.VOC. SD & SA",
-    "syllabus_year": 2025,
-    "level": "UG",
-    "year_class": "I UG",
-    "cos": [
-      {
-        "code": "CO1",
-        "outcome": "Identify the concepts related to global ecology and the environment",
-        "k_level": "K1"
-      },
-      {
-        "code": "CO2",
-        "outcome": "Comprehend the natural resources and environmental organizations",
-        "k_level": "K2"
-      },
-      {
-        "code": "CO3",
-        "outcome": "Apply the acquired knowledge to sensitize individuals and public about the environmental crisis",
-        "k_level": "K3"
-      }
-    ],
-    "offered_by_dept": "Human Excellence",
-    "course_category": "Ability Enhancement (AECC)"
-  },
-  {
-    "course_code": "25USS330205",
-    "course_title": "Core Course – III:  PHP Programming",
-    "semester": "Semester 3",
-    "semester_num": 3,
-    "hours": "3",
-    "credits": "3",
-    "department": "Human Excellence",
-    "programme": "B.VOC. SD & SA",
-    "syllabus_year": 2025,
-    "level": "UG",
-    "year_class": "II UG",
-    "cos": [],
-    "offered_by_dept": "Human Excellence",
-    "course_category": "Core"
-  },
-  {
-    "course_code": "25USS430206",
-    "course_title": "Core Course - IV: Java Programming",
-    "semester": "Semester 4",
-    "semester_num": 4,
-    "hours": "3",
-    "credits": "3",
-    "department": "Human Excellence",
-    "programme": "B.VOC. SD & SA",
-    "syllabus_year": 2025,
-    "level": "UG",
-    "year_class": "II UG",
-    "cos": [],
-    "offered_by_dept": "Human Excellence",
-    "course_category": "Core"
-  },
-  {
-    "course_code": "25USS441003",
-    "course_title": "Part - 4: Life Coping Skills",
-    "semester": "Semester 4",
-    "semester_num": 4,
-    "hours": "2",
-    "credits": "2",
-    "department": "Human Excellence",
-    "programme": "B.VOC. SD & SA",
-    "syllabus_year": 2025,
-    "level": "UG",
-    "year_class": "II UG",
-    "cos": [],
-    "offered_by_dept": "Human Excellence",
-    "course_category": "Skill Enhancement (SEC)"
-  },
-  {
-    "course_code": "25USS530208",
-    "course_title": "Core   Course – V: Web Development",
-    "semester": "Semester 5",
-    "semester_num": 5,
-    "hours": "4",
-    "credits": "4",
-    "department": "Human Excellence",
-    "programme": "B.VOC. SD & SA",
-    "syllabus_year": 2025,
-    "level": "UG",
-    "year_class": "III UG",
-    "cos": [],
-    "offered_by_dept": "Human Excellence",
-    "course_category": "Core"
-  },
-  {
-    "course_code": "25USS530209",
-    "course_title": "Core Course - VI: Software Engineering",
-    "semester": "Semester 5",
-    "semester_num": 5,
-    "hours": "4",
-    "credits": "4",
-    "department": "Human Excellence",
-    "programme": "B.VOC. SD & SA",
-    "syllabus_year": 2025,
-    "level": "UG",
-    "year_class": "III UG",
-    "cos": [],
-    "offered_by_dept": "Human Excellence",
-    "course_category": "Core"
-  },
-  {
-    "course_code": "25USS530210",
-    "course_title": "Core Course - VII: ReactJS",
-    "semester": "Semester 5",
-    "semester_num": 5,
-    "hours": "4",
-    "credits": "4",
-    "department": "Human Excellence",
-    "programme": "B.VOC. SD & SA",
-    "syllabus_year": 2025,
-    "level": "UG",
-    "year_class": "III UG",
-    "cos": [],
-    "offered_by_dept": "Human Excellence",
-    "course_category": "Core"
-  },
-  {
-    "course_code": "25USS630211",
-    "course_title": "Core Course - VIII: Fundamentals of Computer",
-    "semester": "Semester 6",
-    "semester_num": 6,
-    "hours": "4",
-    "credits": "4",
-    "department": "Human Excellence",
-    "programme": "B.VOC. SD & SA",
-    "syllabus_year": 2025,
-    "level": "UG",
-    "year_class": "III UG",
-    "cos": [],
-    "offered_by_dept": "Human Excellence",
-    "course_category": "Core"
-  },
-  {
-    "course_code": "25USS630212",
-    "course_title": "Core Course -IX: Python Programming",
-    "semester": "Semester 6",
-    "semester_num": 6,
-    "hours": "4",
-    "credits": "4",
-    "department": "Human Excellence",
-    "programme": "B.VOC. SD & SA",
-    "syllabus_year": 2025,
-    "level": "UG",
-    "year_class": "III UG",
-    "cos": [],
-    "offered_by_dept": "Human Excellence",
-    "course_category": "Core"
-  },
-  {
-    "course_code": "25USS630213",
-    "course_title": "Core Course – X: Android Programming",
-    "semester": "Semester 6",
-    "semester_num": 6,
-    "hours": "4",
-    "credits": "4",
-    "department": "Human Excellence",
-    "programme": "B.VOC. SD & SA",
-    "syllabus_year": 2025,
-    "level": "UG",
-    "year_class": "III UG",
-    "cos": [],
-    "offered_by_dept": "Human Excellence",
-    "course_category": "Core"
-  },
-  {
     "course_code": "25UVT120101",
     "course_title": "Language-I: English-I",
     "semester": "Semester 1",
@@ -52556,38 +52274,6 @@
     "course_category": "Core"
   },
   {
-    "course_code": "23USS54SE01",
-    "course_title": "Skill Enhancement Course - 2: Soft Skills",
-    "semester": "Semester 5",
-    "semester_num": 5,
-    "hours": "2",
-    "credits": "1",
-    "department": "Human Excellence",
-    "programme": "B A ECONOMICS",
-    "syllabus_year": 2023,
-    "level": "UG",
-    "year_class": "III UG",
-    "cos": [
-      {
-        "code": "CO1",
-        "outcome": "analyse problems directed at testing their cognitive abilities",
-        "k_level": "K3"
-      },
-      {
-        "code": "CO2",
-        "outcome": "present the best of themselves as job seekers and communicate effectively in all contexts",
-        "k_level": "K4"
-      },
-      {
-        "code": "CO3",
-        "outcome": "assess themselves, set goals, and manage conflicts that are expected of a good leader",
-        "k_level": "K5"
-      }
-    ],
-    "offered_by_dept": "Human Excellence",
-    "course_category": "Skill Enhancement (SEC)"
-  },
-  {
     "course_code": "23UEC63CC11",
     "course_title": "Core Course - 11: History of Economic Thought",
     "semester": "Semester 6",
@@ -74271,5 +73957,2045 @@
       }
     ],
     "course_category": "Elective"
+  },
+  {
+    "course_code": "25USS110001",
+    "course_title": "Language – I: Tamil – 1",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "I UG",
+    "semester": "Semester 1",
+    "semester_num": 1,
+    "hours": 2,
+    "credits": 2,
+    "course_category": "General Language",
+    "syllabus_year": 2025,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "காலந்தாறும் கணினியின் வளர்ச்சியைத் தெரிந்துகொள்ளுதல்",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "தமிழ் மென்பொருள் வகைப்பாடுகளை அறியும் திறனைப் பெறுதல்",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "கணினித் தமிழின் அடிப்படைப் பயன்பாட்டை அறிதல்",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO4",
+        "outcome": "தமிழ்மொழி ஆய்வுக் கருவிகளின் பயன்பாட்டினை அறிதல்",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "இணையத் தமிழ் தொழில்நுட்பத்தின் அடிப்படைத் திறனை அறிதல்",
+        "k_level": "K3"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "காலந்தாறும் கணினியின் வளர்ச்சியைத் தெரிந்துகொள்ளுதல்",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "தமிழ் மென்பொருள் வகைப்பாடுகளை அறியும் திறனைப் பெறுதல்",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "கணினித் தமிழின் அடிப்படைப் பயன்பாட்டை அறிதல்",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO4",
+        "outcome": "தமிழ்மொழி ஆய்வுக் கருவிகளின் பயன்பாட்டினை அறிதல்",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "இணையத் தமிழ் தொழில்நுட்பத்தின் அடிப்படைத் திறனை அறிதல்",
+        "k_level": "K3"
+      }
+    ]
+  },
+  {
+    "course_code": "25USS120101",
+    "course_title": "Language II: English – 1",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "I UG",
+    "semester": "Semester 1",
+    "semester_num": 1,
+    "hours": 2,
+    "credits": 2,
+    "course_category": "General English",
+    "syllabus_year": 2025,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "To train students to speak and write fluency and correctly",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "To increase students' vocabulary to be ready for global communication",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Master subject-verb agreement, active voice and passive voice",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Apply grammatical structures accurately in spoken and written contexts",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Demonstrate word stress, rhythm, and effective communication skills",
+        "k_level": "K3"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "To train students to speak and write fluency and correctly",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "To increase students' vocabulary to be ready for global communication",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Master subject-verb agreement, active voice and passive voice",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Apply grammatical structures accurately in spoken and written contexts",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Demonstrate word stress, rhythm, and effective communication skills",
+        "k_level": "K3"
+      }
+    ]
+  },
+  {
+    "course_code": "25USS130201",
+    "course_title": "Core Course – I: C Programming",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "I UG",
+    "semester": "Semester 1",
+    "semester_num": 1,
+    "hours": 3,
+    "credits": 3,
+    "course_category": "Core",
+    "syllabus_year": 2025,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "Identify situations where computational methods and computers would be useful",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Understanding the basic concepts of C Language",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Apply modular programming using functions and arrays in C",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Implement pointers, structures, and unions to solve computing problems",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Develop file handling operations and error handling in C applications",
+        "k_level": "K4"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "Identify situations where computational methods and computers would be useful",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Understanding the basic concepts of C Language",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Apply modular programming using functions and arrays in C",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Implement pointers, structures, and unions to solve computing problems",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Develop file handling operations and error handling in C applications",
+        "k_level": "K4"
+      }
+    ]
+  },
+  {
+    "course_code": "25USS130401",
+    "course_title": "Allied Course - I: Mathematics - 1",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "I UG",
+    "semester": "Semester 1",
+    "semester_num": 1,
+    "hours": 3,
+    "credits": 3,
+    "course_category": "Allied",
+    "syllabus_year": 2025,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "Understand fundamental concepts of algebra and matrices",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Apply differential calculus to solve geometric and physical problems",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Evaluate definite and indefinite integrals for engineering applications",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Solve systems of linear equations using matrix methods",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Apply mathematical logic and set theory in computer algorithm analysis",
+        "k_level": "K3"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "Understand fundamental concepts of algebra and matrices",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Apply differential calculus to solve geometric and physical problems",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Evaluate definite and indefinite integrals for engineering applications",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Solve systems of linear equations using matrix methods",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Apply mathematical logic and set theory in computer algorithm analysis",
+        "k_level": "K3"
+      }
+    ]
+  },
+  {
+    "course_code": "25USS130202",
+    "course_title": "Skill Component: Junior Software Developer (SSC / Q0508)",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "I UG",
+    "semester": "Semester 1",
+    "semester_num": 1,
+    "hours": 18,
+    "credits": 18,
+    "course_category": "Core Practical",
+    "syllabus_year": 2025,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "Understand industry standards and workplace safety in software development",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Write clean, modular code conforming to coding conventions",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Execute unit testing and debugging on software modules",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Utilize version control and collaborative developer tools",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Deliver functional software prototypes according to client requirements",
+        "k_level": "K4"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "Understand industry standards and workplace safety in software development",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Write clean, modular code conforming to coding conventions",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Execute unit testing and debugging on software modules",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Utilize version control and collaborative developer tools",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Deliver functional software prototypes according to client requirements",
+        "k_level": "K4"
+      }
+    ]
+  },
+  {
+    "course_code": "25USS141001",
+    "course_title": "Part- IV: Value Education",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "I UG",
+    "semester": "Semester 1",
+    "semester_num": 1,
+    "hours": 2,
+    "credits": 2,
+    "course_category": "Value Added (VAC)",
+    "syllabus_year": 2025,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "Understand human values, ethics, and moral principles in personal life",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Demonstrate social responsibility and empathy toward community welfare",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Develop interpersonal harmony and conflict-resolution abilities",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Cultivate ethical decision-making in personal and professional situations",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Internalize values of integrity, constitutional awareness, and civic duties",
+        "k_level": "K3"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "Understand human values, ethics, and moral principles in personal life",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Demonstrate social responsibility and empathy toward community welfare",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Develop interpersonal harmony and conflict-resolution abilities",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Cultivate ethical decision-making in personal and professional situations",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Internalize values of integrity, constitutional awareness, and civic duties",
+        "k_level": "K3"
+      }
+    ]
+  },
+  {
+    "course_code": "25USS210002",
+    "course_title": "Language – I: Tamil – 2",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "I UG",
+    "semester": "Semester 2",
+    "semester_num": 2,
+    "hours": 2,
+    "credits": 2,
+    "course_category": "General Language",
+    "syllabus_year": 2025,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "காலந்தாறும் கணினியின் வளர்ச்சியைத் தெரிந்துகொள்ளுதல்",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "தமிழ் மென்பொருள் வகைப்பாடுகளை அறியும் திறனைப் பெறுதல்",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "கணினித் தமிழின் அடிப்படைப் பயன்பாட்டை அறிதல்",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO4",
+        "outcome": "தமிழ்மொழி ஆய்வுக் கருவிகளின் பயன்பாட்டினை அறிதல்",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "இணையத் தமிழ் தொழில்நுட்பத்தின் அடிப்படைத் திறனை அறிதல்",
+        "k_level": "K3"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "காலந்தாறும் கணினியின் வளர்ச்சியைத் தெரிந்துகொள்ளுதல்",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "தமிழ் மென்பொருள் வகைப்பாடுகளை அறியும் திறனைப் பெறுதல்",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "கணினித் தமிழின் அடிப்படைப் பயன்பாட்டை அறிதல்",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO4",
+        "outcome": "தமிழ்மொழி ஆய்வுக் கருவிகளின் பயன்பாட்டினை அறிதல்",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "இணையத் தமிழ் தொழில்நுட்பத்தின் அடிப்படைத் திறனை அறிதல்",
+        "k_level": "K3"
+      }
+    ]
+  },
+  {
+    "course_code": "25USS220102",
+    "course_title": "Language II: English – 2",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "I UG",
+    "semester": "Semester 2",
+    "semester_num": 2,
+    "hours": 2,
+    "credits": 2,
+    "course_category": "General English",
+    "syllabus_year": 2025,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "Train students to speak and write with accuracy and fluency",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Increase students' vocabulary for professional communication",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Master grammatical accuracy and discourse markers in technical writing",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Develop listening comprehension and oral presentation skills",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Formulate cohesive sentences and structured paragraphs for global workplace",
+        "k_level": "K3"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "Train students to speak and write with accuracy and fluency",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Increase students' vocabulary for professional communication",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Master grammatical accuracy and discourse markers in technical writing",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Develop listening comprehension and oral presentation skills",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Formulate cohesive sentences and structured paragraphs for global workplace",
+        "k_level": "K3"
+      }
+    ]
+  },
+  {
+    "course_code": "25USS230203",
+    "course_title": "Core Course – II: User Interface Design",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "I UG",
+    "semester": "Semester 2",
+    "semester_num": 2,
+    "hours": 3,
+    "credits": 3,
+    "course_category": "Core",
+    "syllabus_year": 2025,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "Gain knowledge on the concepts and principles of HTML5",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Understand the concepts and principles of CSS3",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Build dynamic websites by using HTML5 and CSS3",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Implement structured and semantic data in websites",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Writing valid and concise script for web pages",
+        "k_level": "K3"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "Gain knowledge on the concepts and principles of HTML5",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Understand the concepts and principles of CSS3",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Build dynamic websites by using HTML5 and CSS3",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Implement structured and semantic data in websites",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Writing valid and concise script for web pages",
+        "k_level": "K3"
+      }
+    ]
+  },
+  {
+    "course_code": "25USS230402",
+    "course_title": "Allied Course – II: Mathematics - II",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "I UG",
+    "semester": "Semester 2",
+    "semester_num": 2,
+    "hours": 3,
+    "credits": 3,
+    "course_category": "Allied",
+    "syllabus_year": 2025,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "Acquire the knowledge in basic concepts of permutations and combinations",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Understand various concepts of probability",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Evaluate the representation A.P and G. P",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Illustrate Linear Programming problem",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Acquire the knowledge in transportation problem",
+        "k_level": "K2"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "Acquire the knowledge in basic concepts of permutations and combinations",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Understand various concepts of probability",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Evaluate the representation A.P and G. P",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Illustrate Linear Programming problem",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Acquire the knowledge in transportation problem",
+        "k_level": "K2"
+      }
+    ]
+  },
+  {
+    "course_code": "25USS230204",
+    "course_title": "Skill Component: Web Developer (SSC/Q 0503)",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "I UG",
+    "semester": "Semester 2",
+    "semester_num": 2,
+    "hours": 18,
+    "credits": 18,
+    "course_category": "Core Practical",
+    "syllabus_year": 2025,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "Develop responsive user interfaces using HTML5, CSS3, and JavaScript",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Implement client-side validation and interactive web components",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Build and integrate web components adhering to industry UI/UX standards",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Deploy, debug, and test responsive web applications across multiple browsers",
+        "k_level": "K4"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Collaborate effectively in software project teams following agile web development practices",
+        "k_level": "K4"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "Develop responsive user interfaces using HTML5, CSS3, and JavaScript",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Implement client-side validation and interactive web components",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Build and integrate web components adhering to industry UI/UX standards",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Deploy, debug, and test responsive web applications across multiple browsers",
+        "k_level": "K4"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Collaborate effectively in software project teams following agile web development practices",
+        "k_level": "K4"
+      }
+    ]
+  },
+  {
+    "course_code": "25USS240901",
+    "course_title": "Environmental Science",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "I UG",
+    "semester": "Semester 2",
+    "semester_num": 2,
+    "hours": 2,
+    "credits": 2,
+    "course_category": "Ability Enhancement (AECC)",
+    "syllabus_year": 2025,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "Identify the concepts related to global ecology and the environment",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Comprehend the natural resources and environmental organizations",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Apply the acquired knowledge to sensitize individuals and public about the environmental crisis",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Evaluate the impact of pollution and climate change on ecosystems",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Propose sustainable practices for natural resource management and conservation",
+        "k_level": "K3"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "Identify the concepts related to global ecology and the environment",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Comprehend the natural resources and environmental organizations",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Apply the acquired knowledge to sensitize individuals and public about the environmental crisis",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Evaluate the impact of pollution and climate change on ecosystems",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Propose sustainable practices for natural resource management and conservation",
+        "k_level": "K3"
+      }
+    ]
+  },
+  {
+    "course_code": "25USS310003",
+    "course_title": "Language – I: Tamil – 3",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "II UG",
+    "semester": "Semester 3",
+    "semester_num": 3,
+    "hours": 2,
+    "credits": 2,
+    "course_category": "General Language",
+    "syllabus_year": 2025,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "பக்தி இலக்கியம் மற்றும் சிற்றிலக்கியங்களின் வகைப்பாடுகளை அறிதல்",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "இலக்கியக் கொள்கைகளையும் அறநெறிகளையும் புரிந்து கொள்ளுதல்",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "தமிழ்மொழித் தகவல் தொழில்நுட்பப் பயன்பாடுகளைப் பயிற்சி செய்தல்",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "சொற்பொழிவு மற்றும் கட்டுரை எழுதும் திறனை மேம்படுத்துதல்",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "கணினித் தமிழ் வாயிலாக படைப்பாற்றலை வெளிப்படுத்துதல்",
+        "k_level": "K3"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "பக்தி இலக்கியம் மற்றும் சிற்றிலக்கியங்களின் வகைப்பாடுகளை அறிதல்",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "இலக்கியக் கொள்கைகளையும் அறநெறிகளையும் புரிந்து கொள்ளுதல்",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "தமிழ்மொழித் தகவல் தொழில்நுட்பப் பயன்பாடுகளைப் பயிற்சி செய்தல்",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "சொற்பொழிவு மற்றும் கட்டுரை எழுதும் திறனை மேம்படுத்துதல்",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "கணினித் தமிழ் வாயிலாக படைப்பாற்றலை வெளிப்படுத்துதல்",
+        "k_level": "K3"
+      }
+    ]
+  },
+  {
+    "course_code": "25USS320103",
+    "course_title": "Language II: English – 3",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "II UG",
+    "semester": "Semester 3",
+    "semester_num": 3,
+    "hours": 2,
+    "credits": 2,
+    "course_category": "General English",
+    "syllabus_year": 2025,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "Acquire advanced technical vocabulary and comprehension skills",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Understand nuance and register in formal business correspondence",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Draft technical documentation, software manuals, and proposals",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Participate actively in technical group discussions and presentations",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Demonstrate professional communication etiquette in IT workplaces",
+        "k_level": "K3"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "Acquire advanced technical vocabulary and comprehension skills",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Understand nuance and register in formal business correspondence",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Draft technical documentation, software manuals, and proposals",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Participate actively in technical group discussions and presentations",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Demonstrate professional communication etiquette in IT workplaces",
+        "k_level": "K3"
+      }
+    ]
+  },
+  {
+    "course_code": "25USS330205",
+    "course_title": "Core Course – III: PHP Programming",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "II UG",
+    "semester": "Semester 3",
+    "semester_num": 3,
+    "hours": 3,
+    "credits": 3,
+    "course_category": "Core",
+    "syllabus_year": 2025,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "Understand PHP architecture, server configurations, and scripting fundamentals",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Implement control structures, functions, and string handling in PHP",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Manage sessions, cookies, and HTTP request headers securely",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Connect PHP applications to MySQL database using PDO and mysqli",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Develop full-featured dynamic database-driven web applications",
+        "k_level": "K4"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "Understand PHP architecture, server configurations, and scripting fundamentals",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Implement control structures, functions, and string handling in PHP",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Manage sessions, cookies, and HTTP request headers securely",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Connect PHP applications to MySQL database using PDO and mysqli",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Develop full-featured dynamic database-driven web applications",
+        "k_level": "K4"
+      }
+    ]
+  },
+  {
+    "course_code": "25USS330403",
+    "course_title": "Allied Course - III: Database Systems: Relational and NoSQL",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "II UG",
+    "semester": "Semester 3",
+    "semester_num": 3,
+    "hours": 3,
+    "credits": 3,
+    "course_category": "Allied",
+    "syllabus_year": 2025,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "Understand relational database models, normalization, and ACID properties",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Construct complex SQL queries, views, indexes, and stored procedures",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Contrast relational data architectures with NoSQL document and key-value stores",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Model and query document databases using MongoDB and JSON schemas",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Design high-performance persistent data tiers for enterprise applications",
+        "k_level": "K4"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "Understand relational database models, normalization, and ACID properties",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Construct complex SQL queries, views, indexes, and stored procedures",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Contrast relational data architectures with NoSQL document and key-value stores",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Model and query document databases using MongoDB and JSON schemas",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Design high-performance persistent data tiers for enterprise applications",
+        "k_level": "K4"
+      }
+    ]
+  },
+  {
+    "course_code": "25USS341002",
+    "course_title": "SEC Soft Skills",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "II UG",
+    "semester": "Semester 3",
+    "semester_num": 3,
+    "hours": 2,
+    "credits": 2,
+    "course_category": "Skill Enhancement (SEC)",
+    "syllabus_year": 2025,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "Identify personality traits, self-awareness, and emotional intelligence",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Demonstrate effective verbal and non-verbal interpersonal communication",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Apply time management, stress resilience, and assertiveness techniques",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Exhibit team dynamics, negotiation, and leadership qualities",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Excel in campus placement interviews, resume preparation, and corporate readiness",
+        "k_level": "K3"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "Identify personality traits, self-awareness, and emotional intelligence",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Demonstrate effective verbal and non-verbal interpersonal communication",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Apply time management, stress resilience, and assertiveness techniques",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Exhibit team dynamics, negotiation, and leadership qualities",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Excel in campus placement interviews, resume preparation, and corporate readiness",
+        "k_level": "K3"
+      }
+    ]
+  },
+  {
+    "course_code": "25USS410004",
+    "course_title": "Language – I: Tamil – 4",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "II UG",
+    "semester": "Semester 4",
+    "semester_num": 4,
+    "hours": 2,
+    "credits": 2,
+    "course_category": "General Language",
+    "syllabus_year": 2025,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "தமிழ்ச் செம்மொழி வரலாற்றையும் நவீனத் தகவல் தொடர்புத் தமிழையும் அறிதல்",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "ஊடகத் தமிழ் மற்றும் இணையத் தமிழ் நடைமுறைகளைப் புரிந்து கொள்ளுதல்",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "கணினித் தமிழ் கலைச்சொல்லாக்கம் மற்றும் மொழிபெயர்ப்புத் திறன்களை வளர்த்தல்",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "தகவல் தொடர்பு சாதனங்களில் தமிழ் பயன்பாட்டை ஆய்வு செய்தல்",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "தமிழ்க் கணினி பயன்பாட்டில் புதிய மென்பொருட்களை உருவாக்கும் அறிவைப் பெறுதல்",
+        "k_level": "K3"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "தமிழ்ச் செம்மொழி வரலாற்றையும் நவீனத் தகவல் தொடர்புத் தமிழையும் அறிதல்",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "ஊடகத் தமிழ் மற்றும் இணையத் தமிழ் நடைமுறைகளைப் புரிந்து கொள்ளுதல்",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "கணினித் தமிழ் கலைச்சொல்லாக்கம் மற்றும் மொழிபெயர்ப்புத் திறன்களை வளர்த்தல்",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "தகவல் தொடர்பு சாதனங்களில் தமிழ் பயன்பாட்டை ஆய்வு செய்தல்",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "தமிழ்க் கணினி பயன்பாட்டில் புதிய மென்பொருட்களை உருவாக்கும் அறிவைப் பெறுதல்",
+        "k_level": "K3"
+      }
+    ]
+  },
+  {
+    "course_code": "25USS420104",
+    "course_title": "Language- II: English – IV",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "II UG",
+    "semester": "Semester 4",
+    "semester_num": 4,
+    "hours": 2,
+    "credits": 2,
+    "course_category": "General English",
+    "syllabus_year": 2025,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "Giving importance to usage of the language in professional contexts",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Focusing on Structure of the language, word order, and discourse markers",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Mastering topic-specific vocabulary, spelling, punctuation, and word building",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Acquiring proficiency in spoken grammar, tags, and conversational responses",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Constructing complex and compound sentence structures with accuracy",
+        "k_level": "K3"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "Giving importance to usage of the language in professional contexts",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Focusing on Structure of the language, word order, and discourse markers",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Mastering topic-specific vocabulary, spelling, punctuation, and word building",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Acquiring proficiency in spoken grammar, tags, and conversational responses",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Constructing complex and compound sentence structures with accuracy",
+        "k_level": "K3"
+      }
+    ]
+  },
+  {
+    "course_code": "25USS430206",
+    "course_title": "Core Course - IV: Java Programming",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "II UG",
+    "semester": "Semester 4",
+    "semester_num": 4,
+    "hours": 3,
+    "credits": 3,
+    "course_category": "Core",
+    "syllabus_year": 2025,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "Develop Java programs using OOP principles",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Develop Java programs with the concepts of Inheritance and Interfaces",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Build Java applications using exceptions, threads and generics classes",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Apply Dependency Injection, IoC, AOP, ORM, and JPA concepts in Spring Boot application development",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Develop RESTful web services using Spring Boot, differentiate JDBC & JPA, build web applications, and test APIs using Postman",
+        "k_level": "K4"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "Develop Java programs using OOP principles",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Develop Java programs with the concepts of Inheritance and Interfaces",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Build Java applications using exceptions, threads and generics classes",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Apply Dependency Injection, IoC, AOP, ORM, and JPA concepts in Spring Boot application development",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Develop RESTful web services using Spring Boot, differentiate JDBC & JPA, build web applications, and test APIs using Postman",
+        "k_level": "K4"
+      }
+    ]
+  },
+  {
+    "course_code": "25USS430404",
+    "course_title": "Allied Course - IV: Operating Systems Concept with Unix / Linux",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "II UG",
+    "semester": "Semester 4",
+    "semester_num": 4,
+    "hours": 3,
+    "credits": 3,
+    "course_category": "Allied",
+    "syllabus_year": 2025,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "Understand the basic concepts, structure, and types of operating systems including system components, virtual machines, and system generation.",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Understand and simulate activities of operating system components",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Understand how the various elements that underlie an operating system interact and provide services for execution of application software",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Understand the implementation underpinnings of modern computing infrastructure to effectively utilize the full spectrum of modern computing infrastructure",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Measure, evaluate, and compare OS components through instrumentation for performance analysis",
+        "k_level": "K4"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "Understand the basic concepts, structure, and types of operating systems including system components, virtual machines, and system generation.",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Understand and simulate activities of operating system components",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Understand how the various elements that underlie an operating system interact and provide services for execution of application software",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Understand the implementation underpinnings of modern computing infrastructure to effectively utilize the full spectrum of modern computing infrastructure",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Measure, evaluate, and compare OS components through instrumentation for performance analysis",
+        "k_level": "K4"
+      }
+    ]
+  },
+  {
+    "course_code": "25USS430207",
+    "course_title": "Skill Component: Database Administrator (SSC/Q8109)",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "II UG",
+    "semester": "Semester 4",
+    "semester_num": 4,
+    "hours": 18,
+    "credits": 18,
+    "course_category": "Core Practical",
+    "syllabus_year": 2025,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "Administer and configure relational and NoSQL databases for enterprise applications",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Implement database security, user privileges, roles, and access controls",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Perform routine backup, recovery, and disaster recovery simulations",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Monitor database performance, indexing strategies, and query optimization",
+        "k_level": "K4"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Automate administrative tasks using shell scripts and SQL triggers",
+        "k_level": "K4"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "Administer and configure relational and NoSQL databases for enterprise applications",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Implement database security, user privileges, roles, and access controls",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Perform routine backup, recovery, and disaster recovery simulations",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Monitor database performance, indexing strategies, and query optimization",
+        "k_level": "K4"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Automate administrative tasks using shell scripts and SQL triggers",
+        "k_level": "K4"
+      }
+    ]
+  },
+  {
+    "course_code": "25USS441003",
+    "course_title": "Part - 4: Life Coping Skills",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "II UG",
+    "semester": "Semester 4",
+    "semester_num": 4,
+    "hours": 2,
+    "credits": 2,
+    "course_category": "Value Added (VAC)",
+    "syllabus_year": 2025,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "Understand the life cycle of humanities",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Identify the various challenges (physical, emotional, and social) faced in adolescence",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Strengthen their relationships & Empathize with others",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Acquire success through quality planning",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Develop positive emotions as well as health Consciousness and various life challenges with their own coping strategies.",
+        "k_level": "K3"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "Understand the life cycle of humanities",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Identify the various challenges (physical, emotional, and social) faced in adolescence",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Strengthen their relationships & Empathize with others",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Acquire success through quality planning",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Develop positive emotions as well as health Consciousness and various life challenges with their own coping strategies.",
+        "k_level": "K3"
+      }
+    ]
+  },
+  {
+    "course_code": "21USS530208",
+    "course_title": "Core Course – V: Distributed Technology",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "III UG",
+    "semester": "Semester 5",
+    "semester_num": 5,
+    "hours": 4,
+    "credits": 4,
+    "course_category": "Core",
+    "syllabus_year": 2021,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "Gain knowledge of the concepts related to distributed system technologies.",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Understanding on concepts related ASP. NET technology",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Design and develop professional console and window -based .NET application",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Construct the code solutions and develop projects within the .NET framework.",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Build a dynamic web application using ADO.NET",
+        "k_level": "K4"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "Gain knowledge of the concepts related to distributed system technologies.",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Understanding on concepts related ASP. NET technology",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Design and develop professional console and window -based .NET application",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Construct the code solutions and develop projects within the .NET framework.",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Build a dynamic web application using ADO.NET",
+        "k_level": "K4"
+      }
+    ]
+  },
+  {
+    "course_code": "21USS530209",
+    "course_title": "Core Course - VI: Software Engineering",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "III UG",
+    "semester": "Semester 5",
+    "semester_num": 5,
+    "hours": 4,
+    "credits": 4,
+    "course_category": "Core",
+    "syllabus_year": 2021,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "Basic understanding of software engineering, terminologies, various process models",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Develop and conduct appropriate experimentation, analyze and interpret data, and use engineering judgment to draw conclusions",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Examine themselves to function effectively on a team whose members together provide leadership, create a collaborative environment, establish, plan, task and meet objective of software engineering",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Ability to apply engineering design to produce solutions that meet specified needs with consideration of social economic factors",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Apply new software models, techniques and technologies to bring out innovative and novelistic solutions for the growth of the society in all aspects and evolving into their continuous professional development.",
+        "k_level": "K4"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "Basic understanding of software engineering, terminologies, various process models",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Develop and conduct appropriate experimentation, analyze and interpret data, and use engineering judgment to draw conclusions",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Examine themselves to function effectively on a team whose members together provide leadership, create a collaborative environment, establish, plan, task and meet objective of software engineering",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Ability to apply engineering design to produce solutions that meet specified needs with consideration of social economic factors",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Apply new software models, techniques and technologies to bring out innovative and novelistic solutions for the growth of the society in all aspects and evolving into their continuous professional development.",
+        "k_level": "K4"
+      }
+    ]
+  },
+  {
+    "course_code": "21USS530210",
+    "course_title": "Core Course - VII: RDBMS",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "III UG",
+    "semester": "Semester 5",
+    "semester_num": 5,
+    "hours": 4,
+    "credits": 4,
+    "course_category": "Core",
+    "syllabus_year": 2021,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "Understand the basic concepts of the database and data models.",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Design a database using ER diagrams and mapping ER Relations in software development",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Acquire the knowledge of query evaluation to monitor the performance of the database administration",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Build a simple data base system and demonstrate competence with the fundamental tasks involved with modeling, designing and implementing a database management",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Acquire the knowledge about different special purpose databases and to critique how they differ from traditional database systems.",
+        "k_level": "K4"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "Understand the basic concepts of the database and data models.",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Design a database using ER diagrams and mapping ER Relations in software development",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Acquire the knowledge of query evaluation to monitor the performance of the database administration",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Build a simple data base system and demonstrate competence with the fundamental tasks involved with modeling, designing and implementing a database management",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Acquire the knowledge about different special purpose databases and to critique how they differ from traditional database systems.",
+        "k_level": "K4"
+      }
+    ]
+  },
+  {
+    "course_code": "21USS630211",
+    "course_title": "Core Course - VIII: Fundamentals of Computer Networks",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "III UG",
+    "semester": "Semester 6",
+    "semester_num": 6,
+    "hours": 4,
+    "credits": 4,
+    "course_category": "Core",
+    "syllabus_year": 2021,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "Understand fundamental underlying principles of computer networking",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Investigate the hardware, software, components of a network and the interrelations.",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Analyze the requirements for a given organizational structure and select the most appropriate networking architecture and Technologies",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Familiarity with the basic protocols of computer networks and how they can be used to assist in network design and implementation",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Construct various types of networks for processing data",
+        "k_level": "K4"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "Understand fundamental underlying principles of computer networking",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Investigate the hardware, software, components of a network and the interrelations.",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Analyze the requirements for a given organizational structure and select the most appropriate networking architecture and Technologies",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Familiarity with the basic protocols of computer networks and how they can be used to assist in network design and implementation",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Construct various types of networks for processing data",
+        "k_level": "K4"
+      }
+    ]
+  },
+  {
+    "course_code": "21USS630212",
+    "course_title": "Core Course - IX: Data Analysis Using Python",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "III UG",
+    "semester": "Semester 6",
+    "semester_num": 6,
+    "hours": 4,
+    "credits": 4,
+    "course_category": "Core",
+    "syllabus_year": 2021,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "Understand the important features of Python.",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Define the fundamentals of the most widely used Python packages and Functions.",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Perform data preprocessing using NumPy, Pandas",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Analyze the various scientific problems and provide suitable solutions using various techniques with Python.",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Visualizing the results of analytics effectively",
+        "k_level": "K4"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "Understand the important features of Python.",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Define the fundamentals of the most widely used Python packages and Functions.",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Perform data preprocessing using NumPy, Pandas",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Analyze the various scientific problems and provide suitable solutions using various techniques with Python.",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Visualizing the results of analytics effectively",
+        "k_level": "K4"
+      }
+    ]
+  },
+  {
+    "course_code": "21USS630213",
+    "course_title": "Core Course – X: Principles of Mobile Computing",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "III UG",
+    "semester": "Semester 6",
+    "semester_num": 6,
+    "hours": 4,
+    "credits": 4,
+    "course_category": "Core",
+    "syllabus_year": 2021,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "Know the evolutions of mobile computing",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Understand fundamentals of wireless communications",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Analyze security, mobility, scalability and their unique characteristics in wireless networks",
+        "k_level": "K4"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Design and develop user interfaces for the android platform",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Apply java programming concepts in Android application development",
+        "k_level": "K4"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "Know the evolutions of mobile computing",
+        "k_level": "K1"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Understand fundamentals of wireless communications",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Analyze security, mobility, scalability and their unique characteristics in wireless networks",
+        "k_level": "K4"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Design and develop user interfaces for the android platform",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Apply java programming concepts in Android application development",
+        "k_level": "K4"
+      }
+    ]
+  },
+  {
+    "course_code": "21USS630214",
+    "course_title": "Skill Component - Software Developer (SSC/Q 0501) Project-II",
+    "department": "B.Voc SD & SA",
+    "programme": "B.Voc. Software Development & System Administration",
+    "level": "UG",
+    "year_class": "III UG",
+    "semester": "Semester 6",
+    "semester_num": 6,
+    "hours": 18,
+    "credits": 18,
+    "course_category": "Core Practical",
+    "syllabus_year": 2021,
+    "course_outcomes": [
+      {
+        "code": "CO1",
+        "outcome": "Formulate a software project charter defining scope, requirements, and tech stack",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Design system architecture, entity diagrams, and user journey flowcharts",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Develop full-stack software application with authentication, database, and business logic",
+        "k_level": "K4"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Perform automated and manual testing including unit, integration, and user tests",
+        "k_level": "K4"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Document source code, deployment guides, and present project viva voce",
+        "k_level": "K4"
+      }
+    ],
+    "cos": [
+      {
+        "code": "CO1",
+        "outcome": "Formulate a software project charter defining scope, requirements, and tech stack",
+        "k_level": "K2"
+      },
+      {
+        "code": "CO2",
+        "outcome": "Design system architecture, entity diagrams, and user journey flowcharts",
+        "k_level": "K3"
+      },
+      {
+        "code": "CO3",
+        "outcome": "Develop full-stack software application with authentication, database, and business logic",
+        "k_level": "K4"
+      },
+      {
+        "code": "CO4",
+        "outcome": "Perform automated and manual testing including unit, integration, and user tests",
+        "k_level": "K4"
+      },
+      {
+        "code": "CO5",
+        "outcome": "Document source code, deployment guides, and present project viva voce",
+        "k_level": "K4"
+      }
+    ]
   }
 ]

@@ -225,7 +225,7 @@ class CoursePlanApp {
       'History': ['B.A. History', 'M.A. History'],
       'Tamil': ['B.A. Tamil', 'M. A. Tamil'],
       'BBA': ['B.B.A (Business Administration)'],
-      'B.Voc SD & SA': ['B.Voc. SD & SA (Software Development)'],
+      'B.Voc SD & SA': ['B.Voc. Software Development & System Administration', 'B.Voc. SD & SA'],
       'Visual Communication': ['B.Sc. Visual Communication', 'B.Voc. Viscom Technology', 'M.Sc. Visual Communication'],
       'Electronics': ['B.Sc. Electronics', 'M.Sc. Electronics'],
       'Counselling Psy': ['M.Sc. Counselling Psychology'],
@@ -265,6 +265,8 @@ class CoursePlanApp {
     const sd = selectedDept.toLowerCase().trim();
     if (cd === sd) return true;
     if (cd.includes(sd) || sd.includes(cd)) return true;
+    const isSdSa = (s) => (s.includes('b.voc') || s.includes('bvoc') || s.includes('software')) && (s.includes('sd') || s.includes('sa') || s.includes('software') || s.includes('uss'));
+    if (isSdSa(cd) && isSdSa(sd)) return true;
     if (sd.includes('counselling') && cd.includes('counselling')) return true;
     if (sd.includes('visual') && cd.includes('visual')) return true;
     if (sd.includes('human resource') && cd.includes('hrm')) return true;
@@ -294,6 +296,8 @@ class CoursePlanApp {
       } else if (prog && dept === 'Information Technology') {
         if (prog.includes('M.Sc') && !c.course_code.includes('PCS')) return false;
         if ((prog.includes('BCA') || prog.includes('B.C.A')) && !c.course_code.includes('UBC')) return false;
+      } else if (dept.includes('B.Voc SD & SA') || dept.toLowerCase().includes('sd & sa') || dept.toLowerCase().includes('software')) {
+        if (!c.course_code.includes('USS')) return false;
       }
 
       return true;
@@ -364,6 +368,15 @@ class CoursePlanApp {
     this.harvestFormInputs();
     this.activePlan.year_class = newYc;
 
+    // Automatically sync corresponding even semester for the academic year 2026-2027 Even Semester
+    if (newYc === 'I UG' || newYc === 'I PG') {
+      this.activePlan.semester = 'II';
+    } else if (newYc === 'II UG' || newYc === 'II PG') {
+      this.activePlan.semester = 'IV';
+    } else if (newYc === 'III UG' || newYc === 'III PG') {
+      this.activePlan.semester = 'VI';
+    }
+
     const isPG = newYc.includes('PG') || newYc.includes('MCA');
     this.activePlan.is_pg = isPG;
     this.activePlan.is_auto_fetched = true;
@@ -415,8 +428,9 @@ class CoursePlanApp {
     const isPG = course.level === 'PG' || (course.year_class && course.year_class.includes('PG')) || course.course_code.includes('P') || (this.activePlan.programme && this.activePlan.programme.startsWith('M.'));
     this.activePlan.is_pg = isPG;
 
-    if (course.cos && course.cos.length > 0) {
-      this.activePlan.course_outcomes = JSON.parse(JSON.stringify(course.cos));
+    const courseCos = (course.cos && course.cos.length > 0) ? course.cos : (course.course_outcomes || []);
+    if (courseCos.length > 0) {
+      this.activePlan.course_outcomes = JSON.parse(JSON.stringify(courseCos));
     }
 
     const perUnitHours = Math.round((weeklyHrs * 15) / 5);
@@ -435,7 +449,7 @@ class CoursePlanApp {
     this.showAutoFillToast(course);
 
     if (showAlert) {
-      alert("✓ Auto-fetched syllabus details for " + course.course_code + ":\n• Course Title: " + (course.course_title || '—') + "\n• Credits: " + this.activePlan.credits + "\n• Teaching Hours: " + weeklyHrs + " Hrs/Week (" + (weeklyHrs*15) + " Total)\n• Unit Hours: " + perUnitHours + " Hrs/Unit (Default Actual Hours pre-filled)\n• Course Outcomes: " + (course.cos ? course.cos.length : 0) + " COs loaded!");
+      alert("✓ Auto-fetched syllabus details for " + course.course_code + ":\n• Course Title: " + (course.course_title || '—') + "\n• Credits: " + this.activePlan.credits + "\n• Teaching Hours: " + weeklyHrs + " Hrs/Week (" + (weeklyHrs*15) + " Total)\n• Unit Hours: " + perUnitHours + " Hrs/Unit (Default Actual Hours pre-filled)\n• Course Outcomes: " + (courseCos ? courseCos.length : 0) + " COs loaded!");
     }
   }
 
@@ -5472,35 +5486,11 @@ class CoursePlanApp {
 
   updateFacultyWelcomeBanner(facName) {
     const box = document.getElementById('cp-banner-instructions-box');
+    if (box) box.remove();
     const welcomeEl = document.getElementById('cp-banner-welcome');
+    if (welcomeEl) welcomeEl.remove();
     const instEl = document.getElementById('cp-banner-instructions');
-    const inlineGreeting = document.getElementById('cp-faculty-welcome-inline');
-
-    if (facName && facName.trim()) {
-      if (welcomeEl) {
-        welcomeEl.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-400 text-indigo-950 text-xs font-black uppercase tracking-wider shadow-sm"><i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Welcome, ${facName}</span>`;
-      }
-      if (instEl) {
-        instEl.innerHTML = `<strong>Instructions:</strong> Dear ${facName}, The course plan shall be prepared for all the theory courses before the commencement of the course and submitted to the Head of the Department for review and approval.`;
-      }
-      if (box) box.classList.remove('hidden');
-
-      if (inlineGreeting) {
-        inlineGreeting.innerHTML = `<i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-600"></i> Welcome, <strong>${facName}</strong>!`;
-        inlineGreeting.classList.remove('hidden');
-      }
-      if (window.lucide && typeof window.lucide.createIcons === 'function') {
-        window.lucide.createIcons();
-      }
-    } else {
-      if (box) box.classList.add('hidden');
-      if (welcomeEl) welcomeEl.innerHTML = '';
-      if (instEl) instEl.innerHTML = '';
-      if (inlineGreeting) {
-        inlineGreeting.innerHTML = '';
-        inlineGreeting.classList.add('hidden');
-      }
-    }
+    if (instEl) instEl.remove();
   }
 
   onAdminStatusFilterChange(status) {
