@@ -3388,19 +3388,19 @@ class CoursePlanApp {
             <button 
               type="button" 
               onclick="coursePlanApp.navigateTo('/course-plan/new')" 
-              class="px-5 py-3 bg-amber-400 hover:bg-amber-300 text-indigo-950 font-black rounded-2xl text-xs sm:text-sm transition shadow-lg shadow-amber-400/20 flex items-center gap-2 cursor-pointer active:scale-95"
+              class="px-5 py-3 bg-amber-400 hover:bg-amber-300 text-indigo-950 font-black rounded-2xl text-xs sm:text-sm transition shadow-lg shadow-amber-400/20 flex items-center gap-2.5 cursor-pointer active:scale-95"
             >
-              <i data-lucide="plus-circle" class="w-5 h-5"></i>
+              <span class="w-6 h-6 rounded-full bg-indigo-950 text-amber-300 flex items-center justify-center font-black text-xs shrink-0 shadow-sm leading-none">1</span>
               <span>+ Create New Course Plan</span>
             </button>
             <button 
               type="button" 
               onclick="coursePlanApp.openTLPracticesModal()" 
-              class="px-5 py-3 bg-gradient-to-r from-indigo-700 via-indigo-600 to-indigo-800 hover:from-indigo-600 hover:to-indigo-700 text-white font-extrabold rounded-2xl text-xs sm:text-sm transition shadow-lg shadow-indigo-950/40 flex items-center gap-2 cursor-pointer border border-indigo-400/40 active:scale-95"
+              class="px-5 py-3 bg-gradient-to-r from-indigo-700 via-indigo-600 to-indigo-800 hover:from-indigo-600 hover:to-indigo-700 text-white font-extrabold rounded-2xl text-xs sm:text-sm transition shadow-lg shadow-indigo-950/40 flex items-center gap-2.5 cursor-pointer border border-indigo-400/40 active:scale-95"
               title="Open Teaching-Learning Practices, Assessment Components & E-Content planned form"
             >
-              <i data-lucide="sparkles" class="w-4 h-4 text-amber-300"></i>
-              <span>TL Practices, Assessment Components, E-Content</span>
+              <span class="w-6 h-6 rounded-full bg-white text-indigo-900 flex items-center justify-center font-black text-xs shrink-0 shadow-sm leading-none">2</span>
+              <span>TL Practices, Assessment Component</span>
             </button>
             <button 
               type="button" 
@@ -3457,8 +3457,8 @@ class CoursePlanApp {
                 class="px-3.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer border border-indigo-200 shadow-2xs"
                 title="Teaching-Learning Practices, Assessment Components & E-Content planned"
               >
-                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-indigo-600"></i>
-                <span>TL Practices, Assessment Components, E-Content</span>
+                <span class="w-4 h-4 rounded-full bg-indigo-600 text-white font-black text-[10px] flex items-center justify-center shrink-0 leading-none">2</span>
+                <span>TL Practices, Assessment Component</span>
               </button>
               <button 
                 type="button" 
