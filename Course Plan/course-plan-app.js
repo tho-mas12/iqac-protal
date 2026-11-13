@@ -6090,19 +6090,10 @@ class CoursePlanApp {
                     <i data-lucide="book-open" class="w-3.5 h-3.5 text-amber-300"></i>
                     <span>View Course Syllabus & References</span>
                   </button>
-                  <button 
-                    type="button" 
-                    onclick="coursePlanApp.toggleTeachingPlanTable()" 
-                    class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-xs flex items-center gap-1.5 border border-slate-200 cursor-pointer transition shadow-2xs"
-                    title="${this.isTeachingPlanCollapsed ? 'Show Detailed Teaching Plan' : 'Hide Detailed Teaching Plan'}"
-                  >
-                    <i data-lucide="${this.isTeachingPlanCollapsed ? 'eye-off' : 'eye'}" class="w-4 h-4 text-indigo-600"></i>
-                    <span>${this.isTeachingPlanCollapsed ? 'Show Table' : 'Hide Table'}</span>
-                  </button>
                 </div>
               </div>
 
-              <div class="${this.isTeachingPlanCollapsed ? 'hidden' : ''} overflow-x-auto rounded-xl border border-slate-200 max-h-none md:max-h-[580px] scrollbar-thin">
+              <div class="overflow-x-auto rounded-xl border border-slate-200 max-h-none md:max-h-[580px] scrollbar-thin">
                 <table class="w-full text-left text-xs border-collapse mobile-card-table">
                   <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold sticky top-0 z-10">
                     <tr>
@@ -6113,7 +6104,7 @@ class CoursePlanApp {
                       <th class="p-2.5 w-16 text-center">Hours *</th>
                       <th class="p-2.5 w-60">Teaching Methodology *</th>
                       <th class="p-2.5 w-60">Learning Resources *</th>
-                      <th class="p-2.5 w-12 text-center">Action</th>
+                      <th class="p-2.5 w-14 text-center">Action</th>
                     </tr>
                   </thead>
                   <tbody id="cp-dtp-tbody" class="divide-y divide-slate-100">
@@ -6126,9 +6117,10 @@ class CoursePlanApp {
                           else break;
                         }
                       }
+                      const isHidden = !!row.is_hidden;
 
                       return `
-                        <tr>
+                        <tr class="${isHidden ? 'bg-slate-100/80 opacity-50' : 'hover:bg-slate-50/50'} transition">
                           ${isFirstInMonth ? `
                             <td rowspan="${span}" class="p-2.5 font-bold text-slate-800 bg-slate-50/70 border-r border-slate-200 text-center align-middle whitespace-nowrap hidden md:table-cell select-none" data-label="Month / Days">
                               <div class="flex flex-col items-center justify-center gap-2">
@@ -6167,6 +6159,7 @@ class CoursePlanApp {
                           <td class="p-1.5" data-label="Unit">
                             <select 
                               class="dtp-unit w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-bold bg-white focus:border-indigo-600 focus:outline-none"
+                              ${isHidden ? 'disabled' : ''}
                             >
                               <option value="">-- Select Unit --</option>
                               <option value="Unit I" ${row.unit === 'Unit I' ? 'selected' : ''}>Unit I</option>
@@ -6175,15 +6168,16 @@ class CoursePlanApp {
                               <option value="Unit IV" ${row.unit === 'Unit IV' ? 'selected' : ''}>Unit IV</option>
                               <option value="Unit V" ${row.unit === 'Unit V' ? 'selected' : ''}>Unit V</option>
                             </select>
+                            ${isHidden ? '<div class="text-[9.5px] font-bold text-slate-400 uppercase tracking-wider mt-0.5"><i data-lucide="eye-off" class="w-2.5 h-2.5 inline mr-0.5"></i>Hidden Row</div>' : ''}
                           </td>
                           <td class="p-1.5" data-label="From (Topic)">
-                            <textarea class="dtp-from-topic w-full text-xs px-2 py-1.5 border border-slate-300 rounded focus:border-indigo-600 focus:outline-none" rows="2" placeholder="Start topic / portion...">${row.from_topic || row.topics || ''}</textarea>
+                            <textarea class="dtp-from-topic w-full text-xs px-2 py-1.5 border border-slate-300 rounded focus:border-indigo-600 focus:outline-none" rows="2" placeholder="Start topic / portion..." ${isHidden ? 'disabled' : ''}>${row.from_topic || row.topics || ''}</textarea>
                           </td>
                           <td class="p-1.5" data-label="To (Topic)">
-                            <textarea class="dtp-to-topic w-full text-xs px-2 py-1.5 border border-slate-300 rounded focus:border-indigo-600 focus:outline-none" rows="2" placeholder="End topic / portion...">${row.to_topic || ''}</textarea>
+                            <textarea class="dtp-to-topic w-full text-xs px-2 py-1.5 border border-slate-300 rounded focus:border-indigo-600 focus:outline-none" rows="2" placeholder="End topic / portion..." ${isHidden ? 'disabled' : ''}>${row.to_topic || ''}</textarea>
                           </td>
                           <td class="p-1.5 text-center" data-label="Lecture Hours">
-                            <input type="number" class="dtp-hours w-full text-xs px-1.5 py-1.5 border border-slate-300 rounded font-bold text-center focus:border-indigo-600 focus:outline-none" value="${row.hours || ''}" placeholder="Hrs" />
+                            <input type="number" class="dtp-hours w-full text-xs px-1.5 py-1.5 border border-slate-300 rounded font-bold text-center focus:border-indigo-600 focus:outline-none" value="${row.hours || ''}" placeholder="Hrs" ${isHidden ? 'disabled' : ''} />
                           </td>
                           <td class="p-1.5" data-label="Teaching Methodology">
                             ${this.renderMethodologyMultiSelect(idx, row.methodology)}
@@ -6192,9 +6186,15 @@ class CoursePlanApp {
                             ${this.renderResourceMultiSelect(idx, row.resources)}
                           </td>
                           <td class="p-1.5 text-center" data-label="Action">
-                            <button type="button" onclick="coursePlanApp.deleteTeachingPlanRow(${idx})" class="p-1 text-slate-400 hover:text-red-600 rounded">
-                              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            <button 
+                              type="button" 
+                              onclick="coursePlanApp.toggleTeachingPlanRow(${idx})" 
+                              class="p-1.5 rounded-lg transition cursor-pointer ${isHidden ? 'text-slate-400 bg-slate-200 hover:text-indigo-600 hover:bg-indigo-50' : 'text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50'}" 
+                              title="${isHidden ? 'Row is hidden / disabled. Click to show / enable row' : 'Click to hide / disable this row'}"
+                            >
+                              <i data-lucide="${isHidden ? 'eye-off' : 'eye'}" class="w-4 h-4"></i>
                             </button>
+                            <input type="hidden" class="dtp-is-hidden" value="${isHidden ? 'true' : 'false'}" />
                           </td>
                         </tr>
                       `;
@@ -6789,12 +6789,12 @@ class CoursePlanApp {
                   </tr>
                 </thead>
                 <tbody>
-                  ${dtp.map((row, idx) => {
-                    const isFirstInMonth = (idx === 0 || row.month_days !== dtp[idx - 1].month_days);
+                  ${(dtp || []).filter(r => !r.is_hidden).map((row, idx, activeDtp) => {
+                    const isFirstInMonth = (idx === 0 || row.month_days !== activeDtp[idx - 1].month_days);
                     let span = 1;
                     if (isFirstInMonth) {
-                      for (let j = idx + 1; j < dtp.length; j++) {
-                        if (dtp[j].month_days === row.month_days) span++;
+                      for (let j = idx + 1; j < activeDtp.length; j++) {
+                        if (activeDtp[j].month_days === row.month_days) span++;
                         else break;
                       }
                     }
@@ -7085,11 +7085,16 @@ class CoursePlanApp {
 
     // A. Detailed Teaching Plan
     const dtpRows = document.querySelectorAll('#cp-dtp-tbody tr');
+    let activeRowsCount = 0;
     if (dtpRows.length === 0) {
       errors.push('Detailed Teaching Plan entries');
     } else {
       let emptyFromTopic = 0, emptyToTopic = 0, emptyHours = 0, emptyMethods = 0, emptyRes = 0;
       dtpRows.forEach((row) => {
+        const isHidden = row.querySelector('.dtp-is-hidden')?.value === 'true';
+        if (isHidden) return; // Skip hidden/disabled rows
+
+        activeRowsCount++;
         const fromEl = row.querySelector('.dtp-from-topic');
         const toEl = row.querySelector('.dtp-to-topic');
         const hrEl = row.querySelector('.dtp-hours');
@@ -7121,6 +7126,9 @@ class CoursePlanApp {
         }
       });
 
+      if (activeRowsCount === 0) {
+        errors.push('Detailed Teaching Plan: At least one active topic row is required (unhide/enable a row).');
+      }
       if (emptyFromTopic > 0) errors.push(`Detailed Teaching Plan: 'From (Topic)' missing in ${emptyFromTopic} row(s)`);
       if (emptyToTopic > 0) errors.push(`Detailed Teaching Plan: 'To (Topic)' missing in ${emptyToTopic} row(s)`);
       if (emptyHours > 0) errors.push(`Detailed Teaching Plan: Lecture Hour(s) missing in ${emptyHours} row(s)`);
@@ -7566,8 +7574,10 @@ class CoursePlanApp {
     this.render();
   }
 
-  toggleTeachingPlanTable() {
-    this.isTeachingPlanCollapsed = !this.isTeachingPlanCollapsed;
+  toggleTeachingPlanRow(idx) {
+    this.harvestFormInputs();
+    if (!this.activePlan.detailed_teaching_plan || !this.activePlan.detailed_teaching_plan[idx]) return;
+    this.activePlan.detailed_teaching_plan[idx].is_hidden = !this.activePlan.detailed_teaching_plan[idx].is_hidden;
     this.render();
   }
 
@@ -8184,18 +8194,19 @@ class CoursePlanApp {
     dtpRows.forEach(tr => {
       const fromTopic = tr.querySelector('.dtp-from-topic')?.value || '';
       const toTopic = tr.querySelector('.dtp-to-topic')?.value || '';
+      const isHidden = tr.querySelector('.dtp-is-hidden')?.value === 'true';
       dtp.push({
         month_days: tr.querySelector('.dtp-month')?.value || '',
-        unit: tr.querySelector('.dtp-unit')?.value || 'Unit I',
+        unit: tr.querySelector('.dtp-unit')?.value || '',
         from_topic: fromTopic,
         to_topic: toTopic,
         topics: fromTopic + (toTopic ? ' to ' + toTopic : ''),
         hours: tr.querySelector('.dtp-hours')?.value || '',
-        cos: tr.querySelector('.dtp-cos')?.value || '',
         methodology: tr.querySelector('.dtp-method-value')?.value || '',
         resources: tr.querySelector('.dtp-res-value')?.value || (tr.querySelector('.dtp-res-select')?.value === 'Others' 
           ? (tr.querySelector('.dtp-res-other')?.value || 'Others') 
-          : (tr.querySelector('.dtp-res-select')?.value || ''))
+          : (tr.querySelector('.dtp-res-select')?.value || '')),
+        is_hidden: isHidden
       });
     });
     if (dtp.length > 0) this.activePlan.detailed_teaching_plan = dtp;
