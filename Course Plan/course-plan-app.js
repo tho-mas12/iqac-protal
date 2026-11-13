@@ -755,7 +755,7 @@ class CoursePlanApp {
 
   getFullAssessmentPlan(plan) {
     const p = plan || this.activePlan || {};
-    const isPG = !!p.is_pg;
+    const isPG = !!p.is_pg || (p.year_class && p.year_class.includes('PG')) || (p.programme && p.programme.startsWith('M.'));
 
     const c1 = {
       sno: '1',
@@ -764,7 +764,7 @@ class CoursePlanApp {
       category: 'MCQ through JosTEL',
       unit_coverage: 'Unit I & II',
       date: '09-01-2027 to 13-01-2027',
-      outcome: 'CO1, CO2 (K1, K2)',
+      outcome: '—',
       is_default: true,
       uneditable: true
     };
@@ -776,7 +776,7 @@ class CoursePlanApp {
       category: 'Written Examination',
       unit_coverage: 'Unit I, II & III',
       date: '21-01-2027 to 30-01-2027',
-      outcome: 'CO1, CO2, CO3 (K1, K2, K3)',
+      outcome: '—',
       is_default: true,
       uneditable: true
     };
@@ -787,7 +787,7 @@ class CoursePlanApp {
       category: 'Written Examination',
       unit_coverage: 'All Units (Unit I - V)',
       date: '16-03-2027 to 24-03-2027',
-      outcome: isPG ? 'CO1 to CO6 (K1 - K6)' : 'CO1 to CO5 (K1 - K5)',
+      outcome: '—',
       is_default: true,
       uneditable: true
     };
@@ -798,7 +798,7 @@ class CoursePlanApp {
       marks: String(a.cia_marks || '10'),
       category: a.activity || 'Learning Activity',
       unit_coverage: a.topic || '—',
-      date: this.formatDateToDDMMYYYY(a.proposed_date) || '—',
+      date: a.proposed_date ? this.formatDateToDDMMYYYY(a.proposed_date) : '—',
       outcome: a.outcome || '—',
       is_default: false,
       uneditable: true
@@ -1631,6 +1631,10 @@ class CoursePlanApp {
   formatDateToDDMMYYYY(dateStr) {
     if (!dateStr) return '';
     const trimmed = String(dateStr).trim();
+    if (trimmed.includes(' to ')) {
+      const parts = trimmed.split(' to ');
+      return `${this.formatDateToDDMMYYYY(parts[0])} to ${this.formatDateToDDMMYYYY(parts[1])}`;
+    }
     if (/^\d{2}-\d{2}-\d{4}$/.test(trimmed)) return trimmed;
     if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
       const [y, m, d] = trimmed.split('-');
@@ -6041,21 +6045,6 @@ class CoursePlanApp {
                 </table>
               </div>
             </div>
-            <datalist id="dtp-units-datalist">
-                <option value="Unit I">
-                <option value="Unit II">
-                <option value="Unit III">
-                <option value="Unit IV">
-                <option value="Unit V">
-                <option value="Unit I & II">
-                <option value="Unit II & III">
-                <option value="Unit III & IV">
-                <option value="Unit IV & V">
-                <option value="Unit I, II">
-                <option value="Unit II, III">
-                <option value="Unit III, IV">
-                <option value="Unit IV, V">
-              </datalist>
             </div>
 
             <!-- Next Part Button -->
@@ -6103,24 +6092,25 @@ class CoursePlanApp {
                   </button>
                   <button 
                     type="button" 
-                    onclick="coursePlanApp.addTeachingPlanRow()" 
-                    class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-xs flex items-center gap-1 border border-slate-200 cursor-pointer"
+                    onclick="coursePlanApp.toggleTeachingPlanTable()" 
+                    class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-xs flex items-center gap-1.5 border border-slate-200 cursor-pointer transition shadow-2xs"
+                    title="${this.isTeachingPlanCollapsed ? 'Show Detailed Teaching Plan' : 'Hide Detailed Teaching Plan'}"
                   >
-                    <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Topic Row
+                    <i data-lucide="${this.isTeachingPlanCollapsed ? 'eye-off' : 'eye'}" class="w-4 h-4 text-indigo-600"></i>
+                    <span>${this.isTeachingPlanCollapsed ? 'Show Table' : 'Hide Table'}</span>
                   </button>
                 </div>
               </div>
 
-              <div class="overflow-x-auto rounded-xl border border-slate-200 max-h-none md:max-h-[580px] scrollbar-thin">
+              <div class="${this.isTeachingPlanCollapsed ? 'hidden' : ''} overflow-x-auto rounded-xl border border-slate-200 max-h-none md:max-h-[580px] scrollbar-thin">
                 <table class="w-full text-left text-xs border-collapse mobile-card-table">
                   <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold sticky top-0 z-10">
                     <tr>
-                      <th class="p-2.5 w-28">Month / Days</th>
-                      <th class="p-2.5 w-24">Unit</th>
-                      <th class="p-2.5 w-44">From (Topic) *</th>
-                      <th class="p-2.5 w-44">To (Topic) *</th>
+                      <th class="p-2.5 w-32">Month / Days</th>
+                      <th class="p-2.5 w-28">Unit</th>
+                      <th class="p-2.5 w-48">From (Topic) *</th>
+                      <th class="p-2.5 w-48">To (Topic) *</th>
                       <th class="p-2.5 w-16 text-center">Hours *</th>
-                      <th class="p-2.5 w-16 text-center">COs *</th>
                       <th class="p-2.5 w-60">Teaching Methodology *</th>
                       <th class="p-2.5 w-60">Learning Resources *</th>
                       <th class="p-2.5 w-12 text-center">Action</th>
@@ -6141,8 +6131,19 @@ class CoursePlanApp {
                         <tr>
                           ${isFirstInMonth ? `
                             <td rowspan="${span}" class="p-2.5 font-bold text-slate-800 bg-slate-50/70 border-r border-slate-200 text-center align-middle whitespace-nowrap hidden md:table-cell select-none" data-label="Month / Days">
-                              <div class="px-2.5 py-1.5 rounded-xl bg-white border border-slate-300 shadow-2xs font-black text-indigo-950 text-xs inline-block">
-                                ${this.escapeHtml(row.month_days || '—')}
+                              <div class="flex flex-col items-center justify-center gap-2">
+                                <div class="px-2.5 py-1.5 rounded-xl bg-white border border-slate-300 shadow-2xs font-black text-indigo-950 text-xs inline-block">
+                                  ${this.escapeHtml(row.month_days || '—')}
+                                </div>
+                                <button 
+                                  type="button" 
+                                  onclick="coursePlanApp.addTeachingPlanRowForMonth('${this.escapeHtml(row.month_days || '')}', ${idx + span - 1})" 
+                                  class="px-2 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold rounded-lg text-[10.5px] border border-indigo-200 flex items-center gap-1 cursor-pointer transition shadow-2xs active:scale-95"
+                                  title="Add topic row under ${this.escapeHtml(row.month_days || 'this month')}"
+                                >
+                                  <i data-lucide="plus" class="w-3 h-3 text-indigo-600"></i>
+                                  <span>Add Topic Row</span>
+                                </button>
                               </div>
                               <input type="hidden" class="dtp-month" value="${this.escapeHtml(row.month_days || '')}" />
                             </td>
@@ -6150,18 +6151,30 @@ class CoursePlanApp {
 
                           <!-- Mobile-only Month/Days cell so mobile card clearly shows month -->
                           <td class="md:hidden p-1.5" data-label="Month / Days">
-                            <span class="font-black text-indigo-950 text-xs">${this.escapeHtml(row.month_days || '—')}</span>
+                            <div class="flex items-center justify-between gap-2">
+                              <span class="font-black text-indigo-950 text-xs">${this.escapeHtml(row.month_days || '—')}</span>
+                              <button 
+                                type="button" 
+                                onclick="coursePlanApp.addTeachingPlanRowForMonth('${this.escapeHtml(row.month_days || '')}', ${idx})" 
+                                class="px-2 py-0.5 bg-indigo-50 text-indigo-700 font-bold rounded text-[10px] border border-indigo-200 flex items-center gap-1 cursor-pointer"
+                              >
+                                <i data-lucide="plus" class="w-3 h-3 text-indigo-600"></i> Add Topic Row
+                              </button>
+                            </div>
                             <input type="hidden" class="dtp-month" value="${this.escapeHtml(row.month_days || '')}" />
                           </td>
 
                           <td class="p-1.5" data-label="Unit">
-                            <input 
-                              list="dtp-units-datalist" 
-                              class="dtp-unit w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-bold bg-white focus:border-indigo-600 focus:outline-none" 
-                              value="${row.unit || 'Unit I'}" 
-                              placeholder="e.g. Unit I" 
-                              title="Multiple units can be specified for a month (e.g. Unit I & II)"
-                            />
+                            <select 
+                              class="dtp-unit w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-bold bg-white focus:border-indigo-600 focus:outline-none"
+                            >
+                              <option value="">-- Select Unit --</option>
+                              <option value="Unit I" ${row.unit === 'Unit I' ? 'selected' : ''}>Unit I</option>
+                              <option value="Unit II" ${row.unit === 'Unit II' ? 'selected' : ''}>Unit II</option>
+                              <option value="Unit III" ${row.unit === 'Unit III' ? 'selected' : ''}>Unit III</option>
+                              <option value="Unit IV" ${row.unit === 'Unit IV' ? 'selected' : ''}>Unit IV</option>
+                              <option value="Unit V" ${row.unit === 'Unit V' ? 'selected' : ''}>Unit V</option>
+                            </select>
                           </td>
                           <td class="p-1.5" data-label="From (Topic)">
                             <textarea class="dtp-from-topic w-full text-xs px-2 py-1.5 border border-slate-300 rounded focus:border-indigo-600 focus:outline-none" rows="2" placeholder="Start topic / portion...">${row.from_topic || row.topics || ''}</textarea>
@@ -6171,9 +6184,6 @@ class CoursePlanApp {
                           </td>
                           <td class="p-1.5 text-center" data-label="Lecture Hours">
                             <input type="number" class="dtp-hours w-full text-xs px-1.5 py-1.5 border border-slate-300 rounded font-bold text-center focus:border-indigo-600 focus:outline-none" value="${row.hours || ''}" placeholder="Hrs" />
-                          </td>
-                          <td class="p-1.5 text-center" data-label="COs Mapped">
-                            <input type="text" class="dtp-cos w-full text-xs px-1.5 py-1.5 border border-slate-300 rounded font-bold text-center focus:border-indigo-600 focus:outline-none" value="${row.cos || 'CO1'}" />
                           </td>
                           <td class="p-1.5" data-label="Teaching Methodology">
                             ${this.renderMethodologyMultiSelect(idx, row.methodology)}
@@ -6207,8 +6217,8 @@ class CoursePlanApp {
                     <tr>
                       <th class="p-2.5 w-36">Unit</th>
                       <th class="p-2.5 w-36 text-center">Planned Hours</th>
-                      <th class="p-2.5 w-36 text-center">Actual Hours</th>
-                      <th class="p-2.5">Target Completion Date</th>
+                      <th class="p-2.5 w-44 text-center">Actual Hours (As per Syllabus)</th>
+                      <th class="p-2.5">Expected Completion Date</th>
                     </tr>
                   </thead>
                   <tbody id="cp-ucp-tbody" class="divide-y divide-slate-100 font-medium">
@@ -6228,16 +6238,16 @@ class CoursePlanApp {
                             placeholder="0" 
                           />
                         </td>
-                        <td class="p-2" data-label="Target Date">
+                        <td class="p-2" data-label="Expected Date">
                           <input type="date" class="ucp-date w-48 text-xs px-2.5 py-1.5 border border-slate-300 rounded font-mono focus:border-indigo-600 focus:outline-none" value="${u.target_date || ''}" />
                         </td>
                       </tr>
                     `).join('')}
                     <tr class="bg-indigo-50/60 font-bold border-t border-indigo-200">
-                      <td class="p-2.5 text-indigo-950 font-black">Total (As per Syllabus)</td>
+                      <td class="p-2.5 text-indigo-950 font-black">Total</td>
                       <td class="p-2.5 text-center text-indigo-950 font-black" id="ucp-total-planned">0 Hrs</td>
                       <td class="p-2.5 text-center text-indigo-950 font-black" id="ucp-total-actual">0 Hrs</td>
-                      <td class="p-2.5 text-slate-500 text-[11px] italic">Verified before semester audit</td>
+                      <td class="p-2.5"></td>
                     </tr>
                   </tbody>
                 </table>
@@ -6487,7 +6497,7 @@ class CoursePlanApp {
                         'JosTEL', 'Google Classroom', 'Moodle', 'YouTube',
                         'Kahoot / Quizizz', 'SWAYAM / NPTEL', 'GitHub'
                       ];
-                      const curPlatform = ict.platform || '';
+                      const curPlatform = ict.platform || 'JosTEL';
                       const isOtherPlatform = curPlatform !== '' && !platformOptions.includes(curPlatform);
 
                       return `
@@ -6774,7 +6784,6 @@ class CoursePlanApp {
                     <th class="border border-slate-300 p-1.5">From (Topic)</th>
                     <th class="border border-slate-300 p-1.5">To (Topic)</th>
                     <th class="border border-slate-300 p-1.5 text-center">Hours</th>
-                    <th class="border border-slate-300 p-1.5 text-center">COs</th>
                     <th class="border border-slate-300 p-1.5">Methodology</th>
                     <th class="border border-slate-300 p-1.5">Resources</th>
                   </tr>
@@ -6800,7 +6809,6 @@ class CoursePlanApp {
                         <td class="border border-slate-300 p-1.5">${row.from_topic || row.topics || '—'}</td>
                         <td class="border border-slate-300 p-1.5">${row.to_topic || '—'}</td>
                         <td class="border border-slate-300 p-1.5 text-center font-bold">${row.hours || '—'}</td>
-                        <td class="border border-slate-300 p-1.5 text-center font-bold">${row.cos || '—'}</td>
                         <td class="border border-slate-300 p-1.5">${row.methodology || '—'}</td>
                         <td class="border border-slate-300 p-1.5">${row.resources || '—'}</td>
                       </tr>
@@ -6817,8 +6825,8 @@ class CoursePlanApp {
                   <tr>
                     <th class="border border-slate-300 p-2">Unit</th>
                     <th class="border border-slate-300 p-2 text-center">Planned Hours</th>
-                    <th class="border border-slate-300 p-2 text-center">Actual Hours</th>
-                    <th class="border border-slate-300 p-2">Target Completion Date</th>
+                    <th class="border border-slate-300 p-2 text-center">Actual Hours (As per Syllabus)</th>
+                    <th class="border border-slate-300 p-2">Expected Completion Date</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -7171,10 +7179,25 @@ class CoursePlanApp {
       if (emptyDate > 0) errors.push(`Learning Activities: Proposed Date missing in ${emptyDate} activity entry(ies)`);
     }
 
-    // B. Assessment Plan (Must have at least one activity converted to assessment)
+    // B. Assessment Plan (Total marks must be 100 and both CIA 2 and Library Referencing entered)
     const assts = (this.activePlan.learning_activities || []).filter(a => a.is_assessment);
+    const fullPlan = this.getFullAssessmentPlan(this.activePlan);
+    const totalMarks = fullPlan.reduce((sum, a) => sum + (parseFloat(a.marks) || 0), 0);
+    const hasC2 = assts.some(a => a.cia_component && a.cia_component.includes('C2'));
+    const hasLib = assts.some(a => a.cia_component && (a.cia_component.includes('Library') || a.cia_component.includes('Lib')));
+
     if (assts.length === 0) {
-      errors.push('Assessment Plan: Please convert at least one Learning Activity in Section A into an assessment (tick "Convert it as assessment")');
+      errors.push('Assessment Plan: Please convert learning activities into assessment components (both CIA 2 and Library Referencing are mandatory)');
+    } else {
+      if (totalMarks !== 100) {
+        errors.push(`Assessment Plan: Total assessment marks must equal exactly 100 Marks (Currently: ${totalMarks} Marks). Please ensure both CIA 2 and Library Referencing are entered.`);
+      }
+      if (!hasC2 || !hasLib) {
+        const missing = [];
+        if (!hasC2) missing.push('CIA 2 (C2)');
+        if (!hasLib) missing.push('Library Referencing');
+        errors.push(`Assessment Plan: Both CIA 2 and Library Referencing are mandatory to proceed (Missing: ${missing.join(' & ')}).`);
+      }
     }
 
     // C. Digital Resources and ICT Integration (Min 1 row is mandatory)
@@ -7209,7 +7232,7 @@ class CoursePlanApp {
           else if (toolEl) invalidEls.push(toolEl);
         }
         if (!platVal) {
-          missing.push('Platform (e.g., JosTEL, Google Classroom, YouTube, etc.)');
+          missing.push('Platform');
           if (platEl && platEl.value === 'Others' && platOtherEl) invalidEls.push(platOtherEl);
           else if (platEl) invalidEls.push(platEl);
         }
@@ -7476,16 +7499,16 @@ class CoursePlanApp {
         { code: 'CO6', outcome: '', k_level: 'K6' }
       ],
       detailed_teaching_plan: [
-        { month_days: 'November / 10', unit: 'Unit I', from_topic: '', to_topic: '', hours: '', cos: '', methodology: '', resources: '' },
-        { month_days: 'November / 10', unit: 'Unit I', from_topic: '', to_topic: '', hours: '', cos: '', methodology: '', resources: '' },
-        { month_days: 'December / 19', unit: 'Unit II', from_topic: '', to_topic: '', hours: '', cos: '', methodology: '', resources: '' },
-        { month_days: 'December / 19', unit: 'Unit II', from_topic: '', to_topic: '', hours: '', cos: '', methodology: '', resources: '' },
-        { month_days: 'January / 13', unit: 'Unit III', from_topic: '', to_topic: '', hours: '', cos: '', methodology: '', resources: '' },
-        { month_days: 'January / 13', unit: 'Unit III', from_topic: '', to_topic: '', hours: '', cos: '', methodology: '', resources: '' },
-        { month_days: 'February / 22', unit: 'Unit IV', from_topic: '', to_topic: '', hours: '', cos: '', methodology: '', resources: '' },
-        { month_days: 'February / 22', unit: 'Unit IV', from_topic: '', to_topic: '', hours: '', cos: '', methodology: '', resources: '' },
-        { month_days: 'March / 12', unit: 'Unit V', from_topic: '', to_topic: '', hours: '', cos: '', methodology: '', resources: '' },
-        { month_days: 'March / 12', unit: 'Unit V', from_topic: '', to_topic: '', hours: '', cos: '', methodology: '', resources: '' }
+        { month_days: 'November / 10', unit: '', from_topic: '', to_topic: '', hours: '', methodology: '', resources: '' },
+        { month_days: 'November / 10', unit: '', from_topic: '', to_topic: '', hours: '', methodology: '', resources: '' },
+        { month_days: 'December / 19', unit: '', from_topic: '', to_topic: '', hours: '', methodology: '', resources: '' },
+        { month_days: 'December / 19', unit: '', from_topic: '', to_topic: '', hours: '', methodology: '', resources: '' },
+        { month_days: 'January / 13', unit: '', from_topic: '', to_topic: '', hours: '', methodology: '', resources: '' },
+        { month_days: 'January / 13', unit: '', from_topic: '', to_topic: '', hours: '', methodology: '', resources: '' },
+        { month_days: 'February / 22', unit: '', from_topic: '', to_topic: '', hours: '', methodology: '', resources: '' },
+        { month_days: 'February / 22', unit: '', from_topic: '', to_topic: '', hours: '', methodology: '', resources: '' },
+        { month_days: 'March / 12', unit: '', from_topic: '', to_topic: '', hours: '', methodology: '', resources: '' },
+        { month_days: 'March / 12', unit: '', from_topic: '', to_topic: '', hours: '', methodology: '', resources: '' }
       ],
       unit_completion_plan: [
         { unit: 'Unit I', planned_hours: '', actual_hours: '', target_date: '' },
@@ -7497,7 +7520,7 @@ class CoursePlanApp {
       learning_activities: [],
       assessment_plan: [],
       ict_integration: [
-        { sno: '1', topic: '', tool: '', platform: '', purpose: '' }
+        { sno: '1', topic: '', tool: '', platform: 'JosTEL', purpose: '' }
       ],
       declaration: {
         confirmed: false,
@@ -7543,11 +7566,39 @@ class CoursePlanApp {
     this.render();
   }
 
+  toggleTeachingPlanTable() {
+    this.isTeachingPlanCollapsed = !this.isTeachingPlanCollapsed;
+    this.render();
+  }
+
   addTeachingPlanRow() {
     this.harvestFormInputs();
+    if (!this.activePlan.detailed_teaching_plan) this.activePlan.detailed_teaching_plan = [];
     this.activePlan.detailed_teaching_plan.push({
-      month_days: '', unit: 'Unit I', topics: '', from_date: '', to_date: '', hours: '', cos: 'CO1', methodology: 'Lecture / PPT', resources: 'Text Book / PPT'
+      month_days: 'November / 10', unit: '', from_topic: '', to_topic: '', hours: '', methodology: '', resources: ''
     });
+    this.render();
+  }
+
+  addTeachingPlanRowForMonth(monthDays, afterIndex) {
+    this.harvestFormInputs();
+    if (!this.activePlan.detailed_teaching_plan) this.activePlan.detailed_teaching_plan = [];
+
+    const newRow = {
+      month_days: monthDays || '',
+      unit: '',
+      from_topic: '',
+      to_topic: '',
+      hours: '',
+      methodology: '',
+      resources: ''
+    };
+
+    if (afterIndex !== undefined && afterIndex !== null && afterIndex >= 0 && afterIndex < this.activePlan.detailed_teaching_plan.length) {
+      this.activePlan.detailed_teaching_plan.splice(afterIndex + 1, 0, newRow);
+    } else {
+      this.activePlan.detailed_teaching_plan.push(newRow);
+    }
     this.render();
   }
 
@@ -7630,7 +7681,7 @@ class CoursePlanApp {
                 <input 
                   type="text" 
                   id="modal-act-search" 
-                  placeholder="🔍 Type to filter 25 learning activities..." 
+                  placeholder="" 
                   oninput="coursePlanApp.filterModalActivityList(this.value)" 
                   class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl focus:border-indigo-600 focus:outline-none bg-white font-medium"
                 />
@@ -7692,15 +7743,29 @@ class CoursePlanApp {
               >${this.escapeHtml(existing?.outcome || '')}</textarea>
             </div>
 
-            <!-- Proposed Date -->
+            <!-- Proposed Date (From - To) -->
             <div>
-              <label class="block font-black text-slate-800 mb-1">Proposed Date *</label>
-              <input 
-                type="date" 
-                id="modal-act-date" 
-                value="${existing?.proposed_date || ''}" 
-                class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-mono font-bold focus:border-indigo-600 focus:outline-none"
-              />
+              <label class="block font-black text-slate-800 mb-1">Proposed Date (From – To) *</label>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <span class="block text-[10.5px] font-bold text-slate-600 mb-1">From Date *</span>
+                  <input 
+                    type="date" 
+                    id="modal-act-date-from" 
+                    value="${existing?.proposed_date_from || (existing?.proposed_date ? existing.proposed_date.split(' to ')[0] : '') || ''}" 
+                    class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-mono font-bold focus:border-indigo-600 focus:outline-none bg-white"
+                  />
+                </div>
+                <div>
+                  <span class="block text-[10.5px] font-bold text-slate-600 mb-1">To Date *</span>
+                  <input 
+                    type="date" 
+                    id="modal-act-date-to" 
+                    value="${existing?.proposed_date_to || (existing?.proposed_date ? (existing.proposed_date.includes(' to ') ? existing.proposed_date.split(' to ')[1] : existing.proposed_date) : '') || ''}" 
+                    class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-mono font-bold focus:border-indigo-600 focus:outline-none bg-white"
+                  />
+                </div>
+              </div>
             </div>
 
             <!-- Convert it as assessment Toggle / Checkbox -->
@@ -7735,34 +7800,74 @@ class CoursePlanApp {
                 </span>
               </div>
 
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <!-- CIA Component Select -->
+              <div class="space-y-3">
+                <!-- CIA Component Radio Buttons -->
                 <div>
-                  <label class="block font-black text-amber-950 mb-1">CIA Component *</label>
-                  <select 
-                    id="modal-act-cia-comp" 
-                    onchange="coursePlanApp.onModalCiaCompChange(this.value)" 
-                    class="w-full text-xs px-3 py-2 border border-amber-300 rounded-xl bg-white font-bold text-slate-900 focus:border-amber-600 focus:outline-none cursor-pointer"
-                  >
-                    <option value="C2 - K4" ${curCiaComp.includes('K4') ? 'selected' : ''}>C2 - K4 (Assignment / Test)</option>
-                    <option value="C2 - K5" ${curCiaComp.includes('K5') ? 'selected' : ''}>C2 - K5 (Problem Solving / Case Study)</option>
-                    ${isPG ? `<option value="C2 - K6" ${curCiaComp.includes('K6') ? 'selected' : ''}>C2 - K6 (Creative Model / Mini Project)</option>` : ''}
-                    <option value="Library Referencing - K3" ${curCiaComp.includes('Library') ? 'selected' : ''}>Library Referencing - K3</option>
-                    <option value="Additional Assessment" ${(!curCiaComp.includes('C2') && !curCiaComp.includes('Library')) ? 'selected' : ''}>Other Assessment Component</option>
-                  </select>
-                  <div class="text-[10px] text-amber-800/80 font-medium mt-1">C1, Mid Sem & End Sem are fixed institutional exams and pre-filled by default.</div>
+                  <label class="block font-black text-amber-950 mb-1.5">
+                    Select CIA Assessment Component (Radio Button) *
+                  </label>
+                  <p class="text-[10.5px] text-amber-800 mb-2 font-medium">
+                    Mentioning CIA Component – Corresponding K Level – Marks (Total Assessment Plan must equal 100 Marks):
+                  </p>
+
+                  <div class="space-y-2 bg-white/90 p-3 rounded-xl border border-amber-300">
+                    ${(() => {
+                      const options = [
+                        { comp: 'C2 – K4', marks: '15', label: 'C2 – K4 – 15 Marks (Assignment / Technical Seminar)' },
+                        { comp: 'C2 – K5', marks: '15', label: 'C2 – K5 – 15 Marks (Problem Solving / Case Analysis)' },
+                        { comp: 'C2 – K4', marks: '10', label: 'C2 – K4 – 10 Marks (Assignment / Formative Test)' },
+                        { comp: 'C2 – K5', marks: '5', label: 'C2 – K5 – 5 Marks (Mini Quiz / Review)' },
+                        ...(isPG ? [
+                          { comp: 'C2 – K6', marks: '15', label: 'C2 – K6 – 15 Marks (Creative Model / Mini Project)' },
+                          { comp: 'C2 – K6', marks: '6', label: 'C2 – K6 – 6 Marks (Creative Application / Seminar)' }
+                        ] : []),
+                        { comp: 'Library Referencing – K3', marks: '10', label: 'Library Referencing – K3 – 10 Marks (JosTEL / Library Reference)' }
+                      ];
+
+                      const selectedComp = existing?.cia_component || 'C2 – K4';
+                      const selectedMarks = String(existing?.cia_marks || (selectedComp.includes('Library') ? '10' : '15'));
+
+                      return options.map((opt, i) => {
+                        const isChecked = existing ? (
+                          (opt.comp.includes('Library') && selectedComp.includes('Library')) ||
+                          (!opt.comp.includes('Library') && !selectedComp.includes('Library') && opt.marks === selectedMarks && opt.comp.includes(selectedComp.replace(/[^K0-9]/g, '') || 'K4'))
+                        ) : (i === 0);
+
+                        return `
+                          <label class="flex items-center gap-2.5 p-2 rounded-lg hover:bg-amber-100/70 cursor-pointer border border-transparent has-checked:border-amber-400 has-checked:bg-amber-100/80 transition">
+                            <input 
+                              type="radio" 
+                              name="modal_cia_comp_radio" 
+                              value="${opt.comp}" 
+                              data-marks="${opt.marks}" 
+                              ${isChecked ? 'checked' : ''} 
+                              onchange="coursePlanApp.onModalCiaRadioChange('${opt.comp}', '${opt.marks}')" 
+                              class="text-amber-600 focus:ring-0 cursor-pointer"
+                            />
+                            <div class="flex items-center justify-between flex-1">
+                              <span class="font-bold text-xs text-amber-950">${opt.label}</span>
+                              <span class="px-2 py-0.5 rounded text-[10px] font-black bg-amber-200 text-amber-900">${opt.marks} M</span>
+                            </div>
+                          </label>
+                        `;
+                      }).join('');
+                    })()}
+                  </div>
+                  <div class="text-[10px] text-amber-800/80 font-medium mt-1">C1 (15M), Mid Sem (30M) & End Sem (30M) are pre-filled institutional exams.</div>
                 </div>
 
-                <!-- Marks Input -->
+                <!-- Marks Input (Uneditable) -->
                 <div>
-                  <label class="block font-black text-amber-950 mb-1">Allocated Marks *</label>
+                  <label class="block font-black text-amber-950 mb-1">Allocated Marks (Locked / Uneditable) *</label>
                   <input 
                     type="number" 
                     id="modal-act-cia-marks" 
-                    value="${curCiaMarks}" 
-                    class="w-full text-xs px-3 py-2 border border-amber-300 rounded-xl bg-white font-black text-slate-900 text-center focus:border-amber-600 focus:outline-none"
+                    value="${existing?.cia_marks || '15'}" 
+                    readonly 
+                    class="w-full text-xs px-3 py-2 border border-amber-300 rounded-xl bg-slate-100 cursor-not-allowed font-black text-slate-700 text-center focus:outline-none"
                     placeholder="Marks"
                   />
+                  <input type="hidden" id="modal-act-cia-comp-hidden" value="${existing?.cia_component || 'C2 – K4'}" />
                 </div>
               </div>
             </div>
@@ -7901,6 +8006,13 @@ class CoursePlanApp {
     }
   }
 
+  onModalCiaRadioChange(comp, marks) {
+    const marksInput = document.getElementById('modal-act-cia-marks');
+    if (marksInput) marksInput.value = marks;
+    const compInput = document.getElementById('modal-act-cia-comp-hidden');
+    if (compInput) compInput.value = comp;
+  }
+
   onModalCiaCompChange(comp) {
     const marksInput = document.getElementById('modal-act-cia-marks');
     if (!marksInput) return;
@@ -7911,11 +8023,11 @@ class CoursePlanApp {
     } else if (comp.includes('Mid Sem') || comp.includes('End Sem')) {
       marksInput.value = '30';
     } else if (comp.includes('Library')) {
-      marksInput.value = '5';
+      marksInput.value = '10';
     } else if (comp.includes('K6')) {
-      marksInput.value = isPG ? '8' : '10';
+      marksInput.value = isPG ? '15' : '10';
     } else if (comp.includes('K4') || comp.includes('K5')) {
-      marksInput.value = isPG ? '6' : '10';
+      marksInput.value = '15';
     } else {
       marksInput.value = '10';
     }
@@ -7930,10 +8042,13 @@ class CoursePlanApp {
 
     const topic = document.getElementById('modal-act-topic')?.value?.trim() || '';
     const outcome = document.getElementById('modal-act-outcome')?.value?.trim() || '';
-    const date = document.getElementById('modal-act-date')?.value || '';
+    const dateFrom = document.getElementById('modal-act-date-from')?.value || '';
+    const dateTo = document.getElementById('modal-act-date-to')?.value || '';
     const isAssessment = document.getElementById('modal-act-is-assessment')?.checked || false;
-    const ciaComp = document.getElementById('modal-act-cia-comp')?.value || 'C2 - K4';
-    const ciaMarks = document.getElementById('modal-act-cia-marks')?.value || '10';
+
+    const selectedRadio = document.querySelector('input[name="modal_cia_comp_radio"]:checked');
+    const ciaComp = selectedRadio ? selectedRadio.value : (document.getElementById('modal-act-cia-comp-hidden')?.value || 'C2 – K4');
+    const ciaMarks = selectedRadio ? selectedRadio.getAttribute('data-marks') : (document.getElementById('modal-act-cia-marks')?.value || '15');
 
     if (!topic) {
       alert('Please enter Related Unit / Topic.');
@@ -7945,11 +8060,15 @@ class CoursePlanApp {
       document.getElementById('modal-act-outcome')?.focus();
       return;
     }
-    if (!date) {
-      alert('Please select Proposed Date.');
-      document.getElementById('modal-act-date')?.focus();
+    if (!dateFrom) {
+      alert('Please select Proposed From Date.');
+      document.getElementById('modal-act-date-from')?.focus();
       return;
     }
+
+    const formattedDate = (dateFrom && dateTo && dateFrom !== dateTo) 
+      ? `${this.formatDateToDDMMYYYY(dateFrom)} to ${this.formatDateToDDMMYYYY(dateTo)}`
+      : this.formatDateToDDMMYYYY(dateFrom);
 
     if (!this.activePlan.learning_activities) this.activePlan.learning_activities = [];
 
@@ -7958,7 +8077,9 @@ class CoursePlanApp {
       activity: acts.join(', '),
       topic,
       outcome,
-      proposed_date: date,
+      proposed_date: formattedDate,
+      proposed_date_from: dateFrom,
+      proposed_date_to: dateTo || dateFrom,
       is_assessment: isAssessment,
       cia_component: isAssessment ? ciaComp : '',
       cia_marks: isAssessment ? ciaMarks : ''
@@ -8011,7 +8132,7 @@ class CoursePlanApp {
   addICTRow() {
     this.harvestFormInputs();
     const count = (this.activePlan.ict_integration || []).length + 1;
-    this.activePlan.ict_integration.push({ sno: String(count), topic: '', tool: '', platform: '', purpose: '' });
+    this.activePlan.ict_integration.push({ sno: String(count), topic: '', tool: '', platform: 'JosTEL', purpose: '' });
     this.render();
   }
 
