@@ -629,7 +629,7 @@ class CoursePlanApp {
       this.activePlan.semester = 'II';
     } else if (newYc === 'II UG' || newYc === 'II PG') {
       this.activePlan.semester = 'IV';
-    } else if (newYc === 'III UG' || newYc === 'III PG') {
+    } else if (newYc === 'III UG') {
       this.activePlan.semester = 'VI';
     }
 
@@ -5495,6 +5495,9 @@ class CoursePlanApp {
     const part3Done = this.isPart3Complete();
     const part4Done = this.isPart4Complete();
 
+    const currentDeptName = plan.department_name || (this.currentUser ? this.currentUser.department_name : this.selectedDept) || '';
+    const currentFacName = plan.faculty_name || (this.currentUser ? this.currentUser.faculty_name : '') || '';
+
     const part2Locked = !part1Done;
     const part3Locked = !part2Done;
     const part4Locked = !part3Done;
@@ -5558,12 +5561,58 @@ class CoursePlanApp {
 </style>
 
       <div class="space-y-6 animate-fadeIn w-full">
-        <!-- Institutional Header Banner (matching PDF Header) -->
-        <div class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white rounded-2xl p-6 shadow-md text-center space-y-1.5">
-          <div class="text-xs uppercase tracking-widest font-bold text-indigo-200">Internal Quality Assurance Cell (IQAC)</div>
-          <div class="text-xl font-black tracking-tight">St. Joseph’s College (Autonomous), Tiruchirappalli</div>
-          <div class="text-sm font-extrabold text-amber-300 pt-1 tracking-wide">
-            COURSE PLAN – ACADEMIC YEAR 2026–2027 (Even Semester)
+        <!-- Institutional Header Banner with Department & Faculty on the right -->
+        <div class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white rounded-2xl p-5 sm:p-6 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div class="space-y-1 text-center md:text-left">
+            <div class="text-xs uppercase tracking-widest font-bold text-indigo-200">Internal Quality Assurance Cell (IQAC)</div>
+            <div class="text-xl sm:text-2xl font-black tracking-tight">St. Joseph’s College (Autonomous), Tiruchirappalli</div>
+            <div class="text-xs sm:text-sm font-extrabold text-amber-300 pt-0.5 tracking-wide">
+              COURSE PLAN – ACADEMIC YEAR 2026–2027 (Even Semester)
+            </div>
+          </div>
+
+          <!-- Faculty Member & Department on the Right -->
+          <div class="bg-white/10 backdrop-blur-xs border border-white/20 rounded-2xl p-3.5 text-left md:text-right shrink-0 shadow-inner flex flex-col justify-center space-y-1 min-w-[220px]">
+            <div class="text-[10px] uppercase tracking-wider text-indigo-200 font-bold flex items-center md:justify-end gap-1.5">
+              <i data-lucide="award" class="w-3.5 h-3.5 text-amber-300"></i>
+              <span>Course Instructor</span>
+            </div>
+            ${(this.currentUser && this.currentUser.role === 'faculty') ? `
+              <div class="text-sm font-black text-white flex items-center md:justify-end gap-1.5">
+                <i data-lucide="user" class="w-4 h-4 text-amber-300"></i>
+                <span>${this.escapeHtml(currentFacName || 'Faculty Member')}</span>
+              </div>
+              <div class="text-xs font-bold text-amber-200 flex items-center md:justify-end gap-1.5">
+                <i data-lucide="building-2" class="w-3.5 h-3.5 text-amber-300"></i>
+                <span>${this.escapeHtml(currentDeptName || 'Department')}</span>
+              </div>
+            ` : `
+              <div class="space-y-1 text-slate-900">
+                <select 
+                  id="header-dept-select" 
+                  onchange="const d=this.value; if(document.getElementById('cp-dept-name')) document.getElementById('cp-dept-name').value=d; coursePlanApp.onFormDeptChange(d);" 
+                  class="w-full text-xs px-2 py-1 rounded bg-white font-bold text-slate-900 border border-indigo-200 focus:outline-none"
+                >
+                  ${this.departments.map(d => `
+                    <option value="${d.name}" ${d.name === currentDeptName ? 'selected' : ''}>
+                      ${d.name}
+                    </option>
+                  `).join('')}
+                </select>
+                <select 
+                  id="header-faculty-select" 
+                  onchange="const f=this.value; if(document.getElementById('cp-faculty-name')) document.getElementById('cp-faculty-name').value=f; coursePlanApp.onFormFacultyChange(f);" 
+                  class="w-full text-xs px-2 py-1 rounded bg-white font-bold text-slate-900 border border-indigo-200 focus:outline-none"
+                >
+                  <option value="">-- Choose Faculty (${facultyList.length}) --</option>
+                  ${facultyList.map(f => `
+                    <option value="${f.name}" ${f.name === currentFacName ? 'selected' : ''}>
+                      ${f.name}
+                    </option>
+                  `).join('')}
+                </select>
+              </div>
+            `}
           </div>
         </div>
 
@@ -5725,82 +5774,16 @@ class CoursePlanApp {
               </span>
             </div>
 
+            <!-- Hidden Inputs for Department & Faculty Name so validation & storage continue to work -->
+            <input type="hidden" id="cp-dept-name" value="${this.escapeHtml(currentDeptName)}" />
+            <input type="hidden" id="cp-faculty-name" value="${this.escapeHtml(currentFacName)}" />
+
             <!-- A. General Details -->
             <div class="space-y-4">
               <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">A. General Details</h4>
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                
-                <!-- Department Dropdown / Locked Display -->
-                <div>
-                  <label class="block text-[11px] font-bold text-slate-700 mb-1 flex items-center justify-between">
-                    <span>Department *</span>
-                    ${(this.currentUser && this.currentUser.role === 'faculty') ? `<span class="text-[10px] text-indigo-700 bg-indigo-50 font-bold px-2 py-0.5 rounded border border-indigo-200 flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i> Locked</span>` : ''}
-                  </label>
-                  ${(this.currentUser && this.currentUser.role === 'faculty') ? `
-                    <input 
-                      type="text" 
-                      id="cp-dept-name" 
-                      value="${this.escapeHtml(this.currentUser.department_name)}" 
-                      readonly 
-                      class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl bg-slate-100 font-bold text-slate-800 cursor-not-allowed"
-                    />
-                  ` : `
-                    <select 
-                      id="cp-dept-name" 
-                      onchange="coursePlanApp.onFormDeptChange(this.value)" 
-                      class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl bg-white font-bold text-slate-900 focus:border-indigo-600 focus:outline-none"
-                    >
-                      ${this.departments.map(d => `
-                        <option value="${d.name}" ${d.name === (plan.department_name || this.selectedDept) ? 'selected' : ''}>
-                          ${d.name}
-                        </option>
-                      `).join('')}
-                    </select>
-                  `}
-                </div>
-
-                <!-- Faculty Name Dropdown / Locked Display -->
-                <div>
-                  <label class="block text-[11px] font-bold text-slate-700 mb-1 flex items-center justify-between">
-                    <span>Name of the Faculty Member *</span>
-                    ${(this.currentUser && this.currentUser.role === 'faculty') ? `<span class="text-[10px] text-indigo-700 bg-indigo-50 font-bold px-2 py-0.5 rounded border border-indigo-200 flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i> Locked</span>` : ''}
-                  </label>
-                  ${(this.currentUser && this.currentUser.role === 'faculty') ? `
-                    <input 
-                      type="text" 
-                      id="cp-faculty-name" 
-                      value="${this.escapeHtml(this.currentUser.faculty_name)}" 
-                      readonly 
-                      class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl bg-slate-100 font-bold text-slate-800 cursor-not-allowed"
-                    />
-                    <div id="cp-faculty-email-hint" class="text-[10px] text-slate-500 mt-1 font-mono">
-                      ${this.currentUser.faculty_email || plan.faculty_email || ''}
-                    </div>
-                    <div id="cp-faculty-welcome-inline" class="mt-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 inline-flex items-center gap-1.5">
-                      <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-600"></i> Welcome, <strong>${this.escapeHtml(this.currentUser.faculty_name)}</strong>!
-                    </div>
-                  ` : `
-                    <select 
-                      id="cp-faculty-name" 
-                      onchange="coursePlanApp.onFormFacultyChange(this.value)" 
-                      class="w-full text-xs px-3 py-2 border border-indigo-400 bg-indigo-50/30 rounded-xl font-bold text-slate-900 focus:border-indigo-600 focus:outline-none"
-                    >
-                      <option value="">-- Choose Faculty Member (${facultyList.length}) --</option>
-                      ${facultyList.map(f => `
-                        <option value="${f.name}" ${f.name === plan.faculty_name ? 'selected' : ''}>
-                          ${f.name} ${f.shift ? `(Shift ${f.shift})` : ''}
-                        </option>
-                      `).join('')}
-                    </select>
-                    <div id="cp-faculty-email-hint" class="text-[10px] text-slate-500 mt-1 font-mono">
-                      ${plan.faculty_email || ''}
-                    </div>
-                    <div id="cp-faculty-welcome-inline" class="${plan.faculty_name ? '' : 'hidden'} mt-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 inline-flex items-center gap-1.5">
-                      ${plan.faculty_name ? `<i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-600"></i> Welcome, <strong>${plan.faculty_name}</strong>!` : ''}
-                    </div>
-                  `}
-                </div>
-
+              
+              <!-- 1. Semester, Programme, Year & Class, Section in ONE LINE -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <!-- Semester (Strictly II, IV, VI only) -->
                 <div>
                   <label class="block text-[11px] font-bold text-indigo-950 mb-1 flex items-center gap-1">
@@ -5835,7 +5818,7 @@ class CoursePlanApp {
                   </select>
                 </div>
 
-                <!-- Year and Class Dropdown (Dynamically filtered by Programme) -->
+                <!-- Year and Class Dropdown (Dynamically filtered by Programme, III PG removed!) -->
                 <div>
                   <label class="block text-[11px] font-bold text-slate-700 mb-1">Year and Class *</label>
                   <select 
@@ -5851,7 +5834,6 @@ class CoursePlanApp {
                     ` : `
                       <option value="I PG" ${plan.year_class === 'I PG' ? 'selected' : ''}>I PG</option>
                       <option value="II PG" ${plan.year_class === 'II PG' ? 'selected' : ''}>II PG</option>
-                      ${(plan.programme && plan.programme.includes('MCA')) ? `<option value="III PG" ${plan.year_class === 'III PG' ? 'selected' : ''}>III PG</option>` : ''}
                     `}
                   </select>
                 </div>
@@ -5874,41 +5856,44 @@ class CoursePlanApp {
                     <option value="Shift II - Section D" ${plan.section === 'Shift II - Section D' ? 'selected' : ''}>Shift II - Section D</option>
                   </select>
                 </div>
+              </div>
 
-                <!-- Course Auto-Fetch Dropdown (Syllabus Integration by Dept & Sem) -->
-                <div class="md:col-span-2 bg-indigo-50/70 p-3.5 rounded-2xl border-2 border-indigo-200 space-y-1.5">
-                  <div class="flex items-center justify-between">
-                    <label class="block text-[11px] font-black text-indigo-950 flex items-center gap-1.5">
-                      <i data-lucide="sparkles" class="w-4 h-4 text-indigo-600"></i>
-                      <span>Select Course (Auto-Fetch from Syllabus) *</span>
-                    </label>
-                    <span class="text-[10px] bg-indigo-600 text-white font-bold px-2 py-0.5 rounded-full shadow-2xs">
-                      ${relevantCourses.length} courses in Semester ${this.getSemesterNum(plan.semester)}
-                    </span>
-                  </div>
-                  <select 
-                    id="cp-course-select" 
-                    onchange="coursePlanApp.onSyllabusCourseSelected(this.value)" 
-                    class="w-full text-xs px-3 py-2 border-2 border-indigo-500 bg-white rounded-xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-600 cursor-pointer"
-                  >
-                    <option value="">-- Choose Course to Auto-Fill Details (${relevantCourses.length} available) --</option>
-                    ${relevantCourses.map(c => `
-                      <option value="${c.course_code}" ${c.course_code === plan.course_code ? 'selected' : ''}>
-                        ${c.course_code} - ${c.course_title} (${c.credits || 3} Credits, ${c.hours || 4}h/wk)
-                      </option>
-                    `).join('')}
-                  </select>
-                  <p class="text-[10.5px] text-indigo-800 font-semibold flex items-center gap-1">
-                    <span>💡</span>
-                    <span>Selecting a course auto-populates Title, Category, Credits, Teaching Hours & Course Outcomes (CO1–CO6).</span>
-                  </p>
+              <!-- Course Auto-Fetch Dropdown (Syllabus Integration by Dept & Sem) -->
+              <div class="bg-indigo-50/70 p-3.5 rounded-2xl border-2 border-indigo-200 space-y-1.5">
+                <div class="flex items-center justify-between">
+                  <label class="block text-[11px] font-black text-indigo-950 flex items-center gap-1.5">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-indigo-600"></i>
+                    <span>Select Course (Auto-Fetch from Syllabus) *</span>
+                  </label>
+                  <span class="text-[10px] bg-indigo-600 text-white font-bold px-2 py-0.5 rounded-full shadow-2xs">
+                    ${relevantCourses.length} courses in Semester ${this.getSemesterNum(plan.semester)}
+                  </span>
                 </div>
+                <select 
+                  id="cp-course-select" 
+                  onchange="coursePlanApp.onSyllabusCourseSelected(this.value)" 
+                  class="w-full text-xs px-3 py-2 border-2 border-indigo-500 bg-white rounded-xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-600 cursor-pointer"
+                >
+                  <option value="">-- Choose Course to Auto-Fill Details (${relevantCourses.length} available) --</option>
+                  ${relevantCourses.map(c => `
+                    <option value="${c.course_code}" ${c.course_code === plan.course_code ? 'selected' : ''}>
+                      ${c.course_code} - ${c.course_title} (${c.credits || 3} Credits, ${c.hours || 4}h/wk)
+                    </option>
+                  `).join('')}
+                </select>
+                <p class="text-[10.5px] text-indigo-800 font-semibold flex items-center gap-1">
+                  <span>💡</span>
+                  <span>Selecting a course auto-populates Title, Category, Credits, Teaching Hours & Course Outcomes (CO1–CO6).</span>
+                </p>
+              </div>
 
-                <!-- Course Code Input (Read-only once auto-fetched from syllabus) -->
-                <div>
+              <!-- 2. Course Code, Title, Category, Hours/Week, Credits in ONE LINE -->
+              <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+                <!-- Course Code (2 cols) -->
+                <div class="md:col-span-2">
                   <label class="block text-[11px] font-bold text-slate-700 mb-1 flex items-center justify-between">
                     <span>Course Code *</span>
-                    ${isCourseLocked ? `<span class="text-[10px] text-emerald-700 font-bold flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i> Auto-locked</span>` : ''}
+                    ${isCourseLocked ? `<span class="text-[10px] text-emerald-700 font-bold flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i></span>` : ''}
                   </label>
                   <input 
                     type="text" 
@@ -5921,11 +5906,11 @@ class CoursePlanApp {
                   />
                 </div>
 
-                <!-- Course Title (Uneditable when auto-fetched) -->
-                <div class="md:col-span-2">
+                <!-- Course Title (4 cols) -->
+                <div class="md:col-span-4">
                   <label class="block text-[11px] font-bold text-slate-700 mb-1 flex items-center justify-between">
                     <span>Course Title *</span>
-                    ${isCourseLocked ? `<span class="text-[10px] text-emerald-700 font-bold flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i> Auto-locked</span>` : ''}
+                    ${isCourseLocked ? `<span class="text-[10px] text-emerald-700 font-bold flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i></span>` : ''}
                   </label>
                   <input 
                     type="text" 
@@ -5937,11 +5922,11 @@ class CoursePlanApp {
                   />
                 </div>
 
-                <!-- Course Category (Uneditable when auto-fetched) -->
-                <div>
+                <!-- Course Category (2 cols) -->
+                <div class="md:col-span-2">
                   <label class="block text-[11px] font-bold text-slate-700 mb-1 flex items-center justify-between">
-                    <span>Course Category</span>
-                    ${isCourseLocked ? `<span class="text-[10px] text-emerald-700 font-bold flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i> Auto-locked</span>` : ''}
+                    <span>Category *</span>
+                    ${isCourseLocked ? `<span class="text-[10px] text-emerald-700 font-bold flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i></span>` : ''}
                   </label>
                   ${isCourseLocked ? `<input type="hidden" id="cp-course-category-hidden" value="${plan.course_category || 'Core'}" />` : ''}
                   <select 
@@ -5962,11 +5947,11 @@ class CoursePlanApp {
                   </select>
                 </div>
 
-                <!-- Teaching Hours (Uneditable when auto-fetched) -->
-                <div>
+                <!-- Teaching Hours (2 cols) -->
+                <div class="md:col-span-2">
                   <label class="block text-[11px] font-bold text-slate-700 mb-1 flex items-center justify-between">
-                    <span>Total Teaching Hours & Hours/Week</span>
-                    ${isCourseLocked ? `<span class="text-[10px] text-emerald-700 font-bold flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i> Auto-locked</span>` : ''}
+                    <span>Hours/Week *</span>
+                    ${isCourseLocked ? `<span class="text-[10px] text-emerald-700 font-bold flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i></span>` : ''}
                   </label>
                   <input 
                     type="text" 
@@ -5974,15 +5959,15 @@ class CoursePlanApp {
                     value="${plan.teaching_hours || ''}" 
                     class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-mono font-bold ${isCourseLocked ? 'bg-slate-100 cursor-not-allowed text-slate-700' : 'bg-white focus:border-indigo-600 focus:outline-none'}" 
                     ${isCourseLocked ? 'readonly' : ''}
-                    placeholder="e.g. 60 Hours & 4 Hours/Week"
+                    placeholder="e.g. 60 Hrs & 4 Hrs/Wk"
                   />
                 </div>
 
-                <!-- Course Credits (Uneditable when auto-fetched) -->
-                <div>
+                <!-- Course Credits (2 cols) -->
+                <div class="md:col-span-2">
                   <label class="block text-[11px] font-bold text-slate-700 mb-1 flex items-center justify-between">
                     <span>Credits *</span>
-                    ${isCourseLocked ? `<span class="text-[10px] text-emerald-700 font-bold flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i> Auto-locked</span>` : ''}
+                    ${isCourseLocked ? `<span class="text-[10px] text-emerald-700 font-bold flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i></span>` : ''}
                   </label>
                   <input 
                     type="text" 
@@ -6007,15 +5992,7 @@ class CoursePlanApp {
                   <span class="text-[10px] bg-emerald-50 text-emerald-800 font-bold px-2.5 py-1 rounded-lg border border-emerald-200 inline-flex items-center gap-1">
                     <i data-lucide="lock" class="w-3.5 h-3.5 text-emerald-600"></i> Syllabus COs Locked
                   </span>
-                ` : `
-                  <button 
-                    type="button" 
-                    onclick="coursePlanApp.addCORow()" 
-                    class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-xs flex items-center gap-1 border border-slate-200 cursor-pointer"
-                  >
-                    <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add CO
-                  </button>
-                `}
+                ` : ''}
               </div>
 
               <div class="overflow-x-auto rounded-xl border border-slate-200">
@@ -6023,9 +6000,8 @@ class CoursePlanApp {
                   <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
                     <tr>
                       <th class="p-2.5 w-24">CO Code</th>
-                      <th class="p-2.5">Course Outcome *</th>
-                      <th class="p-2.5 w-44">K-Levels *</th>
-                      <th class="p-2.5 w-12 text-center">Action</th>
+                      <th class="p-2.5">Course Outcome</th>
+                      <th class="p-2.5 w-56">K-Levels *</th>
                     </tr>
                   </thead>
                   <tbody id="cp-cos-tbody" class="divide-y divide-slate-100">
@@ -6058,15 +6034,6 @@ class CoursePlanApp {
                             <option value="K3, K4" ${co.k_level === 'K3, K4' ? 'selected' : ''}>K3, K4</option>
                             <option value="K5, K6" ${co.k_level === 'K5, K6' ? 'selected' : ''}>K5, K6</option>
                           </select>
-                        </td>
-                        <td class="p-2 text-center" data-label="Action">
-                          ${isCourseLocked ? `
-                            <span class="text-slate-400 font-bold" title="Locked from syllabus master">🔒</span>
-                          ` : `
-                            <button type="button" onclick="coursePlanApp.deleteCORow(${idx})" class="p-1 text-slate-400 hover:text-red-600 rounded">
-                              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                            </button>
-                          `}
                         </td>
                       </tr>
                     `).join('')}
