@@ -344,7 +344,7 @@ try {
                     ict_integration = :ict_integration,
                     declaration = :declaration,
                     status = :status,
-                    hod_status = CASE WHEN :hstatus = 'Pending' AND hod_status = 'Approved' THEN 'Approved' ELSE :hstatus END,
+                    hod_status = CASE WHEN :hstatus_cond = 'Pending' AND hod_status = 'Approved' THEN 'Approved' ELSE :hstatus_val END,
                     updated_at = NOW()
                 WHERE id = :id
             ");
@@ -369,7 +369,8 @@ try {
                 ':ict_integration' => $ictIntegration,
                 ':declaration' => $declaration,
                 ':status' => $status,
-                ':hstatus' => $hodStatus,
+                ':hstatus_cond' => $hodStatus,
+                ':hstatus_val' => $hodStatus,
                 ':id' => $id
             ]);
             $savedId = $id;
