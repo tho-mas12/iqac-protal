@@ -185,15 +185,16 @@ try {
         $filterStatus = isset($_GET['status']) ? trim($_GET['status']) : '';
 
         // Base query
-        $sql = "SELECT id, department_name, faculty_name, programme, year_class, semester, academic_year, course_code, course_title, course_category, teaching_hours, credits, status, hod_status, hod_name, approved_at, updated_at FROM course_plan_2026_27 WHERE 1=1";
+        $sql = "SELECT id, department_name, faculty_name, programme, year_class, semester, academic_year, course_code, course_title, course_category, teaching_hours, credits, is_shared_course, shared_faculty_name, status, hod_status, hod_name, approved_at, updated_at FROM course_plan_2026_27 WHERE 1=1";
         $params = [];
 
         // Role-based filtering
         if ($currentUser && $currentUser['role'] === 'faculty') {
-            // Strictly show only the logged-in faculty member's course plans
-            $sql .= " AND faculty_name = :fac AND department_name = :dept";
+            // Strictly show only the logged-in faculty member's course plans and plans shared with them
+            $sql .= " AND ((faculty_name = :fac AND department_name = :dept) OR (is_shared_course = 1 AND shared_faculty_name LIKE :fac_like))";
             $params[':fac'] = $currentUser['faculty_name'];
             $params[':dept'] = $currentUser['department_name'];
+            $params[':fac_like'] = '%' . $currentUser['faculty_name'] . '%';
         } else if ($currentUser && $currentUser['role'] === 'hod') {
             // Strictly filter to HOD's department
             $sql .= " AND department_name = :dept";
@@ -308,6 +309,10 @@ try {
         $teachingHours = isset($data['teaching_hours']) ? trim($data['teaching_hours']) : '';
         $credits = isset($data['credits']) ? trim($data['credits']) : '';
         
+        // Course sharing mode
+        $isSharedCourse = isset($data['is_shared_course']) && $data['is_shared_course'] ? 1 : 0;
+        $sharedFacultyName = isset($data['shared_faculty_name']) && $data['shared_faculty_name'] ? trim($data['shared_faculty_name']) : null;
+
         // Submission status
         $status = isset($data['status']) ? trim($data['status']) : 'Draft';
         $hodStatus = ($status === 'Submitted') ? 'Pending' : 'Draft';
@@ -335,6 +340,8 @@ try {
                     course_category = :course_category,
                     teaching_hours = :teaching_hours,
                     credits = :credits,
+                    is_shared_course = :is_shared,
+                    shared_faculty_name = :shared_fac,
                     general_details = :general_details,
                     course_outcomes = :course_outcomes,
                     detailed_teaching_plan = :detailed_teaching_plan,
@@ -360,6 +367,8 @@ try {
                 ':course_category' => $courseCategory,
                 ':teaching_hours' => $teachingHours,
                 ':credits' => $credits,
+                ':is_shared' => $isSharedCourse,
+                ':shared_fac' => $sharedFacultyName,
                 ':general_details' => $generalDetails,
                 ':course_outcomes' => $courseOutcomes,
                 ':detailed_teaching_plan' => $detailedTeachingPlan,
@@ -378,12 +387,12 @@ try {
             $stmt = $pdo->prepare("
                 INSERT INTO course_plan_2026_27 (
                     department_name, faculty_name, programme, year_class, semester, academic_year,
-                    course_code, course_title, course_category, teaching_hours, credits,
+                    course_code, course_title, course_category, teaching_hours, credits, is_shared_course, shared_faculty_name,
                     general_details, course_outcomes, detailed_teaching_plan, unit_completion_plan,
                     learning_activities, assessment_plan, ict_integration, declaration, status, hod_status
                 ) VALUES (
                     :dept, :faculty, :programme, :year_class, :semester, :academic_year,
-                    :course_code, :course_title, :course_category, :teaching_hours, :credits,
+                    :course_code, :course_title, :course_category, :teaching_hours, :credits, :is_shared, :shared_fac,
                     :general_details, :course_outcomes, :detailed_teaching_plan, :unit_completion_plan,
                     :learning_activities, :assessment_plan, :ict_integration, :declaration, :status, :hstatus
                 )
@@ -400,6 +409,8 @@ try {
                 ':course_category' => $courseCategory,
                 ':teaching_hours' => $teachingHours,
                 ':credits' => $credits,
+                ':is_shared' => $isSharedCourse,
+                ':shared_fac' => $sharedFacultyName,
                 ':general_details' => $generalDetails,
                 ':course_outcomes' => $courseOutcomes,
                 ':detailed_teaching_plan' => $detailedTeachingPlan,
@@ -606,7 +617,7 @@ try {
         $filterDept = isset($_GET['department']) ? trim($_GET['department']) : '';
         $filterStatus = isset($_GET['status']) ? trim($_GET['status']) : '';
 
-        $sql = "SELECT id, department_name, faculty_name, programme, year_class, semester, academic_year, course_code, course_title, course_category, teaching_hours, credits, status, hod_status, hod_name, hod_remarks, course_outcomes, detailed_teaching_plan, unit_completion_plan, learning_activities, assessment_plan, ict_integration, approved_at, updated_at FROM course_plan_2026_27 WHERE 1=1";
+        $sql = "SELECT id, department_name, faculty_name, programme, year_class, semester, academic_year, course_code, course_title, course_category, teaching_hours, credits, is_shared_course, shared_faculty_name, status, hod_status, hod_name, hod_remarks, course_outcomes, detailed_teaching_plan, unit_completion_plan, learning_activities, assessment_plan, ict_integration, approved_at, updated_at FROM course_plan_2026_27 WHERE 1=1";
         $params = [];
 
         if ($currentUser && $currentUser['role'] === 'hod') {

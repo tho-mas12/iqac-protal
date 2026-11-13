@@ -668,6 +668,41 @@ class CoursePlanApp {
     this.activePlan.section = newSec;
   }
 
+  onCourseSharingChange(isShared) {
+    if (!this.activePlan) this.activePlan = this.createDefaultPlan();
+    this.activePlan.is_shared_course = isShared;
+    if (!isShared) {
+      this.activePlan.shared_faculty_name = '';
+    }
+    const box = document.getElementById('cp-shared-faculty-box');
+    if (box) {
+      if (isShared) {
+        box.classList.remove('hidden');
+      } else {
+        box.classList.add('hidden');
+      }
+    }
+    const radios = document.querySelectorAll('input[name="course_sharing_mode"]');
+    radios.forEach(r => {
+      const parent = r.closest('label');
+      if (!parent) return;
+      if (r.checked) {
+        parent.classList.add('bg-white', 'border-amber-500', 'ring-2', 'ring-amber-500/20', 'shadow-xs');
+        parent.classList.remove('bg-white/70', 'border-slate-200');
+      } else {
+        parent.classList.remove('bg-white', 'border-amber-500', 'ring-2', 'ring-amber-500/20', 'shadow-xs');
+        parent.classList.add('bg-white/70', 'border-slate-200');
+      }
+    });
+  }
+
+  onSharedFacultyChange(val) {
+    if (!this.activePlan) this.activePlan = this.createDefaultPlan();
+    this.activePlan.shared_faculty_name = (val || '').trim();
+    if (!this.activePlan.general_details) this.activePlan.general_details = {};
+    this.activePlan.general_details.shared_faculty_name = this.activePlan.shared_faculty_name;
+  }
+
   fetchFromSyllabus(courseCode, showAlert = false) {
     if (!courseCode) return;
     const cleanCode = courseCode.toLowerCase().trim();
@@ -1815,15 +1850,26 @@ class CoursePlanApp {
     const menu = document.getElementById(`ict-${type}-menu-${rowIdx}`);
     if (!menu) return;
     const isHidden = menu.classList.contains('hidden');
-    document.querySelectorAll('[id^="ict-tool-menu-"], [id^="ict-platform-menu-"]').forEach(m => m.classList.add('hidden'));
+    document.querySelectorAll('[id^="ict-tool-menu-"], [id^="ict-platform-menu-"]').forEach(m => {
+      m.classList.add('hidden');
+      const tr = m.closest('tr');
+      if (tr) tr.style.zIndex = '';
+    });
     if (isHidden) {
       menu.classList.remove('hidden');
+      const tr = menu.closest('tr');
+      if (tr) {
+        tr.style.position = 'relative';
+        tr.style.zIndex = '60';
+      }
     }
   }
 
   closeICTDropdown(type, rowIdx) {
     const menu = document.getElementById(`ict-${type}-menu-${rowIdx}`);
     if (menu) menu.classList.add('hidden');
+    const tr = menu?.closest('tr');
+    if (tr) tr.style.zIndex = '';
   }
 
   toggleICTItem(type, rowIdx, optVal, checked) {
@@ -1837,12 +1883,23 @@ class CoursePlanApp {
       if (!currentItems.includes(optVal)) currentItems.push(optVal);
     } else {
       currentItems = currentItems.filter(s => s !== optVal);
+      if (optVal === 'Others') {
+        if (type === 'tool') row.tool_other = '';
+        else row.platform_other = '';
+      }
     }
     row[key] = currentItems.join(', ');
     this.render();
     setTimeout(() => {
       const menu = document.getElementById(`ict-${type}-menu-${rowIdx}`);
-      if (menu) menu.classList.remove('hidden');
+      if (menu) {
+        menu.classList.remove('hidden');
+        const tr = menu.closest('tr');
+        if (tr) {
+          tr.style.position = 'relative';
+          tr.style.zIndex = '60';
+        }
+      }
     }, 50);
   }
 
@@ -1854,8 +1911,23 @@ class CoursePlanApp {
     const key = (type === 'tool') ? 'tool' : 'platform';
     let currentItems = (row[key] || '').split(',').map(s => s.trim()).filter(Boolean);
     currentItems = currentItems.filter(s => s !== optVal);
+    if (optVal === 'Others') {
+      if (type === 'tool') row.tool_other = '';
+      else row.platform_other = '';
+    }
     row[key] = currentItems.join(', ');
     this.render();
+  }
+
+  onICTOtherInput(type, rowIdx, val) {
+    if (!this.activePlan) this.activePlan = this.createDefaultPlan();
+    if (!this.activePlan.ict_integration || !this.activePlan.ict_integration[rowIdx]) return;
+    const row = this.activePlan.ict_integration[rowIdx];
+    if (type === 'tool') {
+      row.tool_other = val;
+    } else {
+      row.platform_other = val;
+    }
   }
 
   copySyllabusText(text, btnEl) {
@@ -3261,6 +3333,14 @@ class CoursePlanApp {
       const json = await res.json();
       if (json.success && json.data) {
         this.activePlan = json.data;
+        if (this.activePlan.general_details) {
+          if (this.activePlan.general_details.is_shared_course !== undefined && this.activePlan.is_shared_course === undefined) {
+            this.activePlan.is_shared_course = !!this.activePlan.general_details.is_shared_course;
+          }
+          if (this.activePlan.general_details.shared_faculty_name && !this.activePlan.shared_faculty_name) {
+            this.activePlan.shared_faculty_name = this.activePlan.general_details.shared_faculty_name;
+          }
+        }
       } else {
         this.activePlan = this.plans.find(p => String(p.id) === String(id)) || this.createDefaultPlan();
       }
@@ -3439,9 +3519,15 @@ class CoursePlanApp {
                     <tr class="hover:bg-slate-50/80 transition">
                       <td class="p-3.5 text-center font-bold text-slate-400" data-label="S.No">${idx + 1}</td>
                       <td class="p-3.5" data-label="Course Code & Title">
-                        <div class="font-black text-indigo-950 text-[13px] flex items-center gap-1.5">
+                        <div class="font-black text-indigo-950 text-[13px] flex items-center gap-1.5 flex-wrap">
                           <span>${this.escapeHtml(p.course_code || '—')}</span>
                           <span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded">${this.escapeHtml(p.course_category || 'Core')}</span>
+                          ${p.is_shared_course && p.shared_faculty_name ? `
+                            <span class="text-[10px] font-extrabold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
+                              <i data-lucide="users" class="w-3 h-3 text-amber-600"></i>
+                              <span>Shared with ${this.escapeHtml(p.shared_faculty_name)}</span>
+                            </span>
+                          ` : ''}
                         </div>
                         <div class="text-slate-600 font-bold text-xs mt-0.5">${this.escapeHtml(p.course_title || 'Untitled Course')}</div>
                       </td>
@@ -5822,6 +5908,36 @@ class CoursePlanApp {
     const isCourseLocked = !!(plan.course_code && (plan.is_auto_fetched || (this.syllabusCourses || []).some(c => c.course_code.toLowerCase().trim() === (plan.course_code || '').toLowerCase().trim())));
     const isUGProg = !plan.programme || (!plan.programme.startsWith('M.') && !plan.programme.includes('MCA') && !plan.programme.includes('Master') && !plan.programme.includes('Post'));
 
+    // Course Sharing Mode & Collaborating Faculty
+    const isSharedCourse = !!(plan.is_shared_course || (plan.general_details && plan.general_details.is_shared_course));
+    const currentSharedFac = (plan.shared_faculty_name || (plan.general_details && plan.general_details.shared_faculty_name) || '').trim();
+    const curDept = currentDeptName || this.selectedDept || '';
+    const loggedInFac = (this.currentUser && this.currentUser.faculty_name) ? this.currentUser.faculty_name.trim().toLowerCase() : (currentFacName ? currentFacName.trim().toLowerCase() : '');
+
+    const deptFaculty = (facultyList || []).map(f => typeof f === 'string' ? f : f.name).filter(name => {
+      if (!name) return false;
+      if (loggedInFac && name.trim().toLowerCase() === loggedInFac) return false;
+      return true;
+    });
+
+    const deptFacultyOptions = deptFaculty.map(name => `
+      <option value="${this.escapeHtml(name)}" ${currentSharedFac === name ? 'selected' : ''}>
+        ${this.escapeHtml(name)}
+      </option>
+    `).join('');
+
+    const otherDeptGroups = this.departments
+      .filter(d => d.name.toLowerCase() !== curDept.toLowerCase())
+      .map(d => {
+        const facs = (d.faculty || []).map(f => typeof f === 'string' ? f : f.name).filter(n => n && (!loggedInFac || n.toLowerCase() !== loggedInFac));
+        if (facs.length === 0) return '';
+        return `
+          <optgroup label="${this.escapeHtml(d.name)}">
+            ${facs.map(name => `<option value="${this.escapeHtml(name)}" ${currentSharedFac === name ? 'selected' : ''}>${this.escapeHtml(name)} (${this.escapeHtml(d.name)})</option>`).join('')}
+          </optgroup>
+        `;
+      }).filter(Boolean).join('');
+
     return `
       
 <style>
@@ -6170,6 +6286,94 @@ class CoursePlanApp {
                     <option value="Shift II - Section C" ${plan.section === 'Shift II - Section C' ? 'selected' : ''}>Shift II - Section C</option>
                     <option value="Shift II - Section D" ${plan.section === 'Shift II - Section D' ? 'selected' : ''}>Shift II - Section D</option>
                   </select>
+                </div>
+              </div>
+
+              <!-- Course Handling & Faculty Collaboration Mode (One Course, One Plan Policy) -->
+              <div class="bg-gradient-to-r from-amber-50/80 via-orange-50/40 to-amber-50/80 p-4 rounded-2xl border-2 border-amber-200/90 space-y-3.5 shadow-2xs">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-amber-200/70 pb-2.5">
+                  <div>
+                    <label class="block text-xs font-black text-slate-900 flex items-center gap-1.5">
+                      <i data-lucide="users" class="w-4 h-4 text-amber-600"></i>
+                      <span>Course Handling Mode *</span>
+                    </label>
+                    <p class="text-[11px] text-slate-600 font-medium mt-0.5">
+                      Is this course handled solely by you, or shared with other faculty member(s)?
+                    </p>
+                  </div>
+                  <span class="inline-flex items-center gap-1 text-[10px] font-extrabold bg-amber-100 text-amber-900 px-2.5 py-1 rounded-full border border-amber-300 self-start sm:self-auto shrink-0 shadow-2xs">
+                    <i data-lucide="info" class="w-3 h-3 text-amber-700"></i>
+                    <span>One Course, One Plan Policy</span>
+                  </span>
+                </div>
+
+                <!-- Radio Options -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <!-- Option 1: Solely Handled -->
+                  <label class="flex items-start gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all ${!isSharedCourse ? 'bg-white border-amber-500 ring-2 ring-amber-500/20 shadow-xs' : 'bg-white/70 border-slate-200 hover:border-slate-300 hover:bg-white'}">
+                    <input 
+                      type="radio" 
+                      name="course_sharing_mode" 
+                      value="sole" 
+                      class="w-4 h-4 mt-0.5 text-amber-600 focus:ring-amber-500 cursor-pointer"
+                      ${!isSharedCourse ? 'checked' : ''}
+                      onchange="coursePlanApp.onCourseSharingChange(false)"
+                    />
+                    <div>
+                      <div class="text-xs font-black text-slate-800">Handled Independently by Me</div>
+                      <div class="text-[10.5px] text-slate-500 font-medium mt-0.5">I am the sole faculty member teaching and managing this course.</div>
+                    </div>
+                  </label>
+
+                  <!-- Option 2: Shared with Other Faculty -->
+                  <label class="flex items-start gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all ${isSharedCourse ? 'bg-white border-amber-500 ring-2 ring-amber-500/20 shadow-xs' : 'bg-white/70 border-slate-200 hover:border-slate-300 hover:bg-white'}">
+                    <input 
+                      type="radio" 
+                      name="course_sharing_mode" 
+                      value="shared" 
+                      class="w-4 h-4 mt-0.5 text-amber-600 focus:ring-amber-500 cursor-pointer"
+                      ${isSharedCourse ? 'checked' : ''}
+                      onchange="coursePlanApp.onCourseSharingChange(true)"
+                    />
+                    <div>
+                      <div class="text-xs font-black text-slate-800">Shared with Other Faculty (Collaborative)</div>
+                      <div class="text-[10.5px] text-slate-500 font-medium mt-0.5">This course is shared / co-taught across sections with other colleague(s).</div>
+                    </div>
+                  </label>
+                </div>
+
+                <!-- Collaborating Faculty Dropdown Container -->
+                <div id="cp-shared-faculty-box" class="${isSharedCourse ? '' : 'hidden'} bg-white p-3.5 rounded-xl border border-amber-300 space-y-2 animate-fadeIn">
+                  <div class="flex items-center justify-between">
+                    <label class="block text-[11px] font-black text-slate-800 flex items-center gap-1.5">
+                      <i data-lucide="user-plus" class="w-3.5 h-3.5 text-indigo-600"></i>
+                      <span>Select Collaborating / Co-Faculty Member *</span>
+                    </label>
+                    <span class="text-[10px] text-indigo-700 font-bold bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">
+                      ${deptFaculty.length} Department Faculty Available
+                    </span>
+                  </div>
+                  <select 
+                    id="cp-shared-faculty-name" 
+                    onchange="coursePlanApp.onSharedFacultyChange(this.value)"
+                    class="w-full text-xs px-3 py-2 border-2 border-indigo-400 bg-white rounded-xl font-bold text-slate-900 focus:border-indigo-600 focus:outline-none cursor-pointer"
+                  >
+                    <option value="">-- Choose Collaborating Faculty from Department --</option>
+                    ${deptFaculty.length > 0 ? `
+                      <optgroup label="Faculty from ${this.escapeHtml(curDept)}">
+                        ${deptFacultyOptions}
+                      </optgroup>
+                    ` : ''}
+                    ${otherDeptGroups ? `
+                      <optgroup label="Other Academic Departments">
+                        ${otherDeptGroups}
+                      </optgroup>
+                    ` : ''}
+                  </select>
+                  <p class="text-[10.5px] text-slate-500 italic flex items-center gap-1">
+                    <span>📌</span>
+                    <span>Both your name and the selected co-faculty member's name will appear on the final approved Course Plan.</span>
+                  </p>
                 </div>
               </div>
 
@@ -6782,36 +6986,40 @@ class CoursePlanApp {
                 </button>
               </div>
 
-              <div class="overflow-x-auto rounded-xl border border-slate-200">
-                <table class="w-full text-left text-xs border-collapse">
+              <div id="cp-icts-table-container" class="rounded-xl border border-slate-200 overflow-visible" style="overflow: visible; min-height: 220px; padding-bottom: 70px;">
+                <table class="w-full text-left text-xs border-collapse" style="overflow: visible;">
                   <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
                     <tr>
                       <th class="p-2.5 w-12 text-center">S.No</th>
                       <th class="p-2.5 w-48">Topic / Unit</th>
-                      <th class="p-2.5 w-56">Digital Resource / ICT Tool</th>
-                      <th class="p-2.5 w-52">Platform (JosTEL / Others)</th>
+                      <th class="p-2.5 w-64">Digital Resource / ICT Tool</th>
+                      <th class="p-2.5 w-60">Platform (JosTEL / Others)</th>
                       <th class="p-2.5">Purpose</th>
                       <th class="p-2.5 w-12 text-center">Action</th>
                     </tr>
                   </thead>
-                  <tbody id="cp-icts-tbody" class="divide-y divide-slate-100 font-medium">
+                  <tbody id="cp-icts-tbody" class="divide-y divide-slate-100 font-medium" style="overflow: visible;">
                     ${icts.map((ict, idx) => {
                       const curTool = ict.tool || '';
                       const toolList = curTool.split(',').map(s => s.trim()).filter(Boolean);
+                      const hasOtherTool = toolList.includes('Others');
+                      const otherToolVal = ict.tool_other || '';
 
                       const curPlatform = ict.platform || 'JosTEL';
                       const platformList = curPlatform.split(',').map(s => s.trim()).filter(Boolean);
+                      const hasOtherPlatform = platformList.includes('Others');
+                      const otherPlatVal = ict.platform_other || '';
 
                       return `
-                        <tr>
+                        <tr class="relative hover:bg-slate-50/50 transition" style="overflow: visible;">
                           <td class="p-2 text-center font-bold text-slate-400">${idx + 1}</td>
                           <td class="p-2">
                             <input type="text" class="ict-topic w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded-lg" value="${this.escapeHtml(ict.topic || '')}" placeholder="Topic / Unit..." />
                           </td>
                           
                           <!-- Digital Resource / ICT Tool Multi-Select -->
-                          <td class="p-2">
-                            <div class="relative ict-multi-container">
+                          <td class="p-2 align-top">
+                            <div class="relative ict-multi-container" style="overflow: visible;">
                               <div 
                                 onclick="coursePlanApp.toggleICTDropdown('tool', ${idx}, event)" 
                                 class="min-h-[34px] w-full p-1.5 border border-slate-300 rounded-lg bg-white flex flex-wrap items-center gap-1 cursor-pointer hover:border-indigo-500 transition"
@@ -6835,7 +7043,8 @@ class CoursePlanApp {
                               <!-- Dropdown Menu -->
                               <div 
                                 id="ict-tool-menu-${idx}" 
-                                class="hidden absolute left-0 top-full mt-1 bg-white border border-slate-300 rounded-xl shadow-2xl z-40 p-2 space-y-1 w-64 max-h-56 overflow-y-auto"
+                                class="hidden absolute left-0 top-full mt-1 bg-white border-2 border-indigo-300 rounded-xl shadow-2xl z-50 p-2 space-y-1 w-64 max-h-56 overflow-y-auto"
+                                style="z-index: 9999;"
                                 onclick="event.stopPropagation()"
                               >
                                 <div class="text-[10px] font-black text-slate-400 uppercase tracking-wider px-1 pb-1 border-b border-slate-100">Select Tool (Multiple)</div>
@@ -6854,15 +7063,28 @@ class CoursePlanApp {
                                   `;
                                 }).join('')}
                               </div>
+
+                              <!-- Custom input field when Others is selected -->
+                              ${hasOtherTool ? `
+                                <div class="mt-1.5 animate-fadeIn">
+                                  <input 
+                                    type="text" 
+                                    class="ict-tool-other w-full text-xs px-2.5 py-1.5 border-2 border-indigo-400 bg-indigo-50/70 rounded-lg font-bold text-indigo-950 placeholder-indigo-400 focus:border-indigo-600 focus:bg-white focus:outline-none shadow-xs" 
+                                    placeholder="Enter specific ICT tool name..." 
+                                    value="${this.escapeHtml(otherToolVal)}" 
+                                    oninput="coursePlanApp.onICTOtherInput('tool', ${idx}, this.value)"
+                                  />
+                                </div>
+                              ` : ''}
                             </div>
                           </td>
 
                           <!-- Platform (JosTEL / Others) Multi-Select -->
-                          <td class="p-2">
-                            <div class="relative ict-multi-container">
+                          <td class="p-2 align-top">
+                            <div class="relative ict-multi-container" style="overflow: visible;">
                               <div 
                                 onclick="coursePlanApp.toggleICTDropdown('platform', ${idx}, event)" 
-                                class="min-h-[34px] w-full p-1.5 border border-slate-300 rounded-lg bg-white flex flex-wrap items-center gap-1 cursor-pointer hover:border-indigo-500 transition"
+                                class="min-h-[34px] w-full p-1.5 border border-slate-300 rounded-lg bg-white flex flex-wrap items-center gap-1 cursor-pointer hover:border-amber-500 transition"
                               >
                                 <div class="flex flex-wrap items-center gap-1 flex-1">
                                   ${platformList.length === 0 ? `
@@ -6883,7 +7105,8 @@ class CoursePlanApp {
                               <!-- Dropdown Menu -->
                               <div 
                                 id="ict-platform-menu-${idx}" 
-                                class="hidden absolute left-0 top-full mt-1 bg-white border border-slate-300 rounded-xl shadow-2xl z-40 p-2 space-y-1 w-60 max-h-56 overflow-y-auto"
+                                class="hidden absolute left-0 top-full mt-1 bg-white border-2 border-amber-300 rounded-xl shadow-2xl z-50 p-2 space-y-1 w-60 max-h-56 overflow-y-auto"
+                                style="z-index: 9999;"
                                 onclick="event.stopPropagation()"
                               >
                                 <div class="text-[10px] font-black text-slate-400 uppercase tracking-wider px-1 pb-1 border-b border-slate-100">Select Platform (Multiple)</div>
@@ -6902,6 +7125,19 @@ class CoursePlanApp {
                                   `;
                                 }).join('')}
                               </div>
+
+                              <!-- Custom input field when Others is selected -->
+                              ${hasOtherPlatform ? `
+                                <div class="mt-1.5 animate-fadeIn">
+                                  <input 
+                                    type="text" 
+                                    class="ict-platform-other w-full text-xs px-2.5 py-1.5 border-2 border-amber-400 bg-amber-50/70 rounded-lg font-bold text-amber-950 placeholder-amber-400 focus:border-amber-600 focus:bg-white focus:outline-none shadow-xs" 
+                                    placeholder="Enter specific platform name..." 
+                                    value="${this.escapeHtml(otherPlatVal)}" 
+                                    oninput="coursePlanApp.onICTOtherInput('platform', ${idx}, this.value)"
+                                  />
+                                </div>
+                              ` : ''}
                             </div>
                           </td>
 
@@ -7121,7 +7357,7 @@ class CoursePlanApp {
             <div class="text-xs space-y-1.5 pl-2">
               <div class="font-bold text-slate-700">A. General Details</div>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1.5 text-xs">
-                <div><span class="font-bold text-slate-600">Name of the Faculty Member:</span> ${plan.faculty_name || '—'}</div>
+                <div><span class="font-bold text-slate-600">Name of the Faculty Member:</span> ${this.escapeHtml(plan.faculty_name || '—')}${plan.is_shared_course && plan.shared_faculty_name ? ` & ${this.escapeHtml(plan.shared_faculty_name)} <span class="text-xs text-amber-700 font-bold">(Shared Course)</span>` : ''}</div>
                 <div><span class="font-bold text-slate-600">Department:</span> ${plan.department_name || '—'}</div>
                 <div><span class="font-bold text-slate-600">Programme:</span> ${plan.programme || '—'}</div>
                 <div><span class="font-bold text-slate-600">Year and Class:</span> ${plan.year_class || '—'}</div>
@@ -7306,8 +7542,14 @@ class CoursePlanApp {
                     <tr>
                       <td class="border border-slate-300 p-1.5 text-center font-bold">${i + 1}</td>
                       <td class="border border-slate-300 p-1.5">${ict.topic || '—'}</td>
-                      <td class="border border-slate-300 p-1.5 font-bold">${ict.tool}</td>
-                      <td class="border border-slate-300 p-1.5">${ict.platform}</td>
+                      <td class="border border-slate-300 p-1.5 font-bold">${(() => {
+                        const t = (ict.tool || '').split(',').map(s => s.trim()).map(s => (s === 'Others' && ict.tool_other) ? `Others (${ict.tool_other})` : s).join(', ');
+                        return this.escapeHtml(t || '—');
+                      })()}</td>
+                      <td class="border border-slate-300 p-1.5">${(() => {
+                        const p = (ict.platform || '').split(',').map(s => s.trim()).map(s => (s === 'Others' && ict.platform_other) ? `Others (${ict.platform_other})` : s).join(', ');
+                        return this.escapeHtml(p || '—');
+                      })()}</td>
                       <td class="border border-slate-300 p-1.5">${ict.purpose}</td>
                     </tr>
                   `).join('')}
@@ -7324,7 +7566,7 @@ class CoursePlanApp {
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4">
               <div class="space-y-6">
-                <div>Faculty Member: <strong>${decl.faculty_signature || plan.faculty_name || '____________________'}</strong></div>
+                <div>Faculty Member(s): <strong>${this.escapeHtml(decl.faculty_signature || plan.faculty_name || '____________________')}${plan.is_shared_course && plan.shared_faculty_name ? ` & ${this.escapeHtml(plan.shared_faculty_name)}` : ''}</strong></div>
                 <div>Date: <strong>${decl.submission_date || '____________________'}</strong></div>
               </div>
 
@@ -7420,6 +7662,11 @@ class CoursePlanApp {
 
     check(p.department_name, 'cp-dept-name', 'Department');
     check(p.faculty_name, 'cp-faculty-name', 'Name of the Faculty Member');
+    if (p.is_shared_course && (!p.shared_faculty_name || !p.shared_faculty_name.trim())) {
+      errors.push('Collaborating / Co-Faculty Member');
+      const el = document.getElementById('cp-shared-faculty-name');
+      if (el) invalidEls.push(el);
+    }
     check(p.semester, 'cp-semester', 'Semester');
     check(p.programme, 'cp-programme', 'Programme');
     check(p.year_class, 'cp-year-class', 'Year & Class');
@@ -7615,7 +7862,14 @@ class CoursePlanApp {
       const hasAny = topVal || toolVal || platVal || purpVal;
       const isComplete = topVal && toolVal && platVal && purpVal;
 
-      if (isComplete) {
+      const toolOtherInp = row.querySelector('.ict-tool-other');
+      const platOtherInp = row.querySelector('.ict-platform-other');
+      const needsToolOther = toolVal.split(',').map(s => s.trim()).includes('Others');
+      const needsPlatOther = platVal.split(',').map(s => s.trim()).includes('Others');
+      const hasToolOther = !needsToolOther || (toolOtherInp && toolOtherInp.value.trim().length > 0);
+      const hasPlatOther = !needsPlatOther || (platOtherInp && platOtherInp.value.trim().length > 0);
+
+      if (isComplete && hasToolOther && hasPlatOther) {
         completedIctRows++;
       } else if (hasAny) {
         const missing = [];
@@ -7623,10 +7877,16 @@ class CoursePlanApp {
         if (!toolVal) {
           missing.push('Tool');
           if (toolEl) invalidEls.push(toolEl);
+        } else if (needsToolOther && (!toolOtherInp || !toolOtherInp.value.trim())) {
+          missing.push('Specific Tool Name for Others');
+          if (toolOtherInp) invalidEls.push(toolOtherInp);
         }
         if (!platVal) {
           missing.push('Platform');
           if (platEl) invalidEls.push(platEl);
+        } else if (needsPlatOther && (!platOtherInp || !platOtherInp.value.trim())) {
+          missing.push('Specific Platform Name for Others');
+          if (platOtherInp) invalidEls.push(platOtherInp);
         }
         if (!purpVal) { missing.push('Purpose'); if (purpEl) invalidEls.push(purpEl); }
         incompleteRowErrors.push(`Row ${idx + 1}: Missing ${missing.join(', ')}`);
@@ -7882,6 +8142,8 @@ class CoursePlanApp {
       course_category: 'Core',
       teaching_hours: '',
       credits: '',
+      is_shared_course: false,
+      shared_faculty_name: '',
       course_outcomes: [
         { code: 'CO1', outcome: '', k_level: 'K1' },
         { code: 'CO2', outcome: '', k_level: 'K2' },
@@ -8564,6 +8826,16 @@ class CoursePlanApp {
     this.activePlan.programme = document.getElementById('cp-programme')?.value || '';
     this.activePlan.year_class = document.getElementById('cp-year-class')?.value || 'I UG';
     this.activePlan.section = document.getElementById('cp-section')?.value || 'N/A';
+    const isSharedRadio = document.querySelector('input[name="course_sharing_mode"]:checked');
+    const isShared = isSharedRadio ? (isSharedRadio.value === 'shared') : !!this.activePlan.is_shared_course;
+    const sharedFac = document.getElementById('cp-shared-faculty-name')?.value || this.activePlan.shared_faculty_name || '';
+
+    this.activePlan.is_shared_course = isShared;
+    this.activePlan.shared_faculty_name = isShared ? sharedFac.trim() : '';
+    if (!this.activePlan.general_details) this.activePlan.general_details = {};
+    this.activePlan.general_details.is_shared_course = isShared;
+    this.activePlan.general_details.shared_faculty_name = this.activePlan.shared_faculty_name;
+
     this.activePlan.semester = document.getElementById('cp-semester')?.value || 'II';
     this.activePlan.course_code = document.getElementById('cp-course-code')?.value || '';
     this.activePlan.course_title = document.getElementById('cp-course-title')?.value || '';
@@ -8632,12 +8904,16 @@ class CoursePlanApp {
     ictRows.forEach((tr, i) => {
       const finalTool = tr.querySelector('.ict-tool-val')?.value || tr.querySelector('.ict-tool-select')?.value || tr.querySelector('.ict-tool')?.value || '';
       const finalPlat = tr.querySelector('.ict-platform-val')?.value || tr.querySelector('.ict-platform-select')?.value || tr.querySelector('.ict-platform')?.value || '';
+      const toolOther = tr.querySelector('.ict-tool-other')?.value || '';
+      const platOther = tr.querySelector('.ict-platform-other')?.value || '';
 
       icts.push({
         sno: String(i + 1),
         topic: tr.querySelector('.ict-topic')?.value || '',
         tool: finalTool,
+        tool_other: toolOther,
         platform: finalPlat,
+        platform_other: platOther,
         purpose: tr.querySelector('.ict-purpose')?.value || ''
       });
     });
@@ -9993,5 +10269,12 @@ document.addEventListener('click', (e) => {
   }
   if (!e.target.closest('.dtp-res-container')) {
     document.querySelectorAll('[id^="dtp-res-menu-"]').forEach(m => m.classList.add('hidden'));
+  }
+  if (!e.target.closest('.ict-multi-container')) {
+    document.querySelectorAll('[id^="ict-tool-menu-"], [id^="ict-platform-menu-"]').forEach(m => {
+      m.classList.add('hidden');
+      const tr = m.closest('tr');
+      if (tr) tr.style.zIndex = '';
+    });
   }
 });
