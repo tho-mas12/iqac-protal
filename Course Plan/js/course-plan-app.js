@@ -2672,6 +2672,20 @@ class CoursePlanApp {
       } else {
         this.plans = [];
       }
+
+      // Automatically fetch TL practices status for faculty
+      if (this.currentUser && this.currentUser.role === 'faculty') {
+        try {
+          const facName = this.currentUser.faculty_name || this.currentUser.display_name || '';
+          const deptName = this.currentUser.department_name || this.selectedDept || '';
+          const tlRes = await fetch(`api/course_plan.php?action=get_tl_practices&faculty_name=${encodeURIComponent(facName)}&department_name=${encodeURIComponent(deptName)}`);
+          const tlJson = await tlRes.json();
+          this.tlPracticesData = (tlJson.success && tlJson.data) ? tlJson.data : null;
+        } catch (tle) {
+          console.warn('Could not fetch TL practices status:', tle);
+          this.tlPracticesData = null;
+        }
+      }
     } catch (e) {
       console.warn('Could not fetch plans', e);
       this.plans = [];
@@ -3357,6 +3371,8 @@ class CoursePlanApp {
   renderFacultyDashboardHtml() {
     const user = this.currentUser || { display_name: 'Professor', department_name: this.selectedDept };
     const myPlans = this.plans || [];
+    const hasPlannedCourses = myPlans.length > 0;
+    const tlEntered = !!(this.tlPracticesData && this.tlPracticesData.id);
 
     const totalSubmitted = myPlans.filter(p => p.status === 'Submitted' || p.hod_status === 'Approved' || p.hod_status === 'Pending').length;
     const totalApproved = myPlans.filter(p => p.hod_status === 'Approved').length;
@@ -3396,11 +3412,24 @@ class CoursePlanApp {
             <button 
               type="button" 
               onclick="coursePlanApp.openTLPracticesModal()" 
-              class="px-5 py-3 bg-gradient-to-r from-indigo-700 via-indigo-600 to-indigo-800 hover:from-indigo-600 hover:to-indigo-700 text-white font-extrabold rounded-2xl text-xs sm:text-sm transition shadow-lg shadow-indigo-950/40 flex items-center gap-2.5 cursor-pointer border border-indigo-400/40 active:scale-95"
-              title="Open Teaching-Learning Practices, Assessment Components & E-Content planned form"
+              class="px-5 py-3 ${hasPlannedCourses ? (tlEntered ? 'bg-gradient-to-r from-emerald-800 via-indigo-700 to-indigo-800 hover:from-emerald-700 hover:to-indigo-700 text-white border-emerald-400/40 shadow-emerald-950/30' : 'bg-gradient-to-r from-indigo-700 via-indigo-600 to-indigo-800 hover:from-indigo-600 hover:to-indigo-700 text-white border-indigo-400/40 shadow-indigo-950/40') : 'bg-slate-800/80 hover:bg-slate-800 text-slate-400 border-slate-700/60 cursor-not-allowed opacity-75'} font-extrabold rounded-2xl text-xs sm:text-sm transition shadow-lg flex items-center gap-2.5 cursor-pointer border active:scale-95"
+              title="${hasPlannedCourses ? (tlEntered ? 'View / Edit your submitted TL Practices & Assessment Components (Recorded in IQAC)' : 'Open Teaching-Learning Practices, Assessment Components & E-Content planned form') : 'Step 1 Required: Please create at least one course plan first to unlock this form'}"
             >
-              <span class="w-6 h-6 rounded-full bg-white text-indigo-900 flex items-center justify-center font-black text-xs shrink-0 shadow-sm leading-none">2</span>
+              <span class="w-6 h-6 rounded-full ${hasPlannedCourses ? (tlEntered ? 'bg-white text-emerald-900' : 'bg-white text-indigo-900') : 'bg-slate-700 text-slate-400'} flex items-center justify-center font-black text-xs shrink-0 shadow-sm leading-none">2</span>
               <span>TL Practices, Assessment Component</span>
+              ${tlEntered ? `
+                <span class="px-2 py-0.5 rounded-full bg-emerald-500 text-white text-[10px] font-black tracking-wider flex items-center gap-1 shadow-xs">
+                  <i data-lucide="check" class="w-3 h-3"></i> Submitted
+                </span>
+              ` : (hasPlannedCourses ? `
+                <span class="px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 text-[10px] font-bold tracking-wider">
+                  Pending
+                </span>
+              ` : `
+                <span class="px-2 py-0.5 rounded-full bg-slate-700 text-amber-300/90 text-[10px] font-bold tracking-wider flex items-center gap-1 border border-amber-400/20">
+                  <i data-lucide="lock" class="w-3 h-3"></i> Step 1 First
+                </span>
+              `)}
             </button>
             <button 
               type="button" 
@@ -3414,7 +3443,7 @@ class CoursePlanApp {
         </div>
 
         <!-- Quick Stats Cards -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-4">
           <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-1">
             <div class="text-[11px] font-bold uppercase text-slate-500 tracking-wider">Total Plans</div>
             <div class="text-2xl font-black text-slate-900">${myPlans.length}</div>
@@ -3435,6 +3464,31 @@ class CoursePlanApp {
             <div class="text-2xl font-black text-slate-700">${totalDrafts}</div>
             <div class="text-[10px] text-slate-400 font-medium">In progress</div>
           </div>
+          <!-- TL Practices Status Card -->
+          <div class="bg-white p-4 rounded-2xl border ${tlEntered ? 'border-emerald-200 bg-emerald-50/20' : (hasPlannedCourses ? 'border-amber-200 bg-amber-50/20' : 'border-slate-200')} shadow-2xs space-y-1 col-span-2 sm:col-span-1">
+            <div class="text-[11px] font-bold uppercase ${tlEntered ? 'text-emerald-700' : (hasPlannedCourses ? 'text-amber-700' : 'text-slate-500')} tracking-wider flex items-center justify-between">
+              <span>Step 2: TL Status</span>
+            </div>
+            ${tlEntered ? `
+              <div class="text-base sm:text-lg font-black text-emerald-600 flex items-center gap-1.5">
+                <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600 shrink-0"></i>
+                <span>Submitted</span>
+              </div>
+              <div class="text-[10px] text-emerald-700 font-medium truncate">Recorded (#${this.tlPracticesData.id})</div>
+            ` : (hasPlannedCourses ? `
+              <div class="text-base sm:text-lg font-black text-amber-600 flex items-center gap-1.5">
+                <i data-lucide="clock" class="w-5 h-5 text-amber-600 shrink-0"></i>
+                <span>Pending</span>
+              </div>
+              <div class="text-[10px] text-amber-700 font-medium truncate">Ready to fill (Button 2)</div>
+            ` : `
+              <div class="text-base sm:text-lg font-black text-slate-400 flex items-center gap-1.5">
+                <i data-lucide="lock" class="w-4 h-4 text-slate-400 shrink-0"></i>
+                <span>Locked</span>
+              </div>
+              <div class="text-[10px] text-slate-400 font-medium truncate">Requires ≥1 course plan</div>
+            `)}
+          </div>
         </div>
 
         <!-- My Course Plans Table -->
@@ -3454,11 +3508,18 @@ class CoursePlanApp {
               <button 
                 type="button" 
                 onclick="coursePlanApp.openTLPracticesModal()" 
-                class="px-3.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer border border-indigo-200 shadow-2xs"
-                title="Teaching-Learning Practices, Assessment Components & E-Content planned"
+                class="px-3.5 py-2 rounded-xl ${hasPlannedCourses ? (tlEntered ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-200' : 'bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border-indigo-200') : 'bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed opacity-75'} text-xs font-bold transition flex items-center gap-1.5 border shadow-2xs"
+                title="${hasPlannedCourses ? (tlEntered ? 'View / Edit your submitted TL Practices & Assessment Components' : 'Open Teaching-Learning Practices, Assessment Components & E-Content planned form') : 'Step 1 Required: Please create at least one course plan first'}"
               >
-                <span class="w-4 h-4 rounded-full bg-indigo-600 text-white font-black text-[10px] flex items-center justify-center shrink-0 leading-none">2</span>
+                <span class="w-4 h-4 rounded-full ${hasPlannedCourses ? (tlEntered ? 'bg-emerald-600 text-white' : 'bg-indigo-600 text-white') : 'bg-slate-400 text-white'} font-black text-[10px] flex items-center justify-center shrink-0 leading-none">2</span>
                 <span>TL Practices, Assessment Component</span>
+                ${tlEntered ? `
+                  <span class="px-1.5 py-0.5 rounded bg-emerald-200/80 text-emerald-800 text-[10px] font-black">✓ Submitted</span>
+                ` : (hasPlannedCourses ? `
+                  <span class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 text-[10px] font-bold">Pending</span>
+                ` : `
+                  <span class="px-1.5 py-0.5 rounded bg-slate-200 text-slate-600 text-[10px] font-bold">Locked</span>
+                `)}
               </button>
               <button 
                 type="button" 
@@ -9529,6 +9590,12 @@ class CoursePlanApp {
   }
 
   async openTLPracticesModal() {
+    const myPlans = this.plans || [];
+    if (!myPlans || myPlans.length === 0) {
+      alert('⚠️ Step 1 Required:\n\nYou must prepare and create at least one Course Plan (Step 1) before entering Teaching-Learning Practices, Assessment Components & E-Content.\n\nPlease click "+ Create New Course Plan" to begin.');
+      return;
+    }
+
     const user = this.currentUser || {};
     const facultyName = user.faculty_name || user.display_name || '';
     const deptName = user.department_name || this.selectedDept || '';
@@ -9590,6 +9657,41 @@ class CoursePlanApp {
             <i data-lucide="x" class="w-6 h-6"></i>
           </button>
         </div>
+
+        <!-- Status Banner inside modal -->
+        ${existingData && existingData.id ? `
+          <div class="mx-4 sm:mx-7 mt-4 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-950 text-xs font-medium flex items-center justify-between flex-wrap gap-2 shadow-2xs">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-black shrink-0 shadow-xs">
+                <i data-lucide="check" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <div class="font-extrabold text-sm text-emerald-950 flex items-center gap-2">
+                  <span>Status: Submitted &amp; Recorded in IQAC System</span>
+                  <span class="px-2 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-black uppercase">Ref #${existingData.id}</span>
+                </div>
+                <div class="text-[11px] text-emerald-700 mt-0.5">
+                  Last updated: <strong>${existingData.updated_at || existingData.created_at || 'Academic Year 2026-2027'}</strong>. Your entries are loaded below and can be updated anytime.
+                </div>
+              </div>
+            </div>
+            <button type="button" onclick="coursePlanApp.printTLPracticesSummary()" class="px-3 py-1.5 bg-white border border-emerald-300 hover:bg-emerald-100 text-emerald-800 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-2xs">
+              <i data-lucide="printer" class="w-3.5 h-3.5"></i> Print Summary
+            </button>
+          </div>
+        ` : `
+          <div class="mx-4 sm:mx-7 mt-4 p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-950 text-xs font-medium flex items-center gap-3 shadow-2xs">
+            <div class="w-8 h-8 rounded-full bg-amber-500 text-white flex items-center justify-center font-black shrink-0 shadow-xs">
+              <i data-lucide="info" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="font-extrabold text-sm text-amber-950">Status: Not Yet Submitted (Pending)</div>
+              <div class="text-[11px] text-amber-800 mt-0.5">
+                Fill in Sections A (Pedagogy), B (Assessment), and C (E-Content) below, then click "Save &amp; Submit Details" to record your practices.
+              </div>
+            </div>
+          </div>
+        `}
 
         <!-- Form Body (Scrollable) -->
         <form id="tl-practices-form" onsubmit="coursePlanApp.saveTLPracticesForm(event)" class="flex-1 overflow-y-auto p-4 sm:p-7 space-y-6 bg-slate-50/70">
@@ -10058,8 +10160,16 @@ class CoursePlanApp {
           feedback.classList.remove('hidden');
           if (window.lucide) window.lucide.createIcons();
         }
-        setTimeout(() => {
+        this.tlPracticesData = {
+          id: data.id || payload.id,
+          status: 'Submitted',
+          updated_at: new Date().toISOString(),
+          ...payload
+        };
+        setTimeout(async () => {
           this.closeTLPracticesModal();
+          await this.fetchPlans();
+          this.render();
           alert('Teaching-Learning Practices, Assessment Components & E-Content submitted successfully!');
         }, 1200);
       } else {
