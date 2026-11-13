@@ -3,6 +3,29 @@
 // Academic Year 2026-2027 (Even Semester)
 
 class CoursePlanApp {
+  static ICT_TOOLS = [
+    'PPT / Interactive Slides',
+    'Video Lecture',
+    'Simulation / Virtual Lab',
+    'Online Quiz / JosTEL Quiz',
+    'Discussion Forum',
+    'E-Book / PDF Notes',
+    'Spreadsheet / Data Analysis',
+    'Programming IDE / Code Editor',
+    'Others'
+  ];
+
+  static ICT_PLATFORMS = [
+    'JosTEL',
+    'Google Classroom',
+    'Moodle',
+    'YouTube',
+    'Kahoot / Quizizz',
+    'SWAYAM / NPTEL',
+    'GitHub',
+    'Others'
+  ];
+
   static LEARNING_ACTIVITIES = [
     'Quizzes (MCQs, Short Answer)',
     'Class Polls / Clicker Questions',
@@ -270,10 +293,10 @@ class CoursePlanApp {
     }
 
     const paths = [
-      '/course-plan/data/syllabus_master.json?v=20261109I',
-      '/course-plan/syllabus_master.json?v=20261109I',
-      'data/syllabus_master.json?v=20261109I',
-      'syllabus_master.json?v=20261109I'
+      '/course-plan/data/syllabus_master.json?v=20261113I',
+      '/course-plan/syllabus_master.json?v=20261113I',
+      'data/syllabus_master.json?v=20261113I',
+      'syllabus_master.json?v=20261113I'
     ];
 
     for (const p of paths) {
@@ -755,21 +778,21 @@ class CoursePlanApp {
 
   isPGPlan(plan) {
     const p = plan || this.activePlan || {};
-    const yc = (document.getElementById('cp-year-class')?.value || p.year_class || '').trim();
-    const prog = (document.getElementById('cp-programme')?.value || p.programme || '').trim();
     const code = (document.getElementById('cp-course-code')?.value || p.course_code || '').trim();
+    const prog = (document.getElementById('cp-programme')?.value || p.programme || '').trim();
+    const yc = (document.getElementById('cp-year-class')?.value || p.year_class || '').trim();
 
-    // Check year_class first
-    if (yc.includes('UG')) return false;
-    if (yc.includes('PG') || yc.includes('MCA')) return true;
-
-    // Check programme
-    if (prog.startsWith('B.') || prog.includes('Bachelor')) return false;
-    if (prog.startsWith('M.') || prog.includes('MCA') || prog.includes('Master') || prog.includes('Post')) return true;
-
-    // Check course code: e.g. 24PCA..., 25PEN..., 25PCS..., 25PMAT...
+    // 1. Check course code first (e.g. 23U... vs 24P... / 25P...)
     if (/^[0-9]{2}P/i.test(code)) return true;
     if (/^[0-9]{2}U/i.test(code)) return false;
+
+    // 2. Check programme
+    if (prog.startsWith('M.') || prog.includes('MCA') || prog.includes('Master') || prog.includes('Post') || prog.includes('PG')) return true;
+    if (prog.startsWith('B.') || prog.includes('Bachelor') || prog.includes('UG')) return false;
+
+    // 3. Check year_class
+    if (yc.includes('PG') || yc.includes('MCA')) return true;
+    if (yc.includes('UG')) return false;
 
     return !!p.is_pg;
   }
@@ -784,7 +807,7 @@ class CoursePlanApp {
       marks: '15',
       category: 'MCQ through JosTEL',
       unit_coverage: 'Unit I & II',
-      date: '09-01-2027 to 13-01-2027',
+      date: '09.01.2027 to 13.01.2027',
       outcome: '—',
       is_default: true,
       uneditable: true
@@ -796,7 +819,7 @@ class CoursePlanApp {
       marks: '30',
       category: 'Written Examination',
       unit_coverage: 'Unit I, II & III',
-      date: '21-01-2027 to 30-01-2027',
+      date: '21.01.2027 to 30.01.2027',
       outcome: '—',
       is_default: true,
       uneditable: true
@@ -807,7 +830,7 @@ class CoursePlanApp {
       marks: '30',
       category: 'Written Examination',
       unit_coverage: 'All Units (Unit I - V)',
-      date: '16-03-2027 to 24-03-2027',
+      date: '16.03.2027 to 24.03.2027',
       outcome: '—',
       is_default: true,
       uneditable: true
@@ -823,16 +846,29 @@ class CoursePlanApp {
     };
     const sortedActs = [...assessedActs].sort((a, b) => orderWeight(a.cia_component) - orderWeight(b.cia_component));
 
-    const middleItems = sortedActs.map(a => ({
-      component: a.cia_component || 'C2 Assessment',
-      marks: String(a.cia_marks || (isPG ? '6' : '10')),
-      category: a.activity || 'Learning Activity',
-      unit_coverage: a.topic || '—',
-      date: a.proposed_date ? this.formatDateToDDMMYYYY(a.proposed_date) : '—',
-      outcome: a.outcome || '—',
-      is_default: false,
-      uneditable: true
-    }));
+    const middleItems = sortedActs.map(a => {
+      let marks = '10';
+      const comp = a.cia_component || '';
+      if (comp.includes('K6')) {
+        marks = '8';
+      } else if (comp.includes('Library') || comp.includes('Lib')) {
+        marks = '5';
+      } else if (comp.includes('K4') || comp.includes('K5')) {
+        marks = isPG ? '6' : '10';
+      } else if (a.cia_marks) {
+        marks = String(a.cia_marks);
+      }
+      return {
+        component: a.cia_component || 'C2 Assessment',
+        marks: marks,
+        category: a.activity || 'Learning Activity',
+        unit_coverage: a.topic || '—',
+        date: a.proposed_date ? this.formatDateToDDMMYYYY(a.proposed_date) : '—',
+        outcome: a.outcome || '—',
+        is_default: false,
+        uneditable: true
+      };
+    });
 
     const fullList = [c1, mid, ...middleItems, end];
     return fullList.map((item, idx) => ({
@@ -1301,7 +1337,7 @@ class CoursePlanApp {
       return;
     }
 
-    const course = (this.syllabusCourses || []).find(c => c.course_code.toLowerCase().trim() === curCode.toLowerCase().trim()) || {
+    const course = (this.syllabusCourses || []).find(c => c.course_code && c.course_code.toLowerCase().trim() === curCode.toLowerCase().trim()) || {
       course_code: curCode,
       course_title: this.activePlan.course_title || 'Selected Course',
       department: this.activePlan.department_name || '',
@@ -1315,9 +1351,9 @@ class CoursePlanApp {
 
     const modal = document.createElement('div');
     modal.id = 'course-syllabus-modal';
-    modal.className = 'fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 animate-fadeIn';
+    modal.className = 'fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 animate-fadeIn';
 
-    const units = course.units || [
+    const units = (course.units && course.units.length > 0) ? course.units : [
       { unit: 'Unit I', title: 'Foundations & Concepts', hours: '9 Hours', topics: 'Fundamental concepts, core terminology, theoretical framework, introductory principles.' },
       { unit: 'Unit II', title: 'Methodologies & Implementation', hours: '9 Hours', topics: 'Detailed mechanisms, structural design, execution patterns, problem-solving techniques.' },
       { unit: 'Unit III', title: 'Advanced Analysis & Applications', hours: '9 Hours', topics: 'Component interaction, practical application, case study evaluation, domain workflows.' },
@@ -1325,231 +1361,398 @@ class CoursePlanApp {
       { unit: 'Unit V', title: 'Emerging Trends & Capstone Projects', hours: '9 Hours', topics: 'Contemporary advances, security, scalability, comprehensive project implementation.' }
     ];
 
-    const booksStudy = course.books_study || [
+    const booksStudy = (course.books_study && course.books_study.length > 0) ? course.books_study : [
       'Standard Department Textbook & Course Learning Material',
       'Prescribed Institutional Study Modules & Lecture Notes'
     ];
 
-    const booksRef = course.books_reference || [
+    const booksRef = (course.books_reference && course.books_reference.length > 0) ? course.books_reference : [
       'Standard Reference Handbook (Latest Edition)',
       'ACM / IEEE Academic References & Monographs'
     ];
 
-    const websites = course.websites || [
+    const websites = (course.websites && course.websites.length > 0) ? course.websites : [
       'https://swayam.gov.in - SWAYAM National MOOCs',
       'https://nptel.ac.in - NPTEL Learning Repository',
       'JosTEL LMS Portal - St. Joseph\'s College'
     ];
 
+    const objectives = (course.objectives && course.objectives.length > 0) ? course.objectives : [];
     const cos = (course.cos && course.cos.length > 0) ? course.cos : (this.activePlan.course_outcomes || []);
+    const pdfFile = course.pdf_file || '';
+    const pdfPage = course.pdf_page || 1;
+    const pdfUrl = pdfFile ? `/course-plan/syllabus_docs/${encodeURIComponent(pdfFile)}#page=${pdfPage}&view=FitH` : '';
 
     modal.innerHTML = `
-      <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden" onclick="event.stopPropagation()">
+      <div class="bg-white rounded-3xl max-w-5xl w-full max-h-[94vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden" onclick="event.stopPropagation()">
         
         <!-- Header -->
-        <div class="p-5 sm:p-6 bg-gradient-to-r from-indigo-900 via-blue-900 to-indigo-950 text-white flex items-start justify-between gap-4 shrink-0">
-          <div>
-            <div class="flex items-center gap-2 flex-wrap mb-1.5">
-              <span class="font-mono text-xs font-black px-2.5 py-1 rounded-lg bg-amber-400 text-indigo-950 uppercase tracking-wider shadow-sm">
-                ${this.escapeHtml(course.course_code)}
-              </span>
-              <span class="text-xs bg-white/15 px-2.5 py-1 rounded-lg font-bold text-indigo-100 border border-white/20">
-                ${this.escapeHtml(course.course_category || 'Core')}
-              </span>
-              <span class="text-xs bg-white/15 px-2.5 py-1 rounded-lg font-bold text-indigo-100 border border-white/20">
-                Sem ${this.escapeHtml(course.semester_num ? String(course.semester_num) : (course.semester || '—'))}
-              </span>
-              <span class="text-xs bg-white/15 px-2.5 py-1 rounded-lg font-bold text-indigo-100 border border-white/20">
-                ${this.escapeHtml(course.credits || '3')} Credits • ${this.escapeHtml(course.hours || '4')}h/wk
-              </span>
+        <div class="p-5 sm:p-6 bg-gradient-to-r from-indigo-900 via-blue-900 to-indigo-950 text-white shrink-0">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-2 flex-wrap mb-1.5">
+                <span class="font-mono text-xs font-black px-2.5 py-1 rounded-lg bg-amber-400 text-indigo-950 uppercase tracking-wider shadow-sm">
+                  ${this.escapeHtml(course.course_code)}
+                </span>
+                <span class="text-xs bg-white/15 px-2.5 py-1 rounded-lg font-bold text-indigo-100 border border-white/20">
+                  ${this.escapeHtml(course.course_category || 'Core Course')}
+                </span>
+                <span class="text-xs bg-white/15 px-2.5 py-1 rounded-lg font-bold text-indigo-100 border border-white/20">
+                  Sem ${this.escapeHtml(course.semester_num ? String(course.semester_num) : (course.semester || '—'))}
+                </span>
+                <span class="text-xs bg-white/15 px-2.5 py-1 rounded-lg font-bold text-indigo-100 border border-white/20">
+                  ${this.escapeHtml(course.credits || '3')} Credits • ${this.escapeHtml(course.hours || '4')}h/wk
+                </span>
+              </div>
+              <h3 class="text-lg sm:text-xl font-black text-white tracking-tight">
+                ${this.escapeHtml(course.course_title || 'Course Syllabus')}
+              </h3>
+              <p class="text-xs text-indigo-200 mt-0.5">
+                ${this.escapeHtml(course.department || this.selectedDept)} • Official College Syllabus & Teaching Plan Reference
+              </p>
             </div>
-            <h3 class="text-lg sm:text-xl font-black text-white tracking-tight">
-              ${this.escapeHtml(course.course_title || 'Course Syllabus')}
-            </h3>
-            <p class="text-xs text-indigo-200 mt-0.5">
-              ${this.escapeHtml(course.department || this.selectedDept)} • Reference Guide for Course Plan Part-II
-            </p>
+            <button 
+              type="button" 
+              onclick="document.getElementById('course-syllabus-modal').remove()" 
+              class="text-indigo-200 hover:text-white p-2 rounded-xl hover:bg-white/10 transition cursor-pointer shrink-0"
+            >
+              <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
           </div>
-          <button 
-            type="button" 
-            onclick="document.getElementById('course-syllabus-modal').remove()" 
-            class="text-indigo-200 hover:text-white p-2 rounded-xl hover:bg-white/10 transition cursor-pointer shrink-0"
-          >
-            <i data-lucide="x" class="w-6 h-6"></i>
-          </button>
+
+          <!-- View Tabs & Direct PDF Action -->
+          <div class="flex flex-wrap items-center gap-2 mt-4 pt-3 border-t border-white/15">
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchSyllabusModalTab('structured')" 
+              id="modal-tab-btn-structured" 
+              class="px-3.5 py-1.5 rounded-xl font-bold text-xs bg-white text-indigo-950 shadow-sm transition cursor-pointer"
+            >
+              📋 Structured Units & Quick-Fill
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchSyllabusModalTab('official_doc')" 
+              id="modal-tab-btn-official_doc" 
+              class="px-3.5 py-1.5 rounded-xl font-bold text-xs bg-white/20 hover:bg-white/30 text-white transition cursor-pointer"
+            >
+              📄 Entire Official Syllabus Document & PDF
+            </button>
+
+            ${pdfFile ? `
+              <a 
+                href="${pdfUrl}" 
+                target="_blank" 
+                class="sm:ml-auto px-3.5 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-indigo-950 font-black text-xs inline-flex items-center gap-1.5 shadow-sm transition"
+              >
+                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                <span>Open Handbook PDF (Page ${pdfPage}) ↗</span>
+              </a>
+            ` : ''}
+          </div>
         </div>
 
-        <!-- Scrollable Content -->
+        <!-- Scrollable Content Area -->
         <div class="p-4 sm:p-6 overflow-y-auto space-y-6 flex-1 text-slate-800 text-xs">
           
-          <!-- Instructions banner -->
-          <div class="bg-indigo-50 border border-indigo-200 rounded-2xl p-3.5 flex items-center justify-between gap-3 text-indigo-900">
-            <div class="flex items-center gap-2.5">
-              <div class="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0">
-                <i data-lucide="lightbulb" class="w-4 h-4 text-amber-300"></i>
-              </div>
-              <div class="text-xs">
-                <strong class="font-bold">Faculty Quick Fill:</strong> Click <strong>"Insert into Plan"</strong> or <strong>"Copy Topics"</strong> on any unit to populate your Detailed Teaching Plan, or click <strong>"Use as Resource"</strong> to add references directly!
-              </div>
-            </div>
-          </div>
-
-          <!-- Section 1: Course Outcomes (CO1 to CO5) -->
-          <div class="space-y-2.5">
-            <h4 class="text-xs font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
-              <i data-lucide="target" class="w-4 h-4 text-indigo-600"></i>
-              <span>Course Outcomes (COs) & Bloom's Levels</span>
-            </h4>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2">
-              ${cos.map(co => `
-                <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between space-y-1.5 hover:border-indigo-300 transition">
-                  <div class="flex items-center justify-between">
-                    <span class="font-mono font-black text-indigo-950 text-xs">${this.escapeHtml(co.code || 'CO')}</span>
-                    <span class="text-[9.5px] font-black px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-800">${this.escapeHtml(co.k_level || 'K1')}</span>
-                  </div>
-                  <p class="text-[11px] text-slate-600 line-clamp-3 leading-snug" title="${this.escapeHtml(co.outcome || '')}">
-                    ${this.escapeHtml(co.outcome || 'Course Outcome statement')}
-                  </p>
+          <!-- TAB 1: Structured Units & Quick-Fill -->
+          <div id="modal-syllabus-tab-structured" class="space-y-6">
+            <!-- Instructions banner -->
+            <div class="bg-indigo-50 border border-indigo-200 rounded-2xl p-3.5 flex items-center justify-between gap-3 text-indigo-900">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0">
+                  <i data-lucide="lightbulb" class="w-4 h-4 text-amber-300"></i>
                 </div>
-              `).join('')}
+                <div class="text-xs">
+                  <strong class="font-bold">Faculty Quick Fill:</strong> Click <strong>"Insert into Plan"</strong> or <strong>"Copy Topics"</strong> on any unit to populate your Detailed Teaching Plan, or click <strong>"Use as Resource"</strong> to add references directly!
+                </div>
+              </div>
             </div>
-          </div>
 
-          <!-- Section 2: Unit-wise Detailed Syllabus Topics -->
-          <div class="space-y-3">
-            <h4 class="text-xs font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
-              <i data-lucide="layers" class="w-4 h-4 text-indigo-600"></i>
-              <span>Unit-wise Syllabus Content (Units I to V)</span>
-            </h4>
-            
+            <!-- Course Objectives (if available) -->
+            ${objectives.length > 0 ? `
+              <div class="p-3.5 rounded-2xl bg-amber-50/60 border border-amber-200 space-y-2">
+                <h4 class="text-xs font-black uppercase tracking-wider text-amber-950 flex items-center gap-2">
+                  <i data-lucide="compass" class="w-4 h-4 text-amber-700"></i>
+                  <span>Course Objectives</span>
+                </h4>
+                <ul class="list-disc list-inside space-y-1 text-xs text-amber-900/90 pl-1">
+                  ${objectives.map(obj => `<li>${this.escapeHtml(obj)}</li>`).join('')}
+                </ul>
+              </div>
+            ` : ''}
+
+            <!-- Section 1: Course Outcomes (CO1 to CO5) -->
             <div class="space-y-2.5">
-              ${units.map((u, uIdx) => `
-                <div class="p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-indigo-400 hover:shadow-sm transition space-y-2">
-                  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 border-b border-slate-100 pb-2">
-                    <div class="flex items-center gap-2">
-                      <span class="px-2 py-0.5 rounded-md bg-indigo-600 text-white font-black text-[10.5px]">
-                        ${this.escapeHtml(u.unit)}
-                      </span>
-                      <strong class="text-xs font-black text-slate-900">
-                        ${this.escapeHtml(u.title || '')}
-                      </strong>
-                      <span class="text-[10px] text-slate-500 font-semibold bg-slate-100 px-2 py-0.5 rounded">
-                        ${this.escapeHtml(u.hours || '9 Hours')}
-                      </span>
+              <h4 class="text-xs font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
+                <i data-lucide="target" class="w-4 h-4 text-indigo-600"></i>
+                <span>Course Outcomes (COs) & Bloom's Levels</span>
+              </h4>
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2">
+                ${cos.map(co => `
+                  <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between space-y-1.5 hover:border-indigo-300 transition">
+                    <div class="flex items-center justify-between">
+                      <span class="font-mono font-black text-indigo-950 text-xs">${this.escapeHtml(co.code || 'CO')}</span>
+                      <span class="text-[9.5px] font-black px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-800">${this.escapeHtml(co.k_level || 'K1')}</span>
                     </div>
-
-                    <div class="flex items-center gap-1.5">
-                      <button 
-                        type="button" 
-                        onclick="coursePlanApp.copySyllabusText('${this.escapeHtml(u.topics).replace(/'/g, "\\'")}', this)" 
-                        class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-[11px] transition flex items-center gap-1 cursor-pointer"
-                        title="Copy unit topics to clipboard"
-                      >
-                        <i data-lucide="copy" class="w-3 h-3"></i> Copy Topics
-                      </button>
-                      <button 
-                        type="button" 
-                        onclick="coursePlanApp.insertUnitIntoTeachingPlan('${this.escapeHtml(u.unit)}', '${this.escapeHtml(u.topics).replace(/'/g, "\\'")}', '${uIdx + 1}')" 
-                        class="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 font-bold rounded-lg text-[11px] transition flex items-center gap-1 cursor-pointer"
-                        title="Add this unit as a row into Detailed Teaching Plan"
-                      >
-                        <i data-lucide="plus-circle" class="w-3 h-3"></i> Insert into Plan
-                      </button>
-                    </div>
-                  </div>
-
-                  <p class="text-xs text-slate-700 leading-relaxed font-sans select-all bg-slate-50/70 p-2.5 rounded-xl border border-slate-100">
-                    ${this.escapeHtml(u.topics)}
-                  </p>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-
-          <!-- Section 3: Learning Resources & References -->
-          <div class="space-y-3 pt-2 border-t border-slate-200">
-            <h4 class="text-xs font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
-              <i data-lucide="book-marked" class="w-4 h-4 text-indigo-600"></i>
-              <span>Prescribed Books & Learning Resources</span>
-            </h4>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <!-- Books for Study -->
-              <div class="space-y-2 p-3.5 rounded-2xl bg-amber-50/50 border border-amber-200">
-                <div class="font-black text-amber-950 text-xs flex items-center gap-1.5">
-                  <i data-lucide="book" class="w-3.5 h-3.5 text-amber-700"></i>
-                  <span>Books for Study (Textbooks)</span>
-                </div>
-                <div class="space-y-2">
-                  ${booksStudy.map(b => `
-                    <div class="p-2.5 rounded-xl bg-white border border-amber-200 shadow-2xs flex flex-col justify-between gap-1.5">
-                      <div class="text-xs text-slate-800 font-medium leading-snug">${this.escapeHtml(b)}</div>
-                      <div class="flex justify-end">
-                        <button 
-                          type="button" 
-                          onclick="coursePlanApp.useResourceInTeachingPlan('${this.escapeHtml(b).replace(/'/g, "\\'")}')" 
-                          class="px-2 py-0.5 bg-amber-100 hover:bg-amber-200 text-amber-950 font-bold rounded text-[10.5px] transition flex items-center gap-1 cursor-pointer"
-                          title="Add this book to Detailed Teaching Plan Learning Resources"
-                        >
-                          <i data-lucide="plus" class="w-3 h-3"></i> Use as Resource
-                        </button>
-                      </div>
-                    </div>
-                  `).join('')}
-                </div>
-              </div>
-
-              <!-- Books for Reference -->
-              <div class="space-y-2 p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
-                <div class="font-black text-slate-900 text-xs flex items-center gap-1.5">
-                  <i data-lucide="bookmark" class="w-3.5 h-3.5 text-slate-700"></i>
-                  <span>Books for Reference</span>
-                </div>
-                <div class="space-y-2">
-                  ${booksRef.map(b => `
-                    <div class="p-2.5 rounded-xl bg-white border border-slate-200 shadow-2xs flex flex-col justify-between gap-1.5">
-                      <div class="text-xs text-slate-800 font-medium leading-snug">${this.escapeHtml(b)}</div>
-                      <div class="flex justify-end">
-                        <button 
-                          type="button" 
-                          onclick="coursePlanApp.useResourceInTeachingPlan('${this.escapeHtml(b).replace(/'/g, "\\'")}')" 
-                          class="px-2 py-0.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded text-[10.5px] transition flex items-center gap-1 cursor-pointer"
-                          title="Add this reference to Detailed Teaching Plan Learning Resources"
-                        >
-                          <i data-lucide="plus" class="w-3 h-3"></i> Use as Resource
-                        </button>
-                      </div>
-                    </div>
-                  `).join('')}
-                </div>
-              </div>
-            </div>
-
-            <!-- Websites and eLearning Sources -->
-            <div class="p-3.5 rounded-2xl bg-blue-50/50 border border-blue-200 space-y-2">
-              <div class="font-black text-blue-950 text-xs flex items-center gap-1.5">
-                <i data-lucide="globe" class="w-3.5 h-3.5 text-blue-700"></i>
-                <span>Websites & eLearning Sources</span>
-              </div>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                ${websites.map(w => `
-                  <div class="p-2 rounded-xl bg-white border border-blue-200 shadow-2xs flex items-center justify-between gap-2">
-                    <span class="text-xs text-blue-800 truncate font-mono" title="${this.escapeHtml(w)}">
-                      ${this.escapeHtml(w)}
-                    </span>
-                    <button 
-                      type="button" 
-                      onclick="coursePlanApp.useResourceInTeachingPlan('${this.escapeHtml(w).replace(/'/g, "\\'")}')" 
-                      class="px-2 py-0.5 bg-blue-100 hover:bg-blue-200 text-blue-900 font-bold rounded text-[10.5px] transition shrink-0 cursor-pointer"
-                      title="Add web source to Detailed Teaching Plan"
-                    >
-                      Use
-                    </button>
+                    <p class="text-[11px] text-slate-600 line-clamp-3 leading-snug" title="${this.escapeHtml(co.outcome || '')}">
+                      ${this.escapeHtml(co.outcome || 'Course Outcome statement')}
+                    </p>
                   </div>
                 `).join('')}
               </div>
             </div>
 
+            <!-- Section 2: Unit-wise Detailed Syllabus Topics -->
+            <div class="space-y-3">
+              <h4 class="text-xs font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
+                <i data-lucide="layers" class="w-4 h-4 text-indigo-600"></i>
+                <span>Unit-wise Syllabus Content (Units I to V)</span>
+              </h4>
+              
+              <div class="space-y-2.5">
+                ${units.map((u, uIdx) => `
+                  <div class="p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-indigo-400 hover:shadow-sm transition space-y-2">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 border-b border-slate-100 pb-2">
+                      <div class="flex items-center gap-2">
+                        <span class="px-2 py-0.5 rounded-md bg-indigo-600 text-white font-black text-[10.5px]">
+                          ${this.escapeHtml(u.unit)}
+                        </span>
+                        <strong class="text-xs font-black text-slate-900">
+                          ${this.escapeHtml(u.title || '')}
+                        </strong>
+                        <span class="text-[10px] text-slate-500 font-semibold bg-slate-100 px-2 py-0.5 rounded">
+                          ${this.escapeHtml(u.hours || '12 Hours')}
+                        </span>
+                      </div>
+
+                      <div class="flex items-center gap-1.5">
+                        <button 
+                          type="button" 
+                          onclick="coursePlanApp.copySyllabusText('${this.escapeHtml(u.topics).replace(/'/g, "\\'")}', this)" 
+                          class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-[11px] transition flex items-center gap-1 cursor-pointer"
+                          title="Copy unit topics to clipboard"
+                        >
+                          <i data-lucide="copy" class="w-3 h-3"></i> Copy Topics
+                        </button>
+                        <button 
+                          type="button" 
+                          onclick="coursePlanApp.insertUnitIntoTeachingPlan('${this.escapeHtml(u.unit)}', '${this.escapeHtml(u.topics).replace(/'/g, "\\'")}', '${uIdx + 1}')" 
+                          class="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 font-bold rounded-lg text-[11px] transition flex items-center gap-1 cursor-pointer"
+                          title="Add this unit as a row into Detailed Teaching Plan"
+                        >
+                          <i data-lucide="plus-circle" class="w-3 h-3"></i> Insert into Plan
+                        </button>
+                      </div>
+                    </div>
+
+                    <p class="text-xs text-slate-700 leading-relaxed font-sans select-all bg-slate-50/70 p-2.5 rounded-xl border border-slate-100">
+                      ${this.escapeHtml(u.topics)}
+                    </p>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Section 3: Learning Resources & References -->
+            <div class="space-y-3 pt-2 border-t border-slate-200">
+              <h4 class="text-xs font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
+                <i data-lucide="book-marked" class="w-4 h-4 text-indigo-600"></i>
+                <span>Prescribed Books & Learning Resources</span>
+              </h4>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Books for Study -->
+                <div class="space-y-2 p-3.5 rounded-2xl bg-amber-50/50 border border-amber-200">
+                  <div class="font-black text-amber-950 text-xs flex items-center gap-1.5">
+                    <i data-lucide="book" class="w-3.5 h-3.5 text-amber-700"></i>
+                    <span>Books for Study (Textbooks)</span>
+                  </div>
+                  <div class="space-y-2">
+                    ${booksStudy.map(b => `
+                      <div class="p-2.5 rounded-xl bg-white border border-amber-200 shadow-2xs flex flex-col justify-between gap-1.5">
+                        <div class="text-xs text-slate-800 font-medium leading-snug">${this.escapeHtml(b)}</div>
+                        <div class="flex justify-end">
+                          <button 
+                            type="button" 
+                            onclick="coursePlanApp.useResourceInTeachingPlan('${this.escapeHtml(b).replace(/'/g, "\\'")}')" 
+                            class="px-2 py-0.5 bg-amber-100 hover:bg-amber-200 text-amber-950 font-bold rounded text-[10.5px] transition flex items-center gap-1 cursor-pointer"
+                            title="Add this book to Detailed Teaching Plan Learning Resources"
+                          >
+                            <i data-lucide="plus" class="w-3 h-3"></i> Use as Resource
+                          </button>
+                        </div>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+
+                <!-- Books for Reference -->
+                <div class="space-y-2 p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
+                  <div class="font-black text-slate-900 text-xs flex items-center gap-1.5">
+                    <i data-lucide="bookmark" class="w-3.5 h-3.5 text-slate-700"></i>
+                    <span>Books for Reference</span>
+                  </div>
+                  <div class="space-y-2">
+                    ${booksRef.map(b => `
+                      <div class="p-2.5 rounded-xl bg-white border border-slate-200 shadow-2xs flex flex-col justify-between gap-1.5">
+                        <div class="text-xs text-slate-800 font-medium leading-snug">${this.escapeHtml(b)}</div>
+                        <div class="flex justify-end">
+                          <button 
+                            type="button" 
+                            onclick="coursePlanApp.useResourceInTeachingPlan('${this.escapeHtml(b).replace(/'/g, "\\'")}')" 
+                            class="px-2 py-0.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded text-[10.5px] transition flex items-center gap-1 cursor-pointer"
+                            title="Add this reference to Detailed Teaching Plan Learning Resources"
+                          >
+                            <i data-lucide="plus" class="w-3 h-3"></i> Use as Resource
+                          </button>
+                        </div>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Websites and eLearning Sources -->
+              <div class="p-3.5 rounded-2xl bg-blue-50/50 border border-blue-200 space-y-2">
+                <div class="font-black text-blue-950 text-xs flex items-center gap-1.5">
+                  <i data-lucide="globe" class="w-3.5 h-3.5 text-blue-700"></i>
+                  <span>Websites & eLearning Sources</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  ${websites.map(w => `
+                    <div class="p-2 rounded-xl bg-white border border-blue-200 shadow-2xs flex items-center justify-between gap-2">
+                      <span class="text-xs text-blue-800 truncate font-mono" title="${this.escapeHtml(w)}">
+                        ${this.escapeHtml(w)}
+                      </span>
+                      <button 
+                        type="button" 
+                        onclick="coursePlanApp.useResourceInTeachingPlan('${this.escapeHtml(w).replace(/'/g, "\\'")}')" 
+                        class="px-2 py-0.5 bg-blue-100 hover:bg-blue-200 text-blue-900 font-bold rounded text-[10.5px] transition shrink-0 cursor-pointer"
+                        title="Add web source to Detailed Teaching Plan"
+                      >
+                        Use
+                      </button>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2: Entire Official Syllabus Document & PDF Viewer -->
+          <div id="modal-syllabus-tab-official_doc" class="hidden space-y-6">
+            <div class="bg-indigo-900 text-white p-4 rounded-2xl flex flex-wrap items-center justify-between gap-3 shadow-md">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-amber-400 text-indigo-950 flex items-center justify-center font-bold">
+                  <i data-lucide="file-text" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="font-black text-sm">Official College LOCF Syllabus Document</h4>
+                  <p class="text-[11px] text-indigo-200">
+                    Source: ${this.escapeHtml(pdfFile || 'College Curriculum Handbook')} • Page ${pdfPage}
+                  </p>
+                </div>
+              </div>
+
+              ${pdfFile ? `
+                <div class="flex items-center gap-2">
+                  <a 
+                    href="${pdfUrl}" 
+                    target="_blank" 
+                    class="px-4 py-2 rounded-xl bg-white text-indigo-900 font-black text-xs hover:bg-indigo-50 transition inline-flex items-center gap-1.5 shadow-sm"
+                  >
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Open Fullscreen PDF ↗
+                  </a>
+                  <a 
+                    href="/course-plan/syllabus_docs/${encodeURIComponent(pdfFile)}" 
+                    download="${this.escapeHtml(pdfFile)}" 
+                    class="px-3 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs transition inline-flex items-center gap-1.5"
+                  >
+                    <i data-lucide="download" class="w-3.5 h-3.5"></i> Download PDF
+                  </a>
+                </div>
+              ` : ''}
+            </div>
+
+            <!-- Embedded PDF Preview -->
+            ${pdfFile ? `
+              <div class="space-y-2">
+                <div class="flex items-center justify-between text-xs font-bold text-slate-700 px-1">
+                  <span>Embedded Official Syllabus Handbook Preview (Page ${pdfPage})</span>
+                  <span class="text-slate-500 font-normal">Use controls below or open full-screen</span>
+                </div>
+                <div class="w-full h-[620px] rounded-2xl overflow-hidden border-2 border-slate-300 bg-slate-100 shadow-inner">
+                  <iframe 
+                    src="${pdfUrl}" 
+                    class="w-full h-full border-0" 
+                    title="Official Syllabus PDF Preview"
+                  ></iframe>
+                </div>
+              </div>
+            ` : ''}
+
+            <!-- Complete Unabridged Text View -->
+            <div class="p-6 bg-slate-50 rounded-2xl border border-slate-300 space-y-6">
+              <div class="border-b border-slate-200 pb-4 text-center space-y-1">
+                <div class="font-bold text-slate-500 text-xs uppercase tracking-wider">${this.escapeHtml(course.department || 'Department of Academics')}</div>
+                <h2 class="text-base font-black text-slate-900">${this.escapeHtml(course.course_code)}: ${this.escapeHtml(course.course_title)}</h2>
+                <div class="text-xs text-slate-600 font-medium">
+                  Semester ${this.escapeHtml(course.semester || '—')} • ${this.escapeHtml(course.credits || '—')} Credits • ${this.escapeHtml(course.hours || '—')} Hours/Week
+                </div>
+              </div>
+
+              ${objectives.length > 0 ? `
+                <div class="space-y-2">
+                  <h5 class="font-black text-xs text-indigo-950 uppercase tracking-wider">Course Objectives:</h5>
+                  <ul class="list-disc list-inside space-y-1 text-xs text-slate-700 pl-2">
+                    ${objectives.map(o => `<li>${this.escapeHtml(o)}</li>`).join('')}
+                  </ul>
+                </div>
+              ` : ''}
+
+              <!-- Units -->
+              <div class="space-y-4">
+                <h5 class="font-black text-xs text-indigo-950 uppercase tracking-wider border-b border-slate-200 pb-1">Detailed Unit Topics:</h5>
+                ${units.map(u => `
+                  <div class="space-y-1 pl-2">
+                    <div class="font-bold text-xs text-slate-900">
+                      ${this.escapeHtml(u.unit)}: ${this.escapeHtml(u.title)} (${this.escapeHtml(u.hours)})
+                    </div>
+                    <p class="text-xs text-slate-700 leading-relaxed font-sans bg-white p-3 rounded-xl border border-slate-200">
+                      ${this.escapeHtml(u.topics)}
+                    </p>
+                  </div>
+                `).join('')}
+              </div>
+
+              <!-- Books -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-200">
+                <div class="space-y-2">
+                  <h5 class="font-black text-xs text-slate-900 uppercase tracking-wider">Books for Study:</h5>
+                  <ol class="list-decimal list-inside space-y-1.5 text-xs text-slate-700 pl-1">
+                    ${booksStudy.map(b => `<li class="leading-snug">${this.escapeHtml(b)}</li>`).join('')}
+                  </ol>
+                </div>
+                <div class="space-y-2">
+                  <h5 class="font-black text-xs text-slate-900 uppercase tracking-wider">Books for Reference:</h5>
+                  <ol class="list-decimal list-inside space-y-1.5 text-xs text-slate-700 pl-1">
+                    ${booksRef.map(b => `<li class="leading-snug">${this.escapeHtml(b)}</li>`).join('')}
+                  </ol>
+                </div>
+              </div>
+
+              <!-- Websites -->
+              ${websites.length > 0 ? `
+                <div class="space-y-2 pt-2 border-t border-slate-200">
+                  <h5 class="font-black text-xs text-slate-900 uppercase tracking-wider">Websites and Web Resources:</h5>
+                  <ul class="list-disc list-inside space-y-1 text-xs text-blue-700 pl-1">
+                    ${websites.map(w => `<li><a href="${this.escapeHtml(w)}" target="_blank" class="hover:underline">${this.escapeHtml(w)}</a></li>`).join('')}
+                  </ul>
+                </div>
+              ` : ''}
+
+            </div>
           </div>
 
         </div>
@@ -1557,7 +1760,7 @@ class CoursePlanApp {
         <!-- Footer -->
         <div class="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between shrink-0">
           <span class="text-slate-500 text-xs">
-            Tip: You can re-open this reference guide anytime while editing Part-II.
+            Tip: You can re-open this reference guide anytime while editing your Detailed Teaching Plan.
           </span>
           <button 
             type="button" 
@@ -1575,6 +1778,84 @@ class CoursePlanApp {
     if (window.lucide && typeof window.lucide.createIcons === 'function') {
       window.lucide.createIcons();
     }
+  }
+
+  switchSyllabusModalTab(tabName) {
+    const tabStruct = document.getElementById('modal-syllabus-tab-structured');
+    const tabDoc = document.getElementById('modal-syllabus-tab-official_doc');
+    const btnStruct = document.getElementById('modal-tab-btn-structured');
+    const btnDoc = document.getElementById('modal-tab-btn-official_doc');
+
+    if (tabName === 'official_doc') {
+      if (tabStruct) tabStruct.classList.add('hidden');
+      if (tabDoc) tabDoc.classList.remove('hidden');
+      if (btnStruct) {
+        btnStruct.className = 'px-3.5 py-1.5 rounded-xl font-bold text-xs bg-white/20 hover:bg-white/30 text-white transition cursor-pointer';
+      }
+      if (btnDoc) {
+        btnDoc.className = 'px-3.5 py-1.5 rounded-xl font-bold text-xs bg-white text-indigo-950 shadow-sm transition cursor-pointer';
+      }
+    } else {
+      if (tabDoc) tabDoc.classList.add('hidden');
+      if (tabStruct) tabStruct.classList.remove('hidden');
+      if (btnDoc) {
+        btnDoc.className = 'px-3.5 py-1.5 rounded-xl font-bold text-xs bg-white/20 hover:bg-white/30 text-white transition cursor-pointer';
+      }
+      if (btnStruct) {
+        btnStruct.className = 'px-3.5 py-1.5 rounded-xl font-bold text-xs bg-white text-indigo-950 shadow-sm transition cursor-pointer';
+      }
+    }
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
+    }
+  }
+
+  toggleICTDropdown(type, rowIdx, event) {
+    if (event) event.stopPropagation();
+    const menu = document.getElementById(`ict-${type}-menu-${rowIdx}`);
+    if (!menu) return;
+    const isHidden = menu.classList.contains('hidden');
+    document.querySelectorAll('[id^="ict-tool-menu-"], [id^="ict-platform-menu-"]').forEach(m => m.classList.add('hidden'));
+    if (isHidden) {
+      menu.classList.remove('hidden');
+    }
+  }
+
+  closeICTDropdown(type, rowIdx) {
+    const menu = document.getElementById(`ict-${type}-menu-${rowIdx}`);
+    if (menu) menu.classList.add('hidden');
+  }
+
+  toggleICTItem(type, rowIdx, optVal, checked) {
+    this.harvestFormInputs();
+    if (!this.activePlan.ict_integration || !this.activePlan.ict_integration[rowIdx]) return;
+    const row = this.activePlan.ict_integration[rowIdx];
+    const key = (type === 'tool') ? 'tool' : 'platform';
+    let currentItems = (row[key] || '').split(',').map(s => s.trim()).filter(Boolean);
+
+    if (checked) {
+      if (!currentItems.includes(optVal)) currentItems.push(optVal);
+    } else {
+      currentItems = currentItems.filter(s => s !== optVal);
+    }
+    row[key] = currentItems.join(', ');
+    this.render();
+    setTimeout(() => {
+      const menu = document.getElementById(`ict-${type}-menu-${rowIdx}`);
+      if (menu) menu.classList.remove('hidden');
+    }, 50);
+  }
+
+  removeICTItem(type, rowIdx, optVal, event) {
+    if (event) event.stopPropagation();
+    this.harvestFormInputs();
+    if (!this.activePlan.ict_integration || !this.activePlan.ict_integration[rowIdx]) return;
+    const row = this.activePlan.ict_integration[rowIdx];
+    const key = (type === 'tool') ? 'tool' : 'platform';
+    let currentItems = (row[key] || '').split(',').map(s => s.trim()).filter(Boolean);
+    currentItems = currentItems.filter(s => s !== optVal);
+    row[key] = currentItems.join(', ');
+    this.render();
   }
 
   copySyllabusText(text, btnEl) {
@@ -6515,61 +6796,117 @@ class CoursePlanApp {
                   </thead>
                   <tbody id="cp-icts-tbody" class="divide-y divide-slate-100 font-medium">
                     ${icts.map((ict, idx) => {
-                      const toolOptions = [
-                        'PPT / Interactive Slides', 'Video Lecture', 'Simulation / Virtual Lab',
-                        'Online Quiz / JosTEL Quiz', 'Discussion Forum', 'E-Book / PDF Notes',
-                        'Spreadsheet / Data Analysis', 'Programming IDE / Code Editor'
-                      ];
                       const curTool = ict.tool || '';
-                      const isOtherTool = curTool !== '' && !toolOptions.includes(curTool);
+                      const toolList = curTool.split(',').map(s => s.trim()).filter(Boolean);
 
-                      const platformOptions = [
-                        'JosTEL', 'Google Classroom', 'Moodle', 'YouTube',
-                        'Kahoot / Quizizz', 'SWAYAM / NPTEL', 'GitHub'
-                      ];
                       const curPlatform = ict.platform || 'JosTEL';
-                      const isOtherPlatform = curPlatform !== '' && !platformOptions.includes(curPlatform);
+                      const platformList = curPlatform.split(',').map(s => s.trim()).filter(Boolean);
 
                       return `
                         <tr>
                           <td class="p-2 text-center font-bold text-slate-400">${idx + 1}</td>
                           <td class="p-2">
-                            <input type="text" class="ict-topic w-full text-xs px-2 py-1.5 border border-slate-300 rounded" value="${ict.topic || ''}" placeholder="Topic / Unit..." />
+                            <input type="text" class="ict-topic w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded-lg" value="${this.escapeHtml(ict.topic || '')}" placeholder="Topic / Unit..." />
                           </td>
+                          
+                          <!-- Digital Resource / ICT Tool Multi-Select -->
                           <td class="p-2">
-                            <select 
-                              class="ict-tool-select w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-bold bg-white"
-                              onchange="coursePlanApp.onICTToolChange(this)"
-                            >
-                              <option value="">-- Select Tool --</option>
-                              ${toolOptions.map(opt => `<option value="${opt}" ${curTool === opt ? 'selected' : ''}>${opt}</option>`).join('')}
-                              <option value="Others" ${isOtherTool ? 'selected' : ''}>Others (Specify)</option>
-                            </select>
-                            <input 
-                              type="text" 
-                              class="ict-tool-other w-full text-xs px-2 py-1 border border-indigo-400 rounded mt-1 ${isOtherTool ? '' : 'hidden'}" 
-                              placeholder="Specify digital resource / tool..." 
-                              value="${isOtherTool ? curTool : ''}"
-                            />
+                            <div class="relative ict-multi-container">
+                              <div 
+                                onclick="coursePlanApp.toggleICTDropdown('tool', ${idx}, event)" 
+                                class="min-h-[34px] w-full p-1.5 border border-slate-300 rounded-lg bg-white flex flex-wrap items-center gap-1 cursor-pointer hover:border-indigo-500 transition"
+                              >
+                                <div class="flex flex-wrap items-center gap-1 flex-1">
+                                  ${toolList.length === 0 ? `
+                                    <span class="text-slate-400 text-[11px] italic pl-1">Select tool(s)...</span>
+                                  ` : `
+                                    ${toolList.map(item => `
+                                      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10.5px] font-bold bg-indigo-50 text-indigo-900 border border-indigo-200">
+                                        <span>${this.escapeHtml(item)}</span>
+                                        <span onclick="coursePlanApp.removeICTItem('tool', ${idx}, '${this.escapeHtml(item)}', event)" class="hover:text-red-600 font-black cursor-pointer ml-0.5">✕</span>
+                                      </span>
+                                    `).join('')}
+                                  `}
+                                </div>
+                                <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400 shrink-0"></i>
+                              </div>
+                              <input type="hidden" class="ict-tool-val" value="${this.escapeHtml(curTool)}" />
+
+                              <!-- Dropdown Menu -->
+                              <div 
+                                id="ict-tool-menu-${idx}" 
+                                class="hidden absolute left-0 top-full mt-1 bg-white border border-slate-300 rounded-xl shadow-2xl z-40 p-2 space-y-1 w-64 max-h-56 overflow-y-auto"
+                                onclick="event.stopPropagation()"
+                              >
+                                <div class="text-[10px] font-black text-slate-400 uppercase tracking-wider px-1 pb-1 border-b border-slate-100">Select Tool (Multiple)</div>
+                                ${CoursePlanApp.ICT_TOOLS.map(opt => {
+                                  const isChecked = toolList.includes(opt);
+                                  return `
+                                    <label class="flex items-center gap-2 px-2 py-1.5 hover:bg-indigo-50 rounded-lg cursor-pointer text-xs font-semibold text-slate-800">
+                                      <input 
+                                        type="checkbox" 
+                                        class="rounded text-indigo-600 focus:ring-0 cursor-pointer" 
+                                        ${isChecked ? 'checked' : ''} 
+                                        onchange="coursePlanApp.toggleICTItem('tool', ${idx}, '${opt}', this.checked)"
+                                      />
+                                      <span>${opt}</span>
+                                    </label>
+                                  `;
+                                }).join('')}
+                              </div>
+                            </div>
                           </td>
+
+                          <!-- Platform (JosTEL / Others) Multi-Select -->
                           <td class="p-2">
-                            <select 
-                              class="ict-platform-select w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-semibold bg-white"
-                              onchange="coursePlanApp.onICTPlatformChange(this)"
-                            >
-                              <option value="">-- Select Platform --</option>
-                              ${platformOptions.map(opt => `<option value="${opt}" ${curPlatform === opt ? 'selected' : ''}>${opt}</option>`).join('')}
-                              <option value="Others" ${isOtherPlatform ? 'selected' : ''}>Others (Specify)</option>
-                            </select>
-                            <input 
-                              type="text" 
-                              class="ict-platform-other w-full text-xs px-2 py-1 border border-indigo-400 rounded mt-1 ${isOtherPlatform ? '' : 'hidden'}" 
-                              placeholder="Specify platform..." 
-                              value="${isOtherPlatform ? curPlatform : ''}"
-                            />
+                            <div class="relative ict-multi-container">
+                              <div 
+                                onclick="coursePlanApp.toggleICTDropdown('platform', ${idx}, event)" 
+                                class="min-h-[34px] w-full p-1.5 border border-slate-300 rounded-lg bg-white flex flex-wrap items-center gap-1 cursor-pointer hover:border-indigo-500 transition"
+                              >
+                                <div class="flex flex-wrap items-center gap-1 flex-1">
+                                  ${platformList.length === 0 ? `
+                                    <span class="text-slate-400 text-[11px] italic pl-1">Select platform(s)...</span>
+                                  ` : `
+                                    ${platformList.map(item => `
+                                      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10.5px] font-bold bg-amber-50 text-amber-900 border border-amber-200">
+                                        <span>${this.escapeHtml(item)}</span>
+                                        <span onclick="coursePlanApp.removeICTItem('platform', ${idx}, '${this.escapeHtml(item)}', event)" class="hover:text-red-600 font-black cursor-pointer ml-0.5">✕</span>
+                                      </span>
+                                    `).join('')}
+                                  `}
+                                </div>
+                                <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400 shrink-0"></i>
+                              </div>
+                              <input type="hidden" class="ict-platform-val" value="${this.escapeHtml(curPlatform)}" />
+
+                              <!-- Dropdown Menu -->
+                              <div 
+                                id="ict-platform-menu-${idx}" 
+                                class="hidden absolute left-0 top-full mt-1 bg-white border border-slate-300 rounded-xl shadow-2xl z-40 p-2 space-y-1 w-60 max-h-56 overflow-y-auto"
+                                onclick="event.stopPropagation()"
+                              >
+                                <div class="text-[10px] font-black text-slate-400 uppercase tracking-wider px-1 pb-1 border-b border-slate-100">Select Platform (Multiple)</div>
+                                ${CoursePlanApp.ICT_PLATFORMS.map(opt => {
+                                  const isChecked = platformList.includes(opt);
+                                  return `
+                                    <label class="flex items-center gap-2 px-2 py-1.5 hover:bg-amber-50 rounded-lg cursor-pointer text-xs font-semibold text-slate-800">
+                                      <input 
+                                        type="checkbox" 
+                                        class="rounded text-amber-600 focus:ring-0 cursor-pointer" 
+                                        ${isChecked ? 'checked' : ''} 
+                                        onchange="coursePlanApp.toggleICTItem('platform', ${idx}, '${opt}', this.checked)"
+                                      />
+                                      <span>${opt}</span>
+                                    </label>
+                                  `;
+                                }).join('')}
+                              </div>
+                            </div>
                           </td>
+
                           <td class="p-2">
-                            <input type="text" class="ict-purpose w-full text-xs px-2 py-1.5 border border-slate-300 rounded" value="${ict.purpose || ''}" placeholder="Purpose of ICT integration..." />
+                            <input type="text" class="ict-purpose w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded-lg" value="${this.escapeHtml(ict.purpose || '')}" placeholder="Purpose of ICT integration..." />
                           </td>
                           <td class="p-2 text-center">
                             <button type="button" onclick="coursePlanApp.deleteICTRow(${idx})" class="p-1 text-slate-400 hover:text-red-600 rounded">
@@ -6612,46 +6949,67 @@ class CoursePlanApp {
               </span>
             </div>
 
-            <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs text-slate-700">
-              <div class="flex items-start gap-2.5">
-                <input type="checkbox" id="cp-decl-check" ${decl.confirmed ? 'checked' : ''} class="mt-0.5 rounded text-indigo-600 focus:ring-0 cursor-pointer" />
-                <label for="cp-decl-check" class="font-medium cursor-pointer">
-                  <strong class="text-indigo-900">Declaration by the Faculty Member *:</strong> I hereby confirm that the course plan has been prepared based on the approved syllabus, prescribed teaching hours, academic calendar, and institutional assessment regulations.
-                </label>
-              </div>
-            </div>
-
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <div class="p-4 border border-slate-200 rounded-xl space-y-3">
-                <div class="text-[11px] font-bold text-slate-600 uppercase">Faculty Signature & Date</div>
+              <div class="p-5 border border-slate-200 rounded-2xl space-y-4 bg-white shadow-2xs">
+                <div class="text-[11px] font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                  <i data-lucide="user-check" class="w-4 h-4 text-indigo-600"></i>
+                  <span>Faculty Member & Submission Date</span>
+                </div>
+
                 <div>
-                  <label class="block text-[10px] text-slate-500 font-bold">Faculty Member Name</label>
+                  <label class="block text-[10.5px] text-slate-600 font-bold mb-1">Faculty Member Name</label>
                   <input 
                     type="text" 
                     id="cp-decl-fac-sig" 
-                    value="${plan.faculty_name || decl.faculty_signature || ''}" 
+                    value="${this.escapeHtml(plan.faculty_name || decl.faculty_signature || '')}" 
                     readonly 
-                    class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded font-bold bg-slate-100 text-slate-800 cursor-not-allowed" 
+                    class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-bold bg-slate-100 text-slate-800 cursor-not-allowed" 
                     title="Automatically synchronized with Name of the Faculty Member in Part-I" 
                   />
-                  <span class="text-[10px] text-indigo-600 font-medium mt-0.5 block">✓ Synced with Part-I: ${plan.faculty_name || '(Select in Part-I)'}</span>
+                  <span class="text-[10px] text-indigo-600 font-medium mt-0.5 block">✓ Synced from Part-I General Details</span>
                 </div>
+
+                <!-- Tick Box: Declaration by the Faculty Member (Moved above date) -->
+                <div class="p-3.5 bg-indigo-50/80 border border-indigo-200 rounded-xl space-y-2 text-xs text-slate-700">
+                  <div class="flex items-start gap-2.5">
+                    <input 
+                      type="checkbox" 
+                      id="cp-decl-check" 
+                      ${decl.confirmed ? 'checked' : ''} 
+                      class="mt-0.5 rounded text-indigo-600 focus:ring-0 cursor-pointer w-4 h-4 shrink-0" 
+                    />
+                    <label for="cp-decl-check" class="font-medium cursor-pointer text-xs text-slate-800 leading-snug">
+                      <strong class="text-indigo-950 font-bold">Declaration by the Faculty Member *:</strong> I hereby confirm that the course plan has been prepared based on the approved syllabus, prescribed teaching hours, academic calendar, and institutional assessment regulations.
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Date of Submission (Uneditable / No provision for edit) -->
                 <div>
-                  <label class="block text-[10px] text-slate-500 font-bold">Date of Submission</label>
-                  <input type="date" id="cp-decl-fac-date" value="${decl.submission_date || new Date().toISOString().split('T')[0]}" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded font-mono" />
+                  <label class="block text-[10.5px] text-slate-600 font-bold mb-1">Date of Submission</label>
+                  <input 
+                    type="date" 
+                    id="cp-decl-fac-date" 
+                    value="${decl.submission_date || new Date().toISOString().split('T')[0]}" 
+                    readonly 
+                    class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-mono font-bold bg-slate-100 text-slate-700 cursor-not-allowed" 
+                    title="Date of Submission is generated automatically upon filing and cannot be edited" 
+                  />
+                  <span class="text-[10px] text-slate-500 font-medium mt-0.5 block">Recorded automatically based on academic schedule</span>
                 </div>
               </div>
 
-              <div class="p-4 border border-slate-200 rounded-xl space-y-3 bg-slate-50/70">
-                <div class="text-[11px] font-bold text-amber-800 uppercase flex items-center gap-1.5">
-                  <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i>
+              <div class="p-5 border border-slate-200 rounded-2xl space-y-3 bg-slate-50/70 shadow-2xs">
+                <div class="text-[11px] font-bold text-amber-800 uppercase flex items-center gap-1.5 border-b border-amber-200/60 pb-2">
+                  <i data-lucide="shield-alert" class="w-4 h-4 text-amber-700"></i>
                   <span>HOD Review & Approval Workflow</span>
                 </div>
-                <p class="text-[11px] text-slate-600">
-                  When you click <strong>Submit to HOD</strong>, this course plan will be transferred to your Head of Department (${this.selectedDept}) for review and approval.
+                <p class="text-[11px] text-slate-600 leading-relaxed">
+                  When you click <strong>Submit to HOD</strong>, this course plan will be transferred to your Head of Department (${this.escapeHtml(this.selectedDept)}) for review and approval.
                 </p>
-                <div class="text-[11px] text-emerald-700 font-bold">
-                  ✓ After HOD approves, the course plan is automatically registered into the institutional IQAC Academic Audit records.
+                <div class="text-[11px] text-emerald-700 font-bold flex items-center gap-1.5 pt-1">
+                  <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+                  <span>After HOD approves, the course plan is automatically registered into the institutional IQAC Academic Audit records.</span>
                 </div>
               </div>
             </div>
@@ -6966,7 +7324,7 @@ class CoursePlanApp {
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4">
               <div class="space-y-6">
-                <div>Faculty Signature: <strong>${decl.faculty_signature || plan.faculty_name || '____________________'}</strong></div>
+                <div>Faculty Member: <strong>${decl.faculty_signature || plan.faculty_name || '____________________'}</strong></div>
                 <div>Date: <strong>${decl.submission_date || '____________________'}</strong></div>
               </div>
 
@@ -7245,15 +7603,13 @@ class CoursePlanApp {
 
     ictRows.forEach((row, idx) => {
       const topEl = row.querySelector('.ict-topic');
-      const toolEl = row.querySelector('.ict-tool-select');
-      const toolOtherEl = row.querySelector('.ict-tool-other');
-      const platEl = row.querySelector('.ict-platform-select, .ict-plat-select');
-      const platOtherEl = row.querySelector('.ict-platform-other');
+      const toolEl = row.querySelector('.ict-tool-val') || row.querySelector('.ict-tool-select') || row.querySelector('.ict-tool');
+      const platEl = row.querySelector('.ict-platform-val') || row.querySelector('.ict-platform-select, .ict-plat-select') || row.querySelector('.ict-platform');
       const purpEl = row.querySelector('.ict-purpose');
 
       const topVal = topEl ? topEl.value.trim() : '';
-      const toolVal = (toolEl && toolEl.value === 'Others') ? (toolOtherEl ? toolOtherEl.value.trim() : '') : (toolEl ? toolEl.value.trim() : '');
-      const platVal = (platEl && platEl.value === 'Others') ? (platOtherEl ? platOtherEl.value.trim() : '') : (platEl ? platEl.value.trim() : '');
+      const toolVal = toolEl ? toolEl.value.trim() : '';
+      const platVal = platEl ? platEl.value.trim() : '';
       const purpVal = purpEl ? purpEl.value.trim() : '';
 
       const hasAny = topVal || toolVal || platVal || purpVal;
@@ -7266,13 +7622,11 @@ class CoursePlanApp {
         if (!topVal) { missing.push('Topic/Unit'); if (topEl) invalidEls.push(topEl); }
         if (!toolVal) {
           missing.push('Tool');
-          if (toolEl && toolEl.value === 'Others' && toolOtherEl) invalidEls.push(toolOtherEl);
-          else if (toolEl) invalidEls.push(toolEl);
+          if (toolEl) invalidEls.push(toolEl);
         }
         if (!platVal) {
           missing.push('Platform');
-          if (platEl && platEl.value === 'Others' && platOtherEl) invalidEls.push(platOtherEl);
-          else if (platEl) invalidEls.push(platEl);
+          if (platEl) invalidEls.push(platEl);
         }
         if (!purpVal) { missing.push('Purpose'); if (purpEl) invalidEls.push(purpEl); }
         incompleteRowErrors.push(`Row ${idx + 1}: Missing ${missing.join(', ')}`);
@@ -7284,8 +7638,8 @@ class CoursePlanApp {
       const firstRow = ictRows[0];
       if (firstRow) {
         const t = firstRow.querySelector('.ict-topic');
-        const tl = firstRow.querySelector('.ict-tool-select');
-        const p = firstRow.querySelector('.ict-platform-select, .ict-plat-select');
+        const tl = firstRow.querySelector('.ict-tool-val, .ict-tool-select, .ict-tool');
+        const p = firstRow.querySelector('.ict-platform-val, .ict-platform-select, .ict-plat-select, .ict-platform');
         const pr = firstRow.querySelector('.ict-purpose');
         if (t && !t.value.trim()) invalidEls.push(t);
         if (tl && !tl.value.trim()) invalidEls.push(tl);
@@ -7869,8 +8223,7 @@ class CoursePlanApp {
                       const pgOptions = [
                         { comp: 'C2 – K4', marks: '6', label: 'C2 – K4 – 6 Marks' },
                         { comp: 'C2 – K5', marks: '6', label: 'C2 – K5 – 6 Marks' },
-                        { comp: 'C2 – K6', marks: '7', label: 'C2 – K6 – 7 Marks' },
-                        { comp: 'Library Referencing – K3', marks: '6', label: 'Library Referencing – K3 – 6 Marks' },
+                        { comp: 'C2 – K6', marks: '8', label: 'C2 – K6 – 8 Marks' },
                         { comp: 'Library Referencing – K3', marks: '5', label: 'Library Referencing – K3 – 5 Marks' }
                       ];
 
@@ -8075,9 +8428,9 @@ class CoursePlanApp {
     } else if (comp.includes('Mid Sem') || comp.includes('End Sem')) {
       marksInput.value = '30';
     } else if (comp.includes('Library')) {
-      marksInput.value = isPG ? '6' : '5';
+      marksInput.value = '5';
     } else if (comp.includes('K6')) {
-      marksInput.value = '7';
+      marksInput.value = '8';
     } else if (comp.includes('K4') || comp.includes('K5')) {
       marksInput.value = isPG ? '6' : '10';
     } else {
@@ -8277,23 +8630,14 @@ class CoursePlanApp {
     const ictRows = document.querySelectorAll('#cp-icts-tbody tr');
     const icts = [];
     ictRows.forEach((tr, i) => {
-      const toolSelect = tr.querySelector('.ict-tool-select')?.value || '';
-      const toolOther = tr.querySelector('.ict-tool-other')?.value || tr.querySelector('.ict-other-tool')?.value || '';
-      const finalTool = (toolSelect === 'Others' ? toolOther : toolSelect) || tr.querySelector('.ict-tool')?.value || '';
-
-      const platSelect = tr.querySelector('.ict-platform-select')?.value || '';
-      const platOther = tr.querySelector('.ict-platform-other')?.value || tr.querySelector('.ict-other-platform')?.value || '';
-      const finalPlat = (platSelect === 'Others' ? platOther : platSelect) || tr.querySelector('.ict-platform')?.value || '';
+      const finalTool = tr.querySelector('.ict-tool-val')?.value || tr.querySelector('.ict-tool-select')?.value || tr.querySelector('.ict-tool')?.value || '';
+      const finalPlat = tr.querySelector('.ict-platform-val')?.value || tr.querySelector('.ict-platform-select')?.value || tr.querySelector('.ict-platform')?.value || '';
 
       icts.push({
         sno: String(i + 1),
         topic: tr.querySelector('.ict-topic')?.value || '',
         tool: finalTool,
-        tool_type: toolSelect,
-        tool_other: toolOther,
         platform: finalPlat,
-        platform_type: platSelect,
-        platform_other: platOther,
         purpose: tr.querySelector('.ict-purpose')?.value || ''
       });
     });
@@ -9610,8 +9954,8 @@ class CoursePlanApp {
         </table>
 
         <div class="footer">
-          <div>Signature of the Faculty</div>
-          <div>Signature of the Head of the Department</div>
+          <div>Faculty Member</div>
+          <div>Head of the Department</div>
           <div>Director / Coordinator - IQAC</div>
         </div>
 
