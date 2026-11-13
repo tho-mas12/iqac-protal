@@ -753,9 +753,30 @@ class CoursePlanApp {
     }
   }
 
+  isPGPlan(plan) {
+    const p = plan || this.activePlan || {};
+    const yc = (document.getElementById('cp-year-class')?.value || p.year_class || '').trim();
+    const prog = (document.getElementById('cp-programme')?.value || p.programme || '').trim();
+    const code = (document.getElementById('cp-course-code')?.value || p.course_code || '').trim();
+
+    // Check year_class first
+    if (yc.includes('UG')) return false;
+    if (yc.includes('PG') || yc.includes('MCA')) return true;
+
+    // Check programme
+    if (prog.startsWith('B.') || prog.includes('Bachelor')) return false;
+    if (prog.startsWith('M.') || prog.includes('MCA') || prog.includes('Master') || prog.includes('Post')) return true;
+
+    // Check course code: e.g. 24PCA..., 25PEN..., 25PCS..., 25PMAT...
+    if (/^[0-9]{2}P/i.test(code)) return true;
+    if (/^[0-9]{2}U/i.test(code)) return false;
+
+    return !!p.is_pg;
+  }
+
   getFullAssessmentPlan(plan) {
     const p = plan || this.activePlan || {};
-    const isPG = !!p.is_pg || (p.year_class && p.year_class.includes('PG')) || (p.programme && p.programme.startsWith('M.'));
+    const isPG = this.isPGPlan(p);
 
     const c1 = {
       sno: '1',
@@ -793,9 +814,18 @@ class CoursePlanApp {
     };
 
     const assessedActs = (p.learning_activities || []).filter(a => a && a.is_assessment);
-    const middleItems = assessedActs.map(a => ({
+    const orderWeight = (comp = '') => {
+      if (comp.includes('K4')) return 1;
+      if (comp.includes('K5')) return 2;
+      if (comp.includes('K6')) return 3;
+      if (comp.includes('Library') || comp.includes('Lib')) return 4;
+      return 5;
+    };
+    const sortedActs = [...assessedActs].sort((a, b) => orderWeight(a.cia_component) - orderWeight(b.cia_component));
+
+    const middleItems = sortedActs.map(a => ({
       component: a.cia_component || 'C2 Assessment',
-      marks: String(a.cia_marks || '10'),
+      marks: String(a.cia_marks || (isPG ? '6' : '10')),
       category: a.activity || 'Learning Activity',
       unit_coverage: a.topic || '—',
       date: a.proposed_date ? this.formatDateToDDMMYYYY(a.proposed_date) : '—',
@@ -7630,7 +7660,9 @@ class CoursePlanApp {
       document.body.appendChild(modal);
     }
 
-    const isPG = this.activePlan?.is_pg || (this.activePlan?.year_class && this.activePlan.year_class.includes('PG')) || (this.activePlan?.programme && this.activePlan.programme.startsWith('M.'));
+    const isPG = this.isPGPlan(this.activePlan);
+    const courseCode = document.getElementById('cp-course-code')?.value || this.activePlan?.course_code || '';
+    const yearClass = document.getElementById('cp-year-class')?.value || this.activePlan?.year_class || (isPG ? 'PG Course' : 'UG Course');
 
     // Prepopulate selected activities
     let selectedActs = [];
@@ -7644,7 +7676,7 @@ class CoursePlanApp {
     }
 
     const isAssessment = existing ? !!existing.is_assessment : false;
-    const curCiaComp = existing?.cia_component || (isPG ? 'C2 - K4 (6 Marks)' : 'C2 - K4 (10 Marks)');
+    const curCiaComp = existing?.cia_component || (isPG ? 'C2 – K4' : 'C2 – K4');
     const curCiaMarks = existing?.cia_marks || (isPG ? '6' : '10');
 
     modal.innerHTML = `
@@ -7801,46 +7833,56 @@ class CoursePlanApp {
             <!-- CIA Component and Marks Section (shown only when Convert it as assessment is ticked) -->
             <div id="modal-act-assessment-fields" class="${isAssessment ? '' : 'hidden'} p-4 bg-amber-50/80 border-2 border-amber-300 rounded-2xl space-y-3.5 animate-fadeIn">
               <div class="flex items-center justify-between border-b border-amber-200 pb-2">
-                <span class="text-xs font-black uppercase text-amber-900 tracking-wider flex items-center gap-1">
-                  <i data-lucide="check-circle" class="w-3.5 h-3.5 text-amber-700"></i>
+                <span class="text-xs font-black uppercase text-amber-900 tracking-wider flex items-center gap-1.5">
+                  <i data-lucide="check-circle" class="w-4 h-4 text-amber-700"></i>
                   <span>CIA Assessment Details</span>
                 </span>
-                <span class="text-[10px] bg-amber-200 text-amber-950 font-extrabold px-2 py-0.5 rounded-full">
-                  ${isPG ? 'Postgraduate (PG) Scale' : 'Undergraduate (UG) Scale'}
+                <span class="text-xs ${isPG ? 'bg-purple-100 text-purple-900 border border-purple-300' : 'bg-blue-100 text-blue-900 border border-blue-300'} font-black px-2.5 py-1 rounded-full flex items-center gap-1 shadow-2xs">
+                  <i data-lucide="${isPG ? 'graduation-cap' : 'book-open'}" class="w-3.5 h-3.5"></i>
+                  <span>${isPG ? 'Postgraduate (PG) Scale' : 'Undergraduate (UG) Scale'}</span>
                 </span>
               </div>
 
               <div class="space-y-3">
                 <!-- CIA Component Radio Buttons -->
                 <div>
-                  <label class="block font-black text-amber-950 mb-1.5">
-                    Select CIA Assessment Component (Radio Button) *
-                  </label>
+                  <div class="flex items-baseline justify-between mb-1.5">
+                    <label class="block font-black text-amber-950">
+                      Select CIA Assessment Component (Radio Button) *
+                    </label>
+                    <span class="text-[11px] font-bold text-amber-900">
+                      Scale: <strong class="text-indigo-950">${isPG ? 'Postgraduate (PG) Scale' : 'Undergraduate (UG) Scale'}</strong>${courseCode ? ` (${this.escapeHtml(courseCode)})` : ''}
+                    </span>
+                  </div>
                   <p class="text-[10.5px] text-amber-800 mb-2 font-medium">
                     Mentioning CIA Component – Corresponding K Level – Marks (Total Assessment Plan must equal 100 Marks):
                   </p>
 
                   <div class="space-y-2 bg-white/90 p-3 rounded-xl border border-amber-300">
                     ${(() => {
-                      const options = [
-                        { comp: 'C2 – K4', marks: '15', label: 'C2 – K4 – 15 Marks (Assignment / Technical Seminar)' },
-                        { comp: 'C2 – K5', marks: '15', label: 'C2 – K5 – 15 Marks (Problem Solving / Case Analysis)' },
-                        { comp: 'C2 – K4', marks: '10', label: 'C2 – K4 – 10 Marks (Assignment / Formative Test)' },
-                        { comp: 'C2 – K5', marks: '5', label: 'C2 – K5 – 5 Marks (Mini Quiz / Review)' },
-                        ...(isPG ? [
-                          { comp: 'C2 – K6', marks: '15', label: 'C2 – K6 – 15 Marks (Creative Model / Mini Project)' },
-                          { comp: 'C2 – K6', marks: '6', label: 'C2 – K6 – 6 Marks (Creative Application / Seminar)' }
-                        ] : []),
-                        { comp: 'Library Referencing – K3', marks: '10', label: 'Library Referencing – K3 – 10 Marks (JosTEL / Library Reference)' }
+                      const ugOptions = [
+                        { comp: 'C2 – K4', marks: '10', label: 'C2 – K4 – 10 Marks' },
+                        { comp: 'C2 – K5', marks: '10', label: 'C2 – K5 – 10 Marks' },
+                        { comp: 'Library Referencing – K3', marks: '5', label: 'Library Referencing – K3 – 5 Marks' }
                       ];
 
-                      const selectedComp = existing?.cia_component || 'C2 – K4';
-                      const selectedMarks = String(existing?.cia_marks || (selectedComp.includes('Library') ? '10' : '15'));
+                      const pgOptions = [
+                        { comp: 'C2 – K4', marks: '6', label: 'C2 – K4 – 6 Marks' },
+                        { comp: 'C2 – K5', marks: '6', label: 'C2 – K5 – 6 Marks' },
+                        { comp: 'C2 – K6', marks: '7', label: 'C2 – K6 – 7 Marks' },
+                        { comp: 'Library Referencing – K3', marks: '6', label: 'Library Referencing – K3 – 6 Marks' },
+                        { comp: 'Library Referencing – K3', marks: '5', label: 'Library Referencing – K3 – 5 Marks' }
+                      ];
+
+                      const options = isPG ? pgOptions : ugOptions;
+
+                      const selectedComp = existing?.cia_component || options[0].comp;
+                      const selectedMarks = String(existing?.cia_marks || options[0].marks);
 
                       return options.map((opt, i) => {
                         const isChecked = existing ? (
                           (opt.comp.includes('Library') && selectedComp.includes('Library')) ||
-                          (!opt.comp.includes('Library') && !selectedComp.includes('Library') && opt.marks === selectedMarks && opt.comp.includes(selectedComp.replace(/[^K0-9]/g, '') || 'K4'))
+                          (!opt.comp.includes('Library') && !selectedComp.includes('Library') && opt.marks === selectedMarks && opt.comp.replace(/[^K0-9]/g, '') === selectedComp.replace(/[^K0-9]/g, ''))
                         ) : (i === 0);
 
                         return `
@@ -7872,12 +7914,12 @@ class CoursePlanApp {
                   <input 
                     type="number" 
                     id="modal-act-cia-marks" 
-                    value="${existing?.cia_marks || '15'}" 
+                    value="${existing?.cia_marks || (isPG ? '6' : '10')}" 
                     readonly 
                     class="w-full text-xs px-3 py-2 border border-amber-300 rounded-xl bg-slate-100 cursor-not-allowed font-black text-slate-700 text-center focus:outline-none"
                     placeholder="Marks"
                   />
-                  <input type="hidden" id="modal-act-cia-comp-hidden" value="${existing?.cia_component || 'C2 – K4'}" />
+                  <input type="hidden" id="modal-act-cia-comp-hidden" value="${existing?.cia_component || (isPG ? 'C2 – K4' : 'C2 – K4')}" />
                 </div>
               </div>
             </div>
@@ -8026,24 +8068,25 @@ class CoursePlanApp {
   onModalCiaCompChange(comp) {
     const marksInput = document.getElementById('modal-act-cia-marks');
     if (!marksInput) return;
-    const isPG = this.activePlan?.is_pg || (this.activePlan?.year_class && this.activePlan.year_class.includes('PG')) || (this.activePlan?.programme && this.activePlan.programme.startsWith('M.'));
+    const isPG = this.isPGPlan(this.activePlan);
 
     if (comp.includes('C1')) {
       marksInput.value = '15';
     } else if (comp.includes('Mid Sem') || comp.includes('End Sem')) {
       marksInput.value = '30';
     } else if (comp.includes('Library')) {
-      marksInput.value = '10';
+      marksInput.value = isPG ? '6' : '5';
     } else if (comp.includes('K6')) {
-      marksInput.value = isPG ? '15' : '10';
+      marksInput.value = '7';
     } else if (comp.includes('K4') || comp.includes('K5')) {
-      marksInput.value = '15';
+      marksInput.value = isPG ? '6' : '10';
     } else {
-      marksInput.value = '10';
+      marksInput.value = isPG ? '6' : '10';
     }
   }
 
   saveActivityFromModal(actIndex = null) {
+    const isPG = this.isPGPlan(this.activePlan);
     const acts = this.getModalSelectedActivities();
     if (acts.length === 0) {
       alert('Please select at least one Learning Activity.');
@@ -8057,8 +8100,10 @@ class CoursePlanApp {
     const isAssessment = document.getElementById('modal-act-is-assessment')?.checked || false;
 
     const selectedRadio = document.querySelector('input[name="modal_cia_comp_radio"]:checked');
-    const ciaComp = selectedRadio ? selectedRadio.value : (document.getElementById('modal-act-cia-comp-hidden')?.value || 'C2 – K4');
-    const ciaMarks = selectedRadio ? selectedRadio.getAttribute('data-marks') : (document.getElementById('modal-act-cia-marks')?.value || '15');
+    const defaultComp = isPG ? 'C2 – K4' : 'C2 – K4';
+    const defaultMarks = isPG ? '6' : '10';
+    const ciaComp = selectedRadio ? selectedRadio.value : (document.getElementById('modal-act-cia-comp-hidden')?.value || defaultComp);
+    const ciaMarks = selectedRadio ? selectedRadio.getAttribute('data-marks') : (document.getElementById('modal-act-cia-marks')?.value || defaultMarks);
 
     if (!topic) {
       alert('Please enter Related Unit / Topic.');
