@@ -40,35 +40,52 @@ try {
 
         // --- FACULTY LOGIN ---
         if ($role === 'faculty') {
-            if (!$deptName || !$facName) {
-                echo json_encode(['success' => false, 'error' => 'Please select both Department and Faculty Member']);
-                exit;
+            $facultyId = isset($data['faculty_id']) ? trim($data['faculty_id']) : (isset($data['username']) ? trim($data['username']) : '');
+            $authRow = null;
+
+            if ($facultyId !== '') {
+                // Direct login via Faculty ID / ERP Code or Staff Email
+                $stmt = $pdo->prepare("SELECT * FROM course_plan_faculty_auth WHERE UPPER(faculty_id) = UPPER(:fid) OR UPPER(faculty_email) = UPPER(:femail) LIMIT 1");
+                $stmt->execute([':fid' => $facultyId, ':femail' => $facultyId]);
+                $authRow = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if (!$authRow) {
+                    echo json_encode(['success' => false, 'error' => 'Faculty ID "' . htmlspecialchars($facultyId) . '" not found. Please verify your Staff Code.']);
+                    exit;
+                }
+                $deptName = $authRow['department_name'];
+                $facName = $authRow['faculty_name'];
+            } else {
+                if (!$deptName || !$facName) {
+                    echo json_encode(['success' => false, 'error' => 'Please enter Faculty ID or select Department and Faculty Member']);
+                    exit;
+                }
+
+                // Check course_plan_faculty_auth table
+                $stmt = $pdo->prepare("SELECT * FROM course_plan_faculty_auth WHERE department_name = :dept AND faculty_name = :fac LIMIT 1");
+                $stmt->execute([':dept' => $deptName, ':fac' => $facName]);
+                $authRow = $stmt->fetch(PDO::FETCH_ASSOC);
             }
 
-            // Check course_plan_faculty_auth table
-            $stmt = $pdo->prepare("SELECT * FROM course_plan_faculty_auth WHERE department_name = :dept AND faculty_name = :fac LIMIT 1");
-            $stmt->execute([':dept' => $deptName, ':fac' => $facName]);
-            $authRow = $stmt->fetch(PDO::FETCH_ASSOC);
-
             $isValid = false;
-            // Default initial password is '123' for all faculty
-            if ($password === '123') {
-                $isValid = true;
-            } else if ($authRow) {
+            if ($authRow) {
                 $pwHash = hash('sha256', $password);
                 if ($authRow['password_hash'] === $pwHash || $authRow['plain_password'] === $password) {
                     $isValid = true;
                 }
+            } else if ($password === '123') {
+                $isValid = true;
             }
 
             if (!$isValid) {
-                echo json_encode(['success' => false, 'error' => 'Invalid password for ' . $facName]);
+                echo json_encode(['success' => false, 'error' => 'Invalid password for ' . ($facName ?: $facultyId)]);
                 exit;
             }
 
             $_SESSION['cp_user'] = [
                 'id' => $authRow ? (int)$authRow['id'] : null,
-                'username' => $authRow ? ($authRow['faculty_email'] ?: $facName) : $facName,
+                'faculty_id' => $authRow ? $authRow['faculty_id'] : $facultyId,
+                'username' => $authRow ? ($authRow['faculty_id'] ?: $authRow['faculty_email'] ?: $facName) : $facName,
                 'role' => 'faculty',
                 'department_name' => $deptName,
                 'faculty_name' => $facName,

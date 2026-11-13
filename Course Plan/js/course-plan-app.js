@@ -2478,67 +2478,95 @@ class CoursePlanApp {
                 <form onsubmit="event.preventDefault(); coursePlanApp.loginFaculty(event);" class="space-y-4">
                   <div class="space-y-1">
                     <h2 class="text-lg font-black text-slate-900">Faculty Sign In</h2>
-                    <p class="text-xs text-slate-500 font-medium">Select your department and name to manage your course plans.</p>
+                    <p class="text-xs text-slate-500 font-medium">Enter your Staff Code (Faculty ID) and ERP password to access your course plans.</p>
                   </div>
 
-                  <!-- Department Dropdown -->
+                  <!-- Staff Code / Faculty ID Input -->
                   <div class="space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                      <i data-lucide="building-2" class="w-3.5 h-3.5 text-indigo-600"></i>
-                      <span>Department *</span>
+                    <label class="block text-xs font-bold text-slate-700 flex items-center justify-between">
+                      <span class="flex items-center gap-1.5">
+                        <i data-lucide="id-card" class="w-3.5 h-3.5 text-indigo-600"></i>
+                        <span>Staff Code / Faculty ID *</span>
+                      </span>
+                      <span class="text-[10.5px] font-semibold text-slate-400">e.g., 24CAI51, 26PEN01</span>
                     </label>
-                    <select 
-                      id="login-fac-dept" 
-                      onchange="coursePlanApp.onLoginDeptChange(this.value)" 
-                      class="w-full text-xs sm:text-sm px-3.5 py-2.5 border-2 border-slate-200 rounded-2xl bg-white font-bold text-slate-900 focus:border-indigo-600 focus:outline-none transition cursor-pointer"
-                      required
-                    >
-                      ${this.departments.map(d => `
-                        <option value="${this.escapeHtml(d.name)}" ${d.name === currentDeptName ? 'selected' : ''}>
-                          ${this.escapeHtml(d.name)}
-                        </option>
-                      `).join('')}
-                    </select>
+                    <input 
+                      type="text" 
+                      id="login-fac-id" 
+                      class="w-full text-xs sm:text-sm px-3.5 py-2.5 border-2 border-slate-200 rounded-2xl bg-white font-mono font-bold text-slate-900 uppercase focus:border-indigo-600 focus:outline-none transition"
+                      placeholder="Enter Staff Code (e.g., 24CAI51)"
+                      autocomplete="username"
+                    />
                   </div>
 
-                  <!-- Faculty Name Dropdown (Dynamically updated based on selected dept) -->
-                  <div class="space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                      <i data-lucide="user" class="w-3.5 h-3.5 text-indigo-600"></i>
-                      <span>Faculty Name *</span>
-                    </label>
-                    <select 
-                      id="login-fac-name" 
-                      onchange="coursePlanApp.onLoginFacultyChange(this.value)" 
-                      class="w-full text-xs sm:text-sm px-3.5 py-2.5 border-2 border-indigo-300 bg-indigo-50/20 rounded-2xl font-black text-indigo-950 focus:border-indigo-600 focus:outline-none transition cursor-pointer"
-                      required
+                  <!-- Toggle for Department / Name Dropdown -->
+                  <div class="pt-0.5">
+                    <button 
+                      type="button" 
+                      onclick="document.getElementById('fac-dept-dropdown-wrap').classList.toggle('hidden');" 
+                      class="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 cursor-pointer"
                     >
-                      ${facultyList.map(f => {
-                        const name = typeof f === 'string' ? f : f.name;
-                        return `<option value="${this.escapeHtml(name)}" ${name === currentFacName ? 'selected' : ''}>${this.escapeHtml(name)}</option>`;
-                      }).join('')}
-                    </select>
+                      <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                      <span>Or sign in by selecting Department & Faculty Name</span>
+                    </button>
                   </div>
 
-                  <!-- Password Field (Pre-filled with '123' by default) -->
+                  <!-- Department Dropdown Container (collapsible) -->
+                  <div id="fac-dept-dropdown-wrap" class="hidden space-y-3 p-3 bg-slate-50 rounded-2xl border border-slate-200">
+                    <!-- Department Dropdown -->
+                    <div class="space-y-1.5">
+                      <label class="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                        <i data-lucide="building-2" class="w-3.5 h-3.5 text-indigo-600"></i>
+                        <span>Department</span>
+                      </label>
+                      <select 
+                        id="login-fac-dept" 
+                        onchange="coursePlanApp.onLoginDeptChange(this.value)" 
+                        class="w-full text-xs sm:text-sm px-3 py-2 border border-slate-300 rounded-xl bg-white font-bold text-slate-900 focus:border-indigo-600 focus:outline-none transition cursor-pointer"
+                      >
+                        ${this.departments.map(d => `
+                          <option value="${this.escapeHtml(d.name)}" ${d.name === currentDeptName ? 'selected' : ''}>
+                            ${this.escapeHtml(d.name)}
+                          </option>
+                        `).join('')}
+                      </select>
+                    </div>
+
+                    <!-- Faculty Name Dropdown (Dynamically updated based on selected dept) -->
+                    <div class="space-y-1.5">
+                      <label class="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                        <i data-lucide="user" class="w-3.5 h-3.5 text-indigo-600"></i>
+                        <span>Faculty Name</span>
+                      </label>
+                      <select 
+                        id="login-fac-name" 
+                        onchange="coursePlanApp.onLoginFacultyChange(this.value)" 
+                        class="w-full text-xs sm:text-sm px-3 py-2 border border-slate-300 bg-white rounded-xl font-bold text-slate-900 focus:border-indigo-600 focus:outline-none transition cursor-pointer"
+                      >
+                        ${facultyList.map(f => {
+                          const name = typeof f === 'string' ? f : f.name;
+                          return `<option value="${this.escapeHtml(name)}" ${name === currentFacName ? 'selected' : ''}>${this.escapeHtml(name)}</option>`;
+                        }).join('')}
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Password Field -->
                   <div class="space-y-1.5">
                     <div class="flex items-center justify-between">
                       <label class="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
                         <i data-lucide="lock" class="w-3.5 h-3.5 text-indigo-600"></i>
                         <span>Password *</span>
                       </label>
-                      <span class="text-[10.5px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-200">
-                        Default: 123
-                      </span>
                     </div>
                     <div class="relative">
                       <input 
                         type="password" 
                         id="login-fac-password" 
-                        value="123" 
                         required 
                         class="w-full text-xs sm:text-sm px-3.5 py-2.5 border-2 border-slate-200 rounded-2xl bg-white font-mono font-bold text-slate-900 focus:border-indigo-600 focus:outline-none transition pr-10"
                         placeholder="Enter your password"
+                        autocomplete="current-password"
                       />
                       <button 
                         type="button" 
@@ -2550,7 +2578,7 @@ class CoursePlanApp {
                       </button>
                     </div>
                     <div class="text-[11px] text-slate-400 font-medium">
-                      Note: Time being default password is <strong>123</strong> for all faculty members.
+                      Enter your College ERP credentials password.
                     </div>
                   </div>
 
@@ -2559,7 +2587,6 @@ class CoursePlanApp {
                     <button 
                       type="submit" 
                       id="login-submit-btn" 
-                      onclick="coursePlanApp.loginFaculty(event)"
                       class="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-extrabold rounded-2xl shadow-lg shadow-indigo-600/30 transition flex items-center justify-center gap-2 cursor-pointer active:scale-98"
                     >
                       <span>Sign In to Faculty Portal</span>
@@ -2742,22 +2769,23 @@ class CoursePlanApp {
 
   async loginFaculty(e) {
     if (e && e.preventDefault) e.preventDefault();
+    const facultyId = (document.getElementById('login-fac-id')?.value || '').trim();
     const dept = document.getElementById('login-fac-dept')?.value || this.selectedLoginDept;
     const fac = document.getElementById('login-fac-name')?.value || this.selectedLoginFaculty;
-    const pass = document.getElementById('login-fac-password')?.value || '123';
+    const pass = (document.getElementById('login-fac-password')?.value || '').trim();
     const errEl = document.getElementById('login-error-msg');
     const btn = document.getElementById('login-submit-btn');
 
-    if (!dept) {
+    if (!facultyId && (!dept || !fac)) {
       if (errEl) {
-        errEl.querySelector('.error-text').textContent = 'Please select your department.';
+        errEl.querySelector('.error-text').textContent = 'Please enter your Staff Code / Faculty ID (e.g. 24CAI51) or select Department & Faculty Name.';
         errEl.classList.remove('hidden');
       }
       return;
     }
-    if (!fac) {
+    if (!pass) {
       if (errEl) {
-        errEl.querySelector('.error-text').textContent = 'Please select your faculty name.';
+        errEl.querySelector('.error-text').textContent = 'Please enter your password.';
         errEl.classList.remove('hidden');
       }
       return;
@@ -2769,15 +2797,21 @@ class CoursePlanApp {
     }
 
     try {
+      const payload = {
+        role: 'faculty',
+        password: pass
+      };
+      if (facultyId) {
+        payload.faculty_id = facultyId.toUpperCase();
+      } else {
+        payload.department_name = dept;
+        payload.faculty_name = fac;
+      }
+
       const res = await fetch('api/course_plan.php?action=login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          role: 'faculty',
-          department_name: dept,
-          faculty_name: fac,
-          password: pass
-        })
+        body: JSON.stringify(payload)
       });
       const data = await res.json();
       if (data.success && data.user) {
@@ -7208,7 +7242,7 @@ class CoursePlanApp {
           else if (toolEl) invalidEls.push(toolEl);
         }
         if (!platVal) {
-          missing.push('Platform');
+          missing.push('Platform (e.g., JosTEL, Google Classroom, YouTube, etc.)');
           if (platEl && platEl.value === 'Others' && platOtherEl) invalidEls.push(platOtherEl);
           else if (platEl) invalidEls.push(platEl);
         }
@@ -7217,7 +7251,7 @@ class CoursePlanApp {
       }
     });
 
-    if (completedIctRows === 0) {
+    if (completedIctRows === 0 && incompleteRowErrors.length === 0) {
       errors.push('Digital Resources and ICT Integration: Minimum 1 row is mandatory. Please provide Topic/Unit, Tool, Platform, and Purpose.');
       const firstRow = ictRows[0];
       if (firstRow) {
