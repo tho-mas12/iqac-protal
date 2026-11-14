@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <base href="/course-plan/">
   <title>Course Plan 2026 - 2027 (Even) | IQAC - St. Joseph's College</title>
   <!-- Tailwind CSS CDN -->
@@ -122,6 +125,22 @@
         display: none !important;
       }
     }
+
+    /* Hide spinners in DTP hours and number inputs */
+    input[type=number].dtp-hours::-webkit-inner-spin-button,
+    input[type=number].dtp-hours::-webkit-outer-spin-button,
+    input[type=number].ucp-planned::-webkit-inner-spin-button,
+    input[type=number].ucp-planned::-webkit-outer-spin-button,
+    input[type=number].ucp-actual::-webkit-inner-spin-button,
+    input[type=number].ucp-actual::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type=number].dtp-hours,
+    input[type=number].ucp-planned,
+    input[type=number].ucp-actual {
+      -moz-appearance: textfield;
+    }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
@@ -174,7 +193,7 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/course-plan-app.js?v=20261114E"></script>
+  <script src="js/course-plan-app.js?v=20261114_REV3"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       if (window.coursePlanApp) {

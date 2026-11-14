@@ -105,8 +105,8 @@ try {
         $pwHash = hash('sha256', $password);
 
         if ($role === 'hod' && $deptName !== '') {
-            $stmt = $pdo->prepare("SELECT * FROM course_plan_users WHERE role = 'hod' AND (department_name = :dept OR LOWER(department_name) = LOWER(:dept)) LIMIT 1");
-            $stmt->execute([':dept' => $deptName]);
+            $stmt = $pdo->prepare("SELECT * FROM course_plan_users WHERE role = 'hod' AND (department_name = :dept OR LOWER(department_name) = LOWER(:dept_lower)) LIMIT 1");
+            $stmt->execute([':dept' => $deptName, ':dept_lower' => $deptName]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             // If department HOD not yet in table, allow login with standard HOD password '123'
