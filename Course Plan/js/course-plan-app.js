@@ -1998,13 +1998,14 @@ class CoursePlanApp {
   onICTToolChange(selectEl) {
     const row = selectEl.closest('tr');
     if (!row) return;
-    const otherInput = row.querySelector('.ict-tool-other');
+    const otherInput = row.querySelector('.ict-tool-other, .ict-other-tool');
     if (otherInput) {
       if (selectEl.value === 'Others') {
         otherInput.classList.remove('hidden');
         otherInput.focus();
       } else {
         otherInput.classList.add('hidden');
+        otherInput.value = '';
       }
     }
   }
@@ -2012,13 +2013,14 @@ class CoursePlanApp {
   onICTPlatformChange(selectEl) {
     const row = selectEl.closest('tr');
     if (!row) return;
-    const otherInput = row.querySelector('.ict-platform-other');
+    const otherInput = row.querySelector('.ict-platform-other, .ict-other-platform');
     if (otherInput) {
       if (selectEl.value === 'Others') {
         otherInput.classList.remove('hidden');
         otherInput.focus();
       } else {
         otherInput.classList.add('hidden');
+        otherInput.value = '';
       }
     }
   }
@@ -2033,34 +2035,7 @@ class CoursePlanApp {
         otherInput.focus();
       } else {
         otherInput.classList.add('hidden');
-      }
-    }
-  }
-
-  onICTToolChange(selectEl) {
-    const row = selectEl.closest('tr');
-    if (!row) return;
-    const otherInput = row.querySelector('.ict-other-tool');
-    if (otherInput) {
-      if (selectEl.value === 'Others') {
-        otherInput.classList.remove('hidden');
-        otherInput.focus();
-      } else {
-        otherInput.classList.add('hidden');
-      }
-    }
-  }
-
-  onICTPlatformChange(selectEl) {
-    const row = selectEl.closest('tr');
-    if (!row) return;
-    const otherInput = row.querySelector('.ict-other-platform');
-    if (otherInput) {
-      if (selectEl.value === 'Others') {
-        otherInput.classList.remove('hidden');
-        otherInput.focus();
-      } else {
-        otherInput.classList.add('hidden');
+        otherInput.value = '';
       }
     }
   }
@@ -7094,178 +7069,95 @@ class CoursePlanApp {
             <div class="space-y-3 pt-4 border-t border-slate-100">
               <div class="flex items-center justify-between">
                 <div>
-                  <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-indigo-100 text-indigo-950 font-black text-xs border-l-4 border-indigo-600 shadow-2xs uppercase tracking-wider"><i data-lucide="monitor" class="w-3.5 h-3.5 text-indigo-700"></i><span>C. Digital Resources and ICT Integration</span></div><div class="mt-1"> <span class="text-indigo-600 font-semibold text-[11px] normal-case">(Minimum 1 row mandatory)</span></h4>
+                  <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-indigo-100 text-indigo-950 font-black text-xs border-l-4 border-indigo-600 shadow-2xs uppercase tracking-wider"><i data-lucide="monitor" class="w-3.5 h-3.5 text-indigo-700"></i><span>C. Digital Resources and ICT Integration</span></div>
+                  <div class="mt-1">
+                    <span class="text-indigo-600 font-semibold text-[11px] normal-case">(Minimum 1 row mandatory)</span>
+                  </div>
                   <p class="text-[11px] text-slate-500">JosTEL LMS, PPT, online quizzes, and simulation software. Minimum 1 row is required.</p>
                 </div>
                 <button 
                   type="button" 
                   onclick="coursePlanApp.addICTRow()" 
-                  class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-xs flex items-center gap-1 border border-slate-200"
+                  class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-xs flex items-center gap-1 border border-slate-200 cursor-pointer"
                 >
                   <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add ICT Resource
                 </button>
               </div>
 
-              <div id="cp-icts-table-container" class="rounded-xl border border-slate-200 overflow-visible" style="overflow: visible; min-height: 360px; padding-bottom: 220px;">
-                <table class="w-full text-left text-xs border-collapse" style="overflow: visible;">
+              <div class="overflow-x-auto rounded-xl border border-slate-200">
+                <table class="w-full text-left text-xs border-collapse">
                   <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
                     <tr>
                       <th class="p-2.5 w-12 text-center">S.No</th>
                       <th class="p-2.5 w-48">Topic / Unit</th>
-                      <th class="p-2.5 w-64">Digital Resource / ICT Tool</th>
-                      <th class="p-2.5 w-60">Platform (JosTEL / Others)</th>
+                      <th class="p-2.5 w-56">Digital Resource / ICT Tool</th>
+                      <th class="p-2.5 w-52">Platform (JosTEL / Others)</th>
                       <th class="p-2.5">Purpose</th>
                       <th class="p-2.5 w-12 text-center">Action</th>
                     </tr>
                   </thead>
-                  <tbody id="cp-icts-tbody" class="divide-y divide-slate-100 font-medium" style="overflow: visible;">
+                  <tbody id="cp-icts-tbody" class="divide-y divide-slate-100 font-medium">
                     ${icts.map((ict, idx) => {
+                      const toolOptions = [
+                        'PPT / Interactive Slides', 'Video Lecture', 'Simulation / Virtual Lab',
+                        'Online Quiz / JosTEL Quiz', 'Discussion Forum', 'E-Book / PDF Notes',
+                        'Spreadsheet / Data Analysis', 'Programming IDE / Code Editor'
+                      ];
                       const curTool = ict.tool || '';
-                      const toolList = curTool.split(',').map(s => s.trim()).filter(Boolean);
-                      const hasOtherTool = toolList.includes('Others');
-                      const otherToolVal = ict.tool_other || '';
+                      const isOtherTool = curTool === 'Others' || (curTool !== '' && !toolOptions.includes(curTool));
+                      const toolOtherVal = ict.tool_other || (isOtherTool && curTool !== 'Others' ? curTool : '');
 
+                      const platformOptions = [
+                        'JosTEL', 'Google Classroom', 'Moodle', 'YouTube',
+                        'Kahoot / Quizizz', 'SWAYAM / NPTEL', 'GitHub'
+                      ];
                       const curPlatform = ict.platform || 'JosTEL';
-                      const platformList = curPlatform.split(',').map(s => s.trim()).filter(Boolean);
-                      const hasOtherPlatform = platformList.includes('Others');
-                      const otherPlatVal = ict.platform_other || '';
+                      const isOtherPlatform = curPlatform === 'Others' || (curPlatform !== '' && !platformOptions.includes(curPlatform));
+                      const platformOtherVal = ict.platform_other || (isOtherPlatform && curPlatform !== 'Others' ? curPlatform : '');
 
                       return `
-                        <tr class="relative hover:bg-slate-50/50 transition" style="overflow: visible;">
+                        <tr>
                           <td class="p-2 text-center font-bold text-slate-400">${idx + 1}</td>
                           <td class="p-2">
                             <input type="text" class="ict-topic w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded-lg" value="${this.escapeHtml(ict.topic || '')}" placeholder="Topic / Unit..." />
                           </td>
-                          
-                          <!-- Digital Resource / ICT Tool Multi-Select -->
-                          <td class="p-2 align-top">
-                            <div class="relative ict-multi-container" style="overflow: visible;">
-                              <div 
-                                onclick="coursePlanApp.toggleICTDropdown('tool', ${idx}, event)" 
-                                class="min-h-[34px] w-full p-1.5 border border-slate-300 rounded-lg bg-white flex flex-wrap items-center gap-1 cursor-pointer hover:border-indigo-500 transition"
-                              >
-                                <div class="flex flex-wrap items-center gap-1 flex-1">
-                                  ${toolList.length === 0 ? `
-                                    <span class="text-slate-400 text-[11px] italic pl-1">Select tool(s)...</span>
-                                  ` : `
-                                    ${toolList.map(item => `
-                                      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10.5px] font-bold bg-indigo-50 text-indigo-900 border border-indigo-200">
-                                        <span>${this.escapeHtml(item)}</span>
-                                        <span onclick="coursePlanApp.removeICTItem('tool', ${idx}, '${this.escapeHtml(item)}', event)" class="hover:text-red-600 font-black cursor-pointer ml-0.5">✕</span>
-                                      </span>
-                                    `).join('')}
-                                  `}
-                                </div>
-                                <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400 shrink-0"></i>
-                              </div>
-                              <input type="hidden" class="ict-tool-val" value="${this.escapeHtml(curTool)}" />
-
-                              <!-- Dropdown Menu -->
-                              <div 
-                                id="ict-tool-menu-${idx}" 
-                                class="hidden absolute left-0 top-full mt-1 bg-white border-2 border-indigo-300 rounded-xl shadow-2xl z-50 p-2 space-y-1 w-64 max-h-56 overflow-y-auto"
-                                style="z-index: 9999;"
-                                onclick="event.stopPropagation()"
-                              >
-                                <div class="text-[10px] font-black text-slate-400 uppercase tracking-wider px-1 pb-1 border-b border-slate-100">Select Tool (Multiple)</div>
-                                ${CoursePlanApp.ICT_TOOLS.map(opt => {
-                                  const isChecked = toolList.includes(opt);
-                                  return `
-                                    <label class="flex items-center gap-2 px-2 py-1.5 hover:bg-indigo-50 rounded-lg cursor-pointer text-xs font-semibold text-slate-800">
-                                      <input 
-                                        type="checkbox" 
-                                        class="rounded text-indigo-600 focus:ring-0 cursor-pointer" 
-                                        ${isChecked ? 'checked' : ''} 
-                                        onchange="coursePlanApp.toggleICTItem('tool', ${idx}, '${opt}', this.checked)"
-                                      />
-                                      <span>${opt}</span>
-                                    </label>
-                                  `;
-                                }).join('')}
-                              </div>
-
-                              <!-- Custom input field when Others is selected -->
-                              ${hasOtherTool ? `
-                                <div class="mt-1.5 animate-fadeIn">
-                                  <input 
-                                    type="text" 
-                                    class="ict-tool-other w-full text-xs px-2.5 py-1.5 border-2 border-indigo-400 bg-indigo-50/70 rounded-lg font-bold text-indigo-950 placeholder-indigo-400 focus:border-indigo-600 focus:bg-white focus:outline-none shadow-xs" 
-                                    placeholder="Enter specific ICT tool name..." 
-                                    value="${this.escapeHtml(otherToolVal)}" 
-                                    oninput="coursePlanApp.onICTOtherInput('tool', ${idx}, this.value)"
-                                  />
-                                </div>
-                              ` : ''}
-                            </div>
+                          <td class="p-2">
+                            <select 
+                              class="ict-tool-select w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded-lg font-bold bg-white focus:border-indigo-600 focus:outline-none cursor-pointer"
+                              onchange="coursePlanApp.onICTToolChange(this)"
+                            >
+                              <option value="">-- Select Tool --</option>
+                              ${toolOptions.map(opt => `<option value="${opt}" ${(curTool === opt || (!isOtherTool && curTool === opt)) ? 'selected' : ''}>${opt}</option>`).join('')}
+                              <option value="Others" ${isOtherTool ? 'selected' : ''}>Others (Specify)</option>
+                            </select>
+                            <input 
+                              type="text" 
+                              class="ict-tool-other w-full text-xs px-2.5 py-1.5 border border-indigo-400 rounded-lg mt-1.5 ${isOtherTool ? '' : 'hidden'}" 
+                              placeholder="Specify digital resource / tool..." 
+                              value="${this.escapeHtml(toolOtherVal)}" 
+                            />
                           </td>
-
-                          <!-- Platform (JosTEL / Others) Multi-Select -->
-                          <td class="p-2 align-top">
-                            <div class="relative ict-multi-container" style="overflow: visible;">
-                              <div 
-                                onclick="coursePlanApp.toggleICTDropdown('platform', ${idx}, event)" 
-                                class="min-h-[34px] w-full p-1.5 border border-slate-300 rounded-lg bg-white flex flex-wrap items-center gap-1 cursor-pointer hover:border-amber-500 transition"
-                              >
-                                <div class="flex flex-wrap items-center gap-1 flex-1">
-                                  ${platformList.length === 0 ? `
-                                    <span class="text-slate-400 text-[11px] italic pl-1">Select platform(s)...</span>
-                                  ` : `
-                                    ${platformList.map(item => `
-                                      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10.5px] font-bold bg-amber-50 text-amber-900 border border-amber-200">
-                                        <span>${this.escapeHtml(item)}</span>
-                                        <span onclick="coursePlanApp.removeICTItem('platform', ${idx}, '${this.escapeHtml(item)}', event)" class="hover:text-red-600 font-black cursor-pointer ml-0.5">✕</span>
-                                      </span>
-                                    `).join('')}
-                                  `}
-                                </div>
-                                <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400 shrink-0"></i>
-                              </div>
-                              <input type="hidden" class="ict-platform-val" value="${this.escapeHtml(curPlatform)}" />
-
-                              <!-- Dropdown Menu -->
-                              <div 
-                                id="ict-platform-menu-${idx}" 
-                                class="hidden absolute left-0 top-full mt-1 bg-white border-2 border-amber-300 rounded-xl shadow-2xl z-50 p-2 space-y-1 w-60 max-h-56 overflow-y-auto"
-                                style="z-index: 9999;"
-                                onclick="event.stopPropagation()"
-                              >
-                                <div class="text-[10px] font-black text-slate-400 uppercase tracking-wider px-1 pb-1 border-b border-slate-100">Select Platform (Multiple)</div>
-                                ${CoursePlanApp.ICT_PLATFORMS.map(opt => {
-                                  const isChecked = platformList.includes(opt);
-                                  return `
-                                    <label class="flex items-center gap-2 px-2 py-1.5 hover:bg-amber-50 rounded-lg cursor-pointer text-xs font-semibold text-slate-800">
-                                      <input 
-                                        type="checkbox" 
-                                        class="rounded text-amber-600 focus:ring-0 cursor-pointer" 
-                                        ${isChecked ? 'checked' : ''} 
-                                        onchange="coursePlanApp.toggleICTItem('platform', ${idx}, '${opt}', this.checked)"
-                                      />
-                                      <span>${opt}</span>
-                                    </label>
-                                  `;
-                                }).join('')}
-                              </div>
-
-                              <!-- Custom input field when Others is selected -->
-                              ${hasOtherPlatform ? `
-                                <div class="mt-1.5 animate-fadeIn">
-                                  <input 
-                                    type="text" 
-                                    class="ict-platform-other w-full text-xs px-2.5 py-1.5 border-2 border-amber-400 bg-amber-50/70 rounded-lg font-bold text-amber-950 placeholder-amber-400 focus:border-amber-600 focus:bg-white focus:outline-none shadow-xs" 
-                                    placeholder="Enter specific platform name..." 
-                                    value="${this.escapeHtml(otherPlatVal)}" 
-                                    oninput="coursePlanApp.onICTOtherInput('platform', ${idx}, this.value)"
-                                  />
-                                </div>
-                              ` : ''}
-                            </div>
+                          <td class="p-2">
+                            <select 
+                              class="ict-platform-select w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded-lg font-semibold bg-white focus:border-indigo-600 focus:outline-none cursor-pointer"
+                              onchange="coursePlanApp.onICTPlatformChange(this)"
+                            >
+                              <option value="">-- Select Platform --</option>
+                              ${platformOptions.map(opt => `<option value="${opt}" ${(curPlatform === opt || (!curPlatform && opt === 'JosTEL')) ? 'selected' : ''}>${opt}</option>`).join('')}
+                              <option value="Others" ${isOtherPlatform ? 'selected' : ''}>Others (Specify)</option>
+                            </select>
+                            <input 
+                              type="text" 
+                              class="ict-platform-other w-full text-xs px-2.5 py-1.5 border border-amber-400 rounded-lg mt-1.5 ${isOtherPlatform ? '' : 'hidden'}" 
+                              placeholder="Specify platform..." 
+                              value="${this.escapeHtml(platformOtherVal)}" 
+                            />
                           </td>
-
                           <td class="p-2">
                             <input type="text" class="ict-purpose w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded-lg" value="${this.escapeHtml(ict.purpose || '')}" placeholder="Purpose of ICT integration..." />
                           </td>
                           <td class="p-2 text-center">
-                            <button type="button" onclick="coursePlanApp.deleteICTRow(${idx})" class="p-1 text-slate-400 hover:text-red-600 rounded">
+                            <button type="button" onclick="coursePlanApp.deleteICTRow(${idx})" class="p-1 text-slate-400 hover:text-red-600 rounded cursor-pointer">
                               <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                             </button>
                           </td>
@@ -8009,43 +7901,34 @@ class CoursePlanApp {
 
     ictRows.forEach((row, idx) => {
       const topEl = row.querySelector('.ict-topic');
-      const toolEl = row.querySelector('.ict-tool-val') || row.querySelector('.ict-tool-select') || row.querySelector('.ict-tool');
-      const platEl = row.querySelector('.ict-platform-val') || row.querySelector('.ict-platform-select, .ict-plat-select') || row.querySelector('.ict-platform');
+      const toolEl = row.querySelector('.ict-tool-select') || row.querySelector('.ict-tool-val') || row.querySelector('.ict-tool');
+      const toolOtherEl = row.querySelector('.ict-tool-other');
+      const platEl = row.querySelector('.ict-platform-select, .ict-plat-select') || row.querySelector('.ict-platform-val') || row.querySelector('.ict-platform');
+      const platOtherEl = row.querySelector('.ict-platform-other');
       const purpEl = row.querySelector('.ict-purpose');
 
       const topVal = topEl ? topEl.value.trim() : '';
-      const toolVal = toolEl ? toolEl.value.trim() : '';
-      const platVal = platEl ? platEl.value.trim() : '';
+      const toolVal = (toolEl && toolEl.value === 'Others') ? (toolOtherEl ? toolOtherEl.value.trim() : '') : (toolEl ? toolEl.value.trim() : '');
+      const platVal = (platEl && platEl.value === 'Others') ? (platOtherEl ? platOtherEl.value.trim() : '') : (platEl ? platEl.value.trim() : '');
       const purpVal = purpEl ? purpEl.value.trim() : '';
 
       const hasAny = topVal || toolVal || platVal || purpVal;
       const isComplete = topVal && toolVal && platVal && purpVal;
 
-      const toolOtherInp = row.querySelector('.ict-tool-other');
-      const platOtherInp = row.querySelector('.ict-platform-other');
-      const needsToolOther = toolVal.split(',').map(s => s.trim()).includes('Others');
-      const needsPlatOther = platVal.split(',').map(s => s.trim()).includes('Others');
-      const hasToolOther = !needsToolOther || (toolOtherInp && toolOtherInp.value.trim().length > 0);
-      const hasPlatOther = !needsPlatOther || (platOtherInp && platOtherInp.value.trim().length > 0);
-
-      if (isComplete && hasToolOther && hasPlatOther) {
+      if (isComplete) {
         completedIctRows++;
       } else if (hasAny) {
         const missing = [];
         if (!topVal) { missing.push('Topic/Unit'); if (topEl) invalidEls.push(topEl); }
         if (!toolVal) {
           missing.push('Tool');
-          if (toolEl) invalidEls.push(toolEl);
-        } else if (needsToolOther && (!toolOtherInp || !toolOtherInp.value.trim())) {
-          missing.push('Specific Tool Name for Others');
-          if (toolOtherInp) invalidEls.push(toolOtherInp);
+          if (toolEl && toolEl.value === 'Others' && toolOtherEl) invalidEls.push(toolOtherEl);
+          else if (toolEl) invalidEls.push(toolEl);
         }
         if (!platVal) {
           missing.push('Platform');
-          if (platEl) invalidEls.push(platEl);
-        } else if (needsPlatOther && (!platOtherInp || !platOtherInp.value.trim())) {
-          missing.push('Specific Platform Name for Others');
-          if (platOtherInp) invalidEls.push(platOtherInp);
+          if (platEl && platEl.value === 'Others' && platOtherEl) invalidEls.push(platOtherEl);
+          else if (platEl) invalidEls.push(platEl);
         }
         if (!purpVal) { missing.push('Purpose'); if (purpEl) invalidEls.push(purpEl); }
         incompleteRowErrors.push(`Row ${idx + 1}: Missing ${missing.join(', ')}`);
@@ -9105,17 +8988,22 @@ class CoursePlanApp {
     const ictRows = document.querySelectorAll('#cp-icts-tbody tr');
     const icts = [];
     ictRows.forEach((tr, i) => {
-      const finalTool = tr.querySelector('.ict-tool-val')?.value || tr.querySelector('.ict-tool-select')?.value || tr.querySelector('.ict-tool')?.value || '';
-      const finalPlat = tr.querySelector('.ict-platform-val')?.value || tr.querySelector('.ict-platform-select')?.value || tr.querySelector('.ict-platform')?.value || '';
+      const toolSelect = tr.querySelector('.ict-tool-select')?.value || '';
       const toolOther = tr.querySelector('.ict-tool-other')?.value || '';
+      const finalTool = (toolSelect === 'Others' ? (toolOther || 'Others') : toolSelect);
+
+      const platSelect = tr.querySelector('.ict-platform-select')?.value || '';
       const platOther = tr.querySelector('.ict-platform-other')?.value || '';
+      const finalPlat = (platSelect === 'Others' ? (platOther || 'Others') : (platSelect || 'JosTEL'));
 
       icts.push({
         sno: String(i + 1),
         topic: tr.querySelector('.ict-topic')?.value || '',
         tool: finalTool,
+        tool_type: toolSelect,
         tool_other: toolOther,
         platform: finalPlat,
+        platform_type: platSelect,
         platform_other: platOther,
         purpose: tr.querySelector('.ict-purpose')?.value || ''
       });
