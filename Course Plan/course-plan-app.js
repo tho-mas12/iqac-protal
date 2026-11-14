@@ -6617,7 +6617,6 @@ class CoursePlanApp {
                 </table>
               </div>
             </div>
-            </div>
 
             <!-- Next Part Button -->
             <div class="flex justify-end pt-4 border-t border-slate-100">
