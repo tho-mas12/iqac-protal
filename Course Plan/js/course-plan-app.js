@@ -2732,212 +2732,143 @@ class CoursePlanApp {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // ================= 0. AUTHENTICATION & LOGIN VIEW =================
+  // ================= 0. AUTHENTICATION & LOGIN VIEW (UNIFIED SINGLE-DOOR) =================
   renderLoginHtml() {
-    const tab = this.loginTab || 'faculty';
     const deptObj = this.departments.find(d => d.name === (this.selectedLoginDept || this.selectedDept)) || this.departments[0] || { name: '', faculty: [] };
     const facultyList = deptObj.faculty || [];
     const currentDeptName = deptObj.name;
     const currentFacName = this.selectedLoginFaculty || (facultyList.length > 0 ? (typeof facultyList[0] === 'string' ? facultyList[0] : facultyList[0].name) : '');
 
     return `
-      <div class="min-h-[80vh] flex items-center justify-center py-10 px-4 animate-fadeIn">
-        <div class="w-full max-w-xl">
-          <!-- Institutional Brand Card Header -->
-          <div class="text-center mb-8 space-y-2">
-            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-800 text-xs font-black uppercase tracking-wider">
-              <i data-lucide="award" class="w-3.5 h-3.5 text-indigo-600"></i>
-              <span>Internal Quality Assurance Cell (IQAC)</span>
-            </div>
-            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-              St. Joseph’s College <span class="text-xs font-bold text-slate-500 uppercase block sm:inline">(Autonomous)</span>
-            </h1>
-            <p class="text-xs font-bold text-slate-600 uppercase tracking-widest">
-              Tiruchirappalli – 620 002 • Accredited at A++ Grade (Cycle IV) by NAAC
-            </p>
-            <div class="inline-block mt-1 text-sm font-black text-indigo-700 bg-indigo-50/80 px-4 py-1 rounded-xl border border-indigo-200">
-              Course Plan Portal – Academic Year 2026–2027
-            </div>
-          </div>
+      <div class="min-h-[85vh] flex items-center justify-center py-12 px-4 animate-fadeIn">
+        <div class="w-full max-w-lg">
+          <!-- Institutional Card Container -->
+          <div class="bg-white rounded-3xl shadow-2xl shadow-indigo-900/10 border border-slate-200/90 overflow-hidden relative">
+            <!-- Top Gradient Ribbon Accent -->
+            <div class="h-2.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600"></div>
 
-          <!-- Main Login Box -->
-          <div class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
-            <!-- Role Tabs Header -->
-            <div class="grid grid-cols-3 bg-slate-50 border-b border-slate-200 p-1.5 gap-1 text-xs font-bold">
-              <button 
-                type="button" 
-                onclick="coursePlanApp.setLoginTab('faculty')" 
-                class="py-2.5 px-3 rounded-2xl transition flex items-center justify-center gap-1.5 cursor-pointer ${tab === 'faculty' ? 'bg-white text-indigo-700 shadow-sm font-black ring-1 ring-slate-200' : 'text-slate-600 hover:text-slate-900'}"
-              >
-                <i data-lucide="user-check" class="w-4 h-4 text-indigo-600"></i>
-                <span>Faculty</span>
-              </button>
-              <button 
-                type="button" 
-                onclick="coursePlanApp.setLoginTab('hod')" 
-                class="py-2.5 px-3 rounded-2xl transition flex items-center justify-center gap-1.5 cursor-pointer ${tab === 'hod' ? 'bg-white text-indigo-700 shadow-sm font-black ring-1 ring-slate-200' : 'text-slate-600 hover:text-slate-900'}"
-              >
-                <i data-lucide="shield-check" class="w-4 h-4 text-amber-600"></i>
-                <span>HOD</span>
-              </button>
-              <button 
-                type="button" 
-                onclick="coursePlanApp.setLoginTab('admin')" 
-                class="py-2.5 px-3 rounded-2xl transition flex items-center justify-center gap-1.5 cursor-pointer ${tab === 'admin' ? 'bg-white text-indigo-700 shadow-sm font-black ring-1 ring-slate-200' : 'text-slate-600 hover:text-slate-900'}"
-              >
-                <i data-lucide="crown" class="w-4 h-4 text-purple-600"></i>
-                <span>IQAC Admin</span>
-              </button>
+            <!-- College & IQAC Header -->
+            <div class="pt-8 pb-4 px-6 sm:px-8 text-center border-b border-slate-100 bg-gradient-to-b from-slate-50/70 to-white">
+              <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-50 to-blue-50 border border-indigo-100 shadow-inner mb-3">
+                <span class="text-2xl font-black bg-gradient-to-br from-indigo-700 to-blue-600 bg-clip-text text-transparent">SJC</span>
+              </div>
+              <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200/60 text-indigo-800 text-[11px] font-extrabold uppercase tracking-wider mb-2">
+                <i data-lucide="award" class="w-3.5 h-3.5 text-indigo-600"></i>
+                <span>Internal Quality Assurance Cell (IQAC)</span>
+              </div>
+              <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-snug">
+                St. Joseph’s College <span class="text-xs font-bold text-slate-500 uppercase block sm:inline">(Autonomous)</span>
+              </h1>
+              <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mt-0.5">
+                Tiruchirappalli – 620 002 • NAAC A++ Grade (Cycle IV)
+              </p>
+              <div class="mt-3 inline-block py-1 px-3.5 bg-indigo-50/70 border border-indigo-100 rounded-xl text-xs font-black text-indigo-700 tracking-wide">
+                Course Plan Portal • Academic Year 2026–2027
+              </div>
             </div>
 
-            <!-- Tab Content Forms -->
-            <div class="p-6 sm:p-8 space-y-6">
-              
+            <!-- Unified Single-Door Login Form -->
+            <div class="p-6 sm:p-8 space-y-5">
+              <div class="space-y-1">
+                <div class="flex items-center justify-between">
+                  <h2 class="text-lg font-black text-slate-900">Sign In to Portal</h2>
+                  <span class="text-[11px] font-bold text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-100">
+                    Unified Portal Access
+                  </span>
+                </div>
+                <p class="text-xs text-slate-500 font-medium">Enter your credentials below to access your courses, reviews, or administrative dashboard.</p>
+              </div>
+
               <!-- Error Notification Box -->
               <div id="login-error-msg" class="hidden p-3.5 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold rounded-2xl flex items-center gap-2 animate-shake">
                 <i data-lucide="alert-circle" class="w-4 h-4 shrink-0 text-rose-600"></i>
                 <span class="error-text">Authentication failed</span>
               </div>
 
-              ${tab === 'faculty' ? `
-                <!-- 1. Faculty Login Form -->
-                <form onsubmit="event.preventDefault(); coursePlanApp.loginFaculty(event);" class="space-y-4">
-                  <div class="space-y-1">
-                    <h2 class="text-lg font-black text-slate-900">Faculty Sign In</h2>
-                    <p class="text-xs text-slate-500 font-medium">Enter your Staff Code (Faculty ID) and ERP password to access your course plans.</p>
-                  </div>
-
-                  <!-- Staff Code / Faculty ID Input -->
-                  <div class="space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-700 flex items-center justify-between">
-                      <span class="flex items-center gap-1.5">
-                        <i data-lucide="id-card" class="w-3.5 h-3.5 text-indigo-600"></i>
-                        <span>Staff Code / Faculty ID *</span>
-                      </span>
-                      <span class="text-[10.5px] font-semibold text-slate-400">e.g., 24CAI51, 26PEN01</span>
-                    </label>
+              <form onsubmit="event.preventDefault(); coursePlanApp.login(event);" class="space-y-4">
+                <!-- Staff Code / Username Input -->
+                <div class="space-y-1.5">
+                  <label class="block text-xs font-bold text-slate-700 flex items-center justify-between">
+                    <span class="flex items-center gap-1.5">
+                      <i data-lucide="id-card" class="w-3.5 h-3.5 text-indigo-600"></i>
+                      <span>Staff Code or Username *</span>
+                    </span>
+                    <span class="text-[10.5px] font-semibold text-slate-400">Faculty ID or admin</span>
+                  </label>
+                  <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                      <i data-lucide="user-check" class="w-4 h-4 text-indigo-500"></i>
+                    </div>
                     <input 
                       type="text" 
                       id="login-fac-id" 
-                      class="w-full text-xs sm:text-sm px-3.5 py-2.5 border-2 border-slate-200 rounded-2xl bg-white font-mono font-bold text-slate-900 uppercase focus:border-indigo-600 focus:outline-none transition"
-                      placeholder="Enter Staff Code (e.g., 24CAI51)"
+                      name="username"
+                      class="w-full text-xs sm:text-sm pl-10 pr-3.5 py-3 border-2 border-slate-200 rounded-2xl bg-white font-mono font-bold text-slate-900 uppercase focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 focus:outline-none transition"
+                      placeholder="e.g. 24CAI51 or admin"
                       autocomplete="username"
+                      required
                     />
                   </div>
+                </div>
 
-                  <!-- Toggle for Department / Name Dropdown -->
-                  <div class="pt-0.5">
+                <!-- Password Input -->
+                <div class="space-y-1.5">
+                  <div class="flex items-center justify-between">
+                    <label class="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                      <i data-lucide="lock" class="w-3.5 h-3.5 text-indigo-600"></i>
+                      <span>Password *</span>
+                    </label>
+                    <span class="text-[10.5px] font-semibold text-slate-400">ERP or admin password</span>
+                  </div>
+                  <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                      <i data-lucide="shield-check" class="w-4 h-4 text-indigo-500"></i>
+                    </div>
+                    <input 
+                      type="password" 
+                      id="login-fac-password" 
+                      name="password"
+                      required 
+                      class="w-full text-xs sm:text-sm pl-10 pr-10 py-3 border-2 border-slate-200 rounded-2xl bg-white font-mono font-bold text-slate-900 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 focus:outline-none transition"
+                      placeholder="Enter your password (e.g. ERP password or admin123)"
+                      autocomplete="current-password"
+                    />
                     <button 
                       type="button" 
-                      onclick="document.getElementById('fac-dept-dropdown-wrap').classList.toggle('hidden');" 
-                      class="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 cursor-pointer"
+                      onclick="coursePlanApp.togglePasswordVisibility('login-fac-password')" 
+                      class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                      title="Show/Hide Password"
                     >
-                      <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
-                      <span>Or sign in by selecting Department & Faculty Name</span>
+                      <i data-lucide="eye" class="w-4 h-4"></i>
                     </button>
                   </div>
+                </div>
 
-                  <!-- Department Dropdown Container (collapsible) -->
-                  <div id="fac-dept-dropdown-wrap" class="hidden space-y-3 p-3 bg-slate-50 rounded-2xl border border-slate-200">
-                    <!-- Department Dropdown -->
-                    <div class="space-y-1.5">
-                      <label class="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                        <i data-lucide="building-2" class="w-3.5 h-3.5 text-indigo-600"></i>
-                        <span>Department</span>
-                      </label>
-                      <select 
-                        id="login-fac-dept" 
-                        onchange="coursePlanApp.onLoginDeptChange(this.value)" 
-                        class="w-full text-xs sm:text-sm px-3 py-2 border border-slate-300 rounded-xl bg-white font-bold text-slate-900 focus:border-indigo-600 focus:outline-none transition cursor-pointer"
-                      >
-                        ${this.departments.map(d => `
-                          <option value="${this.escapeHtml(d.name)}" ${d.name === currentDeptName ? 'selected' : ''}>
-                            ${this.escapeHtml(d.name)}
-                          </option>
-                        `).join('')}
-                      </select>
-                    </div>
+                <!-- Toggle for Department / Name Dropdown Helper -->
+                <div class="pt-0.5">
+                  <button 
+                    type="button" 
+                    onclick="document.getElementById('fac-dept-dropdown-wrap').classList.toggle('hidden');" 
+                    class="text-[11.5px] font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1.5 cursor-pointer py-1"
+                  >
+                    <i data-lucide="list-filter" class="w-3.5 h-3.5"></i>
+                    <span>Or sign in by selecting Department & Faculty Name</span>
+                    <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400"></i>
+                  </button>
+                </div>
 
-                    <!-- Faculty Name Dropdown (Dynamically updated based on selected dept) -->
-                    <div class="space-y-1.5">
-                      <label class="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                        <i data-lucide="user" class="w-3.5 h-3.5 text-indigo-600"></i>
-                        <span>Faculty Name</span>
-                      </label>
-                      <select 
-                        id="login-fac-name" 
-                        onchange="coursePlanApp.onLoginFacultyChange(this.value)" 
-                        class="w-full text-xs sm:text-sm px-3 py-2 border border-slate-300 bg-white rounded-xl font-bold text-slate-900 focus:border-indigo-600 focus:outline-none transition cursor-pointer"
-                      >
-                        ${facultyList.map(f => {
-      const name = typeof f === 'string' ? f : f.name;
-      return `<option value="${this.escapeHtml(name)}" ${name === currentFacName ? 'selected' : ''}>${this.escapeHtml(name)}</option>`;
-    }).join('')}
-                      </select>
-                    </div>
-                  </div>
-
-                  <!-- Password Field -->
-                  <div class="space-y-1.5">
-                    <div class="flex items-center justify-between">
-                      <label class="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                        <i data-lucide="lock" class="w-3.5 h-3.5 text-indigo-600"></i>
-                        <span>Password *</span>
-                      </label>
-                    </div>
-                    <div class="relative">
-                      <input 
-                        type="password" 
-                        id="login-fac-password" 
-                        required 
-                        class="w-full text-xs sm:text-sm px-3.5 py-2.5 border-2 border-slate-200 rounded-2xl bg-white font-mono font-bold text-slate-900 focus:border-indigo-600 focus:outline-none transition pr-10"
-                        placeholder="Enter your password"
-                        autocomplete="current-password"
-                      />
-                      <button 
-                        type="button" 
-                        onclick="coursePlanApp.togglePasswordVisibility('login-fac-password')" 
-                        class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
-                        title="Show/Hide Password"
-                      >
-                        <i data-lucide="eye" class="w-4 h-4"></i>
-                      </button>
-                    </div>
-                    <div class="text-[11px] text-slate-400 font-medium">
-                      Enter your College ERP credentials password.
-                    </div>
-                  </div>
-
-                  <!-- Submit Button -->
-                  <div class="pt-2">
-                    <button 
-                      type="submit" 
-                      id="login-submit-btn" 
-                      class="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-extrabold rounded-2xl shadow-lg shadow-indigo-600/30 transition flex items-center justify-center gap-2 cursor-pointer active:scale-98"
-                    >
-                      <span>Sign In to Faculty Portal</span>
-                      <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                    </button>
-                  </div>
-                </form>
-              ` : tab === 'hod' ? `
-                <!-- 2. HOD Login Form -->
-                <form onsubmit="event.preventDefault(); coursePlanApp.loginHOD(event);" class="space-y-4">
-                  <div class="space-y-1">
-                    <h2 class="text-lg font-black text-slate-900">Head of Department (HOD) Sign In</h2>
-                    <p class="text-xs text-slate-500 font-medium">Access your department review dashboard to approve or review faculty submissions.</p>
-                  </div>
-
+                <!-- Department Dropdown Container (collapsible) -->
+                <div id="fac-dept-dropdown-wrap" class="hidden space-y-3 p-3.5 bg-slate-50/80 rounded-2xl border border-slate-200 transition-all">
                   <!-- Department Dropdown -->
                   <div class="space-y-1.5">
                     <label class="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                      <i data-lucide="building-2" class="w-3.5 h-3.5 text-amber-600"></i>
-                      <span>Department *</span>
+                      <i data-lucide="building-2" class="w-3.5 h-3.5 text-indigo-600"></i>
+                      <span>Department</span>
                     </label>
                     <select 
-                      id="login-hod-dept" 
-                      class="w-full text-xs sm:text-sm px-3.5 py-2.5 border-2 border-slate-200 rounded-2xl bg-white font-bold text-slate-900 focus:border-amber-600 focus:outline-none transition cursor-pointer"
-                      required
+                      id="login-fac-dept" 
+                      onchange="coursePlanApp.onLoginDeptChange(this.value)" 
+                      class="w-full text-xs sm:text-sm px-3 py-2.5 border border-slate-300 rounded-xl bg-white font-bold text-slate-900 focus:border-indigo-600 focus:outline-none transition cursor-pointer"
                     >
                       ${this.departments.map(d => `
                         <option value="${this.escapeHtml(d.name)}" ${d.name === currentDeptName ? 'selected' : ''}>
@@ -2947,111 +2878,62 @@ class CoursePlanApp {
                     </select>
                   </div>
 
-                  <!-- Password Field -->
+                  <!-- Faculty Name Dropdown -->
                   <div class="space-y-1.5">
                     <label class="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                      <i data-lucide="lock" class="w-3.5 h-3.5 text-amber-600"></i>
-                      <span>HOD Password *</span>
+                      <i data-lucide="user" class="w-3.5 h-3.5 text-indigo-600"></i>
+                      <span>Faculty Name</span>
                     </label>
-                    <div class="relative">
-                      <input 
-                        type="password" 
-                        id="login-hod-password" 
-                        value="123" 
-                        required 
-                        class="w-full text-xs sm:text-sm px-3.5 py-2.5 border-2 border-slate-200 rounded-2xl bg-white font-mono font-bold text-slate-900 focus:border-amber-600 focus:outline-none transition pr-10"
-                        placeholder="Enter HOD password"
-                      />
-                      <button 
-                        type="button" 
-                        onclick="coursePlanApp.togglePasswordVisibility('login-hod-password')" 
-                        class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
-                      >
-                        <i data-lucide="eye" class="w-4 h-4"></i>
-                      </button>
-                    </div>
-                  </div>
-
-                  <!-- Submit Button -->
-                  <div class="pt-2">
-                    <button 
-                      type="submit" 
-                      id="login-hod-btn" 
-                      onclick="coursePlanApp.loginHOD(event)"
-                      class="w-full py-3.5 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-extrabold rounded-2xl shadow-lg shadow-amber-600/30 transition flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                    <select 
+                      id="login-fac-name" 
+                      onchange="coursePlanApp.onLoginFacultyChange(this.value)" 
+                      class="w-full text-xs sm:text-sm px-3 py-2.5 border border-slate-300 bg-white rounded-xl font-bold text-slate-900 focus:border-indigo-600 focus:outline-none transition cursor-pointer"
                     >
-                      <span>Sign In as Head of Department</span>
-                      <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                    </button>
+                      ${facultyList.map(f => {
+                        const name = typeof f === 'string' ? f : f.name;
+                        return `<option value="${this.escapeHtml(name)}" ${name === currentFacName ? 'selected' : ''}>${this.escapeHtml(name)}</option>`;
+                      }).join('')}
+                    </select>
                   </div>
-                </form>
-              ` : `
-                <!-- 3. Admin Login Form -->
-                <form onsubmit="event.preventDefault(); coursePlanApp.loginAdmin(event);" class="space-y-4">
-                  <div class="space-y-1">
-                    <h2 class="text-lg font-black text-slate-900">IQAC Admin Portal</h2>
-                    <p class="text-xs text-slate-500 font-medium">Institution-wide course plan monitoring, analytics, and department oversight.</p>
-                  </div>
+                </div>
 
-                  <!-- Username Field -->
-                  <div class="space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                      <i data-lucide="shield" class="w-3.5 h-3.5 text-purple-600"></i>
-                      <span>Admin Username *</span>
-                    </label>
-                    <input 
-                      type="text" 
-                      id="login-admin-user" 
-                      value="admin" 
-                      required 
-                      class="w-full text-xs sm:text-sm px-3.5 py-2.5 border-2 border-slate-200 rounded-2xl bg-white font-bold text-slate-900 focus:border-purple-600 focus:outline-none transition"
-                      placeholder="Username"
-                    />
-                  </div>
+                <!-- Submit Button -->
+                <div class="pt-2">
+                  <button 
+                    type="submit" 
+                    id="login-submit-btn" 
+                    class="w-full py-3.5 bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-700 hover:from-indigo-700 hover:to-blue-700 text-white font-extrabold text-sm rounded-2xl shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                  >
+                    <span>Sign In to Portal</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </form>
 
-                  <!-- Password Field -->
-                  <div class="space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                      <i data-lucide="lock" class="w-3.5 h-3.5 text-purple-600"></i>
-                      <span>Admin Password *</span>
-                    </label>
-                    <div class="relative">
-                      <input 
-                        type="password" 
-                        id="login-admin-password" 
-                        required 
-                        class="w-full text-xs sm:text-sm px-3.5 py-2.5 border-2 border-slate-200 rounded-2xl bg-white font-mono font-bold text-slate-900 focus:border-purple-600 focus:outline-none transition pr-10"
-                        placeholder="Admin password"
-                      />
-                      <button 
-                        type="button" 
-                        onclick="coursePlanApp.togglePasswordVisibility('login-admin-password')" 
-                        class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
-                      >
-                        <i data-lucide="eye" class="w-4 h-4"></i>
-                      </button>
-                    </div>
+              <!-- Quick Access Hints Box -->
+              <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/80 text-[11px] text-slate-600 space-y-1.5">
+                <div class="font-extrabold text-slate-800 flex items-center gap-1.5">
+                  <i data-lucide="info" class="w-3.5 h-3.5 text-indigo-600"></i>
+                  <span>Quick Access Guide:</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[10.5px]">
+                  <div class="flex items-start gap-1">
+                    <span class="text-indigo-600 font-bold">•</span>
+                    <span><strong>Faculty & HOD:</strong> Staff Code (e.g. <code class="bg-white px-1 py-0.5 rounded border border-slate-200 font-mono">24CAI51</code>)</span>
                   </div>
-
-                  <!-- Submit Button -->
-                  <div class="pt-2">
-                    <button 
-                      type="submit" 
-                      id="login-admin-btn" 
-                      onclick="coursePlanApp.loginAdmin(event)"
-                      class="w-full py-3.5 bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 text-white font-extrabold rounded-2xl shadow-lg shadow-purple-600/30 transition flex items-center justify-center gap-2 cursor-pointer active:scale-98"
-                    >
-                      <span>Sign In as IQAC Admin</span>
-                      <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                    </button>
+                  <div class="flex items-start gap-1">
+                    <span class="text-indigo-600 font-bold">•</span>
+                    <span><strong>IQAC Admin:</strong> Username <code class="bg-white px-1 py-0.5 rounded border border-slate-200 font-mono">admin</code></span>
                   </div>
-                </form>
-              `}
-
+                </div>
+                <div class="text-[10px] text-slate-500 pt-0.5 border-t border-slate-200/60">
+                  🏛️ Heads of Department (HOD) are automatically detected and granted departmental review access.
+                </div>
+              </div>
             </div>
 
             <!-- Footer Note -->
-            <div class="bg-slate-50 px-6 py-3.5 border-t border-slate-200 text-center text-[11px] text-slate-500 font-medium">
+            <div class="bg-slate-50/90 px-6 py-3.5 border-t border-slate-200 text-center text-[11px] text-slate-500 font-medium">
               St. Joseph’s College (Autonomous), Tiruchirappalli • Internal Quality Assurance Cell (IQAC)
             </div>
           </div>
@@ -3093,18 +2975,23 @@ class CoursePlanApp {
     el.type = el.type === 'password' ? 'text' : 'password';
   }
 
-  async loginFaculty(e) {
+  async login(e) {
     if (e && e.preventDefault) e.preventDefault();
-    const facultyId = (document.getElementById('login-fac-id')?.value || '').trim();
-    const dept = document.getElementById('login-fac-dept')?.value || this.selectedLoginDept;
-    const fac = document.getElementById('login-fac-name')?.value || this.selectedLoginFaculty;
-    const pass = (document.getElementById('login-fac-password')?.value || '').trim();
+    const usernameInput = document.getElementById('login-fac-id') || document.getElementById('login-admin-user');
+    const passwordInput = document.getElementById('login-fac-password') || document.getElementById('login-admin-password') || document.getElementById('login-hod-password');
+    const deptSelect = document.getElementById('login-fac-dept');
+    const facSelect = document.getElementById('login-fac-name');
     const errEl = document.getElementById('login-error-msg');
-    const btn = document.getElementById('login-submit-btn');
+    const btn = document.getElementById('login-submit-btn') || document.getElementById('login-admin-btn') || document.getElementById('login-hod-btn');
 
-    if (!facultyId && (!dept || !fac)) {
+    const loginId = (usernameInput?.value || '').trim();
+    const pass = (passwordInput?.value || '').trim();
+    const dept = deptSelect?.value || this.selectedLoginDept;
+    const fac = facSelect?.value || this.selectedLoginFaculty;
+
+    if (!loginId && (!dept || !fac)) {
       if (errEl) {
-        errEl.querySelector('.error-text').textContent = 'Please enter your Staff Code / Faculty ID (e.g. 24CAI51) or select Department & Faculty Name.';
+        errEl.querySelector('.error-text').textContent = 'Please enter your Staff Code (e.g. 24CAI51), Admin username (admin), or select Department & Faculty Name.';
         errEl.classList.remove('hidden');
       }
       return;
@@ -3124,11 +3011,12 @@ class CoursePlanApp {
 
     try {
       const payload = {
-        role: 'faculty',
+        role: 'unified',
         password: pass
       };
-      if (facultyId) {
-        payload.faculty_id = facultyId.toUpperCase();
+      if (loginId) {
+        payload.username = loginId;
+        payload.faculty_id = loginId;
       } else {
         payload.department_name = dept;
         payload.faculty_name = fac;
@@ -3142,11 +3030,18 @@ class CoursePlanApp {
       const data = await res.json();
       if (data.success && data.user) {
         this.currentUser = data.user;
-        this.selectedDept = data.user.department_name;
-        this.navigateTo('/course-plan/dashboard');
+        if (data.user.role === 'admin') {
+          this.navigateTo('/course-plan/admin');
+        } else if (data.user.role === 'hod') {
+          this.selectedDept = data.user.department_name;
+          this.navigateTo('/course-plan/hod');
+        } else {
+          this.selectedDept = data.user.department_name;
+          this.navigateTo('/course-plan/dashboard');
+        }
       } else {
         if (errEl) {
-          errEl.querySelector('.error-text').textContent = data.error || 'Authentication failed. Please verify credentials.';
+          errEl.querySelector('.error-text').textContent = data.error || 'Authentication failed. Please check credentials.';
           errEl.classList.remove('hidden');
         }
       }
@@ -3159,112 +3054,16 @@ class CoursePlanApp {
     } finally {
       if (btn) {
         btn.disabled = false;
-        btn.innerHTML = `<span>Sign In to Faculty Portal</span> <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>`;
+        btn.innerHTML = `<span>Sign In to Portal</span> <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>`;
         if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
       }
     }
   }
 
-  async loginHOD(e) {
-    if (e && e.preventDefault) e.preventDefault();
-    const dept = document.getElementById('login-hod-dept')?.value;
-    const pass = document.getElementById('login-hod-password')?.value || '123';
-    const errEl = document.getElementById('login-error-msg');
-    const btn = document.getElementById('login-hod-btn');
-
-    if (!dept) {
-      if (errEl) {
-        errEl.querySelector('.error-text').textContent = 'Please select your department.';
-        errEl.classList.remove('hidden');
-      }
-      return;
-    }
-
-    if (btn) {
-      btn.disabled = true;
-      btn.innerHTML = `<span class="inline-block animate-spin mr-2">⏳</span> Signing in...`;
-    }
-
-    try {
-      const res = await fetch('api/course_plan.php?action=login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          role: 'hod',
-          department_name: dept,
-          password: pass
-        })
-      });
-      const data = await res.json();
-      if (data.success && data.user) {
-        this.currentUser = data.user;
-        this.selectedDept = data.user.department_name;
-        this.navigateTo('/course-plan/hod');
-      } else {
-        if (errEl) {
-          errEl.querySelector('.error-text').textContent = data.error || 'HOD Authentication failed.';
-          errEl.classList.remove('hidden');
-        }
-      }
-    } catch (err) {
-      if (errEl) {
-        errEl.querySelector('.error-text').textContent = 'Network or server error.';
-        errEl.classList.remove('hidden');
-      }
-    } finally {
-      if (btn) {
-        btn.disabled = false;
-        btn.innerHTML = `<span>Sign In as Head of Department</span> <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>`;
-        if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
-      }
-    }
-  }
-
-  async loginAdmin(e) {
-    if (e && e.preventDefault) e.preventDefault();
-    const username = document.getElementById('login-admin-user')?.value || 'admin';
-    const pass = document.getElementById('login-admin-password')?.value || '';
-    const errEl = document.getElementById('login-error-msg');
-    const btn = document.getElementById('login-admin-btn');
-
-    if (btn) {
-      btn.disabled = true;
-      btn.innerHTML = `<span class="inline-block animate-spin mr-2">⏳</span> Signing in...`;
-    }
-
-    try {
-      const res = await fetch('api/course_plan.php?action=login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          role: 'admin',
-          username: username,
-          password: pass
-        })
-      });
-      const data = await res.json();
-      if (data.success && data.user) {
-        this.currentUser = data.user;
-        this.navigateTo('/course-plan/admin');
-      } else {
-        if (errEl) {
-          errEl.querySelector('.error-text').textContent = data.error || 'Admin Authentication failed.';
-          errEl.classList.remove('hidden');
-        }
-      }
-    } catch (err) {
-      if (errEl) {
-        errEl.querySelector('.error-text').textContent = 'Network or server error.';
-        errEl.classList.remove('hidden');
-      }
-    } finally {
-      if (btn) {
-        btn.disabled = false;
-        btn.innerHTML = `<span>Sign In as IQAC Admin</span> <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>`;
-        if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
-      }
-    }
-  }
+  // Backward-compatible aliases
+  async loginFaculty(e) { return this.login(e); }
+  async loginHOD(e) { return this.login(e); }
+  async loginAdmin(e) { return this.login(e); }
 
   async loadPlanForEdit(id) {
     try {
