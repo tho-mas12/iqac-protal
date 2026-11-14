@@ -262,6 +262,7 @@ class CoursePlanApp {
     }
 
     if (r.name === 'view' && r.id) {
+      this.printSource = 'dashboard';
       await this.loadPlanForPrint(r.id);
       this.viewMode = 'print';
       this.render();
@@ -7351,23 +7352,61 @@ class CoursePlanApp {
     const icts = plan.ict_integration || [];
     const decl = plan.declaration || {};
 
+    const isFromForm = (this.printSource === 'form');
+
     return `
       <div class="space-y-6 w-full animate-fadeIn">
         <!-- Controls (Hidden on print) -->
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between gap-4 no-print">
-          <button 
-            type="button" 
-            onclick="coursePlanApp.backToDashboard()" 
-            class="text-xs px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition flex items-center gap-1.5"
-          >
-            <i data-lucide="arrow-left" class="w-4 h-4"></i>
-            <span>Back</span>
-          </button>
-          <div class="flex items-center gap-2">
+        <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3 no-print">
+          <div class="flex items-center gap-2 flex-wrap">
+            ${isFromForm ? `
+              <button 
+                type="button" 
+                onclick="coursePlanApp.backToForm()" 
+                class="text-xs px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
+                title="Return to the Course Plan Declaration tab to continue editing or submit"
+              >
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                <span>← Back to Declaration &amp; Form</span>
+              </button>
+              <button 
+                type="button" 
+                onclick="coursePlanApp.backToDashboard()" 
+                class="text-xs px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition flex items-center gap-1.5 border border-slate-200 cursor-pointer"
+                title="Go to Faculty Dashboard (your draft is automatically saved)"
+              >
+                <i data-lucide="layout-dashboard" class="w-3.5 h-3.5 text-slate-500"></i>
+                <span>Dashboard</span>
+              </button>
+            ` : `
+              <button 
+                type="button" 
+                onclick="coursePlanApp.backToDashboard()" 
+                class="text-xs px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition flex items-center gap-1.5 border border-slate-200 cursor-pointer"
+                title="Back to Dashboard"
+              >
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                <span>Back to Dashboard</span>
+              </button>
+            `}
+          </div>
+
+          <div class="flex items-center gap-2 flex-wrap">
+            ${isFromForm && this.activePlan && this.activePlan.status !== 'Submitted' && this.activePlan.hod_status !== 'Approved' ? `
+              <button 
+                type="button" 
+                onclick="coursePlanApp.saveCurrentPlan('Submitted')" 
+                class="text-xs px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl transition flex items-center gap-1.5 shadow-md shadow-emerald-600/25 active:scale-95 cursor-pointer"
+                title="Submit this course plan directly to HOD"
+              >
+                <i data-lucide="send" class="w-4 h-4"></i>
+                <span>Submit to HOD</span>
+              </button>
+            ` : ''}
             <button 
               type="button" 
               onclick="window.print()" 
-              class="text-xs px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition flex items-center gap-2 shadow-md shadow-indigo-600/25 active:scale-95 cursor-pointer"
+              class="text-xs px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition flex items-center gap-2 shadow-md shadow-indigo-600/25 active:scale-95 cursor-pointer"
             >
               <i data-lucide="printer" class="w-4 h-4"></i>
               <span>Print / Save as PDF</span>
@@ -8100,26 +8139,38 @@ class CoursePlanApp {
   }
 
   async previewPlan(id) {
+    this.printSource = 'dashboard';
     this.navigateTo(`/course-plan/view?id=${id}`);
   }
 
-  previewCurrentPlan() {
+  async previewCurrentPlan() {
     this.harvestFormInputs();
     if (this.activeFormTab !== 'declaration') {
       alert('🔒 Print Preview is enabled after reaching Part-IV (Declaration & HOD Approval). Please complete each section and proceed to Part-IV.');
       return;
     }
-    const v = this.validatePart4();
-    if (!v.valid) {
-      this.showValidationFeedback('section-declaration', v.errors, v.invalidEls);
-      return;
-    }
+
+    // Auto-save draft before entering Print Preview so no progress is ever lost
+    await this.silentSaveDraft();
+
+    this.printSource = 'form';
+    this.printReturnTab = 'declaration';
     this.viewMode = 'print';
     this.render();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  backToDashboard() {
+  backToForm() {
+    this.viewMode = 'form';
+    this.activeFormTab = this.printReturnTab || 'declaration';
+    this.render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async backToDashboard() {
+    if (this.viewMode === 'form' && this.activePlan) {
+      await this.silentSaveDraft();
+    }
     if (!this.currentUser) {
       this.navigateTo('/course-plan/login');
       return;
@@ -8131,6 +8182,65 @@ class CoursePlanApp {
     } else {
       this.navigateTo('/course-plan/dashboard');
     }
+  }
+
+  async silentSaveDraft() {
+    if (!this.activePlan) return;
+    try {
+      this.harvestFormInputs();
+      if (!this.activePlan.status || this.activePlan.status === 'Draft') {
+        this.activePlan.status = 'Draft';
+      }
+
+      // 1. Immediately persist to localStorage
+      try {
+        localStorage.setItem('CP_ACTIVE_PLAN_DRAFT', JSON.stringify(this.activePlan));
+      } catch (e) {}
+
+      // 2. Persist to server database
+      const res = await fetch('api/course_plan.php?action=save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(this.activePlan)
+      });
+      const json = await res.json();
+      if (json && json.success) {
+        if (json.id && (!this.activePlan.id || this.activePlan.id === 'new')) {
+          this.activePlan.id = json.id;
+        }
+        const idx = this.plans.findIndex(p => String(p.id) === String(this.activePlan.id));
+        if (idx !== -1) {
+          this.plans[idx] = JSON.parse(JSON.stringify(this.activePlan));
+        } else {
+          this.plans.unshift(JSON.parse(JSON.stringify(this.activePlan)));
+        }
+        this.showToast('✓ Progress auto-saved as Draft', 'success');
+      }
+    } catch (err) {
+      console.warn('Auto-save draft warning:', err);
+    }
+  }
+
+  showToast(msg, type = 'success') {
+    let toast = document.getElementById('cp-global-toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'cp-global-toast';
+      document.body.appendChild(toast);
+    }
+    const bgClass = (type === 'error') ? 'bg-rose-700 border-rose-400' : 'bg-indigo-700 border-indigo-400';
+    toast.className = `fixed bottom-6 right-6 z-50 ${bgClass} text-white px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-2.5 border-2 text-xs font-bold animate-fadeIn`;
+    toast.innerHTML = `
+      <i data-lucide="${type === 'error' ? 'alert-circle' : 'check'}" class="w-4 h-4 text-white"></i>
+      <span>${msg}</span>
+      <button type="button" onclick="this.parentElement.remove()" class="text-white/70 hover:text-white font-bold ml-1">✕</button>
+    `;
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
+    }
+    setTimeout(() => {
+      if (toast && toast.parentElement) toast.remove();
+    }, 3500);
   }
 
   switchDepartment(deptName) {
