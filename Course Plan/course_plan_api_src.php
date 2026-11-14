@@ -82,11 +82,36 @@ try {
                 exit;
             }
 
+            // Check if this faculty member is an HOD from hod_list.json
+            $isHod = false;
+            $hodDept = $deptName;
+
+            $hodListFile = __DIR__ . '/../data/hod_list.json';
+            if (file_exists($hodListFile)) {
+                $hodJson = json_decode(file_get_contents($hodListFile), true);
+                if (is_array($hodJson)) {
+                    $curFid = $authRow ? $authRow['faculty_id'] : $facultyId;
+                    foreach ($hodJson as $hod) {
+                        $matchId = !empty($hod['faculty_id']) && $curFid && (strcasecmp(trim($hod['faculty_id']), trim($curFid)) === 0);
+                        $matchName = !empty($hod['faculty_name']) && $facName && (strcasecmp(trim($hod['faculty_name']), trim($facName)) === 0);
+                        if ($matchId || $matchName) {
+                            $isHod = true;
+                            if (!empty($hod['department_name'])) {
+                                $hodDept = $hod['department_name'];
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+
             $_SESSION['cp_user'] = [
                 'id' => $authRow ? (int)$authRow['id'] : null,
                 'faculty_id' => $authRow ? $authRow['faculty_id'] : $facultyId,
                 'username' => $authRow ? ($authRow['faculty_id'] ?: $authRow['faculty_email'] ?: $facName) : $facName,
                 'role' => 'faculty',
+                'is_hod' => $isHod,
+                'hod_department' => $isHod ? $hodDept : null,
                 'department_name' => $deptName,
                 'faculty_name' => $facName,
                 'display_name' => $facName,
@@ -96,7 +121,7 @@ try {
             echo json_encode([
                 'success' => true,
                 'user' => $_SESSION['cp_user'],
-                'message' => 'Logged in successfully as ' . $facName
+                'message' => 'Logged in successfully as ' . $facName . ($isHod ? ' (Head of Department)' : '')
             ]);
             exit;
         }
@@ -213,11 +238,23 @@ try {
 
         // Role-based filtering
         if ($currentUser && $currentUser['role'] === 'faculty') {
-            // Strictly show only the logged-in faculty member's course plans and plans shared with them
-            $sql .= " AND ((faculty_name = :fac AND department_name = :dept) OR (is_shared_course = 1 AND shared_faculty_name LIKE :fac_like))";
-            $params[':fac'] = $currentUser['faculty_name'];
-            $params[':dept'] = $currentUser['department_name'];
-            $params[':fac_like'] = '%' . $currentUser['faculty_name'] . '%';
+            $viewMode = isset($_GET['view']) ? trim($_GET['view']) : '';
+            if ($viewMode === 'hod' && !empty($currentUser['is_hod'])) {
+                // HOD viewing their department status & submissions
+                $targetDept = !empty($currentUser['hod_department']) ? $currentUser['hod_department'] : $currentUser['department_name'];
+                $sql .= " AND department_name = :dept";
+                $params[':dept'] = $targetDept;
+                if ($filterStatus && $filterStatus !== 'all') {
+                    $sql .= " AND hod_status = :hstatus";
+                    $params[':hstatus'] = $filterStatus;
+                }
+            } else {
+                // Strictly show only the logged-in faculty member's course plans and plans shared with them
+                $sql .= " AND ((faculty_name = :fac AND department_name = :dept) OR (is_shared_course = 1 AND shared_faculty_name LIKE :fac_like))";
+                $params[':fac'] = $currentUser['faculty_name'];
+                $params[':dept'] = $currentUser['department_name'];
+                $params[':fac_like'] = '%' . $currentUser['faculty_name'] . '%';
+            }
         } else if ($currentUser && $currentUser['role'] === 'hod') {
             // Strictly filter to HOD's department
             $sql .= " AND department_name = :dept";
@@ -264,7 +301,8 @@ try {
 
         $id = isset($data['id']) ? (int)$data['id'] : 0;
         $decision = isset($data['decision']) ? trim($data['decision']) : ''; // 'Approved' or 'Revision Needed'
-        $hodName = isset($data['hod_name']) ? trim($data['hod_name']) : '';
+        $currentUser = isset($_SESSION['cp_user']) ? $_SESSION['cp_user'] : null;
+        $hodName = isset($data['hod_name']) && trim($data['hod_name']) ? trim($data['hod_name']) : ($currentUser ? ($currentUser['faculty_name'] ?: $currentUser['display_name']) : 'Head of the Department');
         $hodComments = isset($data['hod_comments']) ? trim($data['hod_comments']) : '';
 
         if (!$id || !$decision) {

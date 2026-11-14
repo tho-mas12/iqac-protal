@@ -1,0 +1,14 @@
+[
+  {
+    "department_name": "Artificial Intelligence",
+    "faculty_name": "Mr. A. Charles",
+    "faculty_id": "24CAI51",
+    "designation": "Head / Coordinator"
+  },
+  {
+    "department_name": "Computer Science",
+    "faculty_name": "Dr. V. Jude Nirmal",
+    "faculty_id": "20CSC01",
+    "designation": "Head of the Department"
+  }
+]
