@@ -9167,59 +9167,93 @@ class CoursePlanApp {
 
   // ================= 6. HOD REVIEW MODAL & APPROVAL =================
   async openHODReviewModal(planId) {
-    const plan = this.plans.find(p => p.id === planId);
-    if (!plan) return;
+    if (!planId) {
+      console.warn('openHODReviewModal called with missing planId');
+      return;
+    }
+    document.getElementById('hod-review-modal')?.remove();
 
-    // Fetch full plan
-    const res = await fetch(`api/course_plan.php?action=get&id=${planId}`);
-    const json = await res.json();
-    const fullPlan = (json.success && json.data) ? json.data : plan;
+    // Find in local plans cache if available (using string-safe comparison)
+    const cachedPlan = (this.plans || []).find(p => String(p.id) === String(planId));
+
+    let fullPlan = cachedPlan || { id: planId };
+    try {
+      const res = await fetch(`api/course_plan.php?action=get&id=${encodeURIComponent(planId)}`);
+      const json = await res.json();
+      if (json && json.success && json.data) {
+        fullPlan = json.data;
+      }
+    } catch (e) {
+      console.warn('Could not fetch full plan from API, using cached:', e);
+    }
+
+    if (!fullPlan || (!fullPlan.id && !cachedPlan)) {
+      alert('Course plan details could not be loaded.');
+      return;
+    }
+
+    // Determine HOD display name safely
+    let defaultHODName = fullPlan.hod_name || '';
+    if (!defaultHODName && this.currentUser) {
+      defaultHODName = (this.currentUser.display_name || this.currentUser.faculty_name || 'Head of the Department')
+        .replace(/^HOD\s*-\s*/i, '')
+        .replace(/^HOD\s+/i, '');
+    }
+
+    const cosCount = Array.isArray(fullPlan.course_outcomes) 
+      ? fullPlan.course_outcomes.length 
+      : (typeof fullPlan.course_outcomes === 'object' && fullPlan.course_outcomes ? Object.keys(fullPlan.course_outcomes).length : 0);
+
+    const subDate = (fullPlan.declaration && typeof fullPlan.declaration === 'object' && fullPlan.declaration.submission_date)
+      ? fullPlan.declaration.submission_date
+      : (fullPlan.updated_at || fullPlan.created_at || '—');
 
     const modalHtml = `
       <div id="hod-review-modal" class="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
-        <div class="bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 w-full max-w-3xl overflow-hidden flex flex-col max-h-[92vh]">
+        <div class="bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 w-full max-w-3xl overflow-hidden flex flex-col max-h-[92vh]" onclick="event.stopPropagation()">
           
           <div class="p-4 sm:p-6 border-b border-slate-200 flex items-center justify-between bg-slate-50">
             <div>
-              <div class="text-[10px] uppercase font-bold text-amber-700">HOD Verification & Review</div>
-              <h3 class="text-base font-extrabold text-slate-900">${fullPlan.course_code}: ${fullPlan.course_title}</h3>
-              <p class="text-xs text-slate-500">Submitted by <strong>${fullPlan.faculty_name}</strong> for ${fullPlan.department_name}</p>
+              <div class="text-[10px] uppercase font-bold text-amber-700">HOD Verification &amp; Review</div>
+              <h3 class="text-base font-extrabold text-slate-900">${this.escapeHtml(fullPlan.course_code || '—')}: ${this.escapeHtml(fullPlan.course_title || 'Untitled Course')}</h3>
+              <p class="text-xs text-slate-500">Submitted by <strong>${this.escapeHtml(fullPlan.faculty_name || 'Faculty Member')}</strong> for ${this.escapeHtml(fullPlan.department_name || '')}</p>
             </div>
-            <button type="button" onclick="document.getElementById('hod-review-modal').remove()" class="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-200">
+            <button type="button" onclick="document.getElementById('hod-review-modal')?.remove()" class="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-200 cursor-pointer">
               <i data-lucide="x" class="w-5 h-5"></i>
             </button>
           </div>
 
           <div class="p-6 overflow-y-auto space-y-4 text-xs">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 p-3 bg-slate-50 rounded-xl border border-slate-200">
-              <div><span class="font-bold text-slate-600">Programme:</span> ${fullPlan.programme || '—'}</div>
-              <div><span class="font-bold text-slate-600">Year & Class:</span> ${fullPlan.year_class || '—'}</div>
-              <div><span class="font-bold text-slate-600">Teaching Hours:</span> ${fullPlan.teaching_hours || '—'}</div>
-              <div><span class="font-bold text-slate-600">Credits:</span> ${fullPlan.credits || '—'}</div>
-              <div><span class="font-bold text-slate-600">Course Outcomes:</span> ${(fullPlan.course_outcomes || []).length} COs mapped</div>
-              <div><span class="font-bold text-slate-600">Submission Date:</span> ${fullPlan.declaration?.submission_date || fullPlan.updated_at}</div>
+              <div><span class="font-bold text-slate-600">Programme:</span> ${this.escapeHtml(fullPlan.programme || '—')}</div>
+              <div><span class="font-bold text-slate-600">Year &amp; Class:</span> ${this.escapeHtml(fullPlan.year_class || '—')}</div>
+              <div><span class="font-bold text-slate-600">Teaching Hours:</span> ${this.escapeHtml(fullPlan.teaching_hours || '—')}</div>
+              <div><span class="font-bold text-slate-600">Credits:</span> ${this.escapeHtml(fullPlan.credits || '—')}</div>
+              <div><span class="font-bold text-slate-600">Course Outcomes:</span> ${cosCount} COs mapped</div>
+              <div><span class="font-bold text-slate-600">Submission Date:</span> ${this.escapeHtml(subDate)}</div>
             </div>
 
             <div>
               <label class="block text-xs font-bold text-slate-700 mb-1">Head of the Department Name *</label>
-              <input type="text" id="hod-review-name" value="${fullPlan.hod_name || (this.currentUser ? this.currentUser.display_name.replace('HOD - ', '') : '')}" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-bold" />
+              <input type="text" id="hod-review-name" value="${this.escapeHtml(defaultHODName)}" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-bold bg-white text-slate-900 focus:ring-2 focus:ring-amber-500" required />
             </div>
 
             <div>
               <label class="block text-xs font-bold text-slate-700 mb-1">Reviewer Remarks / Approval Notes</label>
-              <textarea id="hod-review-comments" rows="3" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl" placeholder="Course plan reviewed and verified against syllabus standards...">${fullPlan.hod_comments || ''}</textarea>
+              <textarea id="hod-review-comments" rows="3" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl bg-white text-slate-900 focus:ring-2 focus:ring-amber-500" placeholder="Course plan reviewed and verified against syllabus standards...">${this.escapeHtml(fullPlan.hod_remarks || fullPlan.hod_comments || '')}</textarea>
             </div>
 
-            <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-[11px] text-emerald-800">
-              <strong>Institutional Assurance:</strong> Upon approving, this course plan will be certified with your HOD approval timestamp and forwarded directly to the central IQAC dashboard.
+            <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-[11px] text-emerald-800 flex items-center gap-2">
+              <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+              <span><strong>Institutional Assurance:</strong> Upon approving, this course plan will be certified with your HOD approval timestamp and forwarded directly to the central IQAC dashboard.</span>
             </div>
           </div>
 
           <div class="p-3.5 sm:p-5 border-t border-slate-200 bg-slate-50 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
             <button 
               type="button" 
-              onclick="coursePlanApp.previewPlan(${fullPlan.id})" 
-              class="px-4 py-2 bg-white text-slate-700 font-bold border border-slate-300 rounded-xl text-xs hover:bg-slate-100 flex items-center justify-center gap-1.5 w-full sm:w-auto"
+              onclick="coursePlanApp.previewPlan('${fullPlan.id}')" 
+              class="px-4 py-2 bg-white text-slate-700 font-bold border border-slate-300 rounded-xl text-xs hover:bg-slate-100 flex items-center justify-center gap-1.5 w-full sm:w-auto cursor-pointer"
             >
               <i data-lucide="eye" class="w-3.5 h-3.5"></i>
               <span>View Document Preview</span>
@@ -9228,18 +9262,18 @@ class CoursePlanApp {
             <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap w-full sm:w-auto">
               <button 
                 type="button" 
-                onclick="coursePlanApp.submitHODDecision(${fullPlan.id}, 'Revision Needed')" 
-                class="flex-1 sm:flex-initial px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold rounded-xl text-xs transition border border-rose-200 text-center"
+                onclick="coursePlanApp.submitHODDecision('${fullPlan.id}', 'Revision Needed')" 
+                class="flex-1 sm:flex-initial px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold rounded-xl text-xs transition border border-rose-200 text-center cursor-pointer"
               >
                 Request Revision
               </button>
               <button 
                 type="button" 
-                onclick="coursePlanApp.submitHODDecision(${fullPlan.id}, 'Approved')" 
-                class="flex-1 sm:flex-initial px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/25"
+                onclick="coursePlanApp.submitHODDecision('${fullPlan.id}', 'Approved')" 
+                class="flex-1 sm:flex-initial px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/25 cursor-pointer"
               >
                 <i data-lucide="check-check" class="w-4 h-4"></i>
-                <span>Approve</span>
+                <span>Approve &amp; Certify</span>
               </button>
             </div>
           </div>
@@ -9249,12 +9283,19 @@ class CoursePlanApp {
     `;
 
     document.body.insertAdjacentHTML('beforeend', modalHtml);
-    if (window.lucide) lucide.createIcons();
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
+    }
   }
 
   async submitHODDecision(planId, decision) {
     const hodName = document.getElementById('hod-review-name')?.value || '';
     const hodComments = document.getElementById('hod-review-comments')?.value || '';
+    const modalEl = document.getElementById('hod-review-modal');
+
+    // Show loading indicator on buttons
+    const btns = modalEl ? modalEl.querySelectorAll('button') : [];
+    btns.forEach(b => { b.disabled = true; });
 
     try {
       const res = await fetch('api/course_plan.php?action=hod_action', {
@@ -9265,14 +9306,17 @@ class CoursePlanApp {
       const json = await res.json();
       if (json.success) {
         alert(json.message || 'Decision recorded successfully.');
-        document.getElementById('hod-review-modal')?.remove();
-        this.fetchPlans().then(() => this.render());
+        modalEl?.remove();
+        await this.fetchPlans();
+        this.render();
       } else {
         alert(json.error || 'Failed to submit decision.');
+        btns.forEach(b => { b.disabled = false; });
       }
     } catch (e) {
       console.error(e);
-      alert('Error communicating with server.');
+      alert('Error communicating with server: ' + e.message);
+      btns.forEach(b => { b.disabled = false; });
     }
   }
 
