@@ -6214,12 +6214,19 @@ class CoursePlanApp {
         <!-- ================= PART I SECTION ================= -->
         <div id="section-part1" class="${this.activeFormTab === 'part1' ? '' : 'hidden'} space-y-6">
           <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs space-y-6">
-            <div class="border-b border-slate-200 pb-3 flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <h3 class="text-sm font-black text-white uppercase tracking-wide flex items-center gap-2"><i data-lucide="book-open" class="w-4 h-4 text-amber-300"></i><span>Part-I: Course Information</span></h3>
-                <p class="text-[11px] text-slate-500">General details & Course Outcomes (COs) mapped to K-Levels</p>
+            <div class="border-b-2 border-indigo-100 pb-4 mb-3 flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-indigo-50 via-slate-50 to-indigo-50/40 -mx-6 -mt-6 px-6 py-4 rounded-t-2xl border-t-4 border-t-indigo-600">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-xs shrink-0">
+                  <i data-lucide="book-open" class="w-4 h-4 text-white"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm sm:text-base font-black text-indigo-950 uppercase tracking-wide flex items-center gap-2">
+                    <span>Part-I: Course Information</span>
+                  </h3>
+                  <p class="text-[11px] text-slate-600 font-medium">General details &amp; Course Outcomes (COs) mapped to K-Levels</p>
+                </div>
               </div>
-              <span class="text-[10.5px] bg-rose-50 text-rose-700 font-black px-2.5 py-1 rounded-lg border border-rose-200 flex items-center gap-1">
+              <span class="text-[10.5px] bg-rose-50 text-rose-700 font-black px-2.5 py-1 rounded-lg border border-rose-200 flex items-center gap-1 shadow-2xs">
                 <i data-lucide="alert-circle" class="w-3.5 h-3.5 text-rose-600"></i> All Fields Mandatory *
               </span>
             </div>
@@ -6230,7 +6237,7 @@ class CoursePlanApp {
 
             <!-- A. General Details -->
             <div class="space-y-4">
-              <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-indigo-100 text-indigo-950 font-black text-xs border-l-4 border-indigo-600 shadow-2xs uppercase tracking-wider"><i data-lucide="info" class="w-3.5 h-3.5 text-indigo-700"></i><span>A. General Details</span></div>
+              <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-indigo-700 text-white font-black text-xs shadow-xs uppercase tracking-wider"><i data-lucide="info" class="w-3.5 h-3.5 text-amber-300"></i><span>A. General Details</span></div>
               
               <!-- 1. Semester, Programme, Year & Class, Section in ONE LINE -->
               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -6558,7 +6565,7 @@ class CoursePlanApp {
             <div class="space-y-3 pt-4 border-t border-slate-100">
               <div class="flex items-center justify-between">
                 <div>
-                  <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-indigo-100 text-indigo-950 font-black text-xs border-l-4 border-indigo-600 shadow-2xs uppercase tracking-wider"><i data-lucide="target" class="w-3.5 h-3.5 text-indigo-700"></i><span>B. Course Outcomes (COs)</span></div>
+                  <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-indigo-700 text-white font-black text-xs shadow-xs uppercase tracking-wider"><i data-lucide="target" class="w-3.5 h-3.5 text-amber-300"></i><span>B. Course Outcomes (COs) &amp; Bloom's Levels</span></div>
                   <p class="text-[11px] text-slate-500 italic">List the Course Outcomes as specified in the approved syllabus.</p>
                 </div>
                 ${isCourseLocked ? `
@@ -6631,12 +6638,19 @@ class CoursePlanApp {
         <!-- ================= PART II SECTION ================= -->
         <div id="section-part2" class="${this.activeFormTab === 'part2' ? '' : 'hidden'} space-y-6">
           <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs space-y-6">
-            <div class="border-b border-slate-200 pb-3 flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <h3 class="text-sm font-black text-white uppercase tracking-wide flex items-center gap-2"><i data-lucide="calendar" class="w-4 h-4 text-amber-300"></i><span>Part-II: Unit-wise Teaching Plan</span></h3>
-                <p class="text-[11px] text-slate-500">Divide each unit into manageable topics, allocate hours, and map Course Outcomes</p>
+            <div class="border-b-2 border-indigo-100 pb-4 mb-3 flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-indigo-50 via-slate-50 to-indigo-50/40 -mx-6 -mt-6 px-6 py-4 rounded-t-2xl border-t-4 border-t-indigo-600">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-xs shrink-0">
+                  <i data-lucide="calendar" class="w-4 h-4 text-white"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm sm:text-base font-black text-indigo-950 uppercase tracking-wide flex items-center gap-2">
+                    <span>Part-II: Unit-wise Teaching Plan</span>
+                  </h3>
+                  <p class="text-[11px] text-slate-600 font-medium">Divide each unit into manageable topics, allocate hours, and map Course Outcomes</p>
+                </div>
               </div>
-              <span class="text-[10.5px] bg-rose-50 text-rose-700 font-black px-2.5 py-1 rounded-lg border border-rose-200 flex items-center gap-1">
+              <span class="text-[10.5px] bg-rose-50 text-rose-700 font-black px-2.5 py-1 rounded-lg border border-rose-200 flex items-center gap-1 shadow-2xs">
                 <i data-lucide="alert-circle" class="w-3.5 h-3.5 text-rose-600"></i> All Fields Mandatory *
               </span>
             </div>
@@ -6645,7 +6659,7 @@ class CoursePlanApp {
             <div class="space-y-3">
               <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                 <div>
-                  <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-indigo-100 text-indigo-950 font-black text-xs border-l-4 border-indigo-600 shadow-2xs uppercase tracking-wider"><i data-lucide="list-checks" class="w-3.5 h-3.5 text-indigo-700"></i><span>A. Detailed Teaching Plan</span></div>
+                  <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-indigo-700 text-white font-black text-xs shadow-xs uppercase tracking-wider"><i data-lucide="list-checks" class="w-3.5 h-3.5 text-amber-300"></i><span>A. Detailed Teaching Plan</span></div>
                   <p class="text-[11px] text-slate-500">Instruction: Divide each unit into manageable topics (From & To) and allocate appropriate teaching hours.</p>
                 </div>
                 <div class="flex items-center gap-2 flex-wrap">
@@ -6775,7 +6789,7 @@ class CoursePlanApp {
 
             <!-- B. Unit Completion Plan -->
             <div class="space-y-3 pt-4 border-t border-slate-100">
-              <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-indigo-100 text-indigo-950 font-black text-xs border-l-4 border-indigo-600 shadow-2xs uppercase tracking-wider"><i data-lucide="check-square" class="w-3.5 h-3.5 text-indigo-700"></i><span>B. Unit Completion Plan</span></div>
+              <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-indigo-700 text-white font-black text-xs shadow-xs uppercase tracking-wider"><i data-lucide="check-square" class="w-3.5 h-3.5 text-amber-300"></i><span>B. Unit Completion Plan</span></div>
               <p class="text-[11px] text-slate-500 italic">
                 Note: This section provides an overview of the time allocated to each unit. Actual hours are fetched from syllabus and locked from editing.
               </p>
@@ -6863,12 +6877,19 @@ class CoursePlanApp {
         <!-- ================= PART III SECTION ================= -->
         <div id="section-part3" class="${this.activeFormTab === 'part3' ? '' : 'hidden'} space-y-6">
           <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs space-y-6">
-            <div class="border-b border-slate-200 pb-3 flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <h3 class="text-sm font-black text-white uppercase tracking-wide flex items-center gap-2"><i data-lucide="award" class="w-4 h-4 text-amber-300"></i><span>Part-III: Learning Activities and Assessment Plan</span></h3>
-                <p class="text-[11px] text-slate-500">Activities enabling application, analysis, and institutional assessment schedules</p>
+            <div class="border-b-2 border-indigo-100 pb-4 mb-3 flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-indigo-50 via-slate-50 to-indigo-50/40 -mx-6 -mt-6 px-6 py-4 rounded-t-2xl border-t-4 border-t-indigo-600">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-xs shrink-0">
+                  <i data-lucide="award" class="w-4 h-4 text-white"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm sm:text-base font-black text-indigo-950 uppercase tracking-wide flex items-center gap-2">
+                    <span>Part-III: Learning Activities and Assessment Plan</span>
+                  </h3>
+                  <p class="text-[11px] text-slate-600 font-medium">Activities enabling application, analysis, and institutional assessment schedules</p>
+                </div>
               </div>
-              <span class="text-[10.5px] bg-rose-50 text-rose-700 font-black px-2.5 py-1 rounded-lg border border-rose-200 flex items-center gap-1">
+              <span class="text-[10.5px] bg-rose-50 text-rose-700 font-black px-2.5 py-1 rounded-lg border border-rose-200 flex items-center gap-1 shadow-2xs">
                 <i data-lucide="alert-circle" class="w-3.5 h-3.5 text-rose-600"></i> All Fields Mandatory *
               </span>
             </div>
@@ -6877,7 +6898,7 @@ class CoursePlanApp {
             <div class="space-y-3">
               <div class="flex items-center justify-between">
                 <div>
-                  <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-indigo-100 text-indigo-950 font-black text-xs border-l-4 border-indigo-600 shadow-2xs uppercase tracking-wider"><i data-lucide="activity" class="w-3.5 h-3.5 text-indigo-700"></i><span>A. Learning Activities</span></div>
+                  <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-indigo-700 text-white font-black text-xs shadow-xs uppercase tracking-wider"><i data-lucide="activity" class="w-3.5 h-3.5 text-amber-300"></i><span>A. Learning Activities</span></div>
                   <p class="text-[11px] text-slate-500 italic">Click "+ Add Activity" to open the interactive form, select from 25 activities, and optionally convert to CIA assessment.</p>
                 </div>
                 <button 
@@ -6967,13 +6988,16 @@ class CoursePlanApp {
             <div class="space-y-3 pt-4 border-t border-slate-100">
               <div class="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
-                    <span>B. Assessment Plan</span>
+                  <div class="flex items-center gap-2">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-indigo-700 text-white font-black text-xs shadow-xs uppercase tracking-wider">
+                      <i data-lucide="clipboard-check" class="w-3.5 h-3.5 text-amber-300"></i>
+                      <span>B. CIA Assessment Details</span>
+                    </div>
                     <span class="text-[10px] bg-emerald-50 text-emerald-800 font-bold px-2 py-0.5 rounded-md border border-emerald-200 inline-flex items-center gap-1">
-                      <i data-lucide="lock" class="w-3 h-3 text-emerald-600"></i> Mid, End & C1 Pre-filled • Completely Uneditable
+                      <i data-lucide="lock" class="w-3 h-3 text-emerald-600"></i> Mid, End &amp; C1 Pre-filled
                     </span>
-                  </h4>
-                  <p class="text-[11px] text-slate-500 italic">
+                  </div>
+                  <p class="text-[11px] text-slate-500 italic mt-1">
                     Institutional exams (C1 JosTEL MCQ, Mid Sem & End Sem) are pre-filled by default. CIA continuous components are auto-populated from Section A above.
                   </p>
                 </div>
@@ -7065,7 +7089,7 @@ class CoursePlanApp {
             <div class="space-y-3 pt-4 border-t border-slate-100">
               <div class="flex items-center justify-between">
                 <div>
-                  <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-indigo-100 text-indigo-950 font-black text-xs border-l-4 border-indigo-600 shadow-2xs uppercase tracking-wider"><i data-lucide="monitor" class="w-3.5 h-3.5 text-indigo-700"></i><span>C. Digital Resources and ICT Integration</span></div>
+                  <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-indigo-700 text-white font-black text-xs shadow-xs uppercase tracking-wider"><i data-lucide="monitor" class="w-3.5 h-3.5 text-amber-300"></i><span>C. Digital Resources and ICT Integration</span></div>
                   <div class="mt-1">
                     <span class="text-indigo-600 font-semibold text-[11px] normal-case">(Minimum 1 row mandatory)</span>
                   </div>
@@ -7183,21 +7207,28 @@ class CoursePlanApp {
         <!-- ================= DECLARATION SECTION ================= -->
         <div id="section-declaration" class="${this.activeFormTab === 'declaration' ? '' : 'hidden'} space-y-6">
           <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs space-y-6">
-            <div class="border-b border-slate-200 pb-3 flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <h3 class="text-sm font-black text-slate-900 uppercase tracking-wide">Declaration & Submissions</h3>
-                <p class="text-[11px] text-slate-500">Confirm preparation compliance and submit directly to Head of Department</p>
+            <div class="border-b-2 border-indigo-100 pb-4 mb-3 flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-indigo-50 via-slate-50 to-indigo-50/40 -mx-6 -mt-6 px-6 py-4 rounded-t-2xl border-t-4 border-t-indigo-600">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-xs shrink-0">
+                  <i data-lucide="shield-check" class="w-4 h-4 text-white"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm sm:text-base font-black text-indigo-950 uppercase tracking-wide flex items-center gap-2">
+                    <span>Part-IV: Declaration &amp; Submissions</span>
+                  </h3>
+                  <p class="text-[11px] text-slate-600 font-medium">Confirm preparation compliance and submit directly to Head of Department</p>
+                </div>
               </div>
-              <span class="text-[10.5px] bg-rose-50 text-rose-700 font-black px-2.5 py-1 rounded-lg border border-rose-200 flex items-center gap-1">
+              <span class="text-[10.5px] bg-rose-50 text-rose-700 font-black px-2.5 py-1 rounded-lg border border-rose-200 flex items-center gap-1 shadow-2xs">
                 <i data-lucide="alert-circle" class="w-3.5 h-3.5 text-rose-600"></i> All Fields Mandatory *
               </span>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div class="p-5 border border-slate-200 rounded-2xl space-y-4 bg-white shadow-2xs">
-                <div class="text-[11px] font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2">
-                  <i data-lucide="user-check" class="w-4 h-4 text-indigo-600"></i>
-                  <span>Faculty Member & Submission Date</span>
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-indigo-700 text-white font-black text-xs shadow-xs uppercase tracking-wider mb-1">
+                  <i data-lucide="user-check" class="w-3.5 h-3.5 text-amber-300"></i>
+                  <span>Faculty Member &amp; Submission Date</span>
                 </div>
 
                 <div>
@@ -7244,9 +7275,9 @@ class CoursePlanApp {
               </div>
 
               <div class="p-5 border border-slate-200 rounded-2xl space-y-3 bg-slate-50/70 shadow-2xs">
-                <div class="text-[11px] font-bold text-amber-800 uppercase flex items-center gap-1.5 border-b border-amber-200/60 pb-2">
-                  <i data-lucide="shield-alert" class="w-4 h-4 text-amber-700"></i>
-                  <span>HOD Review & Approval Workflow</span>
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-purple-700 text-white font-black text-xs shadow-xs uppercase tracking-wider mb-1">
+                  <i data-lucide="shield-check" class="w-3.5 h-3.5 text-amber-300"></i>
+                  <span>HOD Review &amp; Approval Workflow</span>
                 </div>
                 <p class="text-[11px] text-slate-600 leading-relaxed">
                   When you click <strong>Submit to HOD</strong>, this course plan will be transferred to your Head of Department (${this.escapeHtml(this.selectedDept)}) for review and approval.
@@ -7439,7 +7470,7 @@ class CoursePlanApp {
 
           <!-- Part II -->
           <div class="space-y-3 pt-4">
-            <h4 class="text-xs font-black uppercase tracking-wider text-slate-900 bg-slate-100 p-2 rounded">Part-II: Unit-wise Teaching Plan</h4>
+            <h4 class="text-xs font-black uppercase tracking-wider text-white bg-indigo-900 p-2 rounded-lg">Part-II: Unit-wise Teaching Plan</h4>
             <div class="text-xs pl-2 space-y-1.5">
               <div class="font-bold text-slate-700">A. Detailed Teaching Plan</div>
               <table class="w-full text-xs border border-slate-300 border-collapse">
@@ -7513,7 +7544,7 @@ class CoursePlanApp {
 
           <!-- Part III -->
           <div class="space-y-3 pt-4">
-            <h4 class="text-xs font-black uppercase tracking-wider text-slate-900 bg-slate-100 p-2 rounded">Part-III: Learning Activities and Assessment Plan</h4>
+            <h4 class="text-xs font-black uppercase tracking-wider text-white bg-indigo-900 p-2 rounded-lg">Part-III: Learning Activities and Assessment Plan</h4>
             <div class="text-xs pl-2 space-y-1.5">
               <div class="font-bold text-slate-700">A. Learning Activities</div>
               <table class="w-full text-xs border border-slate-300 border-collapse">
