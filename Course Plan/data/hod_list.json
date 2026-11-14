@@ -3,12 +3,224 @@
     "department_name": "Artificial Intelligence",
     "faculty_name": "Mr. A. Charles",
     "faculty_id": "24CAI51",
-    "designation": "Head / Coordinator"
+    "designation": "Head / Coordinator",
+    "plain_password": "acaisjct"
+  },
+  {
+    "department_name": "Biochemistry",
+    "faculty_name": "Mr. A. Benno Susai Vijayakumar",
+    "faculty_id": "06TBI01",
+    "designation": "Head of the Department",
+    "plain_password": "8062"
+  },
+  {
+    "department_name": "Biotechnology",
+    "faculty_name": "Dr. V. Swabna",
+    "faculty_id": "23CBT53",
+    "designation": "Head of the Department",
+    "plain_password": "1290"
+  },
+  {
+    "department_name": "Botany",
+    "faculty_name": "Dr. S. Sahaya Sathish",
+    "faculty_id": "01FPB10",
+    "designation": "Head of the Department",
+    "plain_password": "pauline"
+  },
+  {
+    "department_name": "BBA",
+    "faculty_name": "Mr. S. Arputharaj",
+    "faculty_id": "13TBA01",
+    "designation": "Head of the Department",
+    "plain_password": "aalister"
+  },
+  {
+    "department_name": "Chemistry",
+    "faculty_name": "Dr. A. Rose Venis",
+    "faculty_id": "01FCH18",
+    "designation": "Head of the Department",
+    "plain_password": "rijurose"
+  },
+  {
+    "department_name": "Commerce",
+    "faculty_name": "Dr. G. John",
+    "faculty_id": "01FCM03",
+    "designation": "Head of the Department",
+    "plain_password": "AASS"
+  },
+  {
+    "department_name": "Commerce Business Analytics",
+    "faculty_name": "Ms. H. Bella Josepha",
+    "faculty_id": "25CCB51",
+    "designation": "Head of the Department",
+    "plain_password": "@#$%"
+  },
+  {
+    "department_name": "Commerce CA",
+    "faculty_name": "Dr. F.X. Virgin Fraga",
+    "faculty_id": "09TCM03",
+    "designation": "Head of the Department",
+    "plain_password": "842"
+  },
+  {
+    "department_name": "Commerce Honours",
+    "faculty_name": "Mr. G. Prabhakaran",
+    "faculty_id": "22CCR52",
+    "designation": "Head of the Department",
+    "plain_password": "12345"
+  },
+  {
+    "department_name": "Commerce Strategic Finance",
+    "faculty_name": "Ms. A. Mary Magdalene",
+    "faculty_id": "22CCR51",
+    "designation": "Head of the Department",
+    "plain_password": "@#$%"
   },
   {
     "department_name": "Computer Science",
-    "faculty_name": "Dr. V. Jude Nirmal",
-    "faculty_id": "20CSC01",
-    "designation": "Head of the Department"
+    "faculty_name": "Dr. S. Britto Ramesh Kumar",
+    "faculty_id": "12FCS01",
+    "designation": "Head of the Department",
+    "plain_password": "12fcs01"
+  },
+  {
+    "department_name": "Counselling Psy",
+    "faculty_name": "Dr. A. John Balaiah",
+    "faculty_id": "19SSC01",
+    "designation": "Head of the Department",
+    "plain_password": "7867"
+  },
+  {
+    "department_name": "Data Science",
+    "faculty_name": "Dr. T. Rajaretnam",
+    "faculty_id": "24CDS51",
+    "designation": "Head of the Department",
+    "plain_password": "562"
+  },
+  {
+    "department_name": "Economics",
+    "faculty_name": "Dr. M. Suvakkin",
+    "faculty_id": "07FEC01",
+    "designation": "Head of the Department",
+    "plain_password": "7768"
+  },
+  {
+    "department_name": "Electronics",
+    "faculty_name": "Dr. P. Subbuthai",
+    "faculty_id": "20CEL51",
+    "designation": "Head of the Department",
+    "plain_password": "@#$%"
+  },
+  {
+    "department_name": "English",
+    "faculty_name": "Dr. V. Francis",
+    "faculty_id": "06FEN24",
+    "designation": "Head of the Department",
+    "plain_password": "2642"
+  },
+  {
+    "department_name": "Human Excellence",
+    "faculty_name": "Rev. Dr. S. Paul Pragash, SJ",
+    "faculty_id": "07FEN02",
+    "designation": "Head of the Department",
+    "plain_password": "river"
+  },
+  {
+    "department_name": "French",
+    "faculty_name": "Ms. M. Mohanalakshmi",
+    "faculty_id": "18FFR01",
+    "designation": "Head of the Department",
+    "plain_password": "Krishna1986"
+  },
+  {
+    "department_name": "Hindi",
+    "faculty_name": "Dr. S. Sreedevi",
+    "faculty_id": "17FHN01",
+    "designation": "Head of the Department",
+    "plain_password": "2378"
+  },
+  {
+    "department_name": "History",
+    "faculty_name": "Dr. S. Manikandan",
+    "faculty_id": "12FHS02",
+    "designation": "Head of the Department",
+    "plain_password": "manierp1"
+  },
+  {
+    "department_name": "HRM",
+    "faculty_name": "Mr. G. Louis Victor",
+    "faculty_id": "13FHR02",
+    "designation": "Head of the Department",
+    "plain_password": "7771"
+  },
+  {
+    "department_name": "Information Technology",
+    "faculty_name": "Dr. A. Antony Prakash",
+    "faculty_id": "11TIT03",
+    "designation": "Head of the Department",
+    "plain_password": "sandal.a"
+  },
+  {
+    "department_name": "Mathematics",
+    "faculty_name": "Dr. M. Thiagarajan",
+    "faculty_id": "01FMA15",
+    "designation": "Head of the Department",
+    "plain_password": "6906"
+  },
+  {
+    "department_name": "Physical Education",
+    "faculty_name": "Mr. S. Sriram",
+    "faculty_id": "25CPE51",
+    "designation": "Head of the Department",
+    "plain_password": "1234"
+  },
+  {
+    "department_name": "Physics",
+    "faculty_name": "Dr. I. Johnson",
+    "faculty_id": "01FPH16",
+    "designation": "Head of the Department",
+    "plain_password": "9340"
+  },
+  {
+    "department_name": "Sanskrit",
+    "faculty_name": "Dr. M.S. Madhavachari",
+    "faculty_id": "13FSA01",
+    "designation": "Head of the Department",
+    "plain_password": "shree"
+  },
+  {
+    "department_name": "Statistics",
+    "faculty_name": "Dr. R. Vijayakumar",
+    "faculty_id": "15FST01",
+    "designation": "Head of the Department",
+    "plain_password": "Viveka@2020#"
+  },
+  {
+    "department_name": "Tamil",
+    "faculty_name": "Dr. A. Joseph Sahayaraj",
+    "faculty_id": "07FTA01",
+    "designation": "Head of the Department",
+    "plain_password": "6724"
+  },
+  {
+    "department_name": "Visual Communication",
+    "faculty_name": "Dr. S. Tamilarasi",
+    "faculty_id": "14TBV01",
+    "designation": "Head of the Department",
+    "plain_password": "7840"
+  },
+  {
+    "department_name": "MBA",
+    "faculty_name": "Rev. Dr. A. Michael John, SJ",
+    "faculty_id": "MBA_DIR",
+    "designation": "Director, MBA",
+    "plain_password": "123"
+  },
+  {
+    "department_name": "B.Voc SD & SA",
+    "faculty_name": "Ms. B. Geno Cinthia",
+    "faculty_id": "22CSD01",
+    "designation": "Head of the Department",
+    "plain_password": "1234"
   }
 ]

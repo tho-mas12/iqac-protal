@@ -82,18 +82,53 @@ try {
                 exit;
             }
 
+            // Check if leadership/admin (Rector, Secretary, Principal)
+            if ($authRow && $authRow['department_name'] === 'Administration') {
+                $_SESSION['cp_user'] = [
+                    'id' => (int)$authRow['id'],
+                    'faculty_id' => $authRow['faculty_id'],
+                    'username' => $authRow['faculty_id'],
+                    'role' => 'admin',
+                    'department_name' => 'All Departments',
+                    'faculty_name' => $authRow['faculty_name'],
+                    'display_name' => $authRow['faculty_name'],
+                    'faculty_email' => $authRow['faculty_email']
+                ];
+                echo json_encode([
+                    'success' => true,
+                    'user' => $_SESSION['cp_user'],
+                    'message' => 'Logged in successfully as ' . $authRow['faculty_name']
+                ]);
+                exit;
+            }
+
             // Check if this faculty member is an HOD from hod_list.json
             $isHod = false;
             $hodDept = $deptName;
 
             $hodListFile = __DIR__ . '/../data/hod_list.json';
+            if (!file_exists($hodListFile)) {
+                $hodListFile = __DIR__ . '/data/hod_list.json';
+            }
+            if (!file_exists($hodListFile)) {
+                $hodListFile = '/var/www/course-plan/data/hod_list.json';
+            }
+
             if (file_exists($hodListFile)) {
                 $hodJson = json_decode(file_get_contents($hodListFile), true);
                 if (is_array($hodJson)) {
                     $curFid = $authRow ? $authRow['faculty_id'] : $facultyId;
+                    $curName = $facName ?: ($authRow ? $authRow['faculty_name'] : '');
                     foreach ($hodJson as $hod) {
                         $matchId = !empty($hod['faculty_id']) && $curFid && (strcasecmp(trim($hod['faculty_id']), trim($curFid)) === 0);
-                        $matchName = !empty($hod['faculty_name']) && $facName && (strcasecmp(trim($hod['faculty_name']), trim($facName)) === 0);
+                        $matchName = !empty($hod['faculty_name']) && $curName && (strcasecmp(trim($hod['faculty_name']), trim($curName)) === 0);
+                        if (!$matchName && !empty($hod['faculty_name']) && $curName) {
+                            $c1 = preg_replace('/[^a-zA-Z]/', '', strtolower($hod['faculty_name']));
+                            $c2 = preg_replace('/[^a-zA-Z]/', '', strtolower($curName));
+                            if ($c1 === $c2 || (strlen($c1) > 5 && strpos($c2, $c1) !== false) || (strlen($c2) > 5 && strpos($c1, $c2) !== false)) {
+                                $matchName = true;
+                            }
+                        }
                         if ($matchId || $matchName) {
                             $isHod = true;
                             if (!empty($hod['department_name'])) {
@@ -105,23 +140,29 @@ try {
                 }
             }
 
+            if ($isHod && $hodDept) {
+                $deptName = $hodDept;
+            }
+
+            $curName = $facName ?: ($authRow ? $authRow['faculty_name'] : $facultyId);
+
             $_SESSION['cp_user'] = [
                 'id' => $authRow ? (int)$authRow['id'] : null,
                 'faculty_id' => $authRow ? $authRow['faculty_id'] : $facultyId,
-                'username' => $authRow ? ($authRow['faculty_id'] ?: $authRow['faculty_email'] ?: $facName) : $facName,
+                'username' => $authRow ? ($authRow['faculty_id'] ?: $authRow['faculty_email'] ?: $curName) : $curName,
                 'role' => 'faculty',
                 'is_hod' => $isHod,
                 'hod_department' => $isHod ? $hodDept : null,
                 'department_name' => $deptName,
-                'faculty_name' => $facName,
-                'display_name' => $facName,
+                'faculty_name' => $curName,
+                'display_name' => $curName,
                 'faculty_email' => $authRow ? $authRow['faculty_email'] : ''
             ];
 
             echo json_encode([
                 'success' => true,
                 'user' => $_SESSION['cp_user'],
-                'message' => 'Logged in successfully as ' . $facName . ($isHod ? ' (Head of Department)' : '')
+                'message' => 'Logged in successfully as ' . $curName . ($isHod ? ' (Head of Department)' : '')
             ]);
             exit;
         }
