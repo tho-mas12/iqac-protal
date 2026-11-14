@@ -357,7 +357,7 @@ class CoursePlanApp {
 
   getDepartmentProgrammes(deptName) {
     const dept = (deptName || this.selectedDept || '').trim();
-    
+
     // Explicit curated programmes for college departments
     const specialMap = {
       'Computer Science': ['B.Sc. Computer Science', 'MCA (Master of Computer Applications)'],
@@ -462,8 +462,8 @@ class CoursePlanApp {
     if (ncd === nsd || ncd.includes(nsd) || nsd.includes(ncd)) return true;
 
     // Robust B.Voc SD & SA matching
-    const isSdSa = (s) => (s.includes('voc') || s.includes('software') || s.includes('uss')) && 
-                          (s.includes('sd') || s.includes('sa') || s.includes('software') || s.includes('uss') || s.includes('system'));
+    const isSdSa = (s) => (s.includes('voc') || s.includes('software') || s.includes('uss')) &&
+      (s.includes('sd') || s.includes('sa') || s.includes('software') || s.includes('uss') || s.includes('system'));
     if (isSdSa(ncd) && isSdSa(nsd)) return true;
 
     if (nsd.includes('counselling') && ncd.includes('counselling')) return true;
@@ -821,7 +821,7 @@ class CoursePlanApp {
     this.activePlan.course_title = course.course_title || '';
     this.activePlan.credits = course.credits || '3';
     this.activePlan.course_category = course.course_category || this.detectCourseCategory(course.course_code, course.course_title);
-    
+
     if (course.programme && (!this.activePlan.programme || this.activePlan.programme === '')) {
       this.activePlan.programme = course.programme;
     }
@@ -853,7 +853,7 @@ class CoursePlanApp {
     this.showAutoFillToast(course);
 
     if (showAlert) {
-      alert("✓ Auto-fetched syllabus details for " + course.course_code + ":\n• Course Title: " + (course.course_title || '—') + "\n• Credits: " + this.activePlan.credits + "\n• Teaching Hours: " + weeklyHrs + " Hrs/Week (" + (weeklyHrs*15) + " Total)\n• Unit Hours: " + perUnitHours + " Hrs/Unit (Default Actual Hours pre-filled)\n• Course Outcomes: " + (courseCos ? courseCos.length : 0) + " COs loaded!");
+      alert("✓ Auto-fetched syllabus details for " + course.course_code + ":\n• Course Title: " + (course.course_title || '—') + "\n• Credits: " + this.activePlan.credits + "\n• Teaching Hours: " + weeklyHrs + " Hrs/Week (" + (weeklyHrs * 15) + " Total)\n• Unit Hours: " + perUnitHours + " Hrs/Unit (Default Actual Hours pre-filled)\n• Course Outcomes: " + (courseCos ? courseCos.length : 0) + " COs loaded!");
     }
   }
 
@@ -1166,15 +1166,15 @@ class CoursePlanApp {
               <span class="text-slate-400 text-[11px] italic pl-1">Select methodology (multiple)...</span>
             ` : `
               ${list.map(item => {
-                const isOtherVal = item === 'Other:' || item.startsWith('Other:');
-                const displayLabel = isOtherVal ? (item.length > 6 ? item : 'Other: Custom') : item;
-                return `
+      const isOtherVal = item === 'Other:' || item.startsWith('Other:');
+      const displayLabel = isOtherVal ? (item.length > 6 ? item : 'Other: Custom') : item;
+      return `
                   <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10.5px] font-bold bg-indigo-50 text-indigo-800 border border-indigo-200">
                     <span>${this.escapeHtml(displayLabel)}</span>
                     <button type="button" onclick="event.stopPropagation(); coursePlanApp.removeMethodItem(${rowIdx}, '${this.escapeHtml(item)}')" class="text-indigo-400 hover:text-indigo-800 font-bold ml-0.5">✕</button>
                   </span>
                 `;
-              }).join('')}
+    }).join('')}
             `}
           </div>
           <span class="text-slate-400 text-xs pr-1 shrink-0">▾</span>
@@ -1196,8 +1196,8 @@ class CoursePlanApp {
           </div>
           <div class="max-h-48 overflow-y-auto space-y-0.5 divide-y divide-slate-100" id="dtp-method-list-${rowIdx}">
             ${CoursePlanApp.TEACHING_METHODOLOGIES.map(opt => {
-              const isChecked = opt === 'Other:' ? hasOther : list.includes(opt);
-              return `
+      const isChecked = opt === 'Other:' ? hasOther : list.includes(opt);
+      return `
                 <label class="dtp-method-opt flex items-center gap-2 px-2 py-1.5 hover:bg-indigo-50 rounded-lg cursor-pointer text-xs font-medium text-slate-800">
                   <input 
                     type="checkbox" 
@@ -1209,7 +1209,7 @@ class CoursePlanApp {
                   <span class="opt-label">${opt}</span>
                 </label>
               `;
-            }).join('')}
+    }).join('')}
           </div>
           <div id="dtp-method-other-container-${rowIdx}" class="${hasOther ? '' : 'hidden'} pt-1 border-t border-slate-200">
             <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Specify Other Methodology *</label>
@@ -1376,15 +1376,15 @@ class CoursePlanApp {
               <span class="text-slate-400 text-[11px] italic pl-1">Select resources (multiple)...</span>
             ` : `
               ${list.map(item => {
-                const isOtherVal = item === 'Other:' || item.startsWith('Other:');
-                const displayLabel = isOtherVal ? (item.length > 6 ? item : 'Other: Custom') : item;
-                return `
+      const isOtherVal = item === 'Other:' || item.startsWith('Other:');
+      const displayLabel = isOtherVal ? (item.length > 6 ? item : 'Other: Custom') : item;
+      return `
                   <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10.5px] font-bold bg-amber-50 text-amber-900 border border-amber-200">
                     <span class="max-w-[130px] truncate" title="${this.escapeHtml(displayLabel)}">${this.escapeHtml(displayLabel)}</span>
                     <button type="button" onclick="event.stopPropagation(); coursePlanApp.removeResourceItem(${rowIdx}, '${this.escapeHtml(item)}')" class="text-amber-500 hover:text-amber-900 font-bold ml-0.5">✕</button>
                   </span>
                 `;
-              }).join('')}
+    }).join('')}
             `}
           </div>
           <span class="text-slate-400 text-xs pr-1 shrink-0">▾</span>
@@ -1406,8 +1406,8 @@ class CoursePlanApp {
           </div>
           <div class="max-h-48 overflow-y-auto space-y-0.5 divide-y divide-slate-100" id="dtp-res-list-${rowIdx}">
             ${CoursePlanApp.LEARNING_RESOURCES.map(opt => {
-              const isChecked = opt === 'Other:' ? hasOther : list.includes(opt);
-              return `
+      const isChecked = opt === 'Other:' ? hasOther : list.includes(opt);
+      return `
                 <label class="dtp-res-opt flex items-center gap-2 px-2 py-1.5 hover:bg-amber-50 rounded-lg cursor-pointer text-xs font-medium text-slate-800">
                   <input 
                     type="checkbox" 
@@ -1419,7 +1419,7 @@ class CoursePlanApp {
                   <span class="opt-label">${opt}</span>
                 </label>
               `;
-            }).join('')}
+    }).join('')}
           </div>
           <div id="dtp-res-other-container-${rowIdx}" class="${hasOther ? '' : 'hidden'} pt-1 border-t border-slate-200">
             <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Specify Book / Resource Title *</label>
@@ -1453,7 +1453,7 @@ class CoursePlanApp {
     }
   }
 
-    openCourseSyllabusReferenceModal() {
+  openCourseSyllabusReferenceModal() {
     this.harvestFormInputs();
     const curCode = (this.activePlan && this.activePlan.course_code) ? this.activePlan.course_code.trim() : '';
     if (!curCode) {
@@ -1539,12 +1539,12 @@ class CoursePlanApp {
           <!-- Units List -->
           <div class="space-y-4">
             ${units.map((u, uIdx) => {
-              const rawTopics = (u.topics || '').trim();
-              const phrases = rawTopics.split(/[,;\n•–—]+/).map(p => p.trim()).filter(p => p.length > 2);
-              const defaultFrom = phrases[0] || rawTopics.slice(0, 45);
-              const defaultTo = phrases[phrases.length - 1] || rawTopics.slice(-45);
+      const rawTopics = (u.topics || '').trim();
+      const phrases = rawTopics.split(/[,;\n•–—]+/).map(p => p.trim()).filter(p => p.length > 2);
+      const defaultFrom = phrases[0] || rawTopics.slice(0, 45);
+      const defaultTo = phrases[phrases.length - 1] || rawTopics.slice(-45);
 
-              return `
+      return `
                 <div class="p-4 rounded-2xl bg-white border border-slate-200 hover:border-indigo-300 hover:shadow-md transition space-y-3" id="syllabus-unit-card-${uIdx}">
                   
                   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
@@ -1657,7 +1657,7 @@ class CoursePlanApp {
 
                 </div>
               `;
-            }).join('')}
+    }).join('')}
           </div>
 
         </div>
@@ -1896,7 +1896,7 @@ class CoursePlanApp {
 
     document.getElementById('course-syllabus-modal')?.remove();
     this.render();
-    
+
     const toast = document.createElement('div');
     toast.className = 'fixed bottom-5 right-5 z-50 bg-emerald-600 text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-lg flex items-center gap-2 animate-fadeIn';
     toast.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> ${unit} topics inserted into Teaching Plan!`;
@@ -2130,7 +2130,7 @@ class CoursePlanApp {
     ];
     const data = this.analyticsData || {};
     const deptStats = data.dept_stats || {};
-    
+
     this.departments.forEach((d, idx) => {
       const dStat = deptStats[d.name] || { total: 0, approved: 0, hours: 0, faculty_count: d.faculty ? d.faculty.length : 0 };
       const sylCount = this.getDepartmentEvenSyllabusCount(d.name);
@@ -2641,8 +2641,8 @@ class CoursePlanApp {
       const isHOD = this.currentUser.role === 'hod';
       const isFaculty = this.currentUser.role === 'faculty';
       const roleBadge = isHOD ? 'bg-amber-100 text-amber-900 border border-amber-300' :
-                        isFaculty ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' :
-                        'bg-purple-100 text-purple-900 border border-purple-300';
+        isFaculty ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' :
+          'bg-purple-100 text-purple-900 border border-purple-300';
       const roleIcon = isHOD ? 'shield-check' : isFaculty ? 'user-check' : 'crown';
       const roleTitle = isHOD ? 'Head of Department' : isFaculty ? 'Faculty Member' : 'IQAC Admin';
 
@@ -2869,9 +2869,9 @@ class CoursePlanApp {
                         class="w-full text-xs sm:text-sm px-3 py-2 border border-slate-300 bg-white rounded-xl font-bold text-slate-900 focus:border-indigo-600 focus:outline-none transition cursor-pointer"
                       >
                         ${facultyList.map(f => {
-                          const name = typeof f === 'string' ? f : f.name;
-                          return `<option value="${this.escapeHtml(name)}" ${name === currentFacName ? 'selected' : ''}>${this.escapeHtml(name)}</option>`;
-                        }).join('')}
+      const name = typeof f === 'string' ? f : f.name;
+      return `<option value="${this.escapeHtml(name)}" ${name === currentFacName ? 'selected' : ''}>${this.escapeHtml(name)}</option>`;
+    }).join('')}
                       </select>
                     </div>
                   </div>
@@ -3075,9 +3075,9 @@ class CoursePlanApp {
       facSelect.innerHTML = facultyList.length === 0
         ? '<option value="">-- No faculty found in department --</option>'
         : facultyList.map(f => {
-            const name = typeof f === 'string' ? f : f.name;
-            return `<option value="${this.escapeHtml(name)}" ${name === this.selectedLoginFaculty ? 'selected' : ''}>${this.escapeHtml(name)}</option>`;
-          }).join('');
+          const name = typeof f === 'string' ? f : f.name;
+          return `<option value="${this.escapeHtml(name)}" ${name === this.selectedLoginFaculty ? 'selected' : ''}>${this.escapeHtml(name)}</option>`;
+        }).join('');
       facSelect.value = this.selectedLoginFaculty;
     }
   }
@@ -3547,25 +3547,22 @@ class CoursePlanApp {
                         <div class="text-[10px] text-slate-500">${p.credits || '—'} Credits</div>
                       </td>
                       <td class="p-3.5 text-center" data-label="HOD Status">
-                        <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[11px] font-extrabold ${
-                          p.hod_status === 'Approved'
-                            ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                            : p.hod_status === 'Revision Needed'
-                            ? 'bg-rose-100 text-rose-800 border border-rose-300'
-                            : (p.status === 'Submitted' || p.hod_status === 'Pending')
-                            ? 'bg-amber-100 text-amber-800 border border-amber-300'
-                            : 'bg-slate-100 text-slate-700 border border-slate-200'
-                        }">
-                          <i data-lucide="${
-                            p.hod_status === 'Approved' ? 'check-circle' :
-                            p.hod_status === 'Revision Needed' ? 'alert-triangle' :
-                            (p.status === 'Submitted' || p.hod_status === 'Pending') ? 'clock' : 'file-edit'
-                          }" class="w-3.5 h-3.5"></i>
-                          <span>${
-                            p.hod_status === 'Approved' ? 'HOD Approved' :
-                            p.hod_status === 'Revision Needed' ? 'Revision Needed' :
-                            (p.status === 'Submitted' || p.hod_status === 'Pending') ? 'Under Review' : 'Draft'
-                          }</span>
+                        <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[11px] font-extrabold ${p.hod_status === 'Approved'
+        ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+        : p.hod_status === 'Revision Needed'
+          ? 'bg-rose-100 text-rose-800 border border-rose-300'
+          : (p.status === 'Submitted' || p.hod_status === 'Pending')
+            ? 'bg-amber-100 text-amber-800 border border-amber-300'
+            : 'bg-slate-100 text-slate-700 border border-slate-200'
+      }">
+                          <i data-lucide="${p.hod_status === 'Approved' ? 'check-circle' :
+        p.hod_status === 'Revision Needed' ? 'alert-triangle' :
+          (p.status === 'Submitted' || p.hod_status === 'Pending') ? 'clock' : 'file-edit'
+      }" class="w-3.5 h-3.5"></i>
+                          <span>${p.hod_status === 'Approved' ? 'HOD Approved' :
+        p.hod_status === 'Revision Needed' ? 'Revision Needed' :
+          (p.status === 'Submitted' || p.hod_status === 'Pending') ? 'Under Review' : 'Draft'
+      }</span>
                         </span>
                       </td>
                       <td class="p-3.5 text-center text-slate-500 text-[11px] font-mono" data-label="Last Updated">
@@ -3799,37 +3796,37 @@ class CoursePlanApp {
                 </thead>
                 <tbody class="divide-y divide-slate-100 font-medium">
                   ${facultyList.map((fac, idx) => {
-                    const facPlans = plans.filter(p => p.faculty_name && (p.faculty_name.trim().toLowerCase() === fac.name.trim().toLowerCase() || p.faculty_name.toLowerCase().includes(fac.name.toLowerCase())));
-                    const isApproved = facPlans.some(p => p.hod_status === 'Approved');
-                    const isPending = facPlans.some(p => p.hod_status === 'Pending' || p.status === 'Submitted');
-                    const isDraft = facPlans.some(p => p.status === 'Draft');
+      const facPlans = plans.filter(p => p.faculty_name && (p.faculty_name.trim().toLowerCase() === fac.name.trim().toLowerCase() || p.faculty_name.toLowerCase().includes(fac.name.toLowerCase())));
+      const isApproved = facPlans.some(p => p.hod_status === 'Approved');
+      const isPending = facPlans.some(p => p.hod_status === 'Pending' || p.status === 'Submitted');
+      const isDraft = facPlans.some(p => p.status === 'Draft');
 
-                    let statusBadge = `
+      let statusBadge = `
                       <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
                         Not Submitted Yet
                       </span>
                     `;
-                    if (isApproved) {
-                      statusBadge = `
+      if (isApproved) {
+        statusBadge = `
                         <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
                           ✓ HOD Approved
                         </span>
                       `;
-                    } else if (isPending) {
-                      statusBadge = `
+      } else if (isPending) {
+        statusBadge = `
                         <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-300 animate-pulse">
                           ⏳ Awaiting Review
                         </span>
                       `;
-                    } else if (isDraft) {
-                      statusBadge = `
+      } else if (isDraft) {
+        statusBadge = `
                         <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-300">
                           Draft Saved
                         </span>
                       `;
-                    }
+      }
 
-                    return `
+      return `
                       <tr class="hover:bg-slate-50/70 transition">
                         <td class="p-3 text-center font-bold text-slate-400" data-label="S.No">${idx + 1}</td>
                         <td class="p-3 font-bold text-slate-900" data-label="Faculty Member">${fac.name}</td>
@@ -3860,7 +3857,7 @@ class CoursePlanApp {
                         </td>
                       </tr>
                     `;
-                  }).join('')}
+    }).join('')}
                 </tbody>
               </table>
             </div>
@@ -4248,21 +4245,21 @@ class CoursePlanApp {
                 </thead>
                 <tbody class="divide-y divide-slate-100 font-medium">
                   ${(() => {
-                    const selDept = document.getElementById('admin-fac-dept-filter')?.value || 'all';
-                    let facList = [];
-                    this.departments.forEach(d => {
-                      if (selDept !== 'all' && d.name !== selDept) return;
-                      (d.faculty || []).forEach(f => {
-                        const fApproved = approvedPlans.filter(p => p.faculty_name && (p.faculty_name.trim().toLowerCase() === f.name.trim().toLowerCase() || p.faculty_name.toLowerCase().includes(f.name.toLowerCase())));
-                        facList.push({ ...f, dept: d.name, approved_plans: fApproved });
-                      });
-                    });
+          const selDept = document.getElementById('admin-fac-dept-filter')?.value || 'all';
+          let facList = [];
+          this.departments.forEach(d => {
+            if (selDept !== 'all' && d.name !== selDept) return;
+            (d.faculty || []).forEach(f => {
+              const fApproved = approvedPlans.filter(p => p.faculty_name && (p.faculty_name.trim().toLowerCase() === f.name.trim().toLowerCase() || p.faculty_name.toLowerCase().includes(f.name.toLowerCase())));
+              facList.push({ ...f, dept: d.name, approved_plans: fApproved });
+            });
+          });
 
-                    if (facList.length === 0) {
-                      return '<tr><td colspan="6" class="p-8 text-center text-slate-400">No faculty members found.</td></tr>';
-                    }
+          if (facList.length === 0) {
+            return '<tr><td colspan="6" class="p-8 text-center text-slate-400">No faculty members found.</td></tr>';
+          }
 
-                    return facList.map((f, idx) => `
+          return facList.map((f, idx) => `
                       <tr class="hover:bg-slate-50/70 transition">
                         <td class="p-3 text-center font-bold text-slate-400">${idx + 1}</td>
                         <td class="p-3">
@@ -4297,7 +4294,7 @@ class CoursePlanApp {
                         </td>
                       </tr>
                     `).join('');
-                  })()}
+        })()}
                 </tbody>
               </table>
             </div>
@@ -4306,132 +4303,132 @@ class CoursePlanApp {
 
         <!-- ================= 3. COURSE-WISE MASTER VIEW (UG & PG SEM-WISE) ================= -->
         ${this.adminTab === 'course' ? (() => {
-          // 1. Gather all master courses from syllabusCourses + any ad-hoc course codes in plans
-          const catalog = (this.syllabusCourses || []).slice();
-          const existingCodes = new Set(catalog.map(c => (c.course_code || '').trim().toUpperCase()));
-          
-          (this.plans || []).forEach(p => {
-            const pCode = (p.course_code || '').trim().toUpperCase();
-            if (pCode && !existingCodes.has(pCode)) {
-              existingCodes.add(pCode);
-              const isPG = (p.programme && (p.programme.startsWith('M.') || p.programme.includes('Master') || p.programme.includes('MCA'))) || (p.year_class && p.year_class.includes('PG'));
-              catalog.push({
-                course_code: p.course_code,
-                course_title: p.course_title,
-                department: p.department_name,
-                programme: p.programme,
-                semester: `Semester ${this.getSemesterNum(p.semester)}`,
-                semester_num: this.getSemesterNum(p.semester),
-                level: isPG ? 'PG' : 'UG',
-                year_class: p.year_class,
-                hours: p.teaching_hours,
-                credits: p.credits,
-                course_category: p.course_category || 'Core'
-              });
-            }
-          });
+        // 1. Gather all master courses from syllabusCourses + any ad-hoc course codes in plans
+        const catalog = (this.syllabusCourses || []).slice();
+        const existingCodes = new Set(catalog.map(c => (c.course_code || '').trim().toUpperCase()));
 
-          // Precompute plan match lookup by normalized course code
-          const plansByCode = new Map();
-          (this.plans || []).forEach(p => {
-            const code = (p.course_code || '').trim().toUpperCase();
-            if (!code) return;
-            if (!plansByCode.has(code)) plansByCode.set(code, []);
-            plansByCode.get(code).push(p);
-          });
+        (this.plans || []).forEach(p => {
+          const pCode = (p.course_code || '').trim().toUpperCase();
+          if (pCode && !existingCodes.has(pCode)) {
+            existingCodes.add(pCode);
+            const isPG = (p.programme && (p.programme.startsWith('M.') || p.programme.includes('Master') || p.programme.includes('MCA'))) || (p.year_class && p.year_class.includes('PG'));
+            catalog.push({
+              course_code: p.course_code,
+              course_title: p.course_title,
+              department: p.department_name,
+              programme: p.programme,
+              semester: `Semester ${this.getSemesterNum(p.semester)}`,
+              semester_num: this.getSemesterNum(p.semester),
+              level: isPG ? 'PG' : 'UG',
+              year_class: p.year_class,
+              hours: p.teaching_hours,
+              credits: p.credits,
+              course_category: p.course_category || 'Core'
+            });
+          }
+        });
 
-          // Precompute counts for Level Filter
-          const totalAllCount = catalog.length;
-          const totalUGCount = catalog.filter(c => (c.level || (c.programme && (c.programme.startsWith('M.') || c.programme.includes('Master') || c.programme.includes('MCA')) ? 'PG' : 'UG')).toUpperCase() === 'UG').length;
-          const totalPGCount = catalog.filter(c => (c.level || (c.programme && (c.programme.startsWith('M.') || c.programme.includes('Master') || c.programme.includes('MCA')) ? 'PG' : 'UG')).toUpperCase() === 'PG').length;
+        // Precompute plan match lookup by normalized course code
+        const plansByCode = new Map();
+        (this.plans || []).forEach(p => {
+          const code = (p.course_code || '').trim().toUpperCase();
+          if (!code) return;
+          if (!plansByCode.has(code)) plansByCode.set(code, []);
+          plansByCode.get(code).push(p);
+        });
 
-          // 2. Filter by Level, Semester, Department, Status, Search
-          const levelFilter = this.adminLevelFilter || 'all';
-          const semFilter = this.adminSemFilter || 'even';
-          const deptFilter = this.adminDeptFilter || 'all';
-          const statusFilter = this.adminStatusFilter || 'all';
-          const searchQuery = (this.adminSearchQuery || '').trim().toLowerCase();
+        // Precompute counts for Level Filter
+        const totalAllCount = catalog.length;
+        const totalUGCount = catalog.filter(c => (c.level || (c.programme && (c.programme.startsWith('M.') || c.programme.includes('Master') || c.programme.includes('MCA')) ? 'PG' : 'UG')).toUpperCase() === 'UG').length;
+        const totalPGCount = catalog.filter(c => (c.level || (c.programme && (c.programme.startsWith('M.') || c.programme.includes('Master') || c.programme.includes('MCA')) ? 'PG' : 'UG')).toUpperCase() === 'PG').length;
 
-          const filteredCourses = catalog.filter(c => {
-            const cLevel = (c.level || (c.programme && (c.programme.startsWith('M.') || c.programme.includes('Master') || c.programme.includes('MCA')) ? 'PG' : 'UG')).toUpperCase();
-            const cSemNum = c.semester_num || this.getSemesterNum(c.semester);
-            const cDept = c.department || '';
+        // 2. Filter by Level, Semester, Department, Status, Search
+        const levelFilter = this.adminLevelFilter || 'all';
+        const semFilter = this.adminSemFilter || 'even';
+        const deptFilter = this.adminDeptFilter || 'all';
+        const statusFilter = this.adminStatusFilter || 'all';
+        const searchQuery = (this.adminSearchQuery || '').trim().toLowerCase();
 
-            // A. Level Filter (All / UG / PG)
-            if (levelFilter !== 'all' && cLevel !== levelFilter.toUpperCase()) return false;
+        const filteredCourses = catalog.filter(c => {
+          const cLevel = (c.level || (c.programme && (c.programme.startsWith('M.') || c.programme.includes('Master') || c.programme.includes('MCA')) ? 'PG' : 'UG')).toUpperCase();
+          const cSemNum = c.semester_num || this.getSemesterNum(c.semester);
+          const cDept = c.department || '';
 
-            // B. Semester Filter
-            if (semFilter === 'even') {
-              if (cSemNum !== 2 && cSemNum !== 4 && cSemNum !== 6) return false;
-            } else if (semFilter !== 'all') {
-              if (String(cSemNum) !== String(semFilter)) return false;
-            }
+          // A. Level Filter (All / UG / PG)
+          if (levelFilter !== 'all' && cLevel !== levelFilter.toUpperCase()) return false;
 
-            // C. Department Filter
-            if (deptFilter !== 'all') {
-              if (cDept.toLowerCase() !== deptFilter.toLowerCase() && !cDept.toLowerCase().includes(deptFilter.toLowerCase())) return false;
-            }
+          // B. Semester Filter
+          if (semFilter === 'even') {
+            if (cSemNum !== 2 && cSemNum !== 4 && cSemNum !== 6) return false;
+          } else if (semFilter !== 'all') {
+            if (String(cSemNum) !== String(semFilter)) return false;
+          }
 
-            // D. Course Status & Matching Plans
-            const code = (c.course_code || '').trim().toUpperCase();
-            const matchingPlans = plansByCode.get(code) || [];
-            let courseStatus = 'Not Started';
-            if (matchingPlans.length > 0) {
-              if (matchingPlans.some(p => p.hod_status === 'Approved')) courseStatus = 'Approved';
-              else if (matchingPlans.some(p => p.hod_status === 'Revision Needed')) courseStatus = 'Revision Needed';
-              else if (matchingPlans.some(p => p.status === 'Submitted' || p.hod_status === 'Pending')) courseStatus = 'Pending';
-              else courseStatus = 'Draft';
-            }
-            c._computedStatus = courseStatus;
-            c._matchingPlans = matchingPlans;
+          // C. Department Filter
+          if (deptFilter !== 'all') {
+            if (cDept.toLowerCase() !== deptFilter.toLowerCase() && !cDept.toLowerCase().includes(deptFilter.toLowerCase())) return false;
+          }
 
-            if (statusFilter !== 'all' && courseStatus !== statusFilter) return false;
+          // D. Course Status & Matching Plans
+          const code = (c.course_code || '').trim().toUpperCase();
+          const matchingPlans = plansByCode.get(code) || [];
+          let courseStatus = 'Not Started';
+          if (matchingPlans.length > 0) {
+            if (matchingPlans.some(p => p.hod_status === 'Approved')) courseStatus = 'Approved';
+            else if (matchingPlans.some(p => p.hod_status === 'Revision Needed')) courseStatus = 'Revision Needed';
+            else if (matchingPlans.some(p => p.status === 'Submitted' || p.hod_status === 'Pending')) courseStatus = 'Pending';
+            else courseStatus = 'Draft';
+          }
+          c._computedStatus = courseStatus;
+          c._matchingPlans = matchingPlans;
 
-            // E. Search Query
-            if (searchQuery) {
-              const codeMatch = (c.course_code || '').toLowerCase().includes(searchQuery);
-              const titleMatch = (c.course_title || '').toLowerCase().includes(searchQuery);
-              const deptMatch = (c.department || '').toLowerCase().includes(searchQuery);
-              const progMatch = (c.programme || '').toLowerCase().includes(searchQuery);
-              const facMatch = matchingPlans.some(p => (p.faculty_name || '').toLowerCase().includes(searchQuery));
-              if (!codeMatch && !titleMatch && !deptMatch && !progMatch && !facMatch) return false;
-            }
+          if (statusFilter !== 'all' && courseStatus !== statusFilter) return false;
 
-            return true;
-          });
+          // E. Search Query
+          if (searchQuery) {
+            const codeMatch = (c.course_code || '').toLowerCase().includes(searchQuery);
+            const titleMatch = (c.course_title || '').toLowerCase().includes(searchQuery);
+            const deptMatch = (c.department || '').toLowerCase().includes(searchQuery);
+            const progMatch = (c.programme || '').toLowerCase().includes(searchQuery);
+            const facMatch = matchingPlans.some(p => (p.faculty_name || '').toLowerCase().includes(searchQuery));
+            if (!codeMatch && !titleMatch && !deptMatch && !progMatch && !facMatch) return false;
+          }
 
-          // Sort by Level (UG first, then PG), then Semester ascending (2, 4, 6), then Department, then Code
-          filteredCourses.sort((a, b) => {
-            const aLevel = (a.level || 'UG').toUpperCase();
-            const bLevel = (b.level || 'UG').toUpperCase();
-            if (aLevel !== bLevel) return aLevel === 'UG' ? -1 : 1;
+          return true;
+        });
 
-            const aSem = a.semester_num || 0;
-            const bSem = b.semester_num || 0;
-            if (aSem !== bSem) return aSem - bSem;
+        // Sort by Level (UG first, then PG), then Semester ascending (2, 4, 6), then Department, then Code
+        filteredCourses.sort((a, b) => {
+          const aLevel = (a.level || 'UG').toUpperCase();
+          const bLevel = (b.level || 'UG').toUpperCase();
+          if (aLevel !== bLevel) return aLevel === 'UG' ? -1 : 1;
 
-            const aDept = (a.department || '').localeCompare(b.department || '');
-            if (aDept !== 0) return aDept;
+          const aSem = a.semester_num || 0;
+          const bSem = b.semester_num || 0;
+          if (aSem !== bSem) return aSem - bSem;
 
-            return (a.course_code || '').localeCompare(b.course_code || '');
-          });
+          const aDept = (a.department || '').localeCompare(b.department || '');
+          if (aDept !== 0) return aDept;
 
-          // KPI counts among filtered items
-          const kpiApproved = filteredCourses.filter(c => c._computedStatus === 'Approved').length;
-          const kpiPending = filteredCourses.filter(c => c._computedStatus === 'Pending').length;
-          const kpiDraft = filteredCourses.filter(c => c._computedStatus === 'Draft').length;
-          const kpiRevision = filteredCourses.filter(c => c._computedStatus === 'Revision Needed').length;
-          const kpiNotStarted = filteredCourses.filter(c => c._computedStatus === 'Not Started').length;
+          return (a.course_code || '').localeCompare(b.course_code || '');
+        });
 
-          // Pagination calculations
-          const pageSize = this.adminCoursePageSize || 50;
-          const totalPages = Math.max(1, Math.ceil(filteredCourses.length / pageSize));
-          const currentPage = Math.min(Math.max(1, this.adminCoursePage || 1), totalPages);
-          const startIdx = (currentPage - 1) * pageSize;
-          const endIdx = Math.min(startIdx + pageSize, filteredCourses.length);
-          const pagedCourses = filteredCourses.slice(startIdx, endIdx);
+        // KPI counts among filtered items
+        const kpiApproved = filteredCourses.filter(c => c._computedStatus === 'Approved').length;
+        const kpiPending = filteredCourses.filter(c => c._computedStatus === 'Pending').length;
+        const kpiDraft = filteredCourses.filter(c => c._computedStatus === 'Draft').length;
+        const kpiRevision = filteredCourses.filter(c => c._computedStatus === 'Revision Needed').length;
+        const kpiNotStarted = filteredCourses.filter(c => c._computedStatus === 'Not Started').length;
 
-          return `
+        // Pagination calculations
+        const pageSize = this.adminCoursePageSize || 50;
+        const totalPages = Math.max(1, Math.ceil(filteredCourses.length / pageSize));
+        const currentPage = Math.min(Math.max(1, this.adminCoursePage || 1), totalPages);
+        const startIdx = (currentPage - 1) * pageSize;
+        const endIdx = Math.min(startIdx + pageSize, filteredCourses.length);
+        const pagedCourses = filteredCourses.slice(startIdx, endIdx);
+
+        return `
             <div class="space-y-4">
               <!-- Filter Controls Card -->
               <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs space-y-4">
@@ -4593,53 +4590,53 @@ class CoursePlanApp {
                       </thead>
                       <tbody class="divide-y divide-slate-100 font-medium">
                         ${pagedCourses.map((c, idx) => {
-                          const globalIdx = startIdx + idx + 1;
-                          const cLevel = (c.level || (c.programme && (c.programme.startsWith('M.') || c.programme.includes('Master') || c.programme.includes('MCA')) ? 'PG' : 'UG')).toUpperCase();
-                          const plans = c._matchingPlans || [];
+          const globalIdx = startIdx + idx + 1;
+          const cLevel = (c.level || (c.programme && (c.programme.startsWith('M.') || c.programme.includes('Master') || c.programme.includes('MCA')) ? 'PG' : 'UG')).toUpperCase();
+          const plans = c._matchingPlans || [];
 
-                          let statusBadge = '';
-                          let facultyDisplay = '';
-                          let actionsHtml = '';
+          let statusBadge = '';
+          let facultyDisplay = '';
+          let actionsHtml = '';
 
-                          if (c._computedStatus === 'Approved') {
-                            statusBadge = `
+          if (c._computedStatus === 'Approved') {
+            statusBadge = `
                               <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs">
                                 <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-600"></i>
                                 <span>HOD Approved</span>
                               </span>
                             `;
-                          } else if (c._computedStatus === 'Revision Needed') {
-                            statusBadge = `
+          } else if (c._computedStatus === 'Revision Needed') {
+            statusBadge = `
                               <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-100 text-rose-800 border border-rose-300">
                                 <i data-lucide="alert-triangle" class="w-3.5 h-3.5 text-rose-600"></i>
                                 <span>Revision Needed</span>
                               </span>
                             `;
-                          } else if (c._computedStatus === 'Pending') {
-                            statusBadge = `
+          } else if (c._computedStatus === 'Pending') {
+            statusBadge = `
                               <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
                                 <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-600"></i>
                                 <span>Under HOD Review</span>
                               </span>
                             `;
-                          } else if (c._computedStatus === 'Draft') {
-                            statusBadge = `
+          } else if (c._computedStatus === 'Draft') {
+            statusBadge = `
                               <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-blue-50 text-blue-800 border border-blue-200">
                                 <i data-lucide="file-edit" class="w-3.5 h-3.5 text-blue-600"></i>
                                 <span>Draft Saved</span>
                               </span>
                             `;
-                          } else {
-                            statusBadge = `
+          } else {
+            statusBadge = `
                               <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10.5px] font-semibold bg-slate-100 text-slate-500 border border-slate-200">
                                 <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
                                 <span>Not Started</span>
                               </span>
                             `;
-                          }
+          }
 
-                          if (plans.length > 0) {
-                            facultyDisplay = `
+          if (plans.length > 0) {
+            facultyDisplay = `
                               <div class="space-y-1">
                                 ${plans.map(p => `
                                   <div class="font-black text-indigo-950 text-xs flex items-center gap-1.5">
@@ -4651,8 +4648,8 @@ class CoursePlanApp {
                               </div>
                             `;
 
-                            const primaryPlan = plans[0];
-                            actionsHtml = `
+            const primaryPlan = plans[0];
+            actionsHtml = `
                               <div class="inline-flex items-center gap-1.5">
                                 <button 
                                   type="button" 
@@ -4673,17 +4670,17 @@ class CoursePlanApp {
                                 </button>
                               </div>
                             `;
-                          } else {
-                            facultyDisplay = `
+          } else {
+            facultyDisplay = `
                               <span class="text-slate-400 italic font-medium flex items-center gap-1 text-[11px]">
                                 <i data-lucide="user-x" class="w-3.5 h-3.5 text-slate-300"></i>
                                 <span>Pending Faculty Submission</span>
                               </span>
                             `;
-                            actionsHtml = `<span class="text-slate-300 text-xs font-mono">—</span>`;
-                          }
+            actionsHtml = `<span class="text-slate-300 text-xs font-mono">—</span>`;
+          }
 
-                          return `
+          return `
                             <tr class="hover:bg-slate-50/70 transition">
                               <td class="p-3 text-center font-bold text-slate-400" data-label="S.No">${globalIdx}</td>
                               
@@ -4730,7 +4727,7 @@ class CoursePlanApp {
                               </td>
                             </tr>
                           `;
-                        }).join('')}
+        }).join('')}
                       </tbody>
                     </table>
                   </div>
@@ -4778,7 +4775,7 @@ class CoursePlanApp {
               </div>
             </div>
           `;
-        })() : ''}
+      })() : ''}
 
         <!-- ================= 4. PEDAGOGY & ICT ANALYTICS VIEW ================= -->
         ${this.adminTab === 'analytics' ? this.renderAdminAnalyticsHtml() : ''}
@@ -4860,13 +4857,13 @@ class CoursePlanApp {
                     </thead>
                     <tbody class="divide-y divide-slate-100 font-medium">
                       ${(() => {
-                        const selDept = document.getElementById('admin-manage-fac-dept')?.value || 'all';
-                        let list = [];
-                        this.departments.forEach(d => {
-                          if (selDept !== 'all' && d.name !== selDept) return;
-                          (d.faculty || []).forEach(f => list.push({ ...f, dept: d.name }));
-                        });
-                        return list.map((f, idx) => `
+            const selDept = document.getElementById('admin-manage-fac-dept')?.value || 'all';
+            let list = [];
+            this.departments.forEach(d => {
+              if (selDept !== 'all' && d.name !== selDept) return;
+              (d.faculty || []).forEach(f => list.push({ ...f, dept: d.name }));
+            });
+            return list.map((f, idx) => `
                           <tr class="hover:bg-slate-50/70 transition">
                             <td class="p-3 text-center font-bold text-slate-400">${idx + 1}</td>
                             <td class="p-3 font-bold text-slate-900">${f.name}</td>
@@ -4893,7 +4890,7 @@ class CoursePlanApp {
                             </td>
                           </tr>
                         `).join('');
-                      })()}
+          })()}
                     </tbody>
                   </table>
                 </div>
@@ -5008,7 +5005,7 @@ class CoursePlanApp {
 
 
 
-// ================= 3B. PEDAGOGY & ICT ANALYTICS (NAAC 2.3.1 & 2.3.2) =================
+  // ================= 3B. PEDAGOGY & ICT ANALYTICS (NAAC 2.3.1 & 2.3.2) =================
   renderAdminAnalyticsHtml() {
     const data = this.analyticsData;
     if (!data) {
@@ -5023,7 +5020,7 @@ class CoursePlanApp {
     }
 
     const rawPlans = (data.plans && data.plans.length > 0) ? data.plans : (this.plans || []);
-    
+
     // Stream definition helper
     const streams = {
       science: ['mathematics', 'physics', 'chemistry', 'botany', 'biotechnology', 'electronics', 'physical education'],
@@ -5185,12 +5182,12 @@ class CoursePlanApp {
               <span class="text-xs font-bold text-slate-600">Stream:</span>
               <div class="flex items-center bg-white p-1 rounded-xl border border-slate-200 shadow-2xs">
                 ${[
-                  { id: 'all', label: 'All Streams' },
-                  { id: 'science', label: '🔬 Sciences' },
-                  { id: 'computing', label: '💻 Computing & Voc' },
-                  { id: 'commerce', label: '📈 Commerce' },
-                  { id: 'arts', label: '📚 Arts & Hum' }
-                ].map(s => `
+        { id: 'all', label: 'All Streams' },
+        { id: 'science', label: '🔬 Sciences' },
+        { id: 'computing', label: '💻 Computing & Voc' },
+        { id: 'commerce', label: '📈 Commerce' },
+        { id: 'arts', label: '📚 Arts & Hum' }
+      ].map(s => `
                   <button 
                     type="button" 
                     onclick="coursePlanApp.onAnalyticsFilterChange('stream', '${s.id}')"
@@ -5311,13 +5308,13 @@ class CoursePlanApp {
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             ${Object.entries(activeMethodologies).map(([meth, count], idx) => {
-              const pct = totalPedagogySessions > 0 ? Math.round((count / totalPedagogySessions) * 100) : 0;
-              const isDirect = meth.toLowerCase() === 'lecture-based learning';
-              const colors = isDirect 
-                ? { bg: 'bg-slate-100', bar: 'bg-slate-500', text: 'text-slate-800', tag: 'Direct Instruction', tagBg: 'bg-slate-100 text-slate-600' }
-                : { bg: 'bg-purple-50', bar: 'bg-gradient-to-r from-purple-600 to-indigo-600', text: 'text-purple-950', tag: 'Student-Centric Participative', tagBg: 'bg-emerald-50 text-emerald-800 border border-emerald-200' };
+        const pct = totalPedagogySessions > 0 ? Math.round((count / totalPedagogySessions) * 100) : 0;
+        const isDirect = meth.toLowerCase() === 'lecture-based learning';
+        const colors = isDirect
+          ? { bg: 'bg-slate-100', bar: 'bg-slate-500', text: 'text-slate-800', tag: 'Direct Instruction', tagBg: 'bg-slate-100 text-slate-600' }
+          : { bg: 'bg-purple-50', bar: 'bg-gradient-to-r from-purple-600 to-indigo-600', text: 'text-purple-950', tag: 'Student-Centric Participative', tagBg: 'bg-emerald-50 text-emerald-800 border border-emerald-200' };
 
-              return `
+        return `
                 <div class="p-4 rounded-2xl border border-slate-200/80 bg-white hover:border-purple-300 transition shadow-2xs space-y-2">
                   <div class="flex items-center justify-between gap-2">
                     <div class="flex items-center gap-2">
@@ -5337,7 +5334,7 @@ class CoursePlanApp {
                   </div>
                 </div>
               `;
-            }).join('')}
+      }).join('')}
           </div>
         </div>
 
@@ -5357,8 +5354,8 @@ class CoursePlanApp {
               ${Object.keys(activePlatforms).length === 0 ? `
                 <p class="text-xs text-slate-400 italic text-center py-6">No platform records found for current filter.</p>
               ` : Object.entries(activePlatforms).map(([plat, cnt]) => {
-                const pct = totalPlatformsCount > 0 ? Math.round((cnt / totalPlatformsCount) * 100) : 0;
-                return `
+        const pct = totalPlatformsCount > 0 ? Math.round((cnt / totalPlatformsCount) * 100) : 0;
+        return `
                   <div class="p-3 bg-slate-50/70 rounded-xl border border-slate-200 space-y-1.5">
                     <div class="flex items-center justify-between text-xs">
                       <span class="font-bold text-slate-900 flex items-center gap-1.5">
@@ -5372,7 +5369,7 @@ class CoursePlanApp {
                     </div>
                   </div>
                 `;
-              }).join('')}
+      }).join('')}
             </div>
           </div>
 
@@ -5390,8 +5387,8 @@ class CoursePlanApp {
               ${Object.keys(activeTools).length === 0 ? `
                 <p class="text-xs text-slate-400 italic text-center py-6">No digital tools records found for current filter.</p>
               ` : Object.entries(activeTools).map(([tool, cnt]) => {
-                const pct = totalToolsCount > 0 ? Math.round((cnt / totalToolsCount) * 100) : 0;
-                return `
+        const pct = totalToolsCount > 0 ? Math.round((cnt / totalToolsCount) * 100) : 0;
+        return `
                   <div class="p-3 bg-slate-50/70 rounded-xl border border-slate-200 space-y-1.5">
                     <div class="flex items-center justify-between text-xs">
                       <span class="font-bold text-slate-900 flex items-center gap-1.5">
@@ -5405,7 +5402,7 @@ class CoursePlanApp {
                     </div>
                   </div>
                 `;
-              }).join('')}
+      }).join('')}
             </div>
           </div>
         </div>
@@ -5432,15 +5429,15 @@ class CoursePlanApp {
 
           <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             ${[
-              { k: 'K1', name: 'Remember', desc: 'Recall & Recognition', color: 'indigo', count: activeBloom.K1 || 0 },
-              { k: 'K2', name: 'Understand', desc: 'Comprehend & Explain', color: 'sky', count: activeBloom.K2 || 0 },
-              { k: 'K3', name: 'Apply', desc: 'Execute & Implement', color: 'teal', count: activeBloom.K3 || 0 },
-              { k: 'K4', name: 'Analyze', desc: 'Deconstruct & Differentiate', color: 'emerald', count: activeBloom.K4 || 0 },
-              { k: 'K5', name: 'Evaluate', desc: 'Appraise & Justify', color: 'amber', count: activeBloom.K5 || 0 },
-              { k: 'K6', name: 'Create', desc: 'Design & Synthesize', color: 'rose', count: activeBloom.K6 || 0 }
-            ].map(b => {
-              const pct = totalCosCount > 0 ? Math.round((b.count / totalCosCount) * 100) : 0;
-              return `
+        { k: 'K1', name: 'Remember', desc: 'Recall & Recognition', color: 'indigo', count: activeBloom.K1 || 0 },
+        { k: 'K2', name: 'Understand', desc: 'Comprehend & Explain', color: 'sky', count: activeBloom.K2 || 0 },
+        { k: 'K3', name: 'Apply', desc: 'Execute & Implement', color: 'teal', count: activeBloom.K3 || 0 },
+        { k: 'K4', name: 'Analyze', desc: 'Deconstruct & Differentiate', color: 'emerald', count: activeBloom.K4 || 0 },
+        { k: 'K5', name: 'Evaluate', desc: 'Appraise & Justify', color: 'amber', count: activeBloom.K5 || 0 },
+        { k: 'K6', name: 'Create', desc: 'Design & Synthesize', color: 'rose', count: activeBloom.K6 || 0 }
+      ].map(b => {
+        const pct = totalCosCount > 0 ? Math.round((b.count / totalCosCount) * 100) : 0;
+        return `
                 <div class="p-4 rounded-2xl border border-slate-200 bg-slate-50/50 hover:bg-white hover:border-purple-300 transition text-center space-y-1.5 shadow-2xs">
                   <div class="inline-block px-2.5 py-0.5 rounded-full font-mono font-black text-xs bg-${b.color}-100 text-${b.color}-800 border border-${b.color}-200">
                     ${b.k}
@@ -5451,7 +5448,7 @@ class CoursePlanApp {
                   <div class="text-[11px] font-bold text-slate-500">${pct}% of COs</div>
                 </div>
               `;
-            }).join('')}
+      }).join('')}
           </div>
         </div>
 
@@ -5777,15 +5774,15 @@ class CoursePlanApp {
               </thead>
               <tbody class="divide-y divide-slate-200 text-[11px]">
                 ${(() => {
-                  const ped = data.pedagogy || {};
-                  const total = Object.values(ped).reduce((a, b) => a + b, 0);
-                  if (Object.keys(ped).length === 0) {
-                    return '<tr><td colspan="5" class="p-4 text-center text-slate-400 italic">No methodology records available.</td></tr>';
-                  }
-                  return Object.entries(ped).map(([meth, count], idx) => {
-                    const pct = total > 0 ? Math.round((count / total) * 100) : 0;
-                    const isDirect = meth.toLowerCase().includes('lecture-based') && !meth.toLowerCase().includes('case') && !meth.toLowerCase().includes('problem');
-                    return `
+        const ped = data.pedagogy || {};
+        const total = Object.values(ped).reduce((a, b) => a + b, 0);
+        if (Object.keys(ped).length === 0) {
+          return '<tr><td colspan="5" class="p-4 text-center text-slate-400 italic">No methodology records available.</td></tr>';
+        }
+        return Object.entries(ped).map(([meth, count], idx) => {
+          const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+          const isDirect = meth.toLowerCase().includes('lecture-based') && !meth.toLowerCase().includes('case') && !meth.toLowerCase().includes('problem');
+          return `
                       <tr>
                         <td class="p-1.5 border border-slate-300 text-center font-bold text-slate-500">${idx + 1}</td>
                         <td class="p-1.5 border border-slate-300 font-bold text-slate-900">${meth}</td>
@@ -5798,8 +5795,8 @@ class CoursePlanApp {
                         <td class="p-1.5 border border-slate-300 text-center font-bold text-slate-900">${pct}%</td>
                       </tr>
                     `;
-                  }).join('');
-                })()}
+        }).join('');
+      })()}
               </tbody>
             </table>
           </div>
@@ -5823,15 +5820,15 @@ class CoursePlanApp {
                 </thead>
                 <tbody class="divide-y divide-slate-200 text-[11px]">
                   ${(() => {
-                    const plats = data.ict_platforms || {};
-                    if (Object.keys(plats).length === 0) return '<tr><td colspan="2" class="p-2 text-center text-slate-400 italic">No records.</td></tr>';
-                    return Object.entries(plats).map(([p, cnt]) => `
+        const plats = data.ict_platforms || {};
+        if (Object.keys(plats).length === 0) return '<tr><td colspan="2" class="p-2 text-center text-slate-400 italic">No records.</td></tr>';
+        return Object.entries(plats).map(([p, cnt]) => `
                       <tr>
                         <td class="p-1.5 border border-slate-300 font-bold text-slate-900">${p}</td>
                         <td class="p-1.5 border border-slate-300 text-center font-semibold">${cnt} courses</td>
                       </tr>
                     `).join('');
-                  })()}
+      })()}
                 </tbody>
               </table>
 
@@ -5844,15 +5841,15 @@ class CoursePlanApp {
                 </thead>
                 <tbody class="divide-y divide-slate-200 text-[11px]">
                   ${(() => {
-                    const tools = data.ict_tools || {};
-                    if (Object.keys(tools).length === 0) return '<tr><td colspan="2" class="p-2 text-center text-slate-400 italic">No records.</td></tr>';
-                    return Object.entries(tools).map(([t, cnt]) => `
+        const tools = data.ict_tools || {};
+        if (Object.keys(tools).length === 0) return '<tr><td colspan="2" class="p-2 text-center text-slate-400 italic">No records.</td></tr>';
+        return Object.entries(tools).map(([t, cnt]) => `
                       <tr>
                         <td class="p-1.5 border border-slate-300 font-bold text-slate-900">${t}</td>
                         <td class="p-1.5 border border-slate-300 text-center font-semibold">${cnt} usages</td>
                       </tr>
                     `).join('');
-                  })()}
+      })()}
                 </tbody>
               </table>
             </div>
@@ -6381,18 +6378,18 @@ class CoursePlanApp {
                     <div class="text-[10.5px] font-black text-slate-500 uppercase tracking-wider">Assigned Co-Faculty Member(s):</div>
                     <div id="cp-shared-faculty-chips" class="flex flex-wrap items-center gap-2 min-h-[36px] p-2.5 bg-amber-50/50 rounded-xl border border-amber-200">
                       ${(() => {
-                        const list = (plan.shared_faculty_name || (plan.general_details && plan.general_details.shared_faculty_name) || '').split(',').map(s => s.trim()).filter(Boolean);
-                        if (list.length === 0) {
-                          return '<span class="text-[11px] text-amber-700 italic">No co-faculty added yet. Choose from dropdown below and click <strong>+ Add Co-Faculty</strong>.</span>';
-                        }
-                        return list.map(name => `
+        const list = (plan.shared_faculty_name || (plan.general_details && plan.general_details.shared_faculty_name) || '').split(',').map(s => s.trim()).filter(Boolean);
+        if (list.length === 0) {
+          return '<span class="text-[11px] text-amber-700 italic">No co-faculty added yet. Choose from dropdown below and click <strong>+ Add Co-Faculty</strong>.</span>';
+        }
+        return list.map(name => `
                           <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold bg-amber-100 text-amber-950 border border-amber-300 shadow-2xs">
                             <i data-lucide="user-check" class="w-3.5 h-3.5 text-amber-700"></i>
                             <span>${this.escapeHtml(name)}</span>
                             <button type="button" onclick="coursePlanApp.removeSharedFaculty('${this.escapeHtml(name)}')" class="hover:text-red-700 font-black cursor-pointer ml-1 p-0.5 rounded hover:bg-amber-200/60" title="Remove">✕</button>
                           </span>
                         `).join('');
-                      })()}
+      })()}
                     </div>
                   </div>
 
@@ -6680,18 +6677,18 @@ class CoursePlanApp {
                   </thead>
                   <tbody id="cp-dtp-tbody" class="divide-y divide-slate-100">
                     ${dtp.map((row, idx) => {
-                      const isFirstInMonth = (idx === 0 || row.month_days !== dtp[idx - 1].month_days);
-                      let span = 1;
-                      if (isFirstInMonth) {
-                        for (let j = idx + 1; j < dtp.length; j++) {
-                          if (dtp[j].month_days === row.month_days) span++;
-                          else break;
-                        }
-                      }
-                      const isHidden = !!row.is_hidden;
+        const isFirstInMonth = (idx === 0 || row.month_days !== dtp[idx - 1].month_days);
+        let span = 1;
+        if (isFirstInMonth) {
+          for (let j = idx + 1; j < dtp.length; j++) {
+            if (dtp[j].month_days === row.month_days) span++;
+            else break;
+          }
+        }
+        const isHidden = !!row.is_hidden;
 
-                      const isLastInMonth = (idx === dtp.length - 1 || dtp[idx + 1].month_days !== row.month_days);
-                      return `
+        const isLastInMonth = (idx === dtp.length - 1 || dtp[idx + 1].month_days !== row.month_days);
+        return `
                         <tr class="${isHidden ? 'bg-slate-100/80 opacity-50' : 'hover:bg-slate-50/50'} ${isLastInMonth ? 'border-b-4 border-slate-300 md:border-b-4 md:border-indigo-200/80' : ''} transition">
                           ${isFirstInMonth ? `
                             <td rowspan="${span}" class="p-2.5 font-bold text-slate-800 bg-slate-50/70 border-r border-slate-200 text-center align-middle whitespace-nowrap hidden md:table-cell select-none" data-label="Month / Days">
@@ -6770,7 +6767,7 @@ class CoursePlanApp {
                           </td>
                         </tr>
                       `;
-                    }).join('')}
+      }).join('')}
                   </tbody>
                 </table>
               </div>
@@ -6825,13 +6822,13 @@ class CoursePlanApp {
                           <td class="p-2" data-label="Handled By">
                             <select class="ucp-handled-by w-full text-xs px-2.5 py-1.5 border border-amber-300 rounded-lg font-bold bg-amber-50/60 focus:border-indigo-600 focus:outline-none">
                               ${(() => {
-                                const allFac = this.getAllCourseFacultyList();
-                                return allFac.map(fac => `
+            const allFac = this.getAllCourseFacultyList();
+            return allFac.map(fac => `
                                   <option value="${this.escapeHtml(fac)}" ${(u.handled_by === fac || (!u.handled_by && fac === plan.faculty_name)) ? 'selected' : ''}>
                                     ${this.escapeHtml(fac)}
                                   </option>
                                 `).join('');
-                              })()}
+          })()}
                             </select>
                           </td>
                         ` : ''}
@@ -6983,10 +6980,10 @@ class CoursePlanApp {
               </div>
 
               ${(() => {
-                const fullAssessmentPlan = this.getFullAssessmentPlan(plan);
-                const totalMarks = fullAssessmentPlan.reduce((sum, a) => sum + (parseFloat(a.marks) || 0), 0);
+        const fullAssessmentPlan = this.getFullAssessmentPlan(plan);
+        const totalMarks = fullAssessmentPlan.reduce((sum, a) => sum + (parseFloat(a.marks) || 0), 0);
 
-                return `
+        return `
                   <div class="overflow-x-auto rounded-xl border border-slate-200">
                     <table class="w-full text-left text-xs border-collapse mobile-card-table">
                       <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
@@ -7035,13 +7032,13 @@ class CoursePlanApp {
                               <td class="p-2" data-label="Assessed By">
                                 <select class="cia-assessed-by w-full text-xs px-2 py-1.5 border border-amber-300 rounded-lg font-bold bg-amber-50/60 focus:border-indigo-600 focus:outline-none" data-comp="${this.escapeHtml(asst.component)}">
                                   ${(() => {
-                                    const allFac = this.getAllCourseFacultyList();
-                                    return allFac.map(fac => `
+              const allFac = this.getAllCourseFacultyList();
+              return allFac.map(fac => `
                                       <option value="${this.escapeHtml(fac)}" ${(asst.assessed_by === fac || (!asst.assessed_by && fac === plan.faculty_name)) ? 'selected' : ''}>
                                         ${this.escapeHtml(fac)}
                                       </option>
                                     `).join('');
-                                  })()}
+            })()}
                                 </select>
                               </td>
                             ` : ''}
@@ -7061,7 +7058,7 @@ class CoursePlanApp {
                     </table>
                   </div>
                 `;
-              })()}
+      })()}
             </div>
 
             <!-- C. Digital Resources -->
@@ -7162,7 +7159,7 @@ class CoursePlanApp {
                           </td>
                         </tr>
                       `;
-                    }).join('')}
+      }).join('')}
                   </tbody>
                 </table>
               </div>
@@ -7376,12 +7373,12 @@ class CoursePlanApp {
                   <td class="p-2.5 font-bold text-slate-600">Faculty Member(s):</td>
                   <td class="p-2.5 font-bold text-slate-900" colspan="3">
                     ${(() => {
-                      const allFac = this.getAllCourseFacultyList();
-                      if (allFac.length > 1) {
-                        return allFac.map(f => this.escapeHtml(f)).join(', ') + ' <span class="text-[11px] text-amber-800 font-black bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-full ml-1.5">● Shared Course (' + allFac.length + ' Teachers)</span>';
-                      }
-                      return this.escapeHtml(plan.faculty_name || '—') + (plan.is_shared_course && plan.shared_faculty_name ? ` & ${this.escapeHtml(plan.shared_faculty_name)} <span class="text-[11px] text-amber-800 font-black bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-full ml-1.5">● Shared Course</span>` : ' <span class="text-[11px] text-emerald-800 font-bold bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full ml-1.5">● Handled Independently</span>');
-                    })()}
+        const allFac = this.getAllCourseFacultyList();
+        if (allFac.length > 1) {
+          return allFac.map(f => this.escapeHtml(f)).join(', ') + ' <span class="text-[11px] text-amber-800 font-black bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-full ml-1.5">● Shared Course (' + allFac.length + ' Teachers)</span>';
+        }
+        return this.escapeHtml(plan.faculty_name || '—') + (plan.is_shared_course && plan.shared_faculty_name ? ` & ${this.escapeHtml(plan.shared_faculty_name)} <span class="text-[11px] text-amber-800 font-black bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-full ml-1.5">● Shared Course</span>` : ' <span class="text-[11px] text-emerald-800 font-bold bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full ml-1.5">● Handled Independently</span>');
+      })()}
                   </td>
                 </tr>
                 <tr class="border-b border-slate-200 bg-slate-50/40">
@@ -7459,15 +7456,15 @@ class CoursePlanApp {
                 </thead>
                 <tbody>
                   ${(dtp || []).filter(r => !r.is_hidden).map((row, idx, activeDtp) => {
-                    const isFirstInMonth = (idx === 0 || row.month_days !== activeDtp[idx - 1].month_days);
-                    let span = 1;
-                    if (isFirstInMonth) {
-                      for (let j = idx + 1; j < activeDtp.length; j++) {
-                        if (activeDtp[j].month_days === row.month_days) span++;
-                        else break;
-                      }
-                    }
-                    return `
+        const isFirstInMonth = (idx === 0 || row.month_days !== activeDtp[idx - 1].month_days);
+        let span = 1;
+        if (isFirstInMonth) {
+          for (let j = idx + 1; j < activeDtp.length; j++) {
+            if (activeDtp[j].month_days === row.month_days) span++;
+            else break;
+          }
+        }
+        return `
                       <tr>
                         ${isFirstInMonth ? `
                           <td rowspan="${span}" class="border border-slate-300 p-1.5 font-bold text-center align-middle whitespace-nowrap bg-slate-50">
@@ -7482,7 +7479,7 @@ class CoursePlanApp {
                         <td class="border border-slate-300 p-1.5">${row.resources || '—'}</td>
                       </tr>
                     `;
-                  }).join('')}
+      }).join('')}
                 </tbody>
               </table>
             </div>
@@ -7592,13 +7589,13 @@ class CoursePlanApp {
                       <td class="border border-slate-300 p-1.5 text-center font-bold">${i + 1}</td>
                       <td class="border border-slate-300 p-1.5">${ict.topic || '—'}</td>
                       <td class="border border-slate-300 p-1.5 font-bold">${(() => {
-                        const t = (ict.tool || '').split(',').map(s => s.trim()).map(s => (s === 'Others' && ict.tool_other) ? `Others (${ict.tool_other})` : s).join(', ');
-                        return this.escapeHtml(t || '—');
-                      })()}</td>
+          const t = (ict.tool || '').split(',').map(s => s.trim()).map(s => (s === 'Others' && ict.tool_other) ? `Others (${ict.tool_other})` : s).join(', ');
+          return this.escapeHtml(t || '—');
+        })()}</td>
                       <td class="border border-slate-300 p-1.5">${(() => {
-                        const p = (ict.platform || '').split(',').map(s => s.trim()).map(s => (s === 'Others' && ict.platform_other) ? `Others (${ict.platform_other})` : s).join(', ');
-                        return this.escapeHtml(p || '—');
-                      })()}</td>
+          const p = (ict.platform || '').split(',').map(s => s.trim()).map(s => (s === 'Others' && ict.platform_other) ? `Others (${ict.platform_other})` : s).join(', ');
+          return this.escapeHtml(p || '—');
+        })()}</td>
                       <td class="border border-slate-300 p-1.5">${ict.purpose}</td>
                     </tr>
                   `).join('')}
@@ -7616,12 +7613,12 @@ class CoursePlanApp {
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4">
               <div class="space-y-6">
                 <div>Faculty Member(s): <strong>${(() => {
-                  const allFac = this.getAllCourseFacultyList();
-                  if (allFac.length > 1) {
-                    return allFac.map(f => this.escapeHtml(f)).join(' & ');
-                  }
-                  return this.escapeHtml(decl.faculty_signature || plan.faculty_name || '____________________') + (plan.is_shared_course && plan.shared_faculty_name ? ` & ${this.escapeHtml(plan.shared_faculty_name)}` : '');
-                })()}</strong></div>
+        const allFac = this.getAllCourseFacultyList();
+        if (allFac.length > 1) {
+          return allFac.map(f => this.escapeHtml(f)).join(' & ');
+        }
+        return this.escapeHtml(decl.faculty_signature || plan.faculty_name || '____________________') + (plan.is_shared_course && plan.shared_faculty_name ? ` & ${this.escapeHtml(plan.shared_faculty_name)}` : '');
+      })()}</strong></div>
                 <div>Date: <strong>${decl.submission_date || '____________________'}</strong></div>
               </div>
 
@@ -8423,8 +8420,8 @@ class CoursePlanApp {
               <!-- Scrollable Options List -->
               <div id="modal-act-options-list" class="max-h-44 overflow-y-auto border border-slate-200 rounded-xl p-1.5 space-y-0.5 divide-y divide-slate-100 bg-white">
                 ${CoursePlanApp.LEARNING_ACTIVITIES.map(opt => {
-                  const isChecked = opt === 'Other:' ? selectedActs.some(s => s === 'Other:' || s.startsWith('Other:')) : selectedActs.includes(opt);
-                  return `
+      const isChecked = opt === 'Other:' ? selectedActs.some(s => s === 'Other:' || s.startsWith('Other:')) : selectedActs.includes(opt);
+      return `
                     <label class="modal-act-opt-item flex items-center gap-2.5 px-2.5 py-1.5 hover:bg-indigo-50/70 rounded-lg cursor-pointer text-xs font-semibold text-slate-800">
                       <input 
                         type="checkbox" 
@@ -8436,7 +8433,7 @@ class CoursePlanApp {
                       <span class="act-name-label">${opt}</span>
                     </label>
                   `;
-                }).join('')}
+    }).join('')}
               </div>
 
               <!-- Custom Other Input -->
@@ -8548,38 +8545,38 @@ class CoursePlanApp {
 
                   <div class="space-y-2 bg-white/90 p-3 rounded-xl border border-amber-300">
                     ${(() => {
-                      const ugOptions = [
-                        { comp: 'C2 – K4', marks: '10', label: 'C2 – K4 (10 Marks)' },
-                        { comp: 'C2 – K5', marks: '10', label: 'C2 – K5 (10 Marks)' },
-                        { comp: 'Library Referencing – K3', marks: '5', label: 'Library Referencing – K3 (5 Marks)' }
-                      ];
+        const ugOptions = [
+          { comp: 'C2 – K4', marks: '10', label: 'C2 – K4 (10 Marks)' },
+          { comp: 'C2 – K5', marks: '10', label: 'C2 – K5 (10 Marks)' },
+          { comp: 'Library Referencing – K3', marks: '5', label: 'Library Referencing – K3 (5 Marks)' }
+        ];
 
-                      const pgOptions = [
-                        { comp: 'C2 – K4', marks: '6', label: 'C2 – K4 (6 Marks)' },
-                        { comp: 'C2 – K5', marks: '6', label: 'C2 – K5 (6 Marks)' },
-                        { comp: 'C2 – K6', marks: '8', label: 'C2 – K6 (8 Marks)' },
-                        { comp: 'Library Referencing – K3', marks: '5', label: 'Library Referencing – K3 (5 Marks)' }
-                      ];
+        const pgOptions = [
+          { comp: 'C2 – K4', marks: '6', label: 'C2 – K4 (6 Marks)' },
+          { comp: 'C2 – K5', marks: '6', label: 'C2 – K5 (6 Marks)' },
+          { comp: 'C2 – K6', marks: '8', label: 'C2 – K6 (8 Marks)' },
+          { comp: 'Library Referencing – K3', marks: '5', label: 'Library Referencing – K3 (5 Marks)' }
+        ];
 
-                      const options = isPG ? pgOptions : ugOptions;
+        const options = isPG ? pgOptions : ugOptions;
 
-                      // Identify already allocated components in other activities
-                      const allocatedComps = (this.activePlan.learning_activities || [])
-                        .filter((a, idx) => a && a.is_assessment && idx !== actIndex)
-                        .map(a => a.cia_component);
+        // Identify already allocated components in other activities
+        const allocatedComps = (this.activePlan.learning_activities || [])
+          .filter((a, idx) => a && a.is_assessment && idx !== actIndex)
+          .map(a => a.cia_component);
 
-                      // Determine default selection (first unallocated option)
-                      let selectedComp = existing?.cia_component;
-                      if (!selectedComp) {
-                        const firstFree = options.find(o => !allocatedComps.includes(o.comp));
-                        selectedComp = firstFree ? firstFree.comp : options[0].comp;
-                      }
+        // Determine default selection (first unallocated option)
+        let selectedComp = existing?.cia_component;
+        if (!selectedComp) {
+          const firstFree = options.find(o => !allocatedComps.includes(o.comp));
+          selectedComp = firstFree ? firstFree.comp : options[0].comp;
+        }
 
-                      return options.map((opt) => {
-                        const isAllocated = allocatedComps.includes(opt.comp);
-                        const isChecked = (selectedComp === opt.comp) && !isAllocated;
+        return options.map((opt) => {
+          const isAllocated = allocatedComps.includes(opt.comp);
+          const isChecked = (selectedComp === opt.comp) && !isAllocated;
 
-                        return `
+          return `
                           <label class="flex items-center gap-2.5 p-2 rounded-lg ${isAllocated ? 'opacity-40 cursor-not-allowed bg-slate-100 text-slate-400 border border-slate-200' : 'hover:bg-amber-100/70 cursor-pointer border border-transparent has-checked:border-amber-400 has-checked:bg-amber-100/80 transition'}">
                             <input 
                               type="radio" 
@@ -8600,8 +8597,8 @@ class CoursePlanApp {
                             </div>
                           </label>
                         `;
-                      }).join('');
-                    })()}
+        }).join('');
+      })()}
                   </div>
                   <div class="text-[10px] text-amber-800/80 font-medium mt-1">C1 (15M), Mid Sem (30M) & End Sem (30M) are pre-filled institutional exams.</div>
                 </div>
@@ -8809,7 +8806,7 @@ class CoursePlanApp {
       return;
     }
 
-    const formattedDate = (dateFrom && dateTo && dateFrom !== dateTo) 
+    const formattedDate = (dateFrom && dateTo && dateFrom !== dateTo)
       ? `${this.formatDateToDDMMYYYY(dateFrom)} to ${this.formatDateToDDMMYYYY(dateTo)}`
       : this.formatDateToDDMMYYYY(dateFrom);
 
@@ -8946,8 +8943,8 @@ class CoursePlanApp {
         topics: fromTopic + (toTopic ? ' to ' + toTopic : ''),
         hours: tr.querySelector('.dtp-hours')?.value || '',
         methodology: tr.querySelector('.dtp-method-value')?.value || '',
-        resources: tr.querySelector('.dtp-res-value')?.value || (tr.querySelector('.dtp-res-select')?.value === 'Others' 
-          ? (tr.querySelector('.dtp-res-other')?.value || 'Others') 
+        resources: tr.querySelector('.dtp-res-value')?.value || (tr.querySelector('.dtp-res-select')?.value === 'Others'
+          ? (tr.querySelector('.dtp-res-other')?.value || 'Others')
           : (tr.querySelector('.dtp-res-select')?.value || '')),
         is_hidden: isHidden
       });
@@ -8960,7 +8957,7 @@ class CoursePlanApp {
     const units = ['Unit I', 'Unit II', 'Unit III', 'Unit IV', 'Unit V'];
     ucpRows.forEach((tr, i) => {
       ucp.push({
-        unit: units[i] || `Unit ${i+1}`,
+        unit: units[i] || `Unit ${i + 1}`,
         planned_hours: tr.querySelector('.ucp-planned')?.value || '',
         actual_hours: tr.querySelector('.ucp-actual')?.value || '',
         target_date: tr.querySelector('.ucp-date')?.value || '',
@@ -9143,7 +9140,7 @@ class CoursePlanApp {
   submitNextCourse() {
     const el = document.getElementById('submission-success-modal');
     if (el) el.innerHTML = '';
-    
+
     // Retain department, faculty name and email for quick sequential entry
     const isFaculty = this.currentUser && this.currentUser.role === 'faculty';
     const curDept = isFaculty ? this.currentUser.department_name : (this.activePlan ? this.activePlan.department_name : this.selectedDept);
@@ -9161,7 +9158,7 @@ class CoursePlanApp {
     if (this.activePlan.declaration) {
       this.activePlan.declaration.faculty_signature = curFac;
     }
-    
+
     this.navigateTo('/course-plan/new');
   }
 
@@ -9173,7 +9170,7 @@ class CoursePlanApp {
       try {
         window.open('', '_self', '');
         window.close();
-      } catch (e) {}
+      } catch (e) { }
     }, 250);
   }
 
@@ -9229,8 +9226,8 @@ class CoursePlanApp {
         .replace(/^HOD\s+/i, '');
     }
 
-    const cosCount = Array.isArray(fullPlan.course_outcomes) 
-      ? fullPlan.course_outcomes.length 
+    const cosCount = Array.isArray(fullPlan.course_outcomes)
+      ? fullPlan.course_outcomes.length
       : (typeof fullPlan.course_outcomes === 'object' && fullPlan.course_outcomes ? Object.keys(fullPlan.course_outcomes).length : 0);
 
     const subDate = (fullPlan.declaration && typeof fullPlan.declaration === 'object' && fullPlan.declaration.submission_date)
@@ -9556,7 +9553,7 @@ class CoursePlanApp {
   renderTLCourseSelect(fieldId, targetClassInputId, selectedValue = '') {
     const courses = this.getFacultyPlannedCourses();
     let optionsHtml = `<option value="">-- Select Planned Course --</option>`;
-    
+
     if (courses.length === 0) {
       optionsHtml += `<option value="" disabled>No planned courses found (Create a Course Plan first)</option>`;
     } else {
@@ -9566,7 +9563,7 @@ class CoursePlanApp {
         optionsHtml += `<option value="${this.escapeHtml(c.key)}" data-class="${this.escapeHtml(c.classSection)}" ${isSel}>${this.escapeHtml(label)}</option>`;
       });
     }
-    
+
     const isCustom = selectedValue && !courses.some(c => c.key.trim().toLowerCase() === selectedValue.trim().toLowerCase());
     optionsHtml += `<option value="__custom__" ${isCustom ? 'selected' : ''}>➕ Enter another course manually...</option>`;
 
@@ -9617,7 +9614,7 @@ class CoursePlanApp {
     if (selectedValue && !isStandard) {
       hasCustomVal = true;
     }
-    
+
     let html = `<option value="">-- Select Option --</option>`;
     optionsList.forEach(opt => {
       let isSel = false;
