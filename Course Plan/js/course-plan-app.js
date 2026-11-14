@@ -159,9 +159,11 @@ class CoursePlanApp {
     this.hodTab = 'courses';
     this.syllabusCourses = [];
     this.syllabusLoaded = false;
+    this.systemSettings = { submissions_enabled: true, maintenance_mode: false };
   }
 
   async init() {
+    await this.fetchSystemSettings();
     await this.loadDepartmentsData();
     // Start syllabus data fetch
     this.syllabusPromise = this.loadSyllabusData();
@@ -2544,6 +2546,9 @@ class CoursePlanApp {
     try {
       const res = await fetch('api/course_plan.php?action=auth_check');
       const json = await res.json();
+      if (json.settings) {
+        this.systemSettings = json.settings;
+      }
       if (json.success && json.authenticated) {
         this.currentUser = json.user;
         if (this.currentUser.department_name) {
@@ -2769,6 +2774,21 @@ class CoursePlanApp {
 
             <!-- Unified Single-Door Login Form -->
             <div class="p-6 sm:p-8 space-y-5">
+              ${this.systemSettings && this.systemSettings.maintenance_mode ? `
+                <!-- Development & Maintenance Mode Banner -->
+                <div class="p-4 bg-amber-50 border-2 border-amber-300 rounded-2xl flex items-start gap-3 text-amber-900 shadow-sm animate-pulse">
+                  <div class="p-2 bg-amber-200/80 rounded-xl text-amber-800 shrink-0 mt-0.5">
+                    <i data-lucide="wrench" class="w-5 h-5"></i>
+                  </div>
+                  <div class="space-y-1">
+                    <div class="flex items-center gap-2">
+                      <span class="px-2 py-0.5 rounded-md bg-amber-200 text-amber-900 text-[10px] font-black uppercase tracking-wider">Maintenance Mode Active</span>
+                    </div>
+                    <h4 class="text-xs font-black text-amber-900">Portal Under Maintenance / Development</h4>
+                    <p class="text-[11.5px] text-amber-800 font-medium">Faculty and HOD logins are temporarily suspended. Only IQAC Administrators may sign in below with administrator credentials.</p>
+                  </div>
+                </div>
+              ` : ''}
               <div class="space-y-1">
                 <div class="flex items-center justify-between">
                   <h2 class="text-lg font-black text-slate-900">Sign In to Portal</h2>
@@ -3065,6 +3085,77 @@ class CoursePlanApp {
   async loginHOD(e) { return this.login(e); }
   async loginAdmin(e) { return this.login(e); }
 
+  // ================= SYSTEM SETTINGS & ADMIN CONTROLS =================
+  async fetchSystemSettings() {
+    try {
+      const res = await fetch('api/course_plan.php?action=get_settings');
+      const data = await res.json();
+      if (data && data.success && data.settings) {
+        this.systemSettings = data.settings;
+      }
+    } catch (err) {
+      console.warn('Could not load system settings:', err);
+    }
+  }
+
+  async toggleSubmissionsControl() {
+    const newStatus = !this.systemSettings.submissions_enabled;
+    const confirmMsg = newStatus 
+      ? "Are you sure you want to ENABLE / OPEN course plan submissions for all faculty across the institution?" 
+      : "Are you sure you want to DISABLE / CLOSE course plan submissions? Faculty will not be able to submit or edit plans.";
+    if (!confirm(confirmMsg)) return;
+
+    try {
+      const res = await fetch('api/course_plan.php?action=update_settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ submissions_enabled: newStatus })
+      });
+      const data = await res.json();
+      if (data && data.success) {
+        this.systemSettings = data.settings;
+        this.render();
+      } else {
+        alert(data.error || 'Failed to update submissions setting.');
+      }
+    } catch (err) {
+      alert('Network error while updating submission setting.');
+    }
+  }
+
+  async toggleMaintenanceMode() {
+    const newMode = !this.systemSettings.maintenance_mode;
+    const confirmMsg = newMode 
+      ? "⚠️ Are you sure you want to ACTIVATE Development & Maintenance Mode?\n\nNon-administrator access (Faculty & HODs) will be blocked immediately. Only IQAC Administrators can sign in." 
+      : "Are you sure you want to DEACTIVATE Development / Maintenance Mode and reopen the portal to all faculty and HODs?";
+    if (!confirm(confirmMsg)) return;
+
+    try {
+      const res = await fetch('api/course_plan.php?action=update_settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ maintenance_mode: newMode })
+      });
+      const data = await res.json();
+      if (data && data.success) {
+        this.systemSettings = data.settings;
+        this.render();
+      } else {
+        alert(data.error || 'Failed to update maintenance mode.');
+      }
+    } catch (err) {
+      alert('Network error while updating maintenance mode.');
+    }
+  }
+
+  exportCoursePlansCSV() {
+    window.location.href = 'api/course_plan.php?action=export_plans_csv';
+  }
+
+  exportTLPracticesCSV() {
+    window.location.href = 'api/course_plan.php?action=export_tl_csv';
+  }
+
   async loadPlanForEdit(id) {
     try {
       const res = await fetch(`api/course_plan.php?action=get&id=${id}`);
@@ -3105,6 +3196,22 @@ class CoursePlanApp {
 
     return `
       <div class="space-y-6 animate-fadeIn w-full max-w-7xl mx-auto">
+        ${this.systemSettings && !this.systemSettings.submissions_enabled ? `
+          <!-- Submissions Closed Alert Banner -->
+          <div class="p-4 bg-rose-50 border-2 border-rose-300 rounded-2xl flex items-center justify-between gap-3 text-rose-900 shadow-sm animate-fadeIn">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600 shrink-0">
+                <i data-lucide="lock" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h4 class="text-xs font-black uppercase tracking-wider text-rose-900">Course Plan Submissions are Closed</h4>
+                <p class="text-[11.5px] font-medium text-rose-700">Course plan submissions have been temporarily closed by the IQAC Administrator. You can view and print your courses, but new submissions are locked.</p>
+              </div>
+            </div>
+            <span class="px-3 py-1 bg-rose-200 text-rose-900 text-xs font-black rounded-xl shrink-0">Submissions Locked</span>
+          </div>
+        ` : ''}
+
         <!-- Faculty Dashboard Welcome Banner -->
         <div class="bg-gradient-to-r from-blue-900 via-indigo-900 to-indigo-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-indigo-700/50 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div class="space-y-2">
@@ -3908,6 +4015,107 @@ class CoursePlanApp {
           <div class="bg-white p-5 rounded-2xl border border-indigo-200 shadow-2xs bg-indigo-50/30">
             <div class="text-[11px] font-bold text-indigo-800 uppercase tracking-wider mb-1">Master Syllabus Catalog</div>
             <div class="text-2xl font-black text-indigo-700">${this.syllabusCourses.length} Courses</div>
+          </div>
+        </div>
+
+        <!-- IQAC Administration Controls & Master Data Exports -->
+        <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-4 sm:p-5 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+          <div class="flex flex-wrap items-center gap-3">
+            <!-- Submissions Control Button -->
+            <div class="flex items-center gap-2.5 p-2 px-3 bg-slate-50 rounded-xl border border-slate-200">
+              <span class="text-[11px] font-black text-slate-500 uppercase tracking-wider">Submissions:</span>
+              ${this.systemSettings && this.systemSettings.submissions_enabled ? `
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-black">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span>OPEN (Enabled)</span>
+                </span>
+                <button 
+                  type="button" 
+                  id="admin-toggle-submissions-btn"
+                  onclick="coursePlanApp.toggleSubmissionsControl()" 
+                  class="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer"
+                  title="Click to Disable / Lock Course Plan Submissions"
+                >
+                  <i data-lucide="lock" class="w-3.5 h-3.5 text-rose-600"></i>
+                  <span>Disable Submissions</span>
+                </button>
+              ` : `
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-100 border border-rose-300 text-rose-800 text-xs font-black">
+                  <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                  <span>CLOSED (Locked)</span>
+                </span>
+                <button 
+                  type="button" 
+                  id="admin-toggle-submissions-btn"
+                  onclick="coursePlanApp.toggleSubmissionsControl()" 
+                  class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer"
+                  title="Click to Enable / Open Course Plan Submissions"
+                >
+                  <i data-lucide="unlock" class="w-3.5 h-3.5 text-emerald-600"></i>
+                  <span>Enable Submissions</span>
+                </button>
+              `}
+            </div>
+
+            <!-- Development / Maintenance Mode Button -->
+            <div class="flex items-center gap-2.5 p-2 px-3 bg-slate-50 rounded-xl border border-slate-200">
+              <span class="text-[11px] font-black text-slate-500 uppercase tracking-wider">Maintenance Mode:</span>
+              ${this.systemSettings && this.systemSettings.maintenance_mode ? `
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-100 border border-amber-300 text-amber-900 text-xs font-black">
+                  <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                  <span>ACTIVE (Admin Only)</span>
+                </span>
+                <button 
+                  type="button" 
+                  id="admin-toggle-maintenance-btn"
+                  onclick="coursePlanApp.toggleMaintenanceMode()" 
+                  class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer"
+                  title="Reopen portal to all faculty and HODs"
+                >
+                  <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-600"></i>
+                  <span>Disable Maintenance</span>
+                </button>
+              ` : `
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold">
+                  <span>OFF (Live Production)</span>
+                </span>
+                <button 
+                  type="button" 
+                  id="admin-toggle-maintenance-btn"
+                  onclick="coursePlanApp.toggleMaintenanceMode()" 
+                  class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer"
+                  title="Switch to Maintenance / Dev Mode (Blocks Faculty and HOD Sign-ins)"
+                >
+                  <i data-lucide="wrench" class="w-3.5 h-3.5 text-amber-600"></i>
+                  <span>Enable Dev Mode</span>
+                </button>
+              `}
+            </div>
+          </div>
+
+          <!-- Master CSV Exports -->
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <button 
+              type="button" 
+              id="admin-export-plans-csv-btn"
+              onclick="coursePlanApp.exportCoursePlansCSV()" 
+              class="px-3.5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-xs rounded-xl shadow-sm transition flex items-center gap-2 cursor-pointer active:scale-98"
+              title="Download comprehensive CSV containing all course plans across all 34 departments"
+            >
+              <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+              <span>Export All Course Plans (CSV)</span>
+            </button>
+
+            <button 
+              type="button" 
+              id="admin-export-tl-csv-btn"
+              onclick="coursePlanApp.exportTLPracticesCSV()" 
+              class="px-3.5 py-2 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-black text-xs rounded-xl shadow-sm transition flex items-center gap-2 cursor-pointer active:scale-98"
+              title="Download CSV containing all Teaching-Learning Practices & Assessment Components"
+            >
+              <i data-lucide="download" class="w-4 h-4"></i>
+              <span>Export TL Practices (CSV)</span>
+            </button>
           </div>
         </div>
 

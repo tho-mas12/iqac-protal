@@ -19,6 +19,35 @@ header('Content-Type: application/json; charset=utf-8');
 $method = $_SERVER['REQUEST_METHOD'];
 $action = isset($_GET['action']) ? $_GET['action'] : ($method === 'POST' ? 'save' : 'list');
 
+// ================= SYSTEM SETTINGS HELPERS =================
+function getSystemSettings($pdo) {
+    $settings = [
+        'submissions_enabled' => true,
+        'maintenance_mode' => false
+    ];
+    try {
+        $stmt = $pdo->query("SELECT setting_key, setting_value FROM course_plan_settings");
+        if ($stmt) {
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                if ($row['setting_key'] === 'submissions_enabled') {
+                    $settings['submissions_enabled'] = ($row['setting_value'] === '1' || $row['setting_value'] === 'true');
+                } else if ($row['setting_key'] === 'maintenance_mode') {
+                    $settings['maintenance_mode'] = ($row['setting_value'] === '1' || $row['setting_value'] === 'true');
+                }
+            }
+        }
+    } catch (Throwable $t) {
+        // Return default fallback
+    }
+    return $settings;
+}
+
+function updateSystemSetting($pdo, $key, $value) {
+    $valStr = ($value === true || $value === '1' || $value === 1 || $value === 'true') ? '1' : '0';
+    $stmt = $pdo->prepare("INSERT INTO course_plan_settings (setting_key, setting_value) VALUES (:k, :v) ON DUPLICATE KEY UPDATE setting_value = :v2");
+    $stmt->execute([':k' => $key, ':v' => $valStr, ':v2' => $valStr]);
+}
+
 try {
     $pdo = getDBConnection();
 
@@ -63,6 +92,17 @@ try {
                 echo json_encode(['success' => false, 'error' => 'Invalid password for Administrator.']);
                 exit;
             }
+        }
+
+        // --- DEVELOPMENT / MAINTENANCE MODE CHECK ---
+        $sysSettings = getSystemSettings($pdo);
+        if (!empty($sysSettings['maintenance_mode'])) {
+            echo json_encode([
+                'success' => false,
+                'error' => 'The Course Plan Portal is currently in Development & Maintenance Mode. Access is temporarily restricted to IQAC Administrators only.',
+                'maintenance_mode' => true
+            ]);
+            exit;
         }
 
         // --- 1B. FACULTY / HOD LOGIN VIA STAFF CODE OR DROPDOWN ---
@@ -290,10 +330,11 @@ try {
     }
 
     if ($action === 'auth_check') {
+        $sysSettings = getSystemSettings($pdo);
         if (isset($_SESSION['cp_user'])) {
-            echo json_encode(['success' => true, 'authenticated' => true, 'user' => $_SESSION['cp_user']]);
+            echo json_encode(['success' => true, 'authenticated' => true, 'user' => $_SESSION['cp_user'], 'settings' => $sysSettings]);
         } else {
-            echo json_encode(['success' => true, 'authenticated' => false]);
+            echo json_encode(['success' => true, 'authenticated' => false, 'settings' => $sysSettings]);
         }
         exit;
     }
@@ -450,6 +491,20 @@ try {
 
         if (!$data) {
             echo json_encode(['success' => false, 'error' => 'Invalid JSON payload']);
+            exit;
+        }
+
+        $sysSettings = getSystemSettings($pdo);
+        $currentUser = isset($_SESSION['cp_user']) ? $_SESSION['cp_user'] : null;
+        $isAdmin = ($currentUser && $currentUser['role'] === 'admin');
+
+        if (!empty($sysSettings['maintenance_mode']) && !$isAdmin) {
+            echo json_encode(['success' => false, 'error' => 'Operation rejected: Portal is currently in Development & Maintenance Mode.']);
+            exit;
+        }
+
+        if (empty($sysSettings['submissions_enabled']) && !$isAdmin) {
+            echo json_encode(['success' => false, 'error' => 'Course plan submissions are currently CLOSED by the IQAC Administrator.']);
             exit;
         }
 
@@ -620,6 +675,20 @@ try {
 
         if (!$data) {
             echo json_encode(['success' => false, 'error' => 'Invalid JSON payload']);
+            exit;
+        }
+
+        $sysSettings = getSystemSettings($pdo);
+        $currentUser = isset($_SESSION['cp_user']) ? $_SESSION['cp_user'] : null;
+        $isAdmin = ($currentUser && $currentUser['role'] === 'admin');
+
+        if (!empty($sysSettings['maintenance_mode']) && !$isAdmin) {
+            echo json_encode(['success' => false, 'error' => 'Operation rejected: Portal is currently in Development & Maintenance Mode.']);
+            exit;
+        }
+
+        if (empty($sysSettings['submissions_enabled']) && !$isAdmin) {
+            echo json_encode(['success' => false, 'error' => 'Teaching-Learning (TL) submissions are currently CLOSED by the IQAC Administrator.']);
             exit;
         }
 
@@ -965,6 +1034,207 @@ try {
             'dept_stats' => $finalDeptStats,
             'plans' => $processedPlans
         ]);
+        exit;
+    }
+
+    // ================= 11. GET SYSTEM SETTINGS =================
+    if ($action === 'get_settings' && $method === 'GET') {
+        $settings = getSystemSettings($pdo);
+        echo json_encode(['success' => true, 'settings' => $settings]);
+        exit;
+    }
+
+    // ================= 12. UPDATE SYSTEM SETTINGS (ADMIN ONLY) =================
+    if ($action === 'update_settings' && $method === 'POST') {
+        $currentUser = isset($_SESSION['cp_user']) ? $_SESSION['cp_user'] : null;
+        $raw = file_get_contents('php://input');
+        $data = json_decode($raw, true);
+
+        $isAdmin = ($currentUser && $currentUser['role'] === 'admin') || (isset($data['admin_key']) && $data['admin_key'] === 'Freewill@25');
+        if (!$isAdmin) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized: Only IQAC Administrator can change system settings.']);
+            exit;
+        }
+
+        if (isset($data['submissions_enabled'])) {
+            updateSystemSetting($pdo, 'submissions_enabled', $data['submissions_enabled']);
+        }
+        if (isset($data['maintenance_mode'])) {
+            updateSystemSetting($pdo, 'maintenance_mode', $data['maintenance_mode']);
+        }
+
+        $settings = getSystemSettings($pdo);
+        echo json_encode([
+            'success' => true,
+            'settings' => $settings,
+            'message' => 'System settings updated successfully.'
+        ]);
+        exit;
+    }
+
+    // ================= 13. EXPORT ALL COURSE PLANS CSV =================
+    if ($action === 'export_plans_csv') {
+        $sql = "SELECT * FROM course_plan_2026_27 ORDER BY department_name ASC, course_code ASC";
+        $stmt = $pdo->query($sql);
+        $plans = $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="SJC_Course_Plans_Export_2026_2027_' . date('Ymd_His') . '.csv"');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+
+        $out = fopen('php://output', 'w');
+        fprintf($out, chr(0xEF).chr(0xBB).chr(0xBF)); // UTF-8 BOM
+
+        fputcsv($out, [
+            'S.No',
+            'Department',
+            'Faculty Name',
+            'Shared Course',
+            'Shared Faculty',
+            'Course Code',
+            'Course Title',
+            'Course Category',
+            'Programme',
+            'Year / Class',
+            'Semester',
+            'Academic Year',
+            'Teaching Hours / Wk',
+            'Credits',
+            'Submission Status',
+            'HOD Review Status',
+            'HOD Approver Name',
+            'HOD Approval Date',
+            'Last Updated',
+            'COs Defined Count',
+            'Detailed Plan Topics Count',
+            'Unit Completion Planned Hours',
+            'Learning Activities Count',
+            'CIA Components Count',
+            'ICT Digital Resources Count'
+        ]);
+
+        $sno = 1;
+        foreach ($plans as $p) {
+            $cos = json_decode($p['course_outcomes'] ?? '[]', true);
+            $dtp = json_decode($p['detailed_teaching_plan'] ?? '[]', true);
+            $ucp = json_decode($p['unit_completion_plan'] ?? '[]', true);
+            $la = json_decode($p['learning_activities'] ?? '[]', true);
+            $cia = json_decode($p['assessment_plan'] ?? '[]', true);
+            $ict = json_decode($p['ict_integration'] ?? '[]', true);
+
+            $coCount = is_array($cos) ? count($cos) : 0;
+            $dtpCount = is_array($dtp) ? count($dtp) : 0;
+            $ucpHours = 0;
+            if (is_array($ucp)) {
+                foreach ($ucp as $u) {
+                    $ucpHours += (int)($u['planned_hours'] ?? 0);
+                }
+            }
+            $laCount = is_array($la) ? count($la) : 0;
+            $ciaCount = is_array($cia) ? count($cia) : 0;
+            $ictCount = is_array($ict) ? count($ict) : 0;
+
+            fputcsv($out, [
+                $sno++,
+                $p['department_name'] ?? '',
+                $p['faculty_name'] ?? '',
+                (!empty($p['is_shared_course']) ? 'Yes' : 'No'),
+                $p['shared_faculty_name'] ?? 'N/A',
+                $p['course_code'] ?? '',
+                $p['course_title'] ?? '',
+                $p['course_category'] ?? '',
+                $p['programme'] ?? '',
+                $p['year_class'] ?? '',
+                $p['semester'] ?? '',
+                $p['academic_year'] ?? '',
+                $p['teaching_hours'] ?? '',
+                $p['credits'] ?? '',
+                $p['status'] ?? 'Draft',
+                $p['hod_status'] ?? 'Draft',
+                $p['hod_name'] ?? '',
+                $p['approved_at'] ?? '',
+                $p['updated_at'] ?? '',
+                $coCount,
+                $dtpCount,
+                $ucpHours,
+                $laCount,
+                $ciaCount,
+                $ictCount
+            ]);
+        }
+
+        fclose($out);
+        exit;
+    }
+
+    // ================= 14. EXPORT TL PRACTICES CSV =================
+    if ($action === 'export_tl_csv') {
+        $sql = "SELECT * FROM course_plan_tl_practices ORDER BY department_name ASC, faculty_name ASC";
+        $stmt = $pdo->query($sql);
+        $tlList = $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="SJC_TL_Practices_Export_2026_2027_' . date('Ymd_His') . '.csv"');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+
+        $out = fopen('php://output', 'w');
+        fprintf($out, chr(0xEF).chr(0xBB).chr(0xBF)); // UTF-8 BOM
+
+        fputcsv($out, [
+            'S.No',
+            'Department',
+            'Faculty Name',
+            'Faculty Email',
+            'Academic Year',
+            'Semester',
+            'TL Practice 1 (Methodology, ICT Tool, Outcome)',
+            'TL Practice 2 (Methodology, ICT Tool, Outcome)',
+            'Assessment Practice 1',
+            'Assessment Practice 2',
+            'E-Content / Digital LMS Links',
+            'Submission Status',
+            'Created At',
+            'Last Updated'
+        ]);
+
+        $sno = 1;
+        foreach ($tlList as $row) {
+            $tl1 = is_string($row['tl_practice_1']) && str_starts_with(trim($row['tl_practice_1']), '{') ? json_decode($row['tl_practice_1'], true) : $row['tl_practice_1'];
+            $tl1Str = is_array($tl1) ? json_encode($tl1, JSON_UNESCAPED_UNICODE) : (string)$tl1;
+
+            $tl2 = is_string($row['tl_practice_2']) && str_starts_with(trim($row['tl_practice_2']), '{') ? json_decode($row['tl_practice_2'], true) : $row['tl_practice_2'];
+            $tl2Str = is_array($tl2) ? json_encode($tl2, JSON_UNESCAPED_UNICODE) : (string)$tl2;
+
+            $ap1 = is_string($row['assessment_practice_1']) && str_starts_with(trim($row['assessment_practice_1']), '{') ? json_decode($row['assessment_practice_1'], true) : $row['assessment_practice_1'];
+            $ap1Str = is_array($ap1) ? json_encode($ap1, JSON_UNESCAPED_UNICODE) : (string)$ap1;
+
+            $ap2 = is_string($row['assessment_practice_2']) && str_starts_with(trim($row['assessment_practice_2']), '{') ? json_decode($row['assessment_practice_2'], true) : $row['assessment_practice_2'];
+            $ap2Str = is_array($ap2) ? json_encode($ap2, JSON_UNESCAPED_UNICODE) : (string)$ap2;
+
+            $ec = is_string($row['econtent']) && str_starts_with(trim($row['econtent']), '{') ? json_decode($row['econtent'], true) : $row['econtent'];
+            $ecStr = is_array($ec) ? json_encode($ec, JSON_UNESCAPED_UNICODE) : (string)$ec;
+
+            fputcsv($out, [
+                $sno++,
+                $row['department_name'] ?? '',
+                $row['faculty_name'] ?? '',
+                $row['faculty_email'] ?? '',
+                $row['academic_year'] ?? '',
+                $row['semester'] ?? '',
+                $tl1Str,
+                $tl2Str,
+                $ap1Str,
+                $ap2Str,
+                $ecStr,
+                $row['status'] ?? 'Submitted',
+                $row['created_at'] ?? '',
+                $row['updated_at'] ?? ''
+            ]);
+        }
+
+        fclose($out);
         exit;
     }
 
