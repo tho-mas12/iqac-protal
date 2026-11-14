@@ -706,6 +706,86 @@ class CoursePlanApp {
     });
   }
 
+  getSharedFacultyList() {
+    if (!this.activePlan) return [];
+    const raw = (this.activePlan.shared_faculty_name || (this.activePlan.general_details && this.activePlan.general_details.shared_faculty_name) || '').trim();
+    if (!raw) return [];
+    return raw.split(',').map(s => s.trim()).filter(Boolean);
+  }
+
+  getAllCourseFacultyList() {
+    if (!this.activePlan) return [];
+    const primary = (this.activePlan.faculty_name || (this.currentUser ? this.currentUser.faculty_name : '') || '').trim();
+    const shared = this.getSharedFacultyList();
+    const list = [];
+    if (primary) list.push(primary);
+    shared.forEach(s => {
+      if (s && !list.includes(s)) list.push(s);
+    });
+    return list;
+  }
+
+  addSharedFaculty(name) {
+    if (!name || !name.trim()) return;
+    const clean = name.trim();
+    if (!this.activePlan) this.activePlan = this.createDefaultPlan();
+    const primary = (this.activePlan.faculty_name || (this.currentUser ? this.currentUser.faculty_name : '') || '').trim();
+    if (primary && clean.toLowerCase() === primary.toLowerCase()) {
+      alert('This faculty member is already the primary course instructor.');
+      return;
+    }
+    const list = this.getSharedFacultyList();
+    if (!list.includes(clean)) {
+      list.push(clean);
+      this.activePlan.shared_faculty_name = list.join(', ');
+      if (!this.activePlan.general_details) this.activePlan.general_details = {};
+      this.activePlan.general_details.shared_faculty_name = this.activePlan.shared_faculty_name;
+      this.renderSharedFacultyChips();
+    }
+  }
+
+  removeSharedFaculty(name) {
+    if (!this.activePlan) return;
+    let list = this.getSharedFacultyList();
+    list = list.filter(n => n !== name);
+    this.activePlan.shared_faculty_name = list.join(', ');
+    if (!this.activePlan.general_details) this.activePlan.general_details = {};
+    this.activePlan.general_details.shared_faculty_name = this.activePlan.shared_faculty_name;
+    this.renderSharedFacultyChips();
+  }
+
+  renderSharedFacultyChips() {
+    const container = document.getElementById('cp-shared-faculty-chips');
+    const hiddenInput = document.getElementById('cp-shared-faculty-name');
+    const list = this.getSharedFacultyList();
+    if (hiddenInput) hiddenInput.value = list.join(', ');
+    if (!container) return;
+    if (list.length === 0) {
+      container.innerHTML = `<span class="text-[11px] text-amber-700 italic">No co-faculty added yet. Choose from dropdown below and click <strong>+ Add Co-Faculty</strong>.</span>`;
+    } else {
+      container.innerHTML = list.map(name => `
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold bg-amber-100 text-amber-950 border border-amber-300 shadow-2xs">
+          <i data-lucide="user-check" class="w-3.5 h-3.5 text-amber-700"></i>
+          <span>${this.escapeHtml(name)}</span>
+          <button type="button" onclick="coursePlanApp.removeSharedFaculty('${this.escapeHtml(name)}')" class="hover:text-red-700 font-black cursor-pointer ml-1 p-0.5 rounded hover:bg-amber-200/60" title="Remove">✕</button>
+        </span>
+      `).join('');
+      if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons();
+      }
+    }
+  }
+
+  addSharedFacultyFromSelect() {
+    const sel = document.getElementById('cp-add-shared-faculty-select');
+    if (!sel || !sel.value) {
+      alert('Please select a faculty member from the dropdown first.');
+      return;
+    }
+    this.addSharedFaculty(sel.value);
+    sel.value = '';
+  }
+
   onSharedFacultyChange(val) {
     if (!this.activePlan) this.activePlan = this.createDefaultPlan();
     this.activePlan.shared_faculty_name = (val || '').trim();
@@ -3473,7 +3553,7 @@ class CoursePlanApp {
                           ${p.is_shared_course && p.shared_faculty_name ? `
                             <span class="text-[10px] font-extrabold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
                               <i data-lucide="users" class="w-3 h-3 text-amber-600"></i>
-                              <span>Shared with ${this.escapeHtml(p.shared_faculty_name)}</span>
+                              <span>Co-taught with ${this.escapeHtml([p.faculty_name, ...(p.shared_faculty_name || '').split(',')].map(s => s.trim()).filter(n => n && (!user.faculty_name || n.toLowerCase() !== user.faculty_name.toLowerCase())).join(', ') || p.shared_faculty_name)}</span>
                             </span>
                           ` : ''}
                         </div>
@@ -6310,36 +6390,71 @@ class CoursePlanApp {
                 </div>
 
                 <!-- Collaborating Faculty Dropdown Container -->
-                <div id="cp-shared-faculty-box" class="${isSharedCourse ? '' : 'hidden'} bg-white p-3.5 rounded-xl border border-amber-300 space-y-2 animate-fadeIn">
+                <div id="cp-shared-faculty-box" class="${isSharedCourse ? '' : 'hidden'} bg-white p-4 rounded-2xl border-2 border-amber-300 space-y-3 animate-fadeIn shadow-xs">
                   <div class="flex items-center justify-between">
-                    <label class="block text-[11px] font-black text-slate-800 flex items-center gap-1.5">
-                      <i data-lucide="user-plus" class="w-3.5 h-3.5 text-indigo-600"></i>
-                      <span>Select Collaborating / Co-Faculty Member *</span>
+                    <label class="block text-[11.5px] font-black text-slate-800 flex items-center gap-1.5">
+                      <i data-lucide="users" class="w-4 h-4 text-amber-600"></i>
+                      <span>Collaborating / Co-Faculty Member(s) *</span>
                     </label>
-                    <span class="text-[10px] text-indigo-700 font-bold bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">
+                    <span class="text-[10px] text-amber-900 font-bold bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200">
                       ${deptFaculty.length} Department Faculty Available
                     </span>
                   </div>
-                  <select 
-                    id="cp-shared-faculty-name" 
-                    onchange="coursePlanApp.onSharedFacultyChange(this.value)"
-                    class="w-full text-xs px-3 py-2 border-2 border-indigo-400 bg-white rounded-xl font-bold text-slate-900 focus:border-indigo-600 focus:outline-none cursor-pointer"
-                  >
-                    <option value="">-- Choose Collaborating Faculty from Department --</option>
-                    ${deptFaculty.length > 0 ? `
-                      <optgroup label="Faculty from ${this.escapeHtml(curDept)}">
-                        ${deptFacultyOptions}
-                      </optgroup>
-                    ` : ''}
-                    ${otherDeptGroups ? `
-                      <optgroup label="Other Academic Departments">
-                        ${otherDeptGroups}
-                      </optgroup>
-                    ` : ''}
-                  </select>
+
+                  <!-- Selected Co-Faculty Chips -->
+                  <div class="space-y-1.5">
+                    <div class="text-[10.5px] font-black text-slate-500 uppercase tracking-wider">Assigned Co-Faculty Member(s):</div>
+                    <div id="cp-shared-faculty-chips" class="flex flex-wrap items-center gap-2 min-h-[36px] p-2.5 bg-amber-50/50 rounded-xl border border-amber-200">
+                      ${(() => {
+                        const list = (plan.shared_faculty_name || (plan.general_details && plan.general_details.shared_faculty_name) || '').split(',').map(s => s.trim()).filter(Boolean);
+                        if (list.length === 0) {
+                          return '<span class="text-[11px] text-amber-700 italic">No co-faculty added yet. Choose from dropdown below and click <strong>+ Add Co-Faculty</strong>.</span>';
+                        }
+                        return list.map(name => `
+                          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold bg-amber-100 text-amber-950 border border-amber-300 shadow-2xs">
+                            <i data-lucide="user-check" class="w-3.5 h-3.5 text-amber-700"></i>
+                            <span>${this.escapeHtml(name)}</span>
+                            <button type="button" onclick="coursePlanApp.removeSharedFaculty('${this.escapeHtml(name)}')" class="hover:text-red-700 font-black cursor-pointer ml-1 p-0.5 rounded hover:bg-amber-200/60" title="Remove">✕</button>
+                          </span>
+                        `).join('');
+                      })()}
+                    </div>
+                  </div>
+
+                  <!-- Hidden input for form serialization -->
+                  <input type="hidden" id="cp-shared-faculty-name" value="${this.escapeHtml(plan.shared_faculty_name || '')}" />
+
+                  <!-- Add Co-Faculty Row -->
+                  <div class="flex items-center gap-2 flex-col sm:flex-row">
+                    <select 
+                      id="cp-add-shared-faculty-select" 
+                      class="w-full flex-1 text-xs px-3 py-2 border-2 border-indigo-400 bg-white rounded-xl font-bold text-slate-900 focus:border-indigo-600 focus:outline-none cursor-pointer"
+                    >
+                      <option value="">-- Choose Co-Faculty to Add (One or More) --</option>
+                      ${deptFaculty.length > 0 ? `
+                        <optgroup label="Faculty from ${this.escapeHtml(curDept)}">
+                          ${deptFacultyOptions}
+                        </optgroup>
+                      ` : ''}
+                      ${otherDeptGroups ? `
+                        <optgroup label="Other Academic Departments">
+                          ${otherDeptGroups}
+                        </optgroup>
+                      ` : ''}
+                    </select>
+                    <button 
+                      type="button" 
+                      onclick="coursePlanApp.addSharedFacultyFromSelect()"
+                      class="w-full sm:w-auto px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 shrink-0 shadow-sm cursor-pointer transition active:scale-95"
+                    >
+                      <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                      <span>+ Add Co-Faculty</span>
+                    </button>
+                  </div>
+
                   <p class="text-[10.5px] text-slate-500 italic flex items-center gap-1">
                     <span>📌</span>
-                    <span>Both your name and the selected co-faculty member's name will appear on the final approved Course Plan.</span>
+                    <span>You can add multiple co-faculty members. All co-faculty will be able to view this plan and be assigned to specific units and CIA assessments.</span>
                   </p>
                 </div>
               </div>
@@ -6735,8 +6850,14 @@ class CoursePlanApp {
                         ${plan.is_shared_course && plan.shared_faculty_name ? `
                           <td class="p-2" data-label="Handled By">
                             <select class="ucp-handled-by w-full text-xs px-2.5 py-1.5 border border-amber-300 rounded-lg font-bold bg-amber-50/60 focus:border-indigo-600 focus:outline-none">
-                              <option value="${this.escapeHtml(plan.faculty_name)}" ${(!u.handled_by || u.handled_by === plan.faculty_name) ? 'selected' : ''}>${this.escapeHtml(plan.faculty_name)}</option>
-                              <option value="${this.escapeHtml(plan.shared_faculty_name)}" ${u.handled_by === plan.shared_faculty_name ? 'selected' : ''}>${this.escapeHtml(plan.shared_faculty_name)}</option>
+                              ${(() => {
+                                const allFac = this.getAllCourseFacultyList();
+                                return allFac.map(fac => `
+                                  <option value="${this.escapeHtml(fac)}" ${(u.handled_by === fac || (!u.handled_by && fac === plan.faculty_name)) ? 'selected' : ''}>
+                                    ${this.escapeHtml(fac)}
+                                  </option>
+                                `).join('');
+                              })()}
                             </select>
                           </td>
                         ` : ''}
@@ -6939,8 +7060,14 @@ class CoursePlanApp {
                             ${plan.is_shared_course && plan.shared_faculty_name ? `
                               <td class="p-2" data-label="Assessed By">
                                 <select class="cia-assessed-by w-full text-xs px-2 py-1.5 border border-amber-300 rounded-lg font-bold bg-amber-50/60 focus:border-indigo-600 focus:outline-none" data-comp="${this.escapeHtml(asst.component)}">
-                                  <option value="${this.escapeHtml(plan.faculty_name)}" ${(!asst.assessed_by || asst.assessed_by === plan.faculty_name) ? 'selected' : ''}>${this.escapeHtml(plan.faculty_name)}</option>
-                                  <option value="${this.escapeHtml(plan.shared_faculty_name)}" ${asst.assessed_by === plan.shared_faculty_name ? 'selected' : ''}>${this.escapeHtml(plan.shared_faculty_name)}</option>
+                                  ${(() => {
+                                    const allFac = this.getAllCourseFacultyList();
+                                    return allFac.map(fac => `
+                                      <option value="${this.escapeHtml(fac)}" ${(asst.assessed_by === fac || (!asst.assessed_by && fac === plan.faculty_name)) ? 'selected' : ''}>
+                                        ${this.escapeHtml(fac)}
+                                      </option>
+                                    `).join('');
+                                  })()}
                                 </select>
                               </td>
                             ` : ''}
@@ -6979,7 +7106,7 @@ class CoursePlanApp {
                 </button>
               </div>
 
-              <div id="cp-icts-table-container" class="rounded-xl border border-slate-200 overflow-visible" style="overflow: visible; min-height: 220px; padding-bottom: 70px;">
+              <div id="cp-icts-table-container" class="rounded-xl border border-slate-200 overflow-visible" style="overflow: visible; min-height: 360px; padding-bottom: 220px;">
                 <table class="w-full text-left text-xs border-collapse" style="overflow: visible;">
                   <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
                     <tr>
@@ -7357,7 +7484,13 @@ class CoursePlanApp {
                 <tr class="border-b border-slate-200">
                   <td class="p-2.5 font-bold text-slate-600">Faculty Member(s):</td>
                   <td class="p-2.5 font-bold text-slate-900" colspan="3">
-                    ${this.escapeHtml(plan.faculty_name || '—')}${plan.is_shared_course && plan.shared_faculty_name ? ` & ${this.escapeHtml(plan.shared_faculty_name)} <span class="text-[11px] text-amber-800 font-black bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-full ml-1.5">● Shared Course</span>` : ' <span class="text-[11px] text-emerald-800 font-bold bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full ml-1.5">● Handled Independently</span>'}
+                    ${(() => {
+                      const allFac = this.getAllCourseFacultyList();
+                      if (allFac.length > 1) {
+                        return allFac.map(f => this.escapeHtml(f)).join(', ') + ' <span class="text-[11px] text-amber-800 font-black bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-full ml-1.5">● Shared Course (' + allFac.length + ' Teachers)</span>';
+                      }
+                      return this.escapeHtml(plan.faculty_name || '—') + (plan.is_shared_course && plan.shared_faculty_name ? ` & ${this.escapeHtml(plan.shared_faculty_name)} <span class="text-[11px] text-amber-800 font-black bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-full ml-1.5">● Shared Course</span>` : ' <span class="text-[11px] text-emerald-800 font-bold bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full ml-1.5">● Handled Independently</span>');
+                    })()}
                   </td>
                 </tr>
                 <tr class="border-b border-slate-200 bg-slate-50/40">
@@ -7591,7 +7724,13 @@ class CoursePlanApp {
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4">
               <div class="space-y-6">
-                <div>Faculty Member(s): <strong>${this.escapeHtml(decl.faculty_signature || plan.faculty_name || '____________________')}${plan.is_shared_course && plan.shared_faculty_name ? ` & ${this.escapeHtml(plan.shared_faculty_name)}` : ''}</strong></div>
+                <div>Faculty Member(s): <strong>${(() => {
+                  const allFac = this.getAllCourseFacultyList();
+                  if (allFac.length > 1) {
+                    return allFac.map(f => this.escapeHtml(f)).join(' & ');
+                  }
+                  return this.escapeHtml(decl.faculty_signature || plan.faculty_name || '____________________') + (plan.is_shared_course && plan.shared_faculty_name ? ` & ${this.escapeHtml(plan.shared_faculty_name)}` : '');
+                })()}</strong></div>
                 <div>Date: <strong>${decl.submission_date || '____________________'}</strong></div>
               </div>
 
@@ -7683,8 +7822,8 @@ class CoursePlanApp {
     check(p.department_name, 'cp-dept-name', 'Department');
     check(p.faculty_name, 'cp-faculty-name', 'Name of the Faculty Member');
     if (p.is_shared_course && (!p.shared_faculty_name || !p.shared_faculty_name.trim())) {
-      errors.push('Collaborating / Co-Faculty Member');
-      const el = document.getElementById('cp-shared-faculty-name');
+      errors.push('Collaborating / Co-Faculty Member(s)');
+      const el = document.getElementById('cp-add-shared-faculty-select') || document.getElementById('cp-shared-faculty-name');
       if (el) invalidEls.push(el);
     }
     check(p.semester, 'cp-semester', 'Semester');
