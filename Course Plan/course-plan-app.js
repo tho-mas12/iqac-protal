@@ -2902,12 +2902,8 @@ class CoursePlanApp {
               <div class="space-y-6">
                 <!-- Header of Form -->
                 <div class="space-y-1">
-                  <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 text-[11px] font-black uppercase tracking-wider mb-2">
-                    <i data-lucide="shield-check" class="w-3.5 h-3.5 text-indigo-600"></i>
-                    <span>Portal Sign In</span>
-                  </div>
                   <h2 class="text-2xl font-black text-slate-900 tracking-tight">
-                    Faculty &amp; Staff Login
+                    Faculty Login
                   </h2>
                   <p class="text-xs text-slate-500 font-medium leading-relaxed">
                     Enter your staff code and ERP credentials to access your course plans, syllabus units, and departmental reviews.
@@ -3008,11 +3004,7 @@ class CoursePlanApp {
               </div>
 
               <!-- Assistance Footer Note -->
-              <div class="pt-6 mt-6 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 font-medium">
-                <span class="flex items-center gap-1">
-                  <i data-lucide="help-circle" class="w-3.5 h-3.5 text-slate-400"></i>
-                  <span>Need assistance? Contact IQAC</span>
-                </span>
+              <div class="pt-4 mt-6 border-t border-slate-100 flex items-center justify-end text-[11px] text-slate-400 font-medium">
                 <a href="manual.html" target="_blank" class="text-indigo-600 hover:text-indigo-800 font-bold transition flex items-center gap-1">
                   <span>User Manual</span>
                   <i data-lucide="external-link" class="w-3 h-3"></i>
