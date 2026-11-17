@@ -2646,7 +2646,7 @@ class CoursePlanApp {
 
   async loadDepartmentsData() {
     try {
-      const res = await fetch('data/departments_faculty.json');
+      const res = await fetch('data/departments_faculty.json?v=20261117_ORDER1');
       const json = await res.json();
       this.departments = json.departments || [];
     } catch (e) {

@@ -7,64 +7,84 @@
       "faculty_count": 10,
       "faculty": [
         {
+          "name": "Mr. A. Charles",
+          "email": "charles_ai2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 1
+        },
+        {
           "name": "Dr. J. Hirudhaya Mary Asha",
           "email": "hirudhayaasha_cs2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 2
         },
         {
           "name": "Dr. S. Josephine Theresa",
           "email": "josephinetheresa_ai2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. S. Lakshmanan",
-          "email": "lakshmanan_ss1@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Dr. T. Thilagavathi",
-          "email": "thilagavathi_ai2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Mr. A. Charles",
-          "email": "charles_ai2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Mr. C. Mohanraja",
-          "email": "mohanraja_cs2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 3
         },
         {
           "name": "Mr. M. Jesudoss",
           "email": "jesudoss_ai2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 4
         },
         {
-          "name": "Ms. G. Keerthana Darathi",
-          "email": "keerthanadarathi_ai2@mail.sjctni.edu",
+          "name": "Dr. T. Thilagavathi",
+          "email": "thilagavathi_ai2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Secretary"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 5
         },
         {
           "name": "Ms. P. Diana Jennifer",
           "email": "dianajennifer_ai2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 6
         },
         {
           "name": "Ms. V. Infine Sinduja",
           "email": "infinesinduja_ai2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 7
+        },
+        {
+          "name": "Dr. S. Lakshmanan",
+          "email": "lakshmanan_ss1@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 8
+        },
+        {
+          "name": "Mr. C. Mohanraja",
+          "email": "mohanraja_cs2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 9
+        },
+        {
+          "name": "Ms. G. Keerthana Darathi",
+          "email": "keerthanadarathi_ai2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 10
         }
       ]
     },
@@ -75,40 +95,52 @@
       "faculty_count": 6,
       "faculty": [
         {
-          "name": "Dr. S. Banumathi",
-          "email": "banumathi_ss1@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
+          "name": "Ms. B. Geno Cinthia",
+          "email": "genocinthia_ss1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 1
         },
         {
           "name": "Dr. V. A. Jane",
           "email": "janeva_ss1@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
+          "shift": "I",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 2
         },
         {
-          "name": "Mr. J. Joel Smith",
-          "email": "joelsmith_ss1@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Ms. B. Geno Cinthia",
-          "email": "genocinthia_ss1@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Ms. J .Francis Julee Rajam",
-          "email": "francisjuleerajam_ss1@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
+          "name": "Dr. S. Banumathi",
+          "email": "banumathi_ss1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 3
         },
         {
           "name": "Ms. S. Merlin Sofia",
           "email": "merlinsofia_ss1@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
+          "shift": "I",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 4
+        },
+        {
+          "name": "Ms. J .Francis Julee Rajam",
+          "email": "francisjuleerajam_ss1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 5
+        },
+        {
+          "name": "Mr. J. Joel Smith",
+          "email": "joelsmith_ss1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 6
         }
       ],
       "programmes": [
@@ -123,52 +155,68 @@
       "faculty_count": 8,
       "faculty": [
         {
-          "name": "MR. D. RINALDO DE DAVID",
-          "email": "rinaldodedavid_bu2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "MR. J. INIGO PAPU VINODHAN",
-          "email": "inigopopuvinodhan_bu2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
           "name": "MR. S. ARPUTHA RAJ",
           "email": "arputharaj_bu2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "ASSISTANT PROFESSOR",
+          "sno": 1
         },
         {
           "name": "MS. C.F. OCTOVIA ANTONY SESSAMMAL",
           "email": "octoviaantonysessammal_bu2@mail.sjc tni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "ASSISTANT PROFESSOR",
+          "sno": " "
+        },
+        {
+          "name": "MR. D. RINALDO DE DAVID",
+          "email": "rinaldodedavid_bu2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "ASSISTANT PROFESSOR",
+          "sno": 3
+        },
+        {
+          "name": "MR. J. INIGO PAPU VINODHAN",
+          "email": "inigopopuvinodhan_bu2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "ASSISTANT PROFESSOR",
+          "sno": 4
         },
         {
           "name": "Mr. B. Ananda Raj",
           "email": "anandaraj_bu2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Mr.A.Jesper Jerin Vinoth",
-          "email": "jesperjerinvinoth_bu2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Mr.K.Radhakrishnan",
-          "email": "radhakrishnan_bu2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 5
         },
         {
           "name": "Ms. P. Sindhuja Kandhavel",
           "email": "sindhuja_bu2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Secretary"
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 6
+        },
+        {
+          "name": "Mr.K.Radhakrishnan",
+          "email": "radhakrishnan_bu2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 7
+        },
+        {
+          "name": "Mr.A.Jesper Jerin Vinoth",
+          "email": "jesperjerinvinoth_bu2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 8
         }
       ]
     },
@@ -179,22 +227,28 @@
       "faculty_count": 3,
       "faculty": [
         {
-          "name": "Dr. P. G. Geegi",
-          "email": "geegi_bi2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
           "name": "Mr. A. Benno Susai Vijayakumar",
           "email": "bennosusaivijayakumar_bi2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 1
         },
         {
           "name": "Mr. T. Antony Diwakar Chandran",
           "email": "antonydiwakarchandran_bi2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 2
+        },
+        {
+          "name": "Dr. P. G. Geegi",
+          "email": "geegi_bi2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 3
         }
       ]
     },
@@ -205,52 +259,68 @@
       "faculty_count": 8,
       "faculty": [
         {
-          "name": "Dr. A. Asha Monica",
-          "email": "ashamonica_bt2@mail.sjctni.edu",
+          "name": "Dr. V. Swabna",
+          "email": "swabna_bt2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 1
         },
         {
           "name": "Dr. A. Edward",
           "email": "edward_bt2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 2
         },
         {
-          "name": "Dr. A. Jose Vinoth Raja",
-          "email": "josevinothraja_bt2@mail.sjctni.edu",
+          "name": "Dr. A. Asha Monica",
+          "email": "ashamonica_bt2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. C. Muthusamy",
-          "email": "muthusamy_bt2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. H. Agnes Preethy",
-          "email": "agnespreethy_bt2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 3
         },
         {
           "name": "Dr. J. Arutchelvi",
           "email": "arutchelvij_bt2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 4
+        },
+        {
+          "name": "Dr. C. Muthusamy",
+          "email": "muthusamy_bt2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 5
         },
         {
           "name": "Dr. R. Tamilvanan",
           "email": "tamilvanan_bt2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 6
         },
         {
-          "name": "Dr. V. Swabna",
-          "email": "swabna_bt2@mail.sjctni.edu",
+          "name": "Dr. A. Jose Vinoth Raja",
+          "email": "josevinothraja_bt2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 7
+        },
+        {
+          "name": "Dr. H. Agnes Preethy",
+          "email": "agnespreethy_bt2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 8
         }
       ]
     },
@@ -261,76 +331,100 @@
       "faculty_count": 12,
       "faculty": [
         {
-          "name": "Dr. A. Egbert Selwin Rose",
-          "email": "egbertselwinrose_bo1@mail.sjctni.edu",
+          "name": "Dr. S. Sahaya Sathish",
+          "email": "sahayasathish_bo1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. A. Johny Kumar Tagore",
-          "email": "jktagore_bo1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. G. Chelladurai",
-          "email": "chelladurai_bo1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. H. David Raja",
-          "email": "davidraja_bo1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. M. Bastin Churchill",
-          "email": "bastinchurchill_bo1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. M. Francis Sathiyaseelan",
-          "email": "francissathiyaseelan_bo1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. S. Anusuya",
-          "email": "anusuya_bo1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 1
         },
         {
           "name": "Dr. S. R. Senthilkumar",
           "email": "senthilkumar_bo1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 2
         },
         {
-          "name": "Dr. S. Sahaya Sathish",
-          "email": "sahayasathish_bo1@mail.sjctni.edu",
+          "name": "Dr. A. Egbert Selwin Rose",
+          "email": "egbertselwinrose_bo1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 3
         },
         {
           "name": "Dr. S. Soosairaj",
           "email": "soosairaj_bo1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 4
         },
         {
           "name": "Dr. T. Francis Xavier",
           "email": "francisxavier_bo1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 5
+        },
+        {
+          "name": "Dr. M. Francis Sathiyaseelan",
+          "email": "francissathiyaseelan_bo1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 6
         },
         {
           "name": "Rev. Dr. L. John Peter Arulanandam, SJ",
           "email": "johnpeterarulanandam_bo1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 7
+        },
+        {
+          "name": "Dr. H. David Raja",
+          "email": "davidraja_bo1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 8
+        },
+        {
+          "name": "Dr. A. Johny Kumar Tagore",
+          "email": "jktagore_bo1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 9
+        },
+        {
+          "name": "Dr. S. Anusuya",
+          "email": "anusuya_bo1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 10
+        },
+        {
+          "name": "Dr. M. Bastin Churchill",
+          "email": "bastinchurchill_bo1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 11
+        },
+        {
+          "name": "Dr. G. Chelladurai",
+          "email": "chelladurai_bo1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 12
         }
       ]
     },
@@ -338,139 +432,192 @@
       "name": "Chemistry",
       "slug": "chemistry",
       "hod_username": "hod_chemistry",
-      "faculty_count": 22,
+      "faculty_count": 23,
       "faculty": [
         {
-          "name": "Dr. A. Arun Joseph Rosario",
-          "email": "arunjosephrosario_ch1@mail.sjctni.edu",
+          "name": "Dr. A. Rose Venis",
+          "email": "rosevenis_ch1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. A. Arun Viveke",
-          "email": "arunviveke_ch1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. A. Ceril Jeoffrey",
-          "email": "ceriljeoffrey_ch1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. A. Edwin Vasu",
-          "email": "edwinvasu_ch1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 1
         },
         {
           "name": "Dr. A. Irudaya Jothi",
           "email": "irudayajothi_ch1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. A. Leostandly",
-          "email": "leostandly_ch1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. A. Rose Venis",
-          "email": "rosevenis_ch1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. A. S. Stella Shalini",
-          "email": "stellashalini_ch1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. A. Simi",
-          "email": "simi_ch1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. C. Rajarathinam",
-          "email": "rajarathinam_ch1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. I. Arockiaraj",
-          "email": "arockiaraj_ch1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. I. Avinash",
-          "email": "avinash_ch1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. JK. Alphonsa Juliet Helina",
-          "email": "alphonsajuliethelina_ch2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. K. Jansi Rani",
-          "email": "jansirani_ch2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Dr. P. Arockia Doss",
-          "email": "arockiadoss_ch2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. R. Swinton Darious",
-          "email": "swintondarious_ch1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 2
         },
         {
           "name": "Dr. S. Antony Sakthi",
           "email": "antonysakthi_ch1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 3
+        },
+        {
+          "name": "Dr. A. Edwin Vasu",
+          "email": "edwinvasu_ch1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 4
+        },
+        {
+          "name": "Dr. A. S. Stella Shalini",
+          "email": "stellashalini_ch1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 5
+        },
+        {
+          "name": "Dr. A. Simi",
+          "email": "simi_ch1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 6
         },
         {
           "name": "Dr. S. Britto",
           "email": "britto_ch1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 7
         },
         {
-          "name": "Dr. S. Celestina",
-          "email": "drcelestina_ch2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
+          "name": "Dr. A. Ceril Jeoffrey",
+          "email": "ceriljeoffrey_ch1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 8
+        },
+        {
+          "name": "Dr. C. Rajarathinam",
+          "email": "rajarathinam_ch1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 9
         },
         {
           "name": "Dr. S. Mangalaraj",
           "email": "mangalaraj_ch1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 10
+        },
+        {
+          "name": "Dr. A. Leostandly",
+          "email": "leostandly_ch1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 11
+        },
+        {
+          "name": "Dr. A. Arun Viveke",
+          "email": "arunviveke_ch1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 12
+        },
+        {
+          "name": "Dr. I. Arockiaraj",
+          "email": "arockiaraj_ch1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 13
         },
         {
           "name": "Rev. Dr. A. Sebastin Thangadurai, SJ",
           "email": "sebastinthangadurai_ch1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 14
         },
         {
           "name": "Rev. Fr. A.I. Rajasekaran SJ",
           "email": "rajasekaran_ch1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 15
+        },
+        {
+          "name": "Dr. I. Avinash",
+          "email": "avinash_ch1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 16
+        },
+        {
+          "name": "Dr. A. Arun Joseph Rosario",
+          "email": "arunjosephrosario_ch1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 17
+        },
+        {
+          "name": "Dr. R. Swinton Darious",
+          "email": "swintondarious_ch1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 18
+        },
+        {
+          "name": "Dr. P. Arockia Doss",
+          "email": "arockiadoss_ch2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 19
+        },
+        {
+          "name": "Dr. JK. Alphonsa Juliet Helina",
+          "email": "alphonsajuliethelina_ch2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 20
+        },
+        {
+          "name": "Dr. S. Celestina",
+          "email": "drcelestina_ch2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 21
+        },
+        {
+          "name": "Dr. K. Jansi Rani",
+          "email": "jansirani_ch2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 22
+        },
+        {
+          "name": "Dr. J. Salamon",
+          "email": "26sch01@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 23,
+          "faculty_id": "26SCH01"
         }
       ]
     },
@@ -481,154 +628,204 @@
       "faculty_count": 25,
       "faculty": [
         {
-          "name": "Dr. A. Francis Vijayakumar",
-          "email": "francisvijayakumar_co1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. A. Ignatius",
-          "email": "ignatiusa_co2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. A. Mariya Selvi",
-          "email": "mariyaselvia_co2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. A. Sahayaraj Alexander",
-          "email": "sahayarajalexander_co1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. Arockia Rajasekar",
-          "email": "arockiarajasekar_co1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. B. Augustine Arockiaraj",
-          "email": "augustinearockiaraj_co2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. B. Nalini",
-          "email": "nalini_co2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. Dennis Edward Fernando",
-          "email": "dennisedwardfernando_co1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
           "name": "Dr. G. John",
           "email": "john_co1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. J. Berkmans",
-          "email": "berkmansj_co2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. J. Vinoth Kumar",
-          "email": "vinothkumar_co1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. L. Georgia",
-          "email": "georgia_co1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. L. Yesu Mariyan",
-          "email": "yesumariyan_co2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Dr. M. Antony Jesuraja",
-          "email": "antonyjesuraja_co1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. M. Julias Ceasar",
-          "email": "juliasceasar_co1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. S. Aruldass",
-          "email": "aruldass_co1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. S. Jerome",
-          "email": "jerome_co2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. V. Bastin Jerome",
-          "email": "bastinjerome_co1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 1
         },
         {
           "name": "Mr. D. Maria Antony",
           "email": "mariaantony_co1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 2
         },
         {
-          "name": "Mr. S. Kirubakaran",
-          "email": "kirubakaran_co2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Mr. V. Perumal",
-          "email": "perumal_co2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Ms. A. Jannet Jancy",
-          "email": "janetjancy_co2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Ms. C. Soundarya",
-          "email": "soundarya_co2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Ms. T. Chitradevi",
-          "email": "chitradevi_co2@mail.sjctni.edu",
+          "name": "Dr. V. Bastin Jerome",
+          "email": "bastinjerome_co1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Secretary"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 3
+        },
+        {
+          "name": "Dr. M. Antony Jesuraja",
+          "email": "antonyjesuraja_co1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 4
+        },
+        {
+          "name": "Dr. A. Francis Vijayakumar",
+          "email": "francisvijayakumar_co1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 5
+        },
+        {
+          "name": "Dr. M. Julias Ceasar",
+          "email": "juliasceasar_co1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 6
+        },
+        {
+          "name": "Dr. Arockia Rajasekar",
+          "email": "arockiarajasekar_co1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 7
+        },
+        {
+          "name": "Dr. S. Aruldass",
+          "email": "aruldass_co1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 8
+        },
+        {
+          "name": "Dr. A. Sahayaraj Alexander",
+          "email": "sahayarajalexander_co1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 9
+        },
+        {
+          "name": "Dr. L. Georgia",
+          "email": "georgia_co1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 10
         },
         {
           "name": "Rev. Dr. I. Antony Inico, SJ",
           "email": "antonyinico_co1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 11
+        },
+        {
+          "name": "Dr. Dennis Edward Fernando",
+          "email": "dennisedwardfernando_co1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 12
+        },
+        {
+          "name": "Dr. J. Vinoth Kumar",
+          "email": "vinothkumar_co1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 13
+        },
+        {
+          "name": "Ms. T. Chitradevi",
+          "email": "chitradevi_co2@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 14
+        },
+        {
+          "name": "Mr. S. Kirubakaran",
+          "email": "kirubakaran_co2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 15
+        },
+        {
+          "name": "Dr. B. Augustine Arockiaraj",
+          "email": "augustinearockiaraj_co2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 16
+        },
+        {
+          "name": "Dr. S. Jerome",
+          "email": "jerome_co2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 17
+        },
+        {
+          "name": "Dr. B. Nalini",
+          "email": "nalini_co2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 18
+        },
+        {
+          "name": "Ms. C. Soundarya",
+          "email": "soundarya_co2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 19
+        },
+        {
+          "name": "Dr. A. Ignatius",
+          "email": "ignatiusa_co2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 20
+        },
+        {
+          "name": "Dr. J. Berkmans",
+          "email": "berkmansj_co2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 21
+        },
+        {
+          "name": "Dr. A. Mariya Selvi",
+          "email": "mariyaselvia_co2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 22
+        },
+        {
+          "name": "Mr. V. Perumal",
+          "email": "perumal_co2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 23
+        },
+        {
+          "name": "Dr. L. Yesu Mariyan",
+          "email": "yesumariyan_co2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 24
+        },
+        {
+          "name": "Ms. A. Jannet Jancy",
+          "email": "janetjancy_co2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 25
         }
       ]
     },
@@ -639,28 +836,36 @@
       "faculty_count": 4,
       "faculty": [
         {
-          "name": "Dr. P. Navomi Nithila",
-          "email": "navominithila_cb2@mail.sjctni.edu",
+          "name": "Ms. H. Bella Josepha",
+          "email": "bellajosepha_cb2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. V. Benhar Charles",
-          "email": "benharcharles_cb2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 1
         },
         {
           "name": "Mr. S. Santhosh",
           "email": "santhosh_cb2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 2
         },
         {
-          "name": "Ms. H. Bella Josepha",
-          "email": "bellajosepha_cb2@mail.sjctni.edu",
+          "name": "Dr. P. Navomi Nithila",
+          "email": "navominithila_cb2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 3
+        },
+        {
+          "name": "Dr. V. Benhar Charles",
+          "email": "benharcharles_cb2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 4
         }
       ]
     },
@@ -671,94 +876,125 @@
       "faculty_count": 15,
       "faculty": [
         {
-          "name": "Dr. A. Sarlin Venotha",
-          "email": "sarlinvenotha_co2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. B. Fathimamary",
-          "email": "fathimamary_cc2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. D. John Prabakaran",
-          "email": "johnprabakaran_cc2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
           "name": "Dr. F. X. Virgin Fraga",
           "email": "virginfraga_cc2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. H. Lakshmipriya",
-          "email": "lakshmipriya_cc2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. J. Arputha Sahaya Raj",
-          "email": "arputhasahayaraj_cc2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. J. Rajees",
-          "email": "rajees_cc2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 1
         },
         {
           "name": "Dr. N. Maheswari",
           "email": "maheswari_cc2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 2
         },
         {
-          "name": "Dr. P. George Stephen",
-          "email": "georgestephen_cc2@mail.sjctni.edu",
+          "name": "Dr. D. John Prabakaran",
+          "email": "johnprabakaran_cc2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 3
+        },
+        {
+          "name": "Dr. J. Rajees",
+          "email": "rajees_cc2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 4
+        },
+        {
+          "name": "Dr. J. Arputha Sahaya Raj",
+          "email": "arputhasahayaraj_cc2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 5
+        },
+        {
+          "name": "Dr. B. Fathimamary",
+          "email": "fathimamary_cc2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 6
         },
         {
           "name": "Dr. R. Arul",
           "email": "arul_cc2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 7
         },
         {
           "name": "Dr. S. Arumugam",
           "email": "arumugam_cc2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 8
         },
         {
-          "name": "Mr. J. Renish",
-          "email": "renish_cc2@mail.sjctni.edu",
+          "name": "Dr. H. Lakshmipriya",
+          "email": "lakshmipriya_cc2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Secretary"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 9
         },
         {
-          "name": "Ms. Divya",
-          "email": "",
+          "name": "Dr. A. Sarlin Venotha",
+          "email": "sarlinvenotha_co2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Secretary"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 10
+        },
+        {
+          "name": "Dr. P. George Stephen",
+          "email": "georgestephen_cc2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 11
         },
         {
           "name": "Ms. N. Sumithra",
           "email": "sumithra_cc2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Secretary"
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 12
+        },
+        {
+          "name": "Mr. J. Renish",
+          "email": "renish_cc2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 13
+        },
+        {
+          "name": "Ms. R. Meenatkshi",
+          "email": "26scc53@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 14,
+          "faculty_id": "26SCC53"
         },
         {
           "name": "Ms.Rashmita",
           "email": "ressmitha_cc2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Secretary"
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 15
         }
       ]
     },
@@ -769,28 +1005,36 @@
       "faculty_count": 4,
       "faculty": [
         {
-          "name": "Dr. B. Bharathi",
-          "email": "bharathi_ cr2@mail.sjctni.edu",
+          "name": "Mr. G. Prabhakaran",
+          "email": "prabakaran_cr2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. G. Udhayaraj",
-          "email": "udhayaraj_cr2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 1
         },
         {
           "name": "Dr. I. Jerry Richards",
           "email": "jerryrichards_cr2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Professor of Practice",
+          "sno": 2
         },
         {
-          "name": "Mr. G. Prabhakaran",
-          "email": "prabakaran_cr2@mail.sjctni.edu",
+          "name": "Dr. G. Udhayaraj",
+          "email": "udhayaraj_cr2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 3
+        },
+        {
+          "name": "Dr. B. Bharathi",
+          "email": "bharathi_ cr2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 4
         }
       ]
     },
@@ -801,16 +1045,20 @@
       "faculty_count": 2,
       "faculty": [
         {
-          "name": "Dr. V. Sagaya Pricilla",
-          "email": "sagayapricilla_cr2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
           "name": "Ms. A. Mary Magdalene",
           "email": "marymagdalene_cr2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 1
+        },
+        {
+          "name": "Dr. V. Sagaya Pricilla",
+          "email": "sagayapricilla_cr2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 2
         }
       ]
     },
@@ -821,178 +1069,236 @@
       "faculty_count": 29,
       "faculty": [
         {
-          "name": "Dr. A. Aloysius",
-          "email": "aloysius_cs1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. A. Angelpreethi",
-          "email": "angelpreethi_cs1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. A. Janet Rajeswari",
-          "email": "janetrajeswari_cs2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. A. Jenifer Jothi Mary",
-          "email": "jeniferjothimary_cs1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. A. Vimal Jerald",
-          "email": "vimaljerald_cs1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. G. Arockia Sahaya Sheela",
-          "email": "arockiasahayasheela_cs1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. George Gabriel Richard Roy",
-          "email": "georgegabrielrichardroy_cs1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. J. Antony John Prabu",
-          "email": "antonyjohnprabu_cs2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. K. Maheswaran",
-          "email": "maheswaran_cs1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. K. Subash",
-          "email": "subash_cs2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. M. Venkatesh Saravanakumar",
-          "email": "venkateshsaravanakumarm_cs2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. P. Joseph Charles",
-          "email": "josephcharles_cs1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. R. Sakthi Raman",
-          "email": "sakthiraman_cs2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
-        },
-        {
           "name": "Dr. S. Britto Ramesh Kumar",
           "email": "brittorameshkumar_cs1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 1
         },
         {
-          "name": "Dr. S. Sathyapriya",
-          "email": "sathyapriya_cs2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. S. Thulasi Bharathi",
-          "email": "thulasibharathi_cs2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
+          "name": "Dr. A. Aloysius",
+          "email": "aloysius_cs1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 2
         },
         {
           "name": "Dr. V. Jude Nirmal",
           "email": "judenirmal_cs1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Mr. A. Shreenath",
-          "email": "shreenath_cs1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Secretary"
-        },
-        {
-          "name": "Mr. M. Ragul",
-          "email": "ragul_cs2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Ms. A. H. Amalorpava Akila",
-          "email": "amalorpvaakila_cs2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Ms. G. Abirami",
-          "email": "abirami_cs2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Ms. I. Reshma Monica",
-          "email": "reshmamonica_cs2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Ms. K. Selvi",
-          "email": "selvi_cs2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Ms. M. Merla Agnes Mary",
-          "email": "merlaagnesmary_cs2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Ms. M. Nasreen",
-          "email": "nasreen_cs2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Ms. P. Lekka",
-          "email": "lekka_cs2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Ms. Sherine Dominick",
-          "email": "sherinedominick_cs2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 3
         },
         {
           "name": "Rev. Dr. S. Arul Oli, SJ",
           "email": "aruloli_cs1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 4
         },
         {
           "name": "Rev. Dr. S. Santiago, SJ",
           "email": "santiago_cs1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 5
+        },
+        {
+          "name": "Dr. A. Vimal Jerald",
+          "email": "vimaljerald_cs1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 6
+        },
+        {
+          "name": "Dr. George Gabriel Richard Roy",
+          "email": "georgegabrielrichardroy_cs1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 7
+        },
+        {
+          "name": "Dr. A. Angelpreethi",
+          "email": "angelpreethi_cs1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 8
+        },
+        {
+          "name": "Dr. G. Arockia Sahaya Sheela",
+          "email": "arockiasahayasheela_cs1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 9
+        },
+        {
+          "name": "Dr. P. Joseph Charles",
+          "email": "josephcharles_cs1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 10
+        },
+        {
+          "name": "Dr. A. Jenifer Jothi Mary",
+          "email": "jeniferjothimary_cs1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 11
+        },
+        {
+          "name": "Dr. K. Maheswaran",
+          "email": "maheswaran_cs1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 12
+        },
+        {
+          "name": "Dr. J. Antony John Prabu",
+          "email": "antonyjohnprabu_cs2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 13
+        },
+        {
+          "name": "Dr. S. Thulasi Bharathi",
+          "email": "thulasibharathi_cs2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 14
+        },
+        {
+          "name": "Dr. S. Sathyapriya",
+          "email": "sathyapriya_cs2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 15
+        },
+        {
+          "name": "Ms. M. Merla Agnes Mary",
+          "email": "merlaagnesmary_cs2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 16
+        },
+        {
+          "name": "Dr. K. Subash",
+          "email": "subash_cs2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 17
+        },
+        {
+          "name": "Ms. Sherine Dominick",
+          "email": "sherinedominick_cs2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 18
+        },
+        {
+          "name": "Dr. M. Venkatesh Saravanakumar",
+          "email": "venkateshsaravanakumarm_cs2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 19
+        },
+        {
+          "name": "Ms. P. Lekka",
+          "email": "lekka_cs2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 20
+        },
+        {
+          "name": "Ms. I. Reshma Monica",
+          "email": "reshmamonica_cs2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 21
+        },
+        {
+          "name": "Dr. A. Janet Rajeswari",
+          "email": "janetrajeswari_cs2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 22
+        },
+        {
+          "name": "Mr. A. Shreenath",
+          "email": "shreenath_cs1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 23
+        },
+        {
+          "name": "Dr. R. Sakthi Raman",
+          "email": "sakthiraman_cs2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 24
+        },
+        {
+          "name": "Ms. A. H. Amalorpava Akila",
+          "email": "amalorpvaakila_cs2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 25
+        },
+        {
+          "name": "Mr. M. Ragul",
+          "email": "ragul_cs2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 26
+        },
+        {
+          "name": "Ms. M. Nasreen",
+          "email": "nasreen_cs2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 27
+        },
+        {
+          "name": "Ms. K. Selvi",
+          "email": "selvi_cs2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 28
+        },
+        {
+          "name": "Ms. G. Abirami",
+          "email": "abirami_cs2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 29
         }
       ]
     },
@@ -1006,25 +1312,33 @@
           "name": "Dr. A. John Balaiah",
           "email": "johnbalaiah_cp2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 1
         },
         {
           "name": "Dr. V. Suganthi",
           "email": "suganthiv_cp2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Mr. V. S. Sarabeshwaraa",
-          "email": "sarabeshwaraa_cp2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 2
         },
         {
           "name": "Ms. F. M. Christeeba",
           "email": "christeeba_cp2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 3
+        },
+        {
+          "name": "Mr. V. S. Sarabeshwaraa",
+          "email": "sarabeshwaraa_cp2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 4
         }
       ]
     },
@@ -1035,34 +1349,44 @@
       "faculty_count": 5,
       "faculty": [
         {
-          "name": "Dr. A. Beatrice Dorothy",
-          "email": "beatricedorothy_ds2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. K. Loura Jency",
-          "email": "lourajency_ ds2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. M. Kriushanth",
-          "email": "kriushanth_ds2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
           "name": "Dr. T. Rajaretnam",
           "email": "rajaretnam_ds2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Head of the Department",
+          "sno": 1
         },
         {
           "name": "Dr. V. Arul Kumar",
           "email": "arulkumar_ds2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 2
+        },
+        {
+          "name": "Dr. M. Kriushanth",
+          "email": "kriushanth_ds2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 3
+        },
+        {
+          "name": "Dr. A. Beatrice Dorothy",
+          "email": "beatricedorothy_ds2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 4
+        },
+        {
+          "name": "Dr. K. Loura Jency",
+          "email": "lourajency_ ds2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 5
         }
       ]
     },
@@ -1073,70 +1397,92 @@
       "faculty_count": 11,
       "faculty": [
         {
-          "name": "Dr. A. Justin Thiraviam",
-          "email": "justinthiraviam_ec1@mail.sjctni.edu",
+          "name": "Dr. M. Suvakkin",
+          "email": "suvakkin_ec1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 1
         },
         {
           "name": "Dr. G. Iruthayaraj",
           "email": "iruthayaraj_ec1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 2
         },
         {
-          "name": "Dr. J. Vasantha Arockiaselvi",
-          "email": "vasanthaarockiaselvi_ec1@mail.sjctni.edu",
+          "name": "Dr. A. Justin Thiraviam",
+          "email": "justinthiraviam_ec1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 3
         },
         {
           "name": "Dr. K. A. Michael",
           "email": "michael_ec1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. M. Suvakkin",
-          "email": "suvakkin_ec1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. P. Jayakumar",
-          "email": "jayakumar_ec1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. R. Ganesasubramanian",
-          "email": "ganesasubramanian_ec1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 4
         },
         {
           "name": "Dr. S. P. Robert",
           "email": "robert_ec1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 5
         },
         {
-          "name": "Ms. Daphene Dourom",
-          "email": "daphedourom_ec1@mail.sjctni.edu",
+          "name": "Dr. J. Vasantha Arockiaselvi",
+          "email": "vasanthaarockiaselvi_ec1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Secretary"
-        },
-        {
-          "name": "Ms. J. Jayashree Naiken",
-          "email": "jayashreenaiken_ec1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 6
         },
         {
           "name": "Ms. P. Prarthna",
           "email": "prarthna_ec1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 7
+        },
+        {
+          "name": "Dr. R. Ganesasubramanian",
+          "email": "ganesasubramanian_ec1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 8
+        },
+        {
+          "name": "Dr. P. Jayakumar",
+          "email": "jayakumar_ec1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 9
+        },
+        {
+          "name": "Ms. J. Jayashree Naiken",
+          "email": "jayashreenaiken_ec1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 10
+        },
+        {
+          "name": "Ms. Daphene Dourom",
+          "email": "daphedourom_ec1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 11
         }
       ]
     },
@@ -1147,64 +1493,84 @@
       "faculty_count": 10,
       "faculty": [
         {
-          "name": "Dr. A. Arputharaj",
-          "email": "arputharaj_ el2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. K. Karuppasamy",
-          "email": "karuppasamy_el2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Dr. K. Priya Dharshini",
-          "email": "priyadharshini_ el2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. M. Sappani Muthu",
-          "email": "sappanimuthu_el2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
           "name": "Dr. P. Subbuthai",
           "email": "subbuthai_el2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. S. Mary  Margaret",
-          "email": "marymargarets_ el2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 1
         },
         {
           "name": "Dr. V. Manickam",
           "email": "manickam_el2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 2
         },
         {
-          "name": "Mr. R. Charles Silvester Joe",
-          "email": "charlessilvester_el2@mail.sjctni.edu",
+          "name": "Dr. A. Arputharaj",
+          "email": "arputharaj_ el2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Mr. V. Victor Remy",
-          "email": "victorremy_el2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 3
         },
         {
           "name": "Rev. Fr. J. John Wilson, SJ",
           "email": "johnwilson_el2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 4
+        },
+        {
+          "name": "Dr. S. Mary Margaret",
+          "email": "marymargarets_ el2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 5
+        },
+        {
+          "name": "Dr. K. Priya Dharshini",
+          "email": "priyadharshini_ el2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 6
+        },
+        {
+          "name": "Dr. M. Sappani Muthu",
+          "email": "sappanimuthu_el2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 7
+        },
+        {
+          "name": "Dr. K. Karuppasamy",
+          "email": "karuppasamy_el2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 8
+        },
+        {
+          "name": "Mr. V. Victor Remy",
+          "email": "victorremy_el2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 9
+        },
+        {
+          "name": "Mr. R. Charles Silvester Joe",
+          "email": "charlessilvester_el2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 10
         }
       ]
     },
@@ -1215,244 +1581,324 @@
       "faculty_count": 40,
       "faculty": [
         {
-          "name": "Dr. A. Ezhugnayiru",
-          "email": "charlesarockiasamy_en2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. A. Johnson Francis",
-          "email": "johnsonfrancis_en2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. A. Sangeeth Kumar",
-          "email": "sangeethkumar_en2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. B. Sam Jerome Sharone",
-          "email": "samjeromesharone_en1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. Cheryl Davis",
-          "email": "cheryldavis_en1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. D. Loyola Innaci",
-          "email": "loyolainnaci_en2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. D. Prasanth Arokia Samy",
-          "email": "prasantharokiasamy_en2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. D. R. Edwin Christy",
-          "email": "edwinchristy_en1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. H. Daniel Raj",
-          "email": "danielraj_en2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. J. Amalaveenus",
-          "email": "amalaveenus_en1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. J. Charles Arockiasamy",
-          "email": "ezhugnayiru_en2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. J. Gilbert Mary",
-          "email": "gilbertmary_en2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. J. John Love Joy",
-          "email": "johnlovejoy_en1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. M. Amutha",
-          "email": "amutha_en1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. M. John Britto",
-          "email": "johnbritto_en1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. M. S. Xavier Pradheep Singh",
-          "email": "xavierpradheepsingh_en1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. P. Catherine Benita",
-          "email": "catherinebenita_en2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. R. Jayakanth",
-          "email": "jayakanth_en1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. R. Qurshid Begum",
-          "email": "qurshidbegum_en1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. S. Jerald Sagaya Nathan",
-          "email": "jeraldsagayanathan_en1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. S. Sajeev",
-          "email": "sajeev_en1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. Twin Antony Edward",
-          "email": "t.a.edward_en1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
           "name": "Dr. V. Francis",
           "email": "francis_en1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 1
         },
         {
           "name": "Dr. V. L. Jayapaul",
           "email": "jayapaul_en1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 2
         },
         {
-          "name": "Mr. A. Abraham",
-          "email": "abraham_en1@mail.sjctni.edu",
+          "name": "Dr. J. John Love Joy",
+          "email": "johnlovejoy_en1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 3
         },
         {
-          "name": "Mr. A. Nepolian",
-          "email": "nepolian_en1@mail.sjctni.edu",
+          "name": "Dr. R. Qurshid Begum",
+          "email": "qurshidbegum_en1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 4
         },
         {
-          "name": "Mr. A. Ukkirapandiyan",
-          "email": "ukkirapandian_en2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Mr. I. Christhuraj",
-          "email": "christhuraj_en2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Mr. M. Manoj Kumar",
-          "email": "mmanojkumar_en1@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Mr. S. Alfred Pravin",
-          "email": "alfredpravin_en2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Mr. S. Ignatius Richard",
-          "email": "ignatiusrichards_en1@mail.sjctni.edu",
+          "name": "Dr. M. John Britto",
+          "email": "johnbritto_en1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Mr. S. Thiyagarajan",
-          "email": "thiyagarajan_en2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Ms. A. Annie Lumina",
-          "email": "annielumina_en2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Ms. A. Jasmine Rinitha",
-          "email": "jasminerinitha_en2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Ms. G. Annie Rose",
-          "email": "annierose_en1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Ms. J. Aldris Angelin",
-          "email": "aldrisangelin_en2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Ms. L. Virgin Francy",
-          "email": "virginfrancyl_en2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Ms. M. Joyce Vinitha",
-          "email": "joycevinitha_en2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Ms. R. Rekkani",
-          "email": "rekkani_en2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 5
         },
         {
           "name": "Rev. Dr. S. Paul Pragash, SJ",
           "email": "paulpragash_en1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 6
+        },
+        {
+          "name": "Dr. D. R. Edwin Christy",
+          "email": "edwinchristy_en1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 7
+        },
+        {
+          "name": "Dr. R. Jayakanth",
+          "email": "jayakanth_en1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 8
+        },
+        {
+          "name": "Dr. Cheryl Davis",
+          "email": "cheryldavis_en1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 9
+        },
+        {
+          "name": "Dr. M. Amutha",
+          "email": "amutha_en1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 10
+        },
+        {
+          "name": "Mr. A. Abraham",
+          "email": "abraham_en1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 11
+        },
+        {
+          "name": "Dr. S. Jerald Sagaya Nathan",
+          "email": "jeraldsagayanathan_en1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 12
+        },
+        {
+          "name": "Dr. B. Sam Jerome Sharone",
+          "email": "samjeromesharone_en1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 13
+        },
+        {
+          "name": "Dr. J. Amalaveenus",
+          "email": "amalaveenus_en1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 14
+        },
+        {
+          "name": "Dr. S. Sajeev",
+          "email": "sajeev_en1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 15
+        },
+        {
+          "name": "Dr. M. S. Xavier Pradheep Singh",
+          "email": "xavierpradheepsingh_en1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 16
+        },
+        {
+          "name": "Ms. G. Annie Rose",
+          "email": "annierose_en1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 17
+        },
+        {
+          "name": "Mr. A. Nepolian",
+          "email": "nepolian_en1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 18
+        },
+        {
+          "name": "Mr. S. Ignatius Richard",
+          "email": "ignatiusrichards_en1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 19
+        },
+        {
+          "name": "Dr. Twin Antony Edward",
+          "email": "t.a.edward_en1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 20
+        },
+        {
+          "name": "Dr. A. Johnson Francis",
+          "email": "johnsonfrancis_en2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 21
+        },
+        {
+          "name": "Dr. D. Loyola Innaci",
+          "email": "loyolainnaci_en2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 22
+        },
+        {
+          "name": "Dr. A. Ezhugnayiru",
+          "email": "charlesarockiasamy_en2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 23
+        },
+        {
+          "name": "Dr. J. Charles Arockiasamy",
+          "email": "ezhugnayiru_en2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 24
+        },
+        {
+          "name": "Mr. I. Christhuraj",
+          "email": "christhuraj_en2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 25
+        },
+        {
+          "name": "Mr. S. Thiyagarajan",
+          "email": "thiyagarajan_en2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 26
+        },
+        {
+          "name": "Mr. A. Ukkirapandiyan",
+          "email": "ukkirapandian_en2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 27
+        },
+        {
+          "name": "Dr. D. Prasanth Arokia Samy",
+          "email": "prasantharokiasamy_en2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 28
+        },
+        {
+          "name": "Dr. A. Sangeeth Kumar",
+          "email": "sangeethkumar_en2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 29
+        },
+        {
+          "name": "Dr. J. Gilbert Mary",
+          "email": "gilbertmary_en2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 30
+        },
+        {
+          "name": "Ms. L. Virgin Francy",
+          "email": "virginfrancyl_en2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 31
+        },
+        {
+          "name": "Dr. P. Catherine Benita",
+          "email": "catherinebenita_en2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 32
+        },
+        {
+          "name": "Ms. M. Joyce Vinitha",
+          "email": "joycevinitha_en2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 33
+        },
+        {
+          "name": "Ms. R. Rekkani",
+          "email": "rekkani_en2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 34
+        },
+        {
+          "name": "Dr. H. Daniel Raj",
+          "email": "danielraj_en2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 35
+        },
+        {
+          "name": "Mr. S. Alfred Pravin",
+          "email": "alfredpravin_en2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 36
+        },
+        {
+          "name": "Ms. A. Jasmine Rinitha",
+          "email": "jasminerinitha_en2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 37
+        },
+        {
+          "name": "Mr. M. Manoj Kumar",
+          "email": "mmanojkumar_en1@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 38
+        },
+        {
+          "name": "Ms. A. Annie Lumina",
+          "email": "annielumina_en2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 39
+        },
+        {
+          "name": "Ms. J. Aldris Angelin",
+          "email": "aldrisangelin_en2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 40
         }
       ]
     },
@@ -1466,7 +1912,9 @@
           "name": "Ms. M. Mohanalakshmi",
           "email": "mohanalakshmi_fr1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 1
         }
       ]
     },
@@ -1477,52 +1925,68 @@
       "faculty_count": 8,
       "faculty": [
         {
+          "name": "Rev. Dr. K. Arockiam, SJ",
+          "email": "arockiamk_hr1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 1
+        },
+        {
           "name": "Dr. J. Michael Raj",
           "email": "michaelraj_hr1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. J. Vincent Xavier",
-          "email": "vincentxavier_hr2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 2
         },
         {
           "name": "Dr. J. Wilfred Angello Gerald",
           "email": "wilfredangellogerald_hr1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. V.  Udhaya Geetha",
-          "email": "udhayageetha_hr2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. Y. Vijila",
-          "email": "vijila_hr1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 3
         },
         {
           "name": "Mr. G. Louis Victor",
           "email": "louisvictor_hr1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 4
+        },
+        {
+          "name": "Dr. Y. Vijila",
+          "email": "vijila_hr1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 5
+        },
+        {
+          "name": "Dr. J. Vincent Xavier",
+          "email": "vincentxavier_hr2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 6
         },
         {
           "name": "Ms. C. Annie Jane",
           "email": "anniejane_hr2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 7
         },
         {
-          "name": "Rev. Dr. K. Arockiam, SJ",
-          "email": "arockiamk_hr1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
+          "name": "Dr. V. Udhaya Geetha",
+          "email": "udhayageetha_hr2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 8
         }
       ]
     },
@@ -1536,7 +2000,9 @@
           "name": "Dr. S. Sreedevi",
           "email": "sreedevi_hi1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 1
         }
       ]
     },
@@ -1547,58 +2013,76 @@
       "faculty_count": 9,
       "faculty": [
         {
+          "name": "Rev. Dr. M. Arockiasamy Xavier SJ",
+          "email": "arockiasamyxavier_hs1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 1
+        },
+        {
           "name": "Dr. J. Santhosh Kumar",
           "email": "santhoshkumar_hs1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. K. Lingammal",
-          "email": "lingammal_hs1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. M. Britto Stalin",
-          "email": "brittostalin_hs1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 2
         },
         {
           "name": "Dr. S. Manikandan",
           "email": "manikandan_hs1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 3
         },
         {
-          "name": "Mr. M. R. Gowtham Rajan",
-          "email": "gowthamrajan_hs1@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
+          "name": "Dr. K. Lingammal",
+          "email": "lingammal_hs1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 4
         },
         {
-          "name": "Mr.A.Amarnath",
-          "email": "amarnath_hs1@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
+          "name": "Dr. M. Britto Stalin",
+          "email": "brittostalin_hs1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 5
         },
         {
           "name": "Ms. K. Gimnus Priya",
           "email": "gimnuspriya_hs1@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 6
+        },
+        {
+          "name": "Mr. M. R. Gowtham Rajan",
+          "email": "gowthamrajan_hs1@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 7
+        },
+        {
+          "name": "Mr.A.Amarnath",
+          "email": "amarnath_hs1@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 8
         },
         {
           "name": "Ms. T. Beatinal Amalorpava Mary",
           "email": "beatinalaalorpavamary_hs1@mail.sjctni.edu",
           "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Rev. Dr. M. Arockiasamy Xavier SJ",
-          "email": "arockiasamyxavier_hs1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 9
         }
       ]
     },
@@ -1609,40 +2093,52 @@
       "faculty_count": 6,
       "faculty": [
         {
+          "name": "Mr. K. Michael Raj",
+          "email": "michaelraj_he@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 1
+        },
+        {
           "name": "Dr. A. Saran Raj",
           "email": "saranraj_he@mail.sjctni.edu",
           "shift": "II",
-          "category": "Secretary"
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 2
         },
         {
           "name": "Mr. A. Philip Arun Kennedy",
           "email": "philiparunkennedy_he@mail.sjctni.edu",
           "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Mr. B. Sushvinth",
-          "email": "sushvinth_he@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Mr. J. Rajesh Kumar",
-          "email": "rajeshkumar_he2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Mr. K. Michael Raj",
-          "email": "michaelraj_he@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 3
         },
         {
           "name": "Ms. R. Kavitha",
           "email": "kavitha_he@mail.sjctni.edu",
           "shift": "II",
-          "category": "Secretary"
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 4
+        },
+        {
+          "name": "Mr. J. Rajesh Kumar",
+          "email": "rajeshkumar_he2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 5
+        },
+        {
+          "name": "Mr. B. Sushvinth",
+          "email": "sushvinth_he@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 6
         }
       ]
     },
@@ -1656,97 +2152,129 @@
           "name": "Dr. A. Antony Prakash",
           "email": "antonyprakash_it2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. C. Venish Raja",
-          "email": "venishraja_it2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. D. Richard",
-          "email": "richard_it2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. I. Carol",
-          "email": "carol_it2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. J. Jenifer",
-          "email": "jeniferj_it2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 1
         },
         {
           "name": "Dr. K. R. Martin",
           "email": "martin_it2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. P. Bastin Thiyagaraj",
-          "email": "bastinthiyagaraj_it2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. R. Mangai Begum",
-          "email": "mangaibegum_it2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. S. Hemalatha",
-          "email": "hemalatha_it2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. T. Nikil Prakash",
-          "email": "nikilprakasht_it2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 2
         },
         {
           "name": "Dr. V. Maria Antoniate Martin",
           "email": "mariaantoniatemartin_it2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 3
+        },
+        {
+          "name": "Dr. P. Bastin Thiyagaraj",
+          "email": "bastinthiyagaraj_it2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 4
+        },
+        {
+          "name": "Dr. C. Venish Raja",
+          "email": "venishraja_it2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 5
+        },
+        {
+          "name": "Dr. R. Mangai Begum",
+          "email": "mangaibegum_it2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 6
+        },
+        {
+          "name": "Dr. D. Richard",
+          "email": "richard_it2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 7
+        },
+        {
+          "name": "Dr. I. Carol",
+          "email": "carol_it2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 8
+        },
+        {
+          "name": "Dr. T. Nikil Prakash",
+          "email": "nikilprakasht_it2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 9
+        },
+        {
+          "name": "Dr. S. Hemalatha",
+          "email": "hemalatha_it2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 10
         },
         {
           "name": "Ms. D. Irine Auxilia Mary",
           "email": "dirineauxiliamary_it2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 11
         },
         {
-          "name": "Ms. J. Janet Angel",
-          "email": "janetangel_it2@mail.sjctni.edu",
+          "name": "Dr. J. Jenifer",
+          "email": "jeniferj_it2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Ms. L. Jenofa Angel",
-          "email": "jenofaangel_it2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Ms. N. Vidhyabharathi",
-          "email": "vidhyabharathi_it2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 12
         },
         {
           "name": "Ms. P. Sophiya",
           "email": "sophiya_it2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Secretary"
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 13
+        },
+        {
+          "name": "Ms. J. Janet Angel",
+          "email": "janetangel_it2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 14
+        },
+        {
+          "name": "Ms. L. Jenofa Angel",
+          "email": "jenofaangel_it2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 15
+        },
+        {
+          "name": "Ms. N. Vidhyabharathi",
+          "email": "vidhyabharathi_it2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 16
         }
       ]
     },
@@ -1771,100 +2299,132 @@
       "faculty_count": 16,
       "faculty": [
         {
-          "name": "Dr. A. Pappu Rajan",
-          "email": "ap_rajan2001@jim.ac.in",
+          "name": "Rev. Dr. A. Michael John, SJ",
+          "email": "dirjim@jim.ac.in",
           "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. Albin D.Robert Lawrence",
-          "email": "albin@jim.ac.in",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. Cecilia Merlin Wilton",
-          "email": "merlin@jim.ac.in",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. D. Allen Rose Shamini",
-          "email": "allen@jim.ac.in",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. J. Michael Sammanasu",
-          "email": "michaelsammanasu@jim.ac.in",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. Josephine Priya L.",
-          "email": "josephine@jim.ac.in",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. Kanthiah Alias Deepak R",
-          "email": "deepak@jim.ac.in",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. Nisha Thundiyil",
-          "email": "nisha@jim.ac.in",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. S. Karthikeyan",
-          "email": "skarthikeyanhr@jim.ac.in",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. T. Edwin Premkumar",
-          "email": "edwin@jim.ac.in",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. Y. Arul Sulochana",
-          "email": "sulochana@jim.ac.in",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Mr. L. Kalistus Simon",
-          "email": "simon@jim.ac.in",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Ms. P. Janet Mary Portia",
-          "email": "janet@jim.ac.in",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Ms. Sahaya Restina James",
-          "email": "restina@jim.ac.in",
-          "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Director",
+          "sno": 1
         },
         {
           "name": "Rev. Dr. A. Arockiasamy,SJ",
           "email": "administrator@jim.ac.in",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Administrator",
+          "sno": 2
         },
         {
-          "name": "Rev. Dr. A. Michael John, SJ",
-          "email": "dirjim@jim.ac.in",
+          "name": "Dr. J. Michael Sammanasu",
+          "email": "michaelsammanasu@jim.ac.in",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Professor",
+          "sno": 3
+        },
+        {
+          "name": "Dr. A. Pappu Rajan",
+          "email": "ap_rajan2001@jim.ac.in",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Associate Professor",
+          "sno": 4
+        },
+        {
+          "name": "Dr. S. Karthikeyan",
+          "email": "skarthikeyanhr@jim.ac.in",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Associate Professor",
+          "sno": 5
+        },
+        {
+          "name": "Dr. Albin D.Robert Lawrence",
+          "email": "albin@jim.ac.in",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Associate Professor",
+          "sno": 6
+        },
+        {
+          "name": "Ms. Sahaya Restina James",
+          "email": "restina@jim.ac.in",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 7
+        },
+        {
+          "name": "Dr. Y. Arul Sulochana",
+          "email": "sulochana@jim.ac.in",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Associate Professor",
+          "sno": 8
+        },
+        {
+          "name": "Dr. Nisha Thundiyil",
+          "email": "nisha@jim.ac.in",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Associate Professor",
+          "sno": 9
+        },
+        {
+          "name": "Ms. P. Janet Mary Portia",
+          "email": "janet@jim.ac.in",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 10
+        },
+        {
+          "name": "Dr. D. Allen Rose Shamini",
+          "email": "allen@jim.ac.in",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 11
+        },
+        {
+          "name": "Dr. T. Edwin Premkumar",
+          "email": "edwin@jim.ac.in",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 12
+        },
+        {
+          "name": "Dr. Kanthiah Alias Deepak R",
+          "email": "deepak@jim.ac.in",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 13
+        },
+        {
+          "name": "Dr. Josephine Priya L.",
+          "email": "josephine@jim.ac.in",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 14
+        },
+        {
+          "name": "Dr. Cecilia Merlin Wilton",
+          "email": "merlin@jim.ac.in",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 15
+        },
+        {
+          "name": "Mr. L. Kalistus Simon",
+          "email": "simon@jim.ac.in",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Head – Corporate Relations",
+          "sno": 16
         }
       ]
     },
@@ -1875,154 +2435,204 @@
       "faculty_count": 25,
       "faculty": [
         {
-          "name": "Dr. A. Anthony Eldred",
-          "email": "anthonyeldred_ma1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. A. Arul Xavier",
-          "email": "arulxavier_ma2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. A. Delman",
-          "email": "delman_ma2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. A. Praveen",
-          "email": "praveen_ma1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. E. Veronisha",
-          "email": "veronisha_ma2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Dr. Geetha Sivaraman",
-          "email": "geethasivaraman_ma1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. J. Amalorpava Jerline",
-          "email": "amalorpavajerline_ma1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. J. Arockia Jeyakumar",
-          "email": "arockiajeyakumar_ma1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. J. Carmel Pushpa Raj",
-          "email": "carmel_ma1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. J. Christy Roja",
-          "email": "christyroja_ma1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. J. Maria Joseph",
-          "email": "mariajoseph_ma1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. J. Mercy Arokia Rani",
-          "email": "mercyarokiarani_ma2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. J. Umamaheswari",
-          "email": "umamaheswari_ma1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. L. Saral",
-          "email": "saral_ma2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
           "name": "Dr. M. Thiagarajan",
           "email": "thiagarajan_ma1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. P. Lawrence Rozario Raj",
-          "email": "lawrencerozarioraj_ma2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. P. Vishnu Kumar",
-          "email": "vishnukumar_ma2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Dr. R. Lenin",
-          "email": "lenin_ma1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. S. Aseervatham",
-          "email": "aseervatham_ma1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. S. Ithaya Ezhil Manna",
-          "email": "ithayaezhilmanna_ma1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. S. Jai Roselin",
-          "email": "jairoselin_ma2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. S. Sahaya Jernith",
-          "email": "sahayajernith_ma2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. V. Vairaperumal",
-          "email": "vairaperumal_ma1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 1
         },
         {
           "name": "Dr. Y. Dominic",
           "email": "dominic_ma1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 2
+        },
+        {
+          "name": "Dr. J. Umamaheswari",
+          "email": "umamaheswari_ma1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 3
+        },
+        {
+          "name": "Dr. A. Anthony Eldred",
+          "email": "anthonyeldred_ma1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 4
+        },
+        {
+          "name": "Dr. A. Praveen",
+          "email": "praveen_ma1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 5
+        },
+        {
+          "name": "Dr. J. Christy Roja",
+          "email": "christyroja_ma1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 6
+        },
+        {
+          "name": "Dr. J. Maria Joseph",
+          "email": "mariajoseph_ma1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 7
+        },
+        {
+          "name": "Dr. J. Arockia Jeyakumar",
+          "email": "arockiajeyakumar_ma1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 8
+        },
+        {
+          "name": "Dr. S. Ithaya Ezhil Manna",
+          "email": "ithayaezhilmanna_ma1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 9
+        },
+        {
+          "name": "Dr. V. Vairaperumal",
+          "email": "vairaperumal_ma1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 10
+        },
+        {
+          "name": "Dr. Geetha Sivaraman",
+          "email": "geethasivaraman_ma1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 11
+        },
+        {
+          "name": "Dr. J. Amalorpava Jerline",
+          "email": "amalorpavajerline_ma1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 12
+        },
+        {
+          "name": "Dr. R. Lenin",
+          "email": "lenin_ma1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 13
         },
         {
           "name": "Mr. S. Arul Gnanapragasam",
           "email": "arulgnanapragasam_ma1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 14
+        },
+        {
+          "name": "Dr. S. Aseervatham",
+          "email": "aseervatham_ma1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 15
+        },
+        {
+          "name": "Dr. J. Carmel Pushpa Raj",
+          "email": "carmel_ma1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 16
+        },
+        {
+          "name": "Dr. P. Lawrence Rozario Raj",
+          "email": "lawrencerozarioraj_ma2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 17
+        },
+        {
+          "name": "Dr. J. Mercy Arokia Rani",
+          "email": "mercyarokiarani_ma2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 18
+        },
+        {
+          "name": "Dr. A. Delman",
+          "email": "delman_ma2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 19
+        },
+        {
+          "name": "Dr. S. Jai Roselin",
+          "email": "jairoselin_ma2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 20
+        },
+        {
+          "name": "Dr. L. Saral",
+          "email": "saral_ma2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 21
+        },
+        {
+          "name": "Dr. S. Sahaya Jernith",
+          "email": "sahayajernith_ma2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 22
+        },
+        {
+          "name": "Dr. A. Arul Xavier",
+          "email": "arulxavier_ma2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 23
+        },
+        {
+          "name": "Dr. E. Veronisha",
+          "email": "veronisha_ma2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 24
+        },
+        {
+          "name": "Dr. P. Vishnu Kumar",
+          "email": "vishnukumar_ma2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 25
         }
       ]
     },
@@ -2036,25 +2646,33 @@
           "name": "Dr. A. Prem Edwin",
           "email": "premedwin_sp1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. P. Pratheep",
-          "email": "pratheep_pe2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Dr. P. Ramesh",
-          "email": "ramesh_pe1@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
+          "category": "Aided",
+          "designation": "Physical Director",
+          "sno": 1
         },
         {
           "name": "Mr. S. Sriram",
           "email": "sriram_pe1@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 2
+        },
+        {
+          "name": "Dr. P. Ramesh",
+          "email": "ramesh_pe1@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 3
+        },
+        {
+          "name": "Dr. P. Pratheep",
+          "email": "pratheep_pe2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 4
         }
       ]
     },
@@ -2065,172 +2683,228 @@
       "faculty_count": 28,
       "faculty": [
         {
-          "name": "Dr. A. Alexandar",
-          "email": "alexandar_ph1@mail.sjctni.edu",
+          "name": "Dr. I. Johnson",
+          "email": "johnson_ph1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. A. Antony Raj",
-          "email": "antonyraj_ph1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. A. J. Clement Lourduraj",
-          "email": "clementlourduraj_ph1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. A. Maggie Dayana",
-          "email": "maggiedayana_ph1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. A. Sinthiya",
-          "email": "sinthiya_ph2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 1
         },
         {
           "name": "Dr. B. Kanickairaj",
           "email": "kanickairaj_ph1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. G. Genifer Silvena",
-          "email": "genifersilvena_ph2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. G. Samuel",
-          "email": "samuel_ph1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. H. Joy Prabu",
-          "email": "joyprabu_ph1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. I. Johnson",
-          "email": "johnson_ph1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 2
         },
         {
           "name": "Dr. J. Charles",
           "email": "charles_ph1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. M. Antony Arockiaraj",
-          "email": "antonyarockiaraj_ph1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. M. Augustin",
-          "email": "augustin_ph2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. M. Bendict Lawrance",
-          "email": "bendictlawrance_ph1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. M. Gladys Joysi",
-          "email": "gladysjoysi_ph1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. M.M. Armstrong Arasu",
-          "email": "armstrongarasu_ph1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. P. Adal Arasu",
-          "email": "adalarasu_ph2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 3
         },
         {
           "name": "Dr. P. Christuraj",
           "email": "christuraj_ph1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 4
+        },
+        {
+          "name": "Dr. A. Maggie Dayana",
+          "email": "maggiedayana_ph1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 5
+        },
+        {
+          "name": "Dr. M.M. Armstrong Arasu",
+          "email": "armstrongarasu_ph1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 6
+        },
+        {
+          "name": "Dr. A. J. Clement Lourduraj",
+          "email": "clementlourduraj_ph1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 7
+        },
+        {
+          "name": "Dr. M. Antony Arockiaraj",
+          "email": "antonyarockiaraj_ph1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 8
         },
         {
           "name": "Dr. R. Jerald Vijay",
           "email": "jeraldvijay_ph1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. R. Thomas",
-          "email": "thomasr_ph1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. S. Anbarasu",
-          "email": "anbarasu_ph1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 9
         },
         {
           "name": "Dr. S. Dinakaran",
           "email": "dinakaran_ph1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 10
         },
         {
-          "name": "Dr. S. Lourduraj",
-          "email": "lourduraj_ph2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
+          "name": "Dr. S. Anbarasu",
+          "email": "anbarasu_ph1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 11
+        },
+        {
+          "name": "Dr. A. Antony Raj",
+          "email": "antonyraj_ph1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 12
+        },
+        {
+          "name": "Dr. G. Samuel",
+          "email": "samuel_ph1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 13
+        },
+        {
+          "name": "Dr. H. Joy Prabu",
+          "email": "joyprabu_ph1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 14
+        },
+        {
+          "name": "Dr. R. Thomas",
+          "email": "thomasr_ph1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 15
         },
         {
           "name": "Dr. S. Prathap",
           "email": "prathaps_ph1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 16
         },
         {
-          "name": "Dr. S. Rex Rosario",
-          "email": "rexrosario_ph2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
+          "name": "Dr. A. Alexandar",
+          "email": "alexandar_ph1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 17
         },
         {
-          "name": "Dr. T. Kaviya",
-          "email": "kaviya_ph2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
+          "name": "Dr. M. Bendict Lawrance",
+          "email": "bendictlawrance_ph1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 18
         },
         {
-          "name": "Mr. G. Novin Senetra Roy",
-          "email": "novinsenetraroy_ph2@mail.sjctni.edu",
+          "name": "Dr. M. Gladys Joysi",
+          "email": "gladysjoysi_ph1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 19
+        },
+        {
+          "name": "Dr. S. Lourduraj",
+          "email": "lourduraj_ph2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 20
+        },
+        {
+          "name": "Dr. P. Adal Arasu",
+          "email": "adalarasu_ph2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 21
+        },
+        {
+          "name": "Dr. A. Sinthiya",
+          "email": "sinthiya_ph2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 22
         },
         {
           "name": "Ms. B. Mary Dayana",
           "email": "marydayana_ph2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 23
+        },
+        {
+          "name": "Mr. G. Novin Senetra Roy",
+          "email": "novinsenetraroy_ph2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 24
+        },
+        {
+          "name": "Dr. M. Augustin",
+          "email": "augustin_ph2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 25
+        },
+        {
+          "name": "Dr. G. Genifer Silvena",
+          "email": "genifersilvena_ph2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 26
+        },
+        {
+          "name": "Dr. S. Rex Rosario",
+          "email": "rexrosario_ph2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 27
+        },
+        {
+          "name": "Dr. T. Kaviya",
+          "email": "kaviya_ph2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 28
         }
       ]
     },
@@ -2258,7 +2932,9 @@
           "name": "Dr. M. S. Madhavachari",
           "email": "madhavachari_sa1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 1
         }
       ]
     },
@@ -2269,40 +2945,52 @@
       "faculty_count": 6,
       "faculty": [
         {
-          "name": "Dr. A. Philip Arokiadoss",
-          "email": "philiparokiadoss_st1@mail.sjctni.edu",
+          "name": "Dr. R. Vijayakumar",
+          "email": "vijayakumar_st1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 1
         },
         {
           "name": "Dr. J. Glorypersial",
           "email": "glorypersial_st1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. R. Vijayakumar",
-          "email": "vijayakumar_st1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 2
         },
         {
           "name": "Dr. T. Venkatesan",
           "email": "venkatesan_st1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 3
+        },
+        {
+          "name": "Dr. A. Philip Arokiadoss",
+          "email": "philiparokiadoss_st1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 4
         },
         {
           "name": "Mr. M. Joseph",
           "email": "mjoseph_st1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 5
         },
         {
           "name": "Ms. I. Angel Agnes Mary",
           "email": "angelagnesmary_st2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Secretary"
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 6
         }
       ]
     },
@@ -2313,172 +3001,228 @@
       "faculty_count": 28,
       "faculty": [
         {
-          "name": "Dr. A. Adaikkalaraj",
-          "email": "adaikkalaraj_ta1@mail.sjctni.edu",
+          "name": "Dr. G. Beschi",
+          "email": "beschi_ta1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 1
         },
         {
           "name": "Dr. A. Joseph Sahayaraj",
           "email": "josephsahayaraj_ta1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. A. Maria Dhanabal",
-          "email": "mariadhanabal_ta1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. A. Rajathi",
-          "email": "rajathi_ta1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. B. Johnson",
-          "email": "johnson_ta2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 2
         },
         {
           "name": "Dr. D. Wilson",
           "email": "wilson_ta1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. G. Beschi",
-          "email": "beschi_ta1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. I. Anto Monica",
-          "email": "antomonica_ta1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Coordinator"
+          "category": "Aided",
+          "designation": "Associate Professor",
+          "sno": 3
         },
         {
           "name": "Dr. J. Benjamin Aron Titus",
           "email": "benjaminarontitus_ta1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 4
         },
         {
-          "name": "Dr. J. Saleth",
-          "email": "saleth_ta1@mail.sjctni.edu",
+          "name": "Dr. A. Rajathi",
+          "email": "rajathi_ta1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. J. Selvakumar",
-          "email": "selvakumar_ta2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Dr. J. Stella Mary",
-          "email": "stellamary_ ta2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. K. Anthony Raja",
-          "email": "anthonyraja_ta1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. L.  Arun Prakash",
-          "email": "arunprakashl_ta2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. L. Charles",
-          "email": "charles_ta1@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. L.Ruba",
-          "email": "ruba_ta2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. M. Dhanalakshmi",
-          "email": "dhanalakshmi_ta2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. R. Murali Krishnan",
-          "email": "muralikrishnan_ta2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. R. Nallamuthu",
-          "email": "nallamuthu_ta1@mail.sjctni.edu",
-          "shift": "I",
-          "category": "Aided"
-        },
-        {
-          "name": "Dr. S. Arockia Dhanaraj",
-          "email": "arockiadhanaraj_ta1@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 5
         },
         {
           "name": "Dr. S. Shagilabanu",
           "email": "shagilabanu_ta1@mail.sjctni.edu",
           "shift": "I",
-          "category": "Aided"
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 6
         },
         {
-          "name": "Dr. S. Srinivasan",
-          "email": "srinivasan_ta2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
+          "name": "Dr. A. Maria Dhanabal",
+          "email": "mariadhanabal_ta1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 7
         },
         {
-          "name": "Dr.K.John Kennedy",
-          "email": "johnkennedy_ta2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
+          "name": "Dr. R. Nallamuthu",
+          "email": "nallamuthu_ta1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 8
         },
         {
-          "name": "Mr. B. Ezhilselvan",
-          "email": "ezhilselvan_ta2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
+          "name": "Dr. K. Anthony Raja",
+          "email": "anthonyraja_ta1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 9
         },
         {
-          "name": "Mr.I. Yogaraj",
-          "email": "yogaraj_ta2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
+          "name": "Dr. A. Adaikkalaraj",
+          "email": "adaikkalaraj_ta1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 10
         },
         {
-          "name": "Mr.M.Raja",
-          "email": "raja_ta1@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
+          "name": "Dr. J. Saleth",
+          "email": "saleth_ta1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Aided",
+          "designation": "Assistant Professor",
+          "sno": 11
         },
         {
-          "name": "Ms. A. G.Umamaheswari",
-          "email": "umamaheswari_ta2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
+          "name": "Dr. S. Arockia Dhanaraj",
+          "email": "arockiadhanaraj_ta1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 12
         },
         {
           "name": "Ms. S. Backya Selva Rathi",
           "email": "backyaselvarathi_ta2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 13
+        },
+        {
+          "name": "Dr. S. Srinivasan",
+          "email": "srinivasan_ta2@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 14
+        },
+        {
+          "name": "Dr. R. Murali Krishnan",
+          "email": "muralikrishnan_ta2@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 15
+        },
+        {
+          "name": "Mr.I. Yogaraj",
+          "email": "yogaraj_ta2@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 16
+        },
+        {
+          "name": "Dr. L. Charles",
+          "email": "charles_ta1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 17
+        },
+        {
+          "name": "Dr. B. Johnson",
+          "email": "johnson_ta2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 18
+        },
+        {
+          "name": "Dr. J. Stella Mary",
+          "email": "stellamary_ ta2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 19
+        },
+        {
+          "name": "Dr. M. Dhanalakshmi",
+          "email": "dhanalakshmi_ta2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 20
+        },
+        {
+          "name": "Dr. L.Ruba",
+          "email": "ruba_ta2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 21
+        },
+        {
+          "name": "Dr.K.John Kennedy",
+          "email": "johnkennedy_ta2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 22
+        },
+        {
+          "name": "Dr. I. Anto Monica",
+          "email": "antomonica_ta1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 23
+        },
+        {
+          "name": "Dr. L. Arun Prakash",
+          "email": "arunprakashl_ta2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 24
+        },
+        {
+          "name": "Mr. B. Ezhilselvan",
+          "email": "ezhilselvan_ta2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 25
+        },
+        {
+          "name": "Ms. A. G.Umamaheswari",
+          "email": "umamaheswari_ta2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 26
+        },
+        {
+          "name": "Dr. J. Selvakumar",
+          "email": "selvakumar_ta2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 27
+        },
+        {
+          "name": "Mr.M.Raja",
+          "email": "raja_ta1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 28
         }
       ]
     },
@@ -2489,82 +3233,109 @@
       "faculty_count": 13,
       "faculty": [
         {
-          "name": "Dr. E. V. Prabha",
-          "email": "prabhaev_vc2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Dr. J. Jeffrin Aldo",
-          "email": "jeffrinaldo_vc2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
           "name": "Dr. S.Tamilarasi",
           "email": "tamilarasi_vt1@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Coordinator"
-        },
-        {
-          "name": "Mr. A. Kingsly",
-          "email": "kingsly_vc2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Mr. C .Naveen Kumar",
-          "email": "naveenkumar_vt1@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Mr. C. Jawahar",
-          "email": "jawahar_vc2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Mr. G. Sathish",
-          "email": "sathish_vt1@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Mr. X. Maria Bastin",
-          "email": "mariabastin_vt1@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
-        },
-        {
-          "name": "Ms. A. Shruthi",
-          "email": "shruthi_vc2@mail.sjctni.edu",
-          "shift": "II",
-          "category": "Secretary"
+          "shift": "I",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 1
         },
         {
           "name": "Ms. K. Ramya",
           "email": "ramya_vc2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Coordinator"
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 2
+        },
+        {
+          "name": "Dr. E. V. Prabha",
+          "email": "prabhaev_vc2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 3
+        },
+        {
+          "name": "Dr. J. Jeffrin Aldo",
+          "email": "jeffrinaldo_vc2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Coordinator",
+          "designation": "Assistant Professor",
+          "sno": 4
+        },
+        {
+          "name": "Rev. Dr. Xavier Antony, SJ",
+          "email": "26svt06@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 5,
+          "faculty_id": "26SVT06"
+        },
+        {
+          "name": "Mr. G. Sathish",
+          "email": "sathish_vt1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 6
         },
         {
           "name": "Ms.N.Srimohanapriya",
           "email": "srimohanapriya_vt1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 7
+        },
+        {
+          "name": "Mr. C .Naveen Kumar",
+          "email": "naveenkumar_vt1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 8
+        },
+        {
+          "name": "Mr. X. Maria Bastin",
+          "email": "mariabastin_vt1@mail.sjctni.edu",
+          "shift": "I",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 9
+        },
+        {
+          "name": "Mr. C. Jawahar",
+          "email": "jawahar_vc2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Secretary"
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 10
         },
         {
           "name": "Ms.T.Deepa",
           "email": "deepa_vc2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Secretary"
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 11
         },
         {
-          "name": "Rev. Dr. Xavier Antony, SJ",
-          "email": "",
+          "name": "Mr. A. Kingsly",
+          "email": "kingsly_vc2@mail.sjctni.edu",
           "shift": "II",
-          "category": "Secretary"
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 12
+        },
+        {
+          "name": "Ms. A. Shruthi",
+          "email": "shruthi_vc2@mail.sjctni.edu",
+          "shift": "II",
+          "category": "Secretary",
+          "designation": "Assistant Professor",
+          "sno": 13
         }
       ]
     }
