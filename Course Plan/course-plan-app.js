@@ -789,6 +789,23 @@ class CoursePlanApp {
     sel.value = '';
   }
 
+  onSharedFacultyDeptChange(deptName) {
+    const selectEl = document.getElementById('cp-add-shared-faculty-select');
+    if (!selectEl) return;
+    const deptObj = this.departments.find(d => d.name === deptName) || { faculty: [] };
+    const loggedInFac = (this.currentUser && this.currentUser.faculty_name) ? this.currentUser.faculty_name.trim().toLowerCase() : (this.activePlan && this.activePlan.faculty_name ? this.activePlan.faculty_name.trim().toLowerCase() : '');
+    const facs = (deptObj.faculty || []).map(f => typeof f === 'string' ? f : f.name).filter(n => {
+      if (!n) return false;
+      if (loggedInFac && n.trim().toLowerCase() === loggedInFac) return false;
+      return true;
+    });
+
+    selectEl.innerHTML = `
+      <option value="">-- Choose Co-Faculty from ${this.escapeHtml(deptName)} (${facs.length}) --</option>
+      ${facs.map(name => `<option value="${this.escapeHtml(name)}">${this.escapeHtml(name)}</option>`).join('')}
+    `;
+  }
+
   onSharedFacultyChange(val) {
     if (!this.activePlan) this.activePlan = this.createDefaultPlan();
     this.activePlan.shared_faculty_name = (val || '').trim();
@@ -6021,18 +6038,6 @@ class CoursePlanApp {
       </option>
     `).join('');
 
-    const otherDeptGroups = this.departments
-      .filter(d => d.name.toLowerCase() !== curDept.toLowerCase())
-      .map(d => {
-        const facs = (d.faculty || []).map(f => typeof f === 'string' ? f : f.name).filter(n => n && (!loggedInFac || n.toLowerCase() !== loggedInFac));
-        if (facs.length === 0) return '';
-        return `
-          <optgroup label="${this.escapeHtml(d.name)}">
-            ${facs.map(name => `<option value="${this.escapeHtml(name)}" ${currentSharedFac === name ? 'selected' : ''}>${this.escapeHtml(name)} (${this.escapeHtml(d.name)})</option>`).join('')}
-          </optgroup>
-        `;
-      }).filter(Boolean).join('');
-
     return `
       
 <style>
@@ -6534,32 +6539,51 @@ class CoursePlanApp {
                   <!-- Hidden input for form serialization -->
                   <input type="hidden" id="cp-shared-faculty-name" value="${this.escapeHtml(plan.shared_faculty_name || '')}" />
 
-                  <!-- Add Co-Faculty Row -->
-                  <div class="flex items-center gap-2 flex-col sm:flex-row">
-                    <select 
-                      id="cp-add-shared-faculty-select" 
-                      class="w-full flex-1 text-xs px-3 py-2 border-2 border-indigo-400 bg-white rounded-xl font-bold text-slate-900 focus:border-indigo-600 focus:outline-none cursor-pointer"
-                    >
-                      <option value="">-- Choose Co-Faculty to Add (One or More) --</option>
-                      ${deptFaculty.length > 0 ? `
-                        <optgroup label="Faculty from ${this.escapeHtml(curDept)}">
-                          ${deptFacultyOptions}
-                        </optgroup>
-                      ` : ''}
-                      ${otherDeptGroups ? `
-                        <optgroup label="Other Academic Departments">
-                          ${otherDeptGroups}
-                        </optgroup>
-                      ` : ''}
-                    </select>
-                    <button 
-                      type="button" 
-                      onclick="coursePlanApp.addSharedFacultyFromSelect()"
-                      class="w-full sm:w-auto px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 shrink-0 shadow-sm cursor-pointer transition active:scale-95"
-                    >
-                      <i data-lucide="plus-circle" class="w-4 h-4"></i>
-                      <span>+ Add Co-Faculty</span>
-                    </button>
+                  <!-- Add Co-Faculty Row (Scoped to their department with optional department filter) -->
+                  <div class="space-y-2">
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                      <div class="w-full sm:w-5/12">
+                        <label class="block text-[10.5px] font-bold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">
+                          <i data-lucide="building-2" class="w-3 h-3 text-indigo-600"></i>
+                          <span>Department:</span>
+                        </label>
+                        <select 
+                          id="cp-shared-faculty-dept" 
+                          onchange="coursePlanApp.onSharedFacultyDeptChange(this.value)" 
+                          class="w-full text-xs px-3 py-2 border-2 border-slate-200 bg-slate-50 rounded-xl font-bold text-slate-900 focus:border-indigo-600 focus:bg-white focus:outline-none cursor-pointer transition"
+                          title="Department for Co-Faculty"
+                        >
+                          <option value="${this.escapeHtml(curDept)}" selected>${this.escapeHtml(curDept)} (Current Dept)</option>
+                          ${this.departments.filter(d => d.name.toLowerCase() !== curDept.toLowerCase()).map(d => `
+                            <option value="${this.escapeHtml(d.name)}">${this.escapeHtml(d.name)}</option>
+                          `).join('')}
+                        </select>
+                      </div>
+
+                      <div class="w-full sm:flex-1">
+                        <label class="block text-[10.5px] font-bold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">
+                          <i data-lucide="user" class="w-3 h-3 text-indigo-600"></i>
+                          <span>Faculty Member:</span>
+                        </label>
+                        <div class="flex items-center gap-2">
+                          <select 
+                            id="cp-add-shared-faculty-select" 
+                            class="w-full flex-1 text-xs px-3 py-2 border-2 border-indigo-400 bg-white rounded-xl font-bold text-slate-900 focus:border-indigo-600 focus:outline-none cursor-pointer transition shadow-2xs"
+                          >
+                            <option value="">-- Choose Co-Faculty from ${this.escapeHtml(curDept)} --</option>
+                            ${deptFacultyOptions}
+                          </select>
+                          <button 
+                            type="button" 
+                            onclick="coursePlanApp.addSharedFacultyFromSelect()"
+                            class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 shrink-0 shadow-sm cursor-pointer transition active:scale-95"
+                          >
+                            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                            <span>+ Add</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   <p class="text-[10.5px] text-slate-500 italic flex items-center gap-1">
