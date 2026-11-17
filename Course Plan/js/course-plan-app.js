@@ -2875,70 +2875,25 @@ class CoursePlanApp {
           <!-- Institutional Two-Column Academic Card -->
           <div class="bg-white rounded-3xl shadow-2xl shadow-indigo-950/15 border border-slate-200/90 overflow-hidden grid grid-cols-1 md:grid-cols-12">
             
-            <!-- Left Academic Pillar / Heritage Panel (Desktop 5 cols) -->
-            <div class="md:col-span-5 bg-gradient-to-br from-slate-900 via-indigo-950 to-blue-950 text-white p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden">
-              <!-- Decorative subtle background accents -->
-              <div class="absolute -top-16 -left-16 w-48 h-48 rounded-full bg-indigo-500/10 blur-2xl pointer-events-none"></div>
-              <div class="absolute -bottom-16 -right-16 w-48 h-48 rounded-full bg-amber-500/10 blur-2xl pointer-events-none"></div>
-
-              <div class="space-y-6 relative z-10">
-                <!-- College Crest Header -->
-                <div class="flex items-center gap-3">
-                  <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/10 backdrop-blur-md p-2 border border-white/20 flex items-center justify-center shadow-lg shrink-0">
-                    <img 
-                      src="sjc-logo.png" 
-                      alt="St. Joseph's College Crest" 
-                      class="h-full w-auto object-contain drop-shadow" 
-                    />
-                  </div>
-                  <div>
-                    <div class="text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-amber-300">Estd. 1844</div>
-                    <h2 class="text-base sm:text-lg font-black tracking-tight text-white leading-tight">
-                      St. Joseph’s College
-                    </h2>
-                    <span class="text-[11px] font-bold text-indigo-200 uppercase tracking-wider block">
-                      (Autonomous)
-                    </span>
-                  </div>
-                </div>
-
-                <!-- Academic Credentials & Accreditations -->
-                <div class="space-y-2.5 pt-2 border-t border-white/10 text-xs">
-                  <div class="flex items-center gap-2 text-slate-200 font-medium">
-                    <span class="w-5 h-5 rounded-lg bg-white/10 flex items-center justify-center text-amber-300 shrink-0 text-[11px]">🏛️</span>
-                    <span class="text-[11.5px]">Special Heritage Status • UGC</span>
-                  </div>
-                  <div class="flex items-center gap-2 text-slate-200 font-medium">
-                    <span class="w-5 h-5 rounded-lg bg-white/10 flex items-center justify-center text-amber-300 shrink-0 text-[11px]">⭐</span>
-                    <span class="text-[11.5px]">NAAC Accredited A++ Grade (Cycle IV)</span>
-                  </div>
-                  <div class="flex items-center gap-2 text-slate-200 font-medium">
-                    <span class="w-5 h-5 rounded-lg bg-white/10 flex items-center justify-center text-amber-300 shrink-0 text-[11px]">📍</span>
-                    <span class="text-[11.5px]">Tiruchirappalli – 620 002, Tamil Nadu</span>
-                  </div>
-                </div>
-
-                <!-- IQAC Module Feature Card -->
-                <div class="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm space-y-1.5">
-                  <div class="flex items-center gap-1.5 text-amber-300 text-[11px] font-black uppercase tracking-wider">
-                    <i data-lucide="award" class="w-3.5 h-3.5"></i>
-                    <span>IQAC Quality Assurance</span>
-                  </div>
-                  <h3 class="text-xs font-bold text-white leading-snug">
-                    Outcome-Based Education (OBE) Course Plan System
-                  </h3>
-                  <p class="text-[11px] text-indigo-200 font-medium leading-relaxed">
-                    Standardized lesson planning, LOCF syllabus alignment, unit-wise Bloom's mapping &amp; HOD review.
-                  </p>
-                </div>
-              </div>
-
-              <!-- Footer Motto & Session info -->
-              <div class="pt-6 mt-6 border-t border-white/10 relative z-10 flex items-center justify-between text-[11px] text-indigo-200 font-medium">
-                <span class="italic font-serif">Pro Deo et Patria</span>
-                <span class="px-2.5 py-0.5 rounded-full bg-amber-400 text-indigo-950 font-black text-[10px] uppercase tracking-wider">
-                  Even Sem 2026–27
+            <!-- Left Column: College Campus Heritage Image (college-bg) -->
+            <div class="md:col-span-5 relative overflow-hidden min-h-[240px] sm:min-h-[280px] md:min-h-full bg-slate-900 flex flex-col justify-end">
+              <img 
+                src="college-bg.jpg" 
+                alt="St. Joseph's College (Autonomous)" 
+                class="absolute inset-0 w-full h-full object-cover object-center" 
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/10 pointer-events-none"></div>
+              
+              <div class="relative z-10 p-5 sm:p-6 text-white pointer-events-none">
+                <span class="inline-block px-2.5 py-0.5 rounded-full bg-black/50 backdrop-blur-md border border-white/20 text-[10px] font-black uppercase tracking-widest text-amber-300 mb-1">
+                  Estd. 1844
                 </span>
+                <h3 class="text-base sm:text-lg font-black tracking-tight text-white leading-tight drop-shadow">
+                  St. Joseph’s College
+                </h3>
+                <p class="text-[11px] font-medium text-slate-200 drop-shadow">
+                  Autonomous • Tiruchirappalli
+                </p>
               </div>
             </div>
 
