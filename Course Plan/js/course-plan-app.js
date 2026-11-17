@@ -2869,150 +2869,202 @@ class CoursePlanApp {
 
   // ================= 0. AUTHENTICATION & LOGIN VIEW (UNIFIED SINGLE-DOOR) =================
   renderLoginHtml() {
-    const deptObj = this.departments.find(d => d.name === (this.selectedLoginDept || this.selectedDept)) || this.departments[0] || { name: '', faculty: [] };
-    const facultyList = deptObj.faculty || [];
-    const currentDeptName = deptObj.name;
-    const currentFacName = this.selectedLoginFaculty || (facultyList.length > 0 ? (typeof facultyList[0] === 'string' ? facultyList[0] : facultyList[0].name) : '');
-
     return `
-      <div class="min-h-[85vh] flex items-center justify-center py-12 px-4 animate-fadeIn">
-        <div class="w-full max-w-lg">
-          <!-- Institutional Card Container -->
-          <div class="bg-white rounded-3xl shadow-2xl shadow-indigo-900/10 border border-slate-200/90 overflow-hidden relative">
-            <!-- Top Gradient Ribbon Accent -->
-            <div class="h-2.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600"></div>
+      <div class="min-h-[85vh] flex items-center justify-center py-8 sm:py-12 px-3 sm:px-6 animate-fadeIn">
+        <div class="w-full max-w-4xl">
+          <!-- Institutional Two-Column Academic Card -->
+          <div class="bg-white rounded-3xl shadow-2xl shadow-indigo-950/15 border border-slate-200/90 overflow-hidden grid grid-cols-1 md:grid-cols-12">
+            
+            <!-- Left Academic Pillar / Heritage Panel (Desktop 5 cols) -->
+            <div class="md:col-span-5 bg-gradient-to-br from-slate-900 via-indigo-950 to-blue-950 text-white p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden">
+              <!-- Decorative subtle background accents -->
+              <div class="absolute -top-16 -left-16 w-48 h-48 rounded-full bg-indigo-500/10 blur-2xl pointer-events-none"></div>
+              <div class="absolute -bottom-16 -right-16 w-48 h-48 rounded-full bg-amber-500/10 blur-2xl pointer-events-none"></div>
 
-            <!-- College & IQAC Header -->
-            <div class="pt-8 pb-4 px-6 sm:px-8 text-center border-b border-slate-100 bg-gradient-to-b from-slate-50/70 to-white">
-              <div class="inline-flex items-center justify-center mb-3">
-                <img 
-                  src="sjc-logo.png" 
-                  alt="St. Joseph's College Emblem" 
-                  class="h-20 sm:h-24 w-auto object-contain drop-shadow-md" 
-                />
+              <div class="space-y-6 relative z-10">
+                <!-- College Crest Header -->
+                <div class="flex items-center gap-3">
+                  <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/10 backdrop-blur-md p-2 border border-white/20 flex items-center justify-center shadow-lg shrink-0">
+                    <img 
+                      src="sjc-logo.png" 
+                      alt="St. Joseph's College Crest" 
+                      class="h-full w-auto object-contain drop-shadow" 
+                    />
+                  </div>
+                  <div>
+                    <div class="text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-amber-300">Estd. 1844</div>
+                    <h2 class="text-base sm:text-lg font-black tracking-tight text-white leading-tight">
+                      St. Joseph’s College
+                    </h2>
+                    <span class="text-[11px] font-bold text-indigo-200 uppercase tracking-wider block">
+                      (Autonomous)
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Academic Credentials & Accreditations -->
+                <div class="space-y-2.5 pt-2 border-t border-white/10 text-xs">
+                  <div class="flex items-center gap-2 text-slate-200 font-medium">
+                    <span class="w-5 h-5 rounded-lg bg-white/10 flex items-center justify-center text-amber-300 shrink-0 text-[11px]">🏛️</span>
+                    <span class="text-[11.5px]">Special Heritage Status • UGC</span>
+                  </div>
+                  <div class="flex items-center gap-2 text-slate-200 font-medium">
+                    <span class="w-5 h-5 rounded-lg bg-white/10 flex items-center justify-center text-amber-300 shrink-0 text-[11px]">⭐</span>
+                    <span class="text-[11.5px]">NAAC Accredited A++ Grade (Cycle IV)</span>
+                  </div>
+                  <div class="flex items-center gap-2 text-slate-200 font-medium">
+                    <span class="w-5 h-5 rounded-lg bg-white/10 flex items-center justify-center text-amber-300 shrink-0 text-[11px]">📍</span>
+                    <span class="text-[11.5px]">Tiruchirappalli – 620 002, Tamil Nadu</span>
+                  </div>
+                </div>
+
+                <!-- IQAC Module Feature Card -->
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm space-y-1.5">
+                  <div class="flex items-center gap-1.5 text-amber-300 text-[11px] font-black uppercase tracking-wider">
+                    <i data-lucide="award" class="w-3.5 h-3.5"></i>
+                    <span>IQAC Quality Assurance</span>
+                  </div>
+                  <h3 class="text-xs font-bold text-white leading-snug">
+                    Outcome-Based Education (OBE) Course Plan System
+                  </h3>
+                  <p class="text-[11px] text-indigo-200 font-medium leading-relaxed">
+                    Standardized lesson planning, LOCF syllabus alignment, unit-wise Bloom's mapping &amp; HOD review.
+                  </p>
+                </div>
               </div>
-              <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200/60 text-indigo-800 text-[11px] font-extrabold uppercase tracking-wider mb-2">
-                <i data-lucide="award" class="w-3.5 h-3.5 text-indigo-600"></i>
-                <span>Internal Quality Assurance Cell (IQAC)</span>
-              </div>
-              <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-snug">
-                St. Joseph’s College <span class="text-xs font-bold text-slate-500 uppercase block sm:inline">(Autonomous)</span>
-              </h1>
-              <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mt-0.5">
-                Tiruchirappalli – 620 002 • NAAC A++ Grade (Cycle IV)
-              </p>
-              <div class="mt-3 inline-block py-1 px-3.5 bg-indigo-50/70 border border-indigo-100 rounded-xl text-xs font-black text-indigo-700 tracking-wide">
-                Course Plan Portal • Academic Year 2026–2027
+
+              <!-- Footer Motto & Session info -->
+              <div class="pt-6 mt-6 border-t border-white/10 relative z-10 flex items-center justify-between text-[11px] text-indigo-200 font-medium">
+                <span class="italic font-serif">Pro Deo et Patria</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-amber-400 text-indigo-950 font-black text-[10px] uppercase tracking-wider">
+                  Even Sem 2026–27
+                </span>
               </div>
             </div>
 
-            <!-- Unified Single-Door Login Form -->
-            <div class="p-6 sm:p-8 space-y-5">
-              ${this.systemSettings && this.systemSettings.maintenance_mode ? `
-                <!-- Development & Maintenance Mode Banner -->
-                <div class="p-4 bg-amber-50 border-2 border-amber-300 rounded-2xl flex items-start gap-3 text-amber-900 shadow-sm animate-pulse">
-                  <div class="p-2 bg-amber-200/80 rounded-xl text-amber-800 shrink-0 mt-0.5">
-                    <i data-lucide="wrench" class="w-5 h-5"></i>
+            <!-- Right Login Form Panel (Desktop 7 cols) -->
+            <div class="md:col-span-7 p-6 sm:p-10 flex flex-col justify-between bg-white">
+              <div class="space-y-6">
+                <!-- Header of Form -->
+                <div class="space-y-1">
+                  <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 text-[11px] font-black uppercase tracking-wider mb-2">
+                    <i data-lucide="shield-check" class="w-3.5 h-3.5 text-indigo-600"></i>
+                    <span>Portal Sign In</span>
                   </div>
-                  <div class="space-y-1">
-                    <div class="flex items-center gap-2">
-                      <span class="px-2 py-0.5 rounded-md bg-amber-200 text-amber-900 text-[10px] font-black uppercase tracking-wider">Maintenance Mode Active</span>
+                  <h2 class="text-2xl font-black text-slate-900 tracking-tight">
+                    Faculty &amp; Staff Login
+                  </h2>
+                  <p class="text-xs text-slate-500 font-medium leading-relaxed">
+                    Enter your staff code and ERP credentials to access your course plans, syllabus units, and departmental reviews.
+                  </p>
+                </div>
+
+                ${this.systemSettings && this.systemSettings.maintenance_mode ? `
+                  <!-- Development & Maintenance Mode Banner -->
+                  <div class="p-4 bg-amber-50 border-2 border-amber-300 rounded-2xl flex items-start gap-3 text-amber-900 shadow-sm animate-pulse">
+                    <div class="p-2 bg-amber-200/80 rounded-xl text-amber-800 shrink-0 mt-0.5">
+                      <i data-lucide="wrench" class="w-4 h-4"></i>
                     </div>
-                    <h4 class="text-xs font-black text-amber-900">Portal Under Maintenance / Development</h4>
-                    <p class="text-[11.5px] text-amber-800 font-medium">Faculty and HOD logins are temporarily suspended. Only IQAC Administrators may sign in below with administrator credentials.</p>
-                  </div>
-                </div>
-              ` : ''}
-              <div class="space-y-1">
-                <div class="flex items-center justify-between">
-                  <h2 class="text-lg font-black text-slate-900">Sign In to Portal</h2>
-                </div>
-                <p class="text-xs text-slate-500 font-medium">Enter your credentials below to access your courses, reviews, or administrative dashboard.</p>
-              </div>
-
-              <!-- Error Notification Box -->
-              <div id="login-error-msg" class="hidden p-3.5 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold rounded-2xl flex items-center gap-2 animate-shake">
-                <i data-lucide="alert-circle" class="w-4 h-4 shrink-0 text-rose-600"></i>
-                <span class="error-text">Authentication failed</span>
-              </div>
-
-              <form onsubmit="event.preventDefault(); coursePlanApp.login(event);" class="space-y-4">
-                <!-- Staff Code / Username Input -->
-                <div class="space-y-1.5">
-                  <label class="block text-xs font-bold text-slate-700 flex items-center justify-between">
-                    <span class="flex items-center gap-1.5">
-                      <i data-lucide="id-card" class="w-3.5 h-3.5 text-indigo-600"></i>
-                      <span>Staff Code or Username *</span>
-                    </span>
-                    <span class="text-[10.5px] font-semibold text-slate-400">Faculty ID / Staff Code</span>
-                  </label>
-                  <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                      <i data-lucide="user-check" class="w-4 h-4 text-indigo-500"></i>
+                    <div class="space-y-0.5">
+                      <h4 class="text-xs font-black uppercase tracking-wider text-amber-900">Maintenance Mode Active</h4>
+                      <p class="text-[11px] text-amber-800 font-medium">Logins are temporarily restricted to IQAC Administrators for system maintenance.</p>
                     </div>
-                    <input 
-                      type="text" 
-                      id="login-fac-id" 
-                      name="username"
-                      class="w-full text-xs sm:text-sm pl-10 pr-3.5 py-3 border-2 border-slate-200 rounded-2xl bg-white font-mono font-bold text-slate-900 uppercase focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 focus:outline-none transition"
-                      placeholder="e.g. 24CAI51"
-                      autocomplete="username"
-                      required
-                    />
                   </div>
+                ` : ''}
+
+                <!-- Error Notification Box -->
+                <div id="login-error-msg" class="hidden p-3.5 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold rounded-2xl flex items-center gap-2 animate-shake">
+                  <i data-lucide="alert-circle" class="w-4 h-4 shrink-0 text-rose-600"></i>
+                  <span class="error-text">Authentication failed</span>
                 </div>
 
-                <!-- Password Input -->
-                <div class="space-y-1.5">
-                  <div class="flex items-center justify-between">
-                    <label class="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                      <i data-lucide="lock" class="w-3.5 h-3.5 text-indigo-600"></i>
-                      <span>Password *</span>
+                <!-- Form -->
+                <form onsubmit="event.preventDefault(); coursePlanApp.login(event);" class="space-y-4">
+                  <!-- Staff Code Input -->
+                  <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-slate-700 flex items-center justify-between">
+                      <span class="flex items-center gap-1.5">
+                        <i data-lucide="id-card" class="w-3.5 h-3.5 text-indigo-600"></i>
+                        <span>Staff Code / Username *</span>
+                      </span>
+                      <span class="text-[10.5px] font-semibold text-slate-400">e.g. 24CAI51</span>
                     </label>
-                    <span class="text-[10.5px] font-semibold text-slate-400">ERP password</span>
-                  </div>
-                  <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                      <i data-lucide="shield-check" class="w-4 h-4 text-indigo-500"></i>
+                    <div class="relative">
+                      <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i data-lucide="user-check" class="w-4 h-4 text-indigo-500"></i>
+                      </div>
+                      <input 
+                        type="text" 
+                        id="login-fac-id" 
+                        name="username"
+                        class="w-full text-xs sm:text-sm pl-10 pr-3.5 py-3 border-2 border-slate-200 rounded-2xl bg-slate-50/50 hover:bg-white font-mono font-bold text-slate-900 uppercase focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 focus:outline-none transition"
+                        placeholder="e.g. 24CAI51"
+                        autocomplete="username"
+                        required
+                      />
                     </div>
-                    <input 
-                      type="password" 
-                      id="login-fac-password" 
-                      name="password"
-                      required 
-                      class="w-full text-xs sm:text-sm pl-10 pr-10 py-3 border-2 border-slate-200 rounded-2xl bg-white font-mono font-bold text-slate-900 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 focus:outline-none transition"
-                      placeholder="Enter your password"
-                      autocomplete="current-password"
-                    />
+                  </div>
+
+                  <!-- Password Input -->
+                  <div class="space-y-1.5">
+                    <div class="flex items-center justify-between">
+                      <label class="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                        <i data-lucide="lock" class="w-3.5 h-3.5 text-indigo-600"></i>
+                        <span>Password *</span>
+                      </label>
+                      <span class="text-[10.5px] font-semibold text-slate-400">ERP Password</span>
+                    </div>
+                    <div class="relative">
+                      <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-indigo-500"></i>
+                      </div>
+                      <input 
+                        type="password" 
+                        id="login-fac-password" 
+                        name="password"
+                        required 
+                        class="w-full text-xs sm:text-sm pl-10 pr-10 py-3 border-2 border-slate-200 rounded-2xl bg-slate-50/50 hover:bg-white font-mono font-bold text-slate-900 focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 focus:outline-none transition"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                      />
+                      <button 
+                        type="button" 
+                        onclick="coursePlanApp.togglePasswordVisibility('login-fac-password')" 
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                        title="Show/Hide Password"
+                      >
+                        <i data-lucide="eye" class="w-4 h-4"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Submit Button -->
+                  <div class="pt-2">
                     <button 
-                      type="button" 
-                      onclick="coursePlanApp.togglePasswordVisibility('login-fac-password')" 
-                      class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
-                      title="Show/Hide Password"
+                      type="submit" 
+                      id="login-submit-btn" 
+                      class="w-full py-3.5 bg-gradient-to-r from-indigo-700 via-blue-700 to-indigo-800 hover:from-indigo-800 hover:to-blue-800 text-white font-black text-sm rounded-2xl shadow-lg shadow-indigo-700/25 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
                     >
-                      <i data-lucide="eye" class="w-4 h-4"></i>
+                      <span>Sign In to Portal</span>
+                      <i data-lucide="arrow-right" class="w-4 h-4"></i>
                     </button>
                   </div>
-                </div>
+                </form>
+              </div>
 
-                <!-- Submit Button -->
-                <div class="pt-2">
-                  <button 
-                    type="submit" 
-                    id="login-submit-btn" 
-                    class="w-full py-3.5 bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-700 hover:from-indigo-700 hover:to-blue-700 text-white font-extrabold text-sm rounded-2xl shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
-                  >
-                    <span>Sign In to Portal</span>
-                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                  </button>
-                </div>
-              </form>
+              <!-- Assistance Footer Note -->
+              <div class="pt-6 mt-6 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 font-medium">
+                <span class="flex items-center gap-1">
+                  <i data-lucide="help-circle" class="w-3.5 h-3.5 text-slate-400"></i>
+                  <span>Need assistance? Contact IQAC</span>
+                </span>
+                <a href="manual.html" target="_blank" class="text-indigo-600 hover:text-indigo-800 font-bold transition flex items-center gap-1">
+                  <span>User Manual</span>
+                  <i data-lucide="external-link" class="w-3 h-3"></i>
+                </a>
+              </div>
             </div>
 
-            <!-- Footer Note -->
-            <div class="bg-slate-50/90 px-6 py-3.5 border-t border-slate-200 text-center text-[11px] text-slate-500 font-medium">
-              St. Joseph’s College (Autonomous), Tiruchirappalli • Internal Quality Assurance Cell (IQAC)
-            </div>
           </div>
         </div>
       </div>
