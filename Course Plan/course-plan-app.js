@@ -2905,9 +2905,6 @@ class CoursePlanApp {
               <div class="space-y-1">
                 <div class="flex items-center justify-between">
                   <h2 class="text-lg font-black text-slate-900">Sign In to Portal</h2>
-                  <span class="text-[11px] font-bold text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-100">
-                    Unified Portal Access
-                  </span>
                 </div>
                 <p class="text-xs text-slate-500 font-medium">Enter your credentials below to access your courses, reviews, or administrative dashboard.</p>
               </div>
@@ -2926,7 +2923,7 @@ class CoursePlanApp {
                       <i data-lucide="id-card" class="w-3.5 h-3.5 text-indigo-600"></i>
                       <span>Staff Code or Username *</span>
                     </span>
-                    <span class="text-[10.5px] font-semibold text-slate-400">Faculty ID or admin</span>
+                    <span class="text-[10.5px] font-semibold text-slate-400">Faculty ID / Staff Code</span>
                   </label>
                   <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -2937,7 +2934,7 @@ class CoursePlanApp {
                       id="login-fac-id" 
                       name="username"
                       class="w-full text-xs sm:text-sm pl-10 pr-3.5 py-3 border-2 border-slate-200 rounded-2xl bg-white font-mono font-bold text-slate-900 uppercase focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 focus:outline-none transition"
-                      placeholder="e.g. 24CAI51 or admin"
+                      placeholder="e.g. 24CAI51"
                       autocomplete="username"
                       required
                     />
@@ -2951,7 +2948,7 @@ class CoursePlanApp {
                       <i data-lucide="lock" class="w-3.5 h-3.5 text-indigo-600"></i>
                       <span>Password *</span>
                     </label>
-                    <span class="text-[10.5px] font-semibold text-slate-400">ERP or admin password</span>
+                    <span class="text-[10.5px] font-semibold text-slate-400">ERP password</span>
                   </div>
                   <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -2963,7 +2960,7 @@ class CoursePlanApp {
                       name="password"
                       required 
                       class="w-full text-xs sm:text-sm pl-10 pr-10 py-3 border-2 border-slate-200 rounded-2xl bg-white font-mono font-bold text-slate-900 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 focus:outline-none transition"
-                      placeholder="Enter your password (e.g. ERP password or admin123)"
+                      placeholder="Enter your password"
                       autocomplete="current-password"
                     />
                     <button 
@@ -2974,59 +2971,6 @@ class CoursePlanApp {
                     >
                       <i data-lucide="eye" class="w-4 h-4"></i>
                     </button>
-                  </div>
-                </div>
-
-                <!-- Toggle for Department / Name Dropdown Helper -->
-                <div class="pt-0.5">
-                  <button 
-                    type="button" 
-                    onclick="document.getElementById('fac-dept-dropdown-wrap').classList.toggle('hidden');" 
-                    class="text-[11.5px] font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1.5 cursor-pointer py-1"
-                  >
-                    <i data-lucide="list-filter" class="w-3.5 h-3.5"></i>
-                    <span>Or sign in by selecting Department & Faculty Name</span>
-                    <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400"></i>
-                  </button>
-                </div>
-
-                <!-- Department Dropdown Container (collapsible) -->
-                <div id="fac-dept-dropdown-wrap" class="hidden space-y-3 p-3.5 bg-slate-50/80 rounded-2xl border border-slate-200 transition-all">
-                  <!-- Department Dropdown -->
-                  <div class="space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                      <i data-lucide="building-2" class="w-3.5 h-3.5 text-indigo-600"></i>
-                      <span>Department</span>
-                    </label>
-                    <select 
-                      id="login-fac-dept" 
-                      onchange="coursePlanApp.onLoginDeptChange(this.value)" 
-                      class="w-full text-xs sm:text-sm px-3 py-2.5 border border-slate-300 rounded-xl bg-white font-bold text-slate-900 focus:border-indigo-600 focus:outline-none transition cursor-pointer"
-                    >
-                      ${this.departments.map(d => `
-                        <option value="${this.escapeHtml(d.name)}" ${d.name === currentDeptName ? 'selected' : ''}>
-                          ${this.escapeHtml(d.name)}
-                        </option>
-                      `).join('')}
-                    </select>
-                  </div>
-
-                  <!-- Faculty Name Dropdown -->
-                  <div class="space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                      <i data-lucide="user" class="w-3.5 h-3.5 text-indigo-600"></i>
-                      <span>Faculty Name</span>
-                    </label>
-                    <select 
-                      id="login-fac-name" 
-                      onchange="coursePlanApp.onLoginFacultyChange(this.value)" 
-                      class="w-full text-xs sm:text-sm px-3 py-2.5 border border-slate-300 bg-white rounded-xl font-bold text-slate-900 focus:border-indigo-600 focus:outline-none transition cursor-pointer"
-                    >
-                      ${facultyList.map(f => {
-                        const name = typeof f === 'string' ? f : f.name;
-                        return `<option value="${this.escapeHtml(name)}" ${name === currentFacName ? 'selected' : ''}>${this.escapeHtml(name)}</option>`;
-                      }).join('')}
-                    </select>
                   </div>
                 </div>
 
@@ -3042,27 +2986,6 @@ class CoursePlanApp {
                   </button>
                 </div>
               </form>
-
-              <!-- Quick Access Hints Box -->
-              <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/80 text-[11px] text-slate-600 space-y-1.5">
-                <div class="font-extrabold text-slate-800 flex items-center gap-1.5">
-                  <i data-lucide="info" class="w-3.5 h-3.5 text-indigo-600"></i>
-                  <span>Quick Access Guide:</span>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[10.5px]">
-                  <div class="flex items-start gap-1">
-                    <span class="text-indigo-600 font-bold">•</span>
-                    <span><strong>Faculty & HOD:</strong> Staff Code (e.g. <code class="bg-white px-1 py-0.5 rounded border border-slate-200 font-mono">24CAI51</code>)</span>
-                  </div>
-                  <div class="flex items-start gap-1">
-                    <span class="text-indigo-600 font-bold">•</span>
-                    <span><strong>IQAC Admin:</strong> Username <code class="bg-white px-1 py-0.5 rounded border border-slate-200 font-mono">admin</code></span>
-                  </div>
-                </div>
-                <div class="text-[10px] text-slate-500 pt-0.5 border-t border-slate-200/60">
-                  🏛️ Heads of Department (HOD) are automatically detected and granted departmental review access.
-                </div>
-              </div>
             </div>
 
             <!-- Footer Note -->
@@ -3124,7 +3047,7 @@ class CoursePlanApp {
 
     if (!loginId && (!dept || !fac)) {
       if (errEl) {
-        errEl.querySelector('.error-text').textContent = 'Please enter your Staff Code (e.g. 24CAI51), Admin username (admin), or select Department & Faculty Name.';
+        errEl.querySelector('.error-text').textContent = 'Please enter your Staff Code.';
         errEl.classList.remove('hidden');
       }
       return;
