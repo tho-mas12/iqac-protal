@@ -1465,15 +1465,22 @@ class CoursePlanApp {
       return;
     }
 
-    const course = (this.syllabusCourses || []).find(c => c.course_code && c.course_code.toLowerCase().trim() === curCode.toLowerCase().trim()) || {
-      course_code: curCode,
-      course_title: this.activePlan.course_title || 'Selected Course',
-      department: this.activePlan.department_name || '',
-      semester: this.activePlan.semester || '',
-      credits: this.activePlan.credits || '',
-      hours: this.activePlan.teaching_hours || '',
-      cos: this.activePlan.course_outcomes || []
-    };
+    let course = (this.syllabusCourses || []).find(c => c.course_code && c.course_code.toLowerCase().trim() === curCode.toLowerCase().trim());
+    if (!course) {
+      const clean = curCode.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+      course = (this.syllabusCourses || []).find(c => c.course_code && c.course_code.replace(/[^a-zA-Z0-9]/g, '').toLowerCase() === clean);
+    }
+    if (!course) {
+      course = {
+        course_code: curCode,
+        course_title: this.activePlan.course_title || 'Selected Course',
+        department: this.activePlan.department_name || '',
+        semester: this.activePlan.semester || '',
+        credits: this.activePlan.credits || '',
+        hours: this.activePlan.teaching_hours || '',
+        cos: this.activePlan.course_outcomes || []
+      };
+    }
 
     document.getElementById('course-syllabus-modal')?.remove();
 
@@ -1489,8 +1496,12 @@ class CoursePlanApp {
       { unit: 'Unit V', title: 'Emerging Advances & Capstone Implementation', hours: '12 Hours', topics: 'Contemporary advances, security considerations, scalability, comprehensive project implementation, practical trends.' }
     ];
 
+    const pdfFile = course.pdf_file || '';
+    const pdfPage = course.pdf_page || 1;
+    const pdfUrl = pdfFile ? `/course-plan/syllabus_docs/${encodeURIComponent(pdfFile)}#page=${pdfPage}&view=FitH` : '';
+
     modal.innerHTML = `
-      <div class="bg-white rounded-3xl max-w-5xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden" onclick="event.stopPropagation()">
+      <div class="bg-white rounded-3xl max-w-5xl w-full max-h-[94vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden" onclick="event.stopPropagation()">
         
         <!-- Header -->
         <div class="p-4 sm:p-5 bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-900 text-white shrink-0">
@@ -1514,159 +1525,261 @@ class CoursePlanApp {
                 ${this.escapeHtml(course.course_title || 'Course Syllabus')}
               </h3>
               <p class="text-xs text-indigo-200 mt-0.5">
-                ${this.escapeHtml(course.department || this.selectedDept)} • Select Unit Topics as FROM – TO for your Detailed Teaching Plan
+                ${this.escapeHtml(course.department || this.selectedDept)} • Official College Syllabus & Teaching Plan Reference
               </p>
             </div>
             <button 
               type="button" 
               onclick="document.getElementById('course-syllabus-modal').remove()" 
               class="text-indigo-200 hover:text-white p-2 rounded-xl hover:bg-white/10 transition cursor-pointer shrink-0"
+              title="Close modal"
             >
               <i data-lucide="x" class="w-5 h-5"></i>
             </button>
           </div>
+
+          <!-- View Switcher Tabs & Direct PDF Action -->
+          <div class="flex flex-wrap items-center gap-2 mt-4 pt-3 border-t border-white/15">
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchSyllabusModalTab('structured')" 
+              id="modal-tab-btn-structured" 
+              class="px-3.5 py-1.5 rounded-xl font-bold text-xs bg-white text-indigo-950 shadow-sm transition cursor-pointer flex items-center gap-1.5"
+            >
+              <i data-lucide="list-checks" class="w-3.5 h-3.5 text-indigo-600"></i>
+              <span>Unit Topics (FROM – TO Selection)</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchSyllabusModalTab('official_doc')" 
+              id="modal-tab-btn-official_doc" 
+              class="px-3.5 py-1.5 rounded-xl font-bold text-xs bg-white/20 hover:bg-white/30 text-white transition cursor-pointer flex items-center gap-1.5"
+            >
+              <i data-lucide="file-text" class="w-3.5 h-3.5 text-amber-300"></i>
+              <span>Official Syllabus Document &amp; PDF View</span>
+            </button>
+
+            ${pdfFile ? `
+              <a 
+                href="${pdfUrl}" 
+                target="_blank" 
+                class="sm:ml-auto px-3.5 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-indigo-950 font-black text-xs inline-flex items-center gap-1.5 shadow-sm transition"
+              >
+                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                <span>Open Handbook PDF (Page ${pdfPage}) ↗</span>
+              </a>
+            ` : ''}
+          </div>
         </div>
 
-        <!-- Scrollable Content: Unit-wise Content with FROM - TO Selector -->
+        <!-- Scrollable Content -->
         <div class="p-4 sm:p-6 overflow-y-auto space-y-5 flex-1 text-slate-800 text-xs">
           
-          <div class="bg-indigo-50 border border-indigo-200 rounded-2xl p-3 flex items-center gap-3 text-indigo-900">
-            <div class="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
-              <i data-lucide="info" class="w-4 h-4"></i>
+          <!-- TAB 1: Structured Units with FROM - TO Selector -->
+          <div id="modal-syllabus-tab-structured" class="space-y-5">
+            <div class="bg-indigo-50 border border-indigo-200 rounded-2xl p-3 flex items-center gap-3 text-indigo-900">
+              <div class="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
+                <i data-lucide="info" class="w-4 h-4"></i>
+              </div>
+              <div class="text-xs">
+                <strong class="font-bold">How to allocate topics:</strong> Under each unit below, select the start portion (<strong>FROM</strong>) and end portion (<strong>TO</strong>), then click <strong>"Insert (FROM – TO) into Teaching Plan"</strong> to instantly populate your Detailed Teaching Plan!
+              </div>
             </div>
-            <div class="text-xs">
-              <strong class="font-bold">How to allocate topics:</strong> Under each unit below, select the start portion (<strong>FROM</strong>) and end portion (<strong>TO</strong>), then click <strong>"Insert (FROM – TO) into Teaching Plan"</strong> to instantly populate your Detailed Teaching Plan!
-            </div>
-          </div>
 
-          <!-- Units List -->
-          <div class="space-y-4">
-            ${units.map((u, uIdx) => {
-      const rawTopics = (u.topics || '').trim();
-      const phrases = rawTopics.split(/[,;\n•–—]+/).map(p => p.trim()).filter(p => p.length > 2);
-      const defaultFrom = phrases[0] || rawTopics.slice(0, 45);
-      const defaultTo = phrases[phrases.length - 1] || rawTopics.slice(-45);
+            <!-- Units List -->
+            <div class="space-y-4">
+              ${units.map((u, uIdx) => {
+                const rawTopics = (u.topics || '').trim();
+                const phrases = rawTopics.split(/[,;\n•–—]+/).map(p => p.trim()).filter(p => p.length > 2);
+                const defaultFrom = phrases[0] || rawTopics.slice(0, 45);
+                const defaultTo = phrases[phrases.length - 1] || rawTopics.slice(-45);
 
-      return `
-                <div class="p-4 rounded-2xl bg-white border border-slate-200 hover:border-indigo-300 hover:shadow-md transition space-y-3" id="syllabus-unit-card-${uIdx}">
-                  
-                  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
-                    <div class="flex items-center gap-2">
-                      <span class="px-2.5 py-1 rounded-lg bg-indigo-900 text-white font-black text-xs shadow-2xs">
-                        ${this.escapeHtml(u.unit)}
-                      </span>
-                      <strong class="text-xs font-black text-slate-900">
-                        ${this.escapeHtml(u.title || '')}
-                      </strong>
-                      <span class="text-[10.5px] text-indigo-900 font-bold bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded">
-                        ${this.escapeHtml(u.hours || '12 Hours')}
-                      </span>
-                    </div>
-
-                    <button 
-                      type="button" 
-                      onclick="coursePlanApp.copySyllabusText('${this.escapeHtml(rawTopics).replace(/'/g, "\\'")}', this)" 
-                      class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-[11px] transition flex items-center gap-1 cursor-pointer self-start sm:self-auto"
-                      title="Copy full unit topics"
-                    >
-                      <i data-lucide="copy" class="w-3 h-3"></i> Copy Text
-                    </button>
-                  </div>
-
-                  <!-- Full Topic Text Display -->
-                  <div class="p-3 bg-slate-50/80 rounded-xl border border-slate-200/80 text-slate-700 leading-relaxed font-sans text-xs">
-                    ${this.escapeHtml(rawTopics)}
-                  </div>
-
-                  <!-- Interactive FROM – TO Selection Box -->
-                  <div class="p-3.5 bg-indigo-50/50 rounded-xl border-2 border-indigo-200 space-y-3">
-                    <div class="flex items-center justify-between">
-                      <span class="font-black text-indigo-950 text-xs flex items-center gap-1.5 uppercase tracking-wide">
-                        <i data-lucide="sliders" class="w-3.5 h-3.5 text-indigo-600"></i>
-                        <span>Select Topic Range (FROM – TO) for ${this.escapeHtml(u.unit)}</span>
-                      </span>
-                      <span class="text-[10px] text-slate-500 font-medium">Click any topic phrase below to set as FROM or TO</span>
-                    </div>
-
-                    <!-- Topic Phrases Pills (Clickable to Set FROM or TO) -->
-                    ${phrases.length > 0 ? `
-                      <div class="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto p-1.5 bg-white rounded-lg border border-slate-200">
-                        ${phrases.map((phrase) => `
-                          <div class="inline-flex items-center gap-1 px-2 py-1 rounded-md text-[10.5px] bg-slate-100 border border-slate-200 hover:bg-indigo-50 hover:border-indigo-300 transition">
-                            <span class="font-medium text-slate-800">${this.escapeHtml(phrase)}</span>
-                            <button 
-                              type="button" 
-                              onclick="coursePlanApp.setSyllabusFromTo('${uIdx}', 'from', '${this.escapeHtml(phrase).replace(/'/g, "\\'")}')" 
-                              class="ml-1 px-1 py-0.5 rounded text-[9px] font-black bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer"
-                              title="Set as FROM topic"
-                            >
-                              FROM
-                            </button>
-                            <button 
-                              type="button" 
-                              onclick="coursePlanApp.setSyllabusFromTo('${uIdx}', 'to', '${this.escapeHtml(phrase).replace(/'/g, "\\'")}')" 
-                              class="px-1 py-0.5 rounded text-[9px] font-black bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer"
-                              title="Set as TO topic"
-                            >
-                              TO
-                            </button>
-                          </div>
-                        `).join('')}
+                return `
+                  <div class="p-4 rounded-2xl bg-white border border-slate-200 hover:border-indigo-300 hover:shadow-md transition space-y-3" id="syllabus-unit-card-${uIdx}">
+                    
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
+                      <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-1 rounded-lg bg-indigo-900 text-white font-black text-xs shadow-2xs">
+                          ${this.escapeHtml(u.unit)}
+                        </span>
+                        <strong class="text-xs font-black text-slate-900">
+                          ${this.escapeHtml(u.title || '')}
+                        </strong>
+                        <span class="text-[10.5px] text-indigo-900 font-bold bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded">
+                          ${this.escapeHtml(u.hours || '12 Hours')}
+                        </span>
                       </div>
-                    ` : ''}
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                      <div>
-                        <label class="block font-black text-indigo-950 text-[11px] mb-1">
-                          FROM (Starting Topic Portion) *
-                        </label>
-                        <input 
-                          type="text" 
-                          id="syllabus-from-${uIdx}" 
-                          value="${this.escapeHtml(defaultFrom)}" 
-                          class="w-full text-xs px-2.5 py-1.5 border border-indigo-300 rounded-lg bg-white font-medium focus:border-indigo-600 focus:outline-none"
-                          placeholder="Select or enter start topic..."
-                        />
-                      </div>
-                      <div>
-                        <label class="block font-black text-indigo-950 text-[11px] mb-1">
-                          TO (Ending Topic Portion) *
-                        </label>
-                        <input 
-                          type="text" 
-                          id="syllabus-to-${uIdx}" 
-                          value="${this.escapeHtml(defaultTo)}" 
-                          class="w-full text-xs px-2.5 py-1.5 border border-indigo-300 rounded-lg bg-white font-medium focus:border-indigo-600 focus:outline-none"
-                          placeholder="Select or enter end topic..."
-                        />
-                      </div>
-                    </div>
-
-                    <div class="flex items-center justify-between pt-1">
-                      <div class="text-[11px] text-slate-500 font-medium">
-                        Inserts into Detailed Teaching Plan under <strong>${this.escapeHtml(u.unit)}</strong>
-                      </div>
                       <button 
                         type="button" 
-                        onclick="coursePlanApp.applyTopicsFromModal('${this.escapeHtml(u.unit)}', '${uIdx}')" 
-                        class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition active:scale-95 cursor-pointer"
+                        onclick="coursePlanApp.copySyllabusText('${this.escapeHtml(rawTopics).replace(/'/g, "\\'")}', this)" 
+                        class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-[11px] transition flex items-center gap-1 cursor-pointer self-start sm:self-auto"
+                        title="Copy full unit topics"
                       >
-                        <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
-                        <span>Insert (FROM – TO) into Teaching Plan</span>
+                        <i data-lucide="copy" class="w-3 h-3"></i> Copy Text
                       </button>
                     </div>
 
-                  </div>
+                    <!-- Full Topic Text Display -->
+                    <div class="p-3 bg-slate-50/80 rounded-xl border border-slate-200/80 text-slate-700 leading-relaxed font-sans text-xs">
+                      ${this.escapeHtml(rawTopics)}
+                    </div>
 
+                    <!-- Interactive FROM – TO Selection Box -->
+                    <div class="p-3.5 bg-indigo-50/50 rounded-xl border-2 border-indigo-200 space-y-3">
+                      <div class="flex items-center justify-between">
+                        <span class="font-black text-indigo-950 text-xs flex items-center gap-1.5 uppercase tracking-wide">
+                          <i data-lucide="sliders" class="w-3.5 h-3.5 text-indigo-600"></i>
+                          <span>Select Topic Range (FROM – TO) for ${this.escapeHtml(u.unit)}</span>
+                        </span>
+                        <span class="text-[10px] text-slate-500 font-medium">Click any topic phrase below to set as FROM or TO</span>
+                      </div>
+
+                      <!-- Topic Phrases Pills (Clickable to Set FROM or TO) -->
+                      ${phrases.length > 0 ? `
+                        <div class="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto p-1.5 bg-white rounded-lg border border-slate-200">
+                          ${phrases.map((phrase) => `
+                            <div class="inline-flex items-center gap-1 px-2 py-1 rounded-md text-[10.5px] bg-slate-100 border border-slate-200 hover:bg-indigo-50 hover:border-indigo-300 transition">
+                              <span class="font-medium text-slate-800">${this.escapeHtml(phrase)}</span>
+                              <button 
+                                type="button" 
+                                onclick="coursePlanApp.setSyllabusFromTo('${uIdx}', 'from', '${this.escapeHtml(phrase).replace(/'/g, "\\'")}')" 
+                                class="ml-1 px-1 py-0.5 rounded text-[9px] font-black bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer"
+                                title="Set as FROM topic"
+                              >
+                                FROM
+                              </button>
+                              <button 
+                                type="button" 
+                                onclick="coursePlanApp.setSyllabusFromTo('${uIdx}', 'to', '${this.escapeHtml(phrase).replace(/'/g, "\\'")}')" 
+                                class="px-1 py-0.5 rounded text-[9px] font-black bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer"
+                                title="Set as TO topic"
+                              >
+                                TO
+                              </button>
+                            </div>
+                          `).join('')}
+                        </div>
+                      ` : ''}
+
+                      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                        <div>
+                          <label class="block font-black text-indigo-950 text-[11px] mb-1">
+                            FROM (Starting Topic Portion) *
+                          </label>
+                          <input 
+                            type="text" 
+                            id="syllabus-from-${uIdx}" 
+                            value="${this.escapeHtml(defaultFrom)}" 
+                            class="w-full text-xs px-2.5 py-1.5 border border-indigo-300 rounded-lg bg-white font-medium focus:border-indigo-600 focus:outline-none"
+                            placeholder="Select or enter start topic..."
+                          />
+                        </div>
+                        <div>
+                          <label class="block font-black text-indigo-950 text-[11px] mb-1">
+                            TO (Ending Topic Portion) *
+                          </label>
+                          <input 
+                            type="text" 
+                            id="syllabus-to-${uIdx}" 
+                            value="${this.escapeHtml(defaultTo)}" 
+                            class="w-full text-xs px-2.5 py-1.5 border border-indigo-300 rounded-lg bg-white font-medium focus:border-indigo-600 focus:outline-none"
+                            placeholder="Select or enter end topic..."
+                          />
+                        </div>
+                      </div>
+
+                      <div class="flex items-center justify-between pt-1">
+                        <div class="text-[11px] text-slate-500 font-medium">
+                          Inserts into Detailed Teaching Plan under <strong>${this.escapeHtml(u.unit)}</strong>
+                        </div>
+                        <button 
+                          type="button" 
+                          onclick="coursePlanApp.applyTopicsFromModal('${this.escapeHtml(u.unit)}', '${uIdx}')" 
+                          class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition active:scale-95 cursor-pointer"
+                        >
+                          <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+                          <span>Insert (FROM – TO) into Teaching Plan</span>
+                        </button>
+                      </div>
+
+                    </div>
+
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- TAB 2: Official Syllabus Document & PDF View -->
+          <div id="modal-syllabus-tab-official_doc" class="hidden space-y-6">
+            <div class="bg-indigo-900 text-white p-4 rounded-2xl flex flex-wrap items-center justify-between gap-3 shadow-md">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-amber-400 text-indigo-950 flex items-center justify-center font-bold shadow-sm">
+                  <i data-lucide="file-text" class="w-5 h-5"></i>
                 </div>
-              `;
-    }).join('')}
+                <div>
+                  <h4 class="font-black text-sm">Official College LOCF Syllabus Document</h4>
+                  <p class="text-[11px] text-indigo-200">
+                    Source: ${this.escapeHtml(pdfFile || 'College Curriculum Handbook')} • Page ${pdfPage}
+                  </p>
+                </div>
+              </div>
+
+              ${pdfFile ? `
+                <div class="flex items-center gap-2">
+                  <a 
+                    href="${pdfUrl}" 
+                    target="_blank" 
+                    class="px-4 py-2 rounded-xl bg-white text-indigo-900 font-black text-xs hover:bg-indigo-50 transition inline-flex items-center gap-1.5 shadow-sm cursor-pointer"
+                  >
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Open Fullscreen PDF ↗
+                  </a>
+                  <a 
+                    href="/course-plan/syllabus_docs/${encodeURIComponent(pdfFile)}" 
+                    download="${this.escapeHtml(pdfFile)}" 
+                    class="px-3.5 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs transition inline-flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <i data-lucide="download" class="w-3.5 h-3.5"></i> Download PDF
+                  </a>
+                </div>
+              ` : ''}
+            </div>
+
+            <!-- Embedded PDF Preview -->
+            ${pdfFile ? `
+              <div class="space-y-2">
+                <div class="flex items-center justify-between text-xs font-bold text-slate-700 px-1">
+                  <span class="flex items-center gap-1.5">
+                    <i data-lucide="book-open" class="w-4 h-4 text-indigo-600"></i>
+                    <span>Embedded Official Syllabus Handbook Preview (Page ${pdfPage})</span>
+                  </span>
+                  <span class="text-slate-500 font-normal">Use built-in viewer controls or open in fullscreen</span>
+                </div>
+                <div class="w-full h-[640px] rounded-2xl overflow-hidden border-2 border-slate-300 bg-slate-100 shadow-inner">
+                  <iframe 
+                    src="${pdfUrl}" 
+                    class="w-full h-full border-0" 
+                    title="Official Syllabus PDF Preview"
+                  ></iframe>
+                </div>
+              </div>
+            ` : `
+              <div class="p-8 text-center bg-slate-50 rounded-2xl border-2 border-dashed border-slate-300 space-y-2">
+                <i data-lucide="file-question" class="w-10 h-10 text-slate-400 mx-auto"></i>
+                <h4 class="font-black text-sm text-slate-800">Direct PDF Document Not Linked for This Code</h4>
+                <p class="text-xs text-slate-500 max-w-md mx-auto">The structured syllabus units and topics are fully available in the <strong>Unit Topics (FROM – TO Selection)</strong> tab above.</p>
+              </div>
+            `}
           </div>
 
         </div>
 
         <!-- Footer -->
-        <div class="p-3 sm:p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-end">
+        <div class="p-3 sm:p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+          <div class="text-[11px] text-slate-500 font-medium">
+            ${pdfFile ? `📄 Linked to Official Handbook: <strong>${this.escapeHtml(pdfFile)}</strong> (Page ${pdfPage})` : ''}
+          </div>
           <button 
             type="button" 
             onclick="document.getElementById('course-syllabus-modal').remove()" 
