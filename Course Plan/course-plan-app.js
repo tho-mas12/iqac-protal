@@ -3288,11 +3288,16 @@ class CoursePlanApp {
 
             <button 
               type="button" 
-              onclick="coursePlanApp.navigateTo('/course-plan/new')" 
-              class="px-5 py-3 bg-amber-400 hover:bg-amber-300 text-indigo-950 font-black rounded-2xl text-xs sm:text-sm transition shadow-lg shadow-amber-400/20 flex items-center gap-2.5 cursor-pointer active:scale-95"
+              onclick="coursePlanApp.startNewCoursePlan()" 
+              class="px-5 py-3 ${this.systemSettings && !this.systemSettings.submissions_enabled ? 'bg-amber-400 hover:bg-amber-300 ring-2 ring-rose-400' : 'bg-amber-400 hover:bg-amber-300'} text-indigo-950 font-black rounded-2xl text-xs sm:text-sm transition shadow-lg shadow-amber-400/20 flex items-center gap-2.5 cursor-pointer active:scale-95"
             >
               <span class="w-6 h-6 rounded-full bg-indigo-950 text-amber-300 flex items-center justify-center font-black text-xs shrink-0 shadow-sm leading-none">1</span>
               <span>+ Create New Course Plan</span>
+              ${this.systemSettings && !this.systemSettings.submissions_enabled ? `
+                <span class="px-2 py-0.5 rounded-full bg-rose-600 text-white text-[9.5px] font-black uppercase tracking-wider shadow-xs flex items-center gap-1">
+                  <i data-lucide="lock" class="w-2.5 h-2.5"></i> Locked
+                </span>
+              ` : ''}
             </button>
             <button 
               type="button" 
@@ -3302,7 +3307,11 @@ class CoursePlanApp {
             >
               <span class="w-6 h-6 rounded-full ${hasPlannedCourses ? (tlEntered ? 'bg-white text-emerald-900' : 'bg-white text-indigo-900') : 'bg-slate-700 text-slate-400'} flex items-center justify-center font-black text-xs shrink-0 shadow-sm leading-none">2</span>
               <span>TL Practices, Assessment Component</span>
-              ${tlEntered ? `
+              ${this.systemSettings && !this.systemSettings.submissions_enabled ? `
+                <span class="px-2 py-0.5 rounded-full bg-rose-600 text-white text-[9.5px] font-black uppercase tracking-wider shadow-xs flex items-center gap-1">
+                  <i data-lucide="lock" class="w-2.5 h-2.5"></i> Locked
+                </span>
+              ` : (tlEntered ? `
                 <span class="px-2 py-0.5 rounded-full bg-emerald-500 text-white text-[10px] font-black tracking-wider flex items-center gap-1 shadow-xs">
                   <i data-lucide="check" class="w-3 h-3"></i> Submitted
                 </span>
@@ -3314,7 +3323,7 @@ class CoursePlanApp {
                 <span class="px-2 py-0.5 rounded-full bg-slate-700 text-amber-300/90 text-[10px] font-bold tracking-wider flex items-center gap-1 border border-amber-400/20">
                   <i data-lucide="lock" class="w-3 h-3"></i> Step 1 First
                 </span>
-              `)}
+              `))}
             </button>
             <button 
               type="button" 
@@ -3438,7 +3447,7 @@ class CoursePlanApp {
               </div>
               <button 
                 type="button" 
-                onclick="coursePlanApp.navigateTo('/course-plan/new')" 
+                onclick="coursePlanApp.startNewCoursePlan()" 
                 class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition shadow-md shadow-indigo-600/25 cursor-pointer"
               >
                 <i data-lucide="plus-circle" class="w-4 h-4"></i>
@@ -3526,12 +3535,15 @@ class CoursePlanApp {
                           ` : `
                             <button 
                               type="button" 
-                              onclick="coursePlanApp.navigateTo('/course-plan/edit?id=${p.id}')" 
+                              onclick="coursePlanApp.editCoursePlan(${p.id})" 
                               class="px-2.5 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs transition flex items-center gap-1 cursor-pointer"
                               title="Edit / Update Course Plan"
                             >
                               <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
                               <span>Edit</span>
+                              ${this.systemSettings && !this.systemSettings.submissions_enabled ? `
+                                <i data-lucide="lock" class="w-3 h-3 text-rose-500 ml-0.5" title="Submissions closed by admin"></i>
+                              ` : ''}
                             </button>
                             <button 
                               type="button" 
@@ -3624,6 +3636,22 @@ class CoursePlanApp {
 </style>
 
       <div class="space-y-6 animate-fadeIn w-full">
+        ${this.systemSettings && !this.systemSettings.submissions_enabled ? `
+          <!-- Submissions Closed Alert Banner -->
+          <div class="p-4 bg-rose-50 border-2 border-rose-300 rounded-2xl flex items-center justify-between gap-3 text-rose-900 shadow-sm animate-fadeIn">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600 shrink-0">
+                <i data-lucide="lock" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h4 class="text-xs font-black uppercase tracking-wider text-rose-900">Course Plan Submissions are Closed by IQAC Admin</h4>
+                <p class="text-[11.5px] font-medium text-rose-700">Course plan submissions have been temporarily disabled by the IQAC Administrator. Faculty members cannot submit new course plans until submissions are re-opened.</p>
+              </div>
+            </div>
+            <span class="px-3 py-1 bg-rose-200 text-rose-900 text-xs font-black rounded-xl shrink-0">Submissions Locked</span>
+          </div>
+        ` : ''}
+
         <!-- HOD Management Header -->
         <div class="bg-gradient-to-r from-amber-900 to-slate-900 text-white rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-5">
           <div class="space-y-1.5">
@@ -6110,6 +6138,33 @@ class CoursePlanApp {
           </div>
         </div>
 
+        ${this.systemSettings && !this.systemSettings.submissions_enabled ? `
+          <!-- Submissions Closed Alert Banner (Prominently displayed before start filling) -->
+          <div class="p-4 bg-rose-50 border-2 border-rose-300 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-3 text-rose-900 shadow-sm animate-fadeIn">
+            <div class="flex items-start md:items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-rose-200 text-rose-800 flex items-center justify-center shrink-0 shadow-inner">
+                <i data-lucide="shield-alert" class="w-5 h-5 text-rose-700"></i>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h4 class="text-xs font-black uppercase tracking-wider text-rose-900">Course Plan Submissions are Closed by IQAC Admin</h4>
+                  <span class="px-2 py-0.5 rounded-full bg-rose-200 text-rose-900 text-[10px] font-black uppercase tracking-wider">Submissions Locked</span>
+                </div>
+                <p class="text-xs font-semibold text-rose-800 mt-0.5 leading-relaxed">
+                  Notice before start filling: The IQAC Administrator has temporarily locked course plan submissions. You will not be able to submit this course plan to HOD until submissions are re-opened.
+                </p>
+              </div>
+            </div>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.backToDashboard()" 
+              class="px-3.5 py-2 bg-white hover:bg-rose-100 text-rose-800 border border-rose-300 font-bold text-xs rounded-xl transition shadow-2xs shrink-0 self-start md:self-auto cursor-pointer"
+            >
+              ← Back to Dashboard
+            </button>
+          </div>
+        ` : ''}
+
         <!-- Part-wise Navigation Tabs & Form Actions -->
         <div class="bg-white p-2 sm:p-2.5 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-2.5 sticky top-14 sm:top-16 z-20">
           <!-- Navigation Tabs with Stage Lock Icons (Horizontally scrollable on mobile) -->
@@ -6231,7 +6286,17 @@ class CoursePlanApp {
             </button>
 
             <!-- Submit to HOD (Enabled ONLY on Part-IV) -->
-            ${canPrintAndSubmit ? `
+            ${this.systemSettings && !this.systemSettings.submissions_enabled ? `
+              <button 
+                type="button" 
+                disabled 
+                class="text-xs px-3.5 sm:px-4 py-1.5 sm:py-2 bg-rose-100 text-rose-700 border border-rose-200 font-bold rounded-xl flex items-center gap-1 cursor-not-allowed opacity-80 shrink-0"
+                title="Course plan submissions are currently closed by IQAC Administrator"
+              >
+                <i data-lucide="lock" class="w-3.5 h-3.5 text-rose-600"></i>
+                <span>Submissions Closed</span>
+              </button>
+            ` : (canPrintAndSubmit ? `
               <button 
                 type="button" 
                 onclick="coursePlanApp.saveCurrentPlan('Submitted')" 
@@ -6251,7 +6316,7 @@ class CoursePlanApp {
                 <i data-lucide="lock" class="w-3.5 h-3.5 text-slate-400"></i>
                 <span>Submit</span>
               </button>
-            `}
+            `)}
           </div>
         </div>
 
@@ -6278,6 +6343,24 @@ class CoursePlanApp {
             <!-- Hidden Inputs for Department & Faculty Name so validation & storage continue to work -->
             <input type="hidden" id="cp-dept-name" value="${this.escapeHtml(currentDeptName)}" />
             <input type="hidden" id="cp-faculty-name" value="${this.escapeHtml(currentFacName)}" />
+
+            ${this.systemSettings && !this.systemSettings.submissions_enabled ? `
+              <!-- Submissions Closed Alert inside Part-I before start filling -->
+              <div class="p-4 bg-rose-50 border-2 border-rose-300 rounded-2xl flex items-start gap-3 text-rose-900 shadow-sm animate-fadeIn">
+                <div class="w-8 h-8 rounded-xl bg-rose-200 text-rose-700 flex items-center justify-center shrink-0 mt-0.5 shadow-inner">
+                  <i data-lucide="lock" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs font-black uppercase tracking-wider text-rose-900">Notice Before Start Filling</span>
+                    <span class="px-2 py-0.5 rounded-full bg-rose-200 text-rose-800 text-[9.5px] font-black uppercase">Submissions Locked</span>
+                  </div>
+                  <p class="text-[11.5px] font-semibold text-rose-800 mt-0.5 leading-relaxed">
+                    Course plan submissions are currently <strong>disabled by the IQAC Administrator</strong>. You may draft or view course information, but final submission to your Head of Department will remain locked until administration opens submissions.
+                  </p>
+                </div>
+              </div>
+            ` : ''}
 
             <!-- A. General Details -->
             <div class="space-y-4">
@@ -7367,14 +7450,26 @@ class CoursePlanApp {
                   <i data-lucide="save" class="w-4 h-4 text-slate-500"></i>
                   <span>Save as Draft</span>
                 </button>
-                <button 
-                  type="button" 
-                  onclick="coursePlanApp.saveCurrentPlan('Submitted')" 
-                  class="text-xs px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl transition flex items-center gap-2 shadow-md shadow-indigo-600/25 cursor-pointer active:scale-95"
-                >
-                  <i data-lucide="send" class="w-4 h-4"></i>
-                  <span>Submit to HOD</span>
-                </button>
+                ${this.systemSettings && !this.systemSettings.submissions_enabled ? `
+                  <button 
+                    type="button" 
+                    disabled 
+                    class="text-xs px-6 py-2.5 bg-rose-100 text-rose-800 border-2 border-rose-200 font-extrabold rounded-xl flex items-center gap-2 cursor-not-allowed opacity-80"
+                    title="Course plan submissions are currently disabled by IQAC Administrator."
+                  >
+                    <i data-lucide="lock" class="w-4 h-4 text-rose-600"></i>
+                    <span>Submissions Closed by Admin</span>
+                  </button>
+                ` : `
+                  <button 
+                    type="button" 
+                    onclick="coursePlanApp.saveCurrentPlan('Submitted')" 
+                    class="text-xs px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl transition flex items-center gap-2 shadow-md shadow-indigo-600/25 cursor-pointer active:scale-95"
+                  >
+                    <i data-lucide="send" class="w-4 h-4"></i>
+                    <span>Submit to HOD</span>
+                  </button>
+                `}
               </div>
             </div>
           </div>
@@ -7435,17 +7530,29 @@ class CoursePlanApp {
           </div>
 
           <div class="flex items-center gap-2 flex-wrap">
-            ${isFromForm && this.activePlan && this.activePlan.status !== 'Submitted' && this.activePlan.hod_status !== 'Approved' ? `
-              <button 
-                type="button" 
-                onclick="coursePlanApp.saveCurrentPlan('Submitted')" 
-                class="text-xs px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl transition flex items-center gap-1.5 shadow-md shadow-emerald-600/25 active:scale-95 cursor-pointer"
-                title="Submit this course plan directly to HOD"
-              >
-                <i data-lucide="send" class="w-4 h-4"></i>
-                <span>Submit to HOD</span>
-              </button>
-            ` : ''}
+            ${isFromForm && this.activePlan && this.activePlan.status !== 'Submitted' && this.activePlan.hod_status !== 'Approved' ? (
+              this.systemSettings && !this.systemSettings.submissions_enabled ? `
+                <button 
+                  type="button" 
+                  disabled 
+                  class="text-xs px-4 py-2.5 bg-rose-100 text-rose-800 border border-rose-200 font-extrabold rounded-xl flex items-center gap-1.5 cursor-not-allowed opacity-80"
+                  title="Course plan submissions are currently closed by IQAC Administrator"
+                >
+                  <i data-lucide="lock" class="w-4 h-4 text-rose-600"></i>
+                  <span>Submissions Closed</span>
+                </button>
+              ` : `
+                <button 
+                  type="button" 
+                  onclick="coursePlanApp.saveCurrentPlan('Submitted')" 
+                  class="text-xs px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl transition flex items-center gap-1.5 shadow-md shadow-emerald-600/25 active:scale-95 cursor-pointer"
+                  title="Submit this course plan directly to HOD"
+                >
+                  <i data-lucide="send" class="w-4 h-4"></i>
+                  <span>Submit to HOD</span>
+                </button>
+              `
+            ) : ''}
             <button 
               type="button" 
               onclick="window.print()" 
@@ -8174,10 +8281,28 @@ class CoursePlanApp {
 
   // ================= DATA LOGIC & ACTIONS =================
   createNewPlan() {
+    this.startNewCoursePlan();
+  }
+
+  startNewCoursePlan() {
+    if (this.systemSettings && !this.systemSettings.submissions_enabled) {
+      if (!confirm('⚠️ Notice: Course Plan Submissions are currently CLOSED by the IQAC Administrator.\n\nYou can still view or draft course details, but final submission to HOD will remain blocked until submissions are re-opened.\n\nDo you want to proceed to the form anyway?')) {
+        return;
+      }
+    }
     this.navigateTo('/course-plan/new');
   }
 
   async editPlan(id) {
+    this.editCoursePlan(id);
+  }
+
+  async editCoursePlan(id) {
+    if (this.systemSettings && !this.systemSettings.submissions_enabled) {
+      if (!confirm('⚠️ Notice: Course Plan Submissions are currently CLOSED by the IQAC Administrator.\n\nYou can view and update your draft, but final submission to HOD is locked.\n\nDo you want to proceed to the form anyway?')) {
+        return;
+      }
+    }
     this.navigateTo(`/course-plan/edit?id=${id}`);
   }
 
@@ -9206,6 +9331,10 @@ class CoursePlanApp {
     this.activePlan.status = status;
 
     if (status === 'Submitted') {
+      if (this.systemSettings && !this.systemSettings.submissions_enabled) {
+        alert('🔒 Course plan submissions are currently CLOSED by the IQAC Administrator.\n\nYou cannot submit this course plan to HOD until submissions are re-opened.');
+        return;
+      }
       if (this.activeFormTab !== 'declaration') {
         alert('🔒 Submit to HOD is enabled after completing IV Declaration & HOD Approval. Please proceed to Part-IV to review and submit.');
         return;
@@ -9912,6 +10041,26 @@ class CoursePlanApp {
           </button>
         </div>
 
+        <!-- Submissions Disabled Notice (before start filling) -->
+        ${this.systemSettings && !this.systemSettings.submissions_enabled ? `
+          <div class="mx-4 sm:mx-7 mt-4 p-4 rounded-2xl bg-rose-50 border-2 border-rose-300 text-rose-950 text-xs font-medium flex items-center justify-between flex-wrap gap-2 shadow-2xs">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-rose-200 text-rose-800 flex items-center justify-center font-black shrink-0 shadow-inner">
+                <i data-lucide="lock" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <div class="font-extrabold text-sm text-rose-950 flex items-center gap-2">
+                  <span>Submissions Currently Closed by IQAC Admin</span>
+                  <span class="px-2 py-0.5 rounded-full bg-rose-200 text-rose-900 text-[10px] font-black uppercase">Submissions Locked</span>
+                </div>
+                <div class="text-[11px] text-rose-800 mt-0.5 font-semibold">
+                  Notice before filling: Teaching-Learning Practices submissions are temporarily disabled by the administrator.
+                </div>
+              </div>
+            </div>
+          </div>
+        ` : ''}
+
         <!-- Status Banner inside modal -->
         ${existingData && existingData.id ? `
           <div class="mx-4 sm:mx-7 mt-4 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-950 text-xs font-medium flex items-center justify-between flex-wrap gap-2 shadow-2xs">
@@ -10278,15 +10427,27 @@ class CoursePlanApp {
             >
               Cancel
             </button>
-            <button 
-              type="submit" 
-              form="tl-practices-form" 
-              id="tl-submit-btn" 
-              class="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-extrabold rounded-xl text-xs sm:text-sm transition shadow-lg shadow-indigo-600/30 flex items-center gap-2 cursor-pointer active:scale-95"
-            >
-              <i data-lucide="send" class="w-4 h-4"></i>
-              <span>Save &amp; Submit Details</span>
-            </button>
+            ${this.systemSettings && !this.systemSettings.submissions_enabled ? `
+              <button 
+                type="button" 
+                disabled 
+                class="px-6 py-2.5 bg-rose-100 text-rose-800 border-2 border-rose-200 font-extrabold rounded-xl text-xs sm:text-sm flex items-center gap-2 cursor-not-allowed opacity-80"
+                title="Submissions are currently closed by IQAC Administrator."
+              >
+                <i data-lucide="lock" class="w-4 h-4 text-rose-600"></i>
+                <span>Submissions Closed by Admin</span>
+              </button>
+            ` : `
+              <button 
+                type="submit" 
+                form="tl-practices-form" 
+                id="tl-submit-btn" 
+                class="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-extrabold rounded-xl text-xs sm:text-sm transition shadow-lg shadow-indigo-600/30 flex items-center gap-2 cursor-pointer active:scale-95"
+              >
+                <i data-lucide="send" class="w-4 h-4"></i>
+                <span>Save &amp; Submit Details</span>
+              </button>
+            `}
           </div>
         </div>
 
@@ -10305,6 +10466,10 @@ class CoursePlanApp {
 
   async saveTLPracticesForm(e) {
     e.preventDefault();
+    if (this.systemSettings && !this.systemSettings.submissions_enabled) {
+      alert('🔒 TL Practices submissions are currently CLOSED by the IQAC Administrator.');
+      return;
+    }
     const btn = document.getElementById('tl-submit-btn');
     const feedback = document.getElementById('tl-modal-feedback');
 

@@ -503,7 +503,8 @@ try {
             exit;
         }
 
-        if (empty($sysSettings['submissions_enabled']) && !$isAdmin) {
+        $incomingStatus = isset($data['status']) ? trim($data['status']) : 'Draft';
+        if (empty($sysSettings['submissions_enabled']) && !$isAdmin && $incomingStatus === 'Submitted') {
             echo json_encode(['success' => false, 'error' => 'Course plan submissions are currently CLOSED by the IQAC Administrator.']);
             exit;
         }
