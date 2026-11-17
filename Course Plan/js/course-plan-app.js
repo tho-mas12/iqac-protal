@@ -2867,8 +2867,12 @@ class CoursePlanApp {
 
             <!-- College & IQAC Header -->
             <div class="pt-8 pb-4 px-6 sm:px-8 text-center border-b border-slate-100 bg-gradient-to-b from-slate-50/70 to-white">
-              <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-50 to-blue-50 border border-indigo-100 shadow-inner mb-3">
-                <span class="text-2xl font-black bg-gradient-to-br from-indigo-700 to-blue-600 bg-clip-text text-transparent">SJC</span>
+              <div class="inline-flex items-center justify-center mb-3">
+                <img 
+                  src="sjc-logo.png" 
+                  alt="St. Joseph's College Emblem" 
+                  class="h-20 sm:h-24 w-auto object-contain drop-shadow-md" 
+                />
               </div>
               <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200/60 text-indigo-800 text-[11px] font-extrabold uppercase tracking-wider mb-2">
                 <i data-lucide="award" class="w-3.5 h-3.5 text-indigo-600"></i>
