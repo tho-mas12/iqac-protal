@@ -5,19 +5,14 @@ import { prisma } from './prisma';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'sjciqac-portal-secret-key-super-secure-2026';
 const COOKIE_NAME = 'iqac_token';
-export const SSO_COOKIE_NAME = 'iqac_sso_token';
 
 export interface TokenPayload {
   userId: string;
   username: string;
   name: string;
-  role: 'DEPARTMENT' | 'DIRECTOR' | 'STAFF' | 'ADMIN' | 'FACULTY' | 'HEAD' | 'MQC';
+  role: 'DEPARTMENT' | 'DIRECTOR' | 'STAFF' | 'ADMIN';
   departmentId?: string | null;
   shift?: string | null;
-  staffCode?: string | null;
-  isHead?: boolean;
-  isMqc?: boolean;
-  departmentName?: string | null;
 }
 
 export function signToken(payload: TokenPayload): string {
@@ -56,9 +51,6 @@ export async function getCurrentUser(): Promise<TokenPayload | null> {
 
   if (!user) return null;
 
-  const isHead = Boolean(payload.isHead || user.role === 'HEAD');
-  const isMqc = Boolean(payload.isMqc || user.role === 'MQC');
-
   return {
     userId: user.id,
     username: user.username,
@@ -66,10 +58,6 @@ export async function getCurrentUser(): Promise<TokenPayload | null> {
     role: user.role as any,
     departmentId: user.departmentId,
     shift: user.department?.shift || null,
-    staffCode: payload.staffCode || user.username,
-    isHead,
-    isMqc,
-    departmentName: payload.departmentName || user.department?.name || null,
   };
 }
 

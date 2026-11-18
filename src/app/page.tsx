@@ -1,13 +1,23 @@
 import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/auth';
-import LoginPage from './login/page';
 
 export default async function HomePage() {
   const session = await getCurrentUser();
 
-  if (session) {
-    redirect('/dashboard');
+  if (!session) {
+    redirect('/login');
   }
 
-  return <LoginPage />;
+  switch (session.role) {
+    case 'DEPARTMENT':
+      redirect('/department/dashboard');
+    case 'DIRECTOR':
+      redirect('/director/dashboard');
+    case 'STAFF':
+      redirect('/staff/dashboard');
+    case 'ADMIN':
+      redirect('/admin/departments');
+    default:
+      redirect('/login');
+  }
 }
