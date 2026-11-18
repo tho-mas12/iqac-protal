@@ -19,6 +19,29 @@ header('Content-Type: application/json; charset=utf-8');
 $method = $_SERVER['REQUEST_METHOD'];
 $action = isset($_GET['action']) ? $_GET['action'] : ($method === 'POST' ? 'save' : 'list');
 
+function getSSOUser() {
+    $token = isset($_COOKIE['iqac_sso_token']) ? $_COOKIE['iqac_sso_token'] : (isset($_COOKIE['iqac_token']) ? $_COOKIE['iqac_token'] : null);
+    if (!$token) return null;
+
+    $secret = "sjciqac-portal-secret-key-super-secure-2026";
+    $parts = explode('.', $token);
+    if (count($parts) !== 3) return null;
+
+    list($headb64, $bodyb64, $cryptob64) = $parts;
+    $sig = hash_hmac('sha256', $headb64 . '.' . $bodyb64, $secret, true);
+    $expectedB64 = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($sig));
+
+    if (!hash_equals($expectedB64, $cryptob64)) {
+        return null;
+    }
+
+    $payload = json_decode(base64_decode(str_replace(['-', '_'], ['+', '/'], $bodyb64)), true);
+    if (!$payload || (isset($payload['exp']) && $payload['exp'] < time())) {
+        return null;
+    }
+    return $payload;
+}
+
 // ================= SYSTEM SETTINGS HELPERS =================
 function getSystemSettings($pdo) {
     $settings = [
@@ -349,6 +372,44 @@ try {
 
     if ($action === 'auth_check') {
         $sysSettings = getSystemSettings($pdo);
+        if (!isset($_SESSION['cp_user'])) {
+            $sso = getSSOUser();
+            if ($sso) {
+                $role = $sso['role'] ?? 'FACULTY';
+                if ($role === 'ADMIN' || $role === 'DIRECTOR') {
+                    $_SESSION['cp_user'] = [
+                        'id' => 1,
+                        'username' => $sso['username'] ?? 'admin',
+                        'role' => 'admin',
+                        'user_role' => 'ADMIN',
+                        'department_name' => 'IQAC Central Admin',
+                        'display_name' => $sso['name'] ?? 'IQAC Administrator',
+                        'faculty_name' => $sso['name'] ?? 'IQAC Administrator',
+                        'is_hod' => false,
+                        'is_head' => false,
+                        'is_mqc' => false
+                    ];
+                } else {
+                    $isHead = !empty($sso['isHead']) || ($role === 'HEAD');
+                    $isMqc = !empty($sso['isMqc']) || ($role === 'MQC');
+                    $dName = $sso['departmentName'] ?? '';
+                    $_SESSION['cp_user'] = [
+                        'id' => $sso['userId'] ?? null,
+                        'faculty_id' => $sso['staffCode'] ?? $sso['username'],
+                        'username' => $sso['username'],
+                        'role' => $isHead ? 'hod' : 'faculty',
+                        'user_role' => $role,
+                        'is_hod' => $isHead,
+                        'is_head' => $isHead,
+                        'is_mqc' => $isMqc,
+                        'hod_department' => $isHead ? $dName : null,
+                        'department_name' => $dName,
+                        'display_name' => $sso['name'],
+                        'faculty_name' => $sso['name']
+                    ];
+                }
+            }
+        }
         if (isset($_SESSION['cp_user'])) {
             echo json_encode(['success' => true, 'authenticated' => true, 'user' => $_SESSION['cp_user'], 'settings' => $sysSettings]);
         } else {
