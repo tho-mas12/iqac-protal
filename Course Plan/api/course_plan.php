@@ -1348,11 +1348,8 @@ try {
                 $stmtSet->execute([':id' => $targetFaculty['id']]);
             } else if ($newRole === 'MQC') {
                 // Mutual Exclusivity:
-                // 1. Unassign any other faculty in this department who is currently MQC
-                $stmtClearMqc = $pdo->prepare("UPDATE course_plan_faculty_auth SET role = 'FACULTY', is_mqc = 0 WHERE department_name = :dept AND is_mqc = 1 AND id != :id");
-                $stmtClearMqc->execute([':dept' => $deptName, ':id' => $targetFaculty['id']]);
-
-                // 2. Set this faculty to MQC, and ensure is_head is 0 (CANNOT be both)
+                // Set this faculty to MQC, and ensure is_head is 0 (CANNOT be both Head and MQC)
+                // Note: Departments can have multiple MQC committee members (1-3 members)
                 $stmtSet = $pdo->prepare("UPDATE course_plan_faculty_auth SET role = 'MQC', is_head = 0, is_mqc = 1 WHERE id = :id");
                 $stmtSet->execute([':id' => $targetFaculty['id']]);
             } else {

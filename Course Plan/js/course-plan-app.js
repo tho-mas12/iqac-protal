@@ -2269,8 +2269,6 @@ class CoursePlanApp {
                 };
               } else if (newRole === 'HEAD' && f.is_head == 1) {
                 return { ...f, role: 'FACULTY', is_head: 0 };
-              } else if (newRole === 'MQC' && f.is_mqc == 1) {
-                return { ...f, role: 'FACULTY', is_mqc: 0 };
               }
             }
             return f;
