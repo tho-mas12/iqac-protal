@@ -185,10 +185,13 @@ try {
                 'faculty_id' => $authRow['faculty_id'],
                 'username' => $authRow['faculty_id'],
                 'role' => 'admin',
+                'user_role' => 'ADMIN',
                 'department_name' => 'All Departments',
                 'faculty_name' => $authRow['faculty_name'],
                 'display_name' => $authRow['faculty_name'],
-                'faculty_email' => $authRow['faculty_email']
+                'faculty_email' => $authRow['faculty_email'],
+                'is_head' => false,
+                'is_mqc' => false
             ];
             echo json_encode([
                 'success' => true,
@@ -198,10 +201,14 @@ try {
             exit;
         }
 
-        // Check if this faculty member is an HOD from hod_list.json
-            $isHod = false;
-            $hodDept = $deptName;
+        // Check role and HOD status from course_plan_faculty_auth
+        $isHead = !empty($authRow['is_head']) || ($authRow && $authRow['role'] === 'HEAD');
+        $isMqc = !empty($authRow['is_mqc']) || ($authRow && $authRow['role'] === 'MQC');
+        $isHod = $isHead;
+        $hodDept = $deptName;
 
+        // Fallback check from hod_list.json if not yet flagged
+        if (!$isHod) {
             $hodListFile = __DIR__ . '/../data/hod_list.json';
             if (!file_exists($hodListFile)) {
                 $hodListFile = __DIR__ . '/data/hod_list.json';
@@ -227,6 +234,7 @@ try {
                         }
                         if ($matchId || $matchName) {
                             $isHod = true;
+                            $isHead = true;
                             if (!empty($hod['department_name'])) {
                                 $hodDept = $hod['department_name'];
                             }
@@ -235,32 +243,42 @@ try {
                     }
                 }
             }
+        }
 
-            if ($isHod && $hodDept) {
-                $deptName = $hodDept;
-            }
+        if ($isHod && $hodDept) {
+            $deptName = $hodDept;
+        }
 
-            $curName = $facName ?: ($authRow ? $authRow['faculty_name'] : $facultyId);
+        $curName = $facName ?: ($authRow ? $authRow['faculty_name'] : $facultyId);
+        $userRole = 'FACULTY';
+        if ($isHod || $isHead) {
+            $userRole = 'HEAD';
+        } else if ($isMqc) {
+            $userRole = 'MQC';
+        }
 
-            $_SESSION['cp_user'] = [
-                'id' => $authRow ? (int)$authRow['id'] : null,
-                'faculty_id' => $authRow ? $authRow['faculty_id'] : $facultyId,
-                'username' => $authRow ? ($authRow['faculty_id'] ?: $authRow['faculty_email'] ?: $curName) : $curName,
-                'role' => 'faculty',
-                'is_hod' => $isHod,
-                'hod_department' => $isHod ? $hodDept : null,
-                'department_name' => $deptName,
-                'faculty_name' => $curName,
-                'display_name' => $curName,
-                'faculty_email' => $authRow ? $authRow['faculty_email'] : ''
-            ];
+        $_SESSION['cp_user'] = [
+            'id' => $authRow ? (int)$authRow['id'] : null,
+            'faculty_id' => $authRow ? $authRow['faculty_id'] : $facultyId,
+            'username' => $authRow ? ($authRow['faculty_id'] ?: $authRow['faculty_email'] ?: $curName) : $curName,
+            'role' => $isHod ? 'hod' : 'faculty',
+            'user_role' => $userRole,
+            'is_hod' => $isHod,
+            'is_head' => $isHead,
+            'is_mqc' => $isMqc,
+            'hod_department' => $isHod ? $hodDept : null,
+            'department_name' => $deptName,
+            'faculty_name' => $curName,
+            'display_name' => $curName,
+            'faculty_email' => $authRow ? $authRow['faculty_email'] : ''
+        ];
 
-            echo json_encode([
-                'success' => true,
-                'user' => $_SESSION['cp_user'],
-                'message' => 'Logged in successfully as ' . $curName . ($isHod ? ' (Head of Department)' : '')
-            ]);
-            exit;
+        echo json_encode([
+            'success' => true,
+            'user' => $_SESSION['cp_user'],
+            'message' => 'Logged in successfully as ' . $curName . ($isHod ? ' (Head of Department)' : ($isMqc ? ' (MQC Coordinator)' : ''))
+        ]);
+        exit;
 
         // --- 1C. LEGACY HOD & USERNAME LOGIN FALLBACK ---
         $pwHash = hash('sha256', $password);
@@ -1237,6 +1255,130 @@ try {
 
         fclose($out);
         exit;
+    }
+
+    // ================= 10. FACULTY ROLES MANAGEMENT (HEAD & MQC MUTUALLY EXCLUSIVE) =================
+    if ($action === 'get_faculty_roles') {
+        $currentUser = isset($_SESSION['cp_user']) ? $_SESSION['cp_user'] : null;
+        if (!$currentUser || ($currentUser['role'] !== 'admin' && strtolower($currentUser['username'] ?? '') !== 'admin')) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized. IQAC Administrator access required.']);
+            exit;
+        }
+
+        $deptFilter = isset($_GET['department']) ? trim($_GET['department']) : '';
+        if ($deptFilter !== '' && $deptFilter !== 'ALL') {
+            $stmt = $pdo->prepare("SELECT id, department_name, faculty_name, faculty_id, faculty_email, role, is_head, is_mqc FROM course_plan_faculty_auth WHERE department_name = :dept ORDER BY is_head DESC, is_mqc DESC, id ASC");
+            $stmt->execute([':dept' => $deptFilter]);
+        } else {
+            $stmt = $pdo->query("SELECT id, department_name, faculty_name, faculty_id, faculty_email, role, is_head, is_mqc FROM course_plan_faculty_auth ORDER BY department_name ASC, is_head DESC, is_mqc DESC, id ASC");
+        }
+        $facultyRoles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Also get department summary
+        $stmtDepts = $pdo->query("SELECT department_name, 
+            COUNT(*) as total_faculty,
+            SUM(CASE WHEN is_head = 1 THEN 1 ELSE 0 END) as has_head,
+            SUM(CASE WHEN is_mqc = 1 THEN 1 ELSE 0 END) as has_mqc,
+            MAX(CASE WHEN is_head = 1 THEN faculty_name ELSE NULL END) as head_name,
+            MAX(CASE WHEN is_mqc = 1 THEN faculty_name ELSE NULL END) as mqc_name
+            FROM course_plan_faculty_auth 
+            GROUP BY department_name 
+            ORDER BY department_name ASC");
+        $deptSummary = $stmtDepts->fetchAll(PDO::FETCH_ASSOC);
+
+        echo json_encode([
+            'success' => true,
+            'departments' => $deptSummary,
+            'faculty' => $facultyRoles
+        ]);
+        exit;
+    }
+
+    if ($action === 'update_faculty_role' && $method === 'POST') {
+        $currentUser = isset($_SESSION['cp_user']) ? $_SESSION['cp_user'] : null;
+        if (!$currentUser || ($currentUser['role'] !== 'admin' && strtolower($currentUser['username'] ?? '') !== 'admin')) {
+            echo json_encode(['success' => false, 'error' => 'Unauthorized. IQAC Administrator access required.']);
+            exit;
+        }
+
+        $inputData = json_decode(file_get_contents('php://input'), true);
+        if (!$inputData) {
+            $inputData = $_POST;
+        }
+
+        $targetId = isset($inputData['id']) ? (int)$inputData['id'] : 0;
+        $targetFid = isset($inputData['faculty_id']) ? trim($inputData['faculty_id']) : '';
+        $newRole = isset($inputData['role']) ? strtoupper(trim($inputData['role'])) : 'FACULTY';
+
+        if (!in_array($newRole, ['FACULTY', 'HEAD', 'MQC'])) {
+            echo json_encode(['success' => false, 'error' => 'Invalid role specified. Allowed values: FACULTY, HEAD, MQC.']);
+            exit;
+        }
+
+        // Find the target faculty
+        if ($targetId > 0) {
+            $stmt = $pdo->prepare("SELECT * FROM course_plan_faculty_auth WHERE id = :id LIMIT 1");
+            $stmt->execute([':id' => $targetId]);
+        } else if ($targetFid !== '') {
+            $stmt = $pdo->prepare("SELECT * FROM course_plan_faculty_auth WHERE faculty_id = :fid LIMIT 1");
+            $stmt->execute([':fid' => $targetFid]);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Missing faculty ID.']);
+            exit;
+        }
+        $targetFaculty = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$targetFaculty) {
+            echo json_encode(['success' => false, 'error' => 'Faculty member not found.']);
+            exit;
+        }
+
+        $deptName = $targetFaculty['department_name'];
+        $pdo->beginTransaction();
+
+        try {
+            if ($newRole === 'HEAD') {
+                // Mutual Exclusivity:
+                // 1. Unassign any other faculty in this department who is currently HEAD
+                $stmtClearHead = $pdo->prepare("UPDATE course_plan_faculty_auth SET role = 'FACULTY', is_head = 0 WHERE department_name = :dept AND is_head = 1 AND id != :id");
+                $stmtClearHead->execute([':dept' => $deptName, ':id' => $targetFaculty['id']]);
+
+                // 2. Set this faculty to HEAD, and ensure is_mqc is 0 (CANNOT be both)
+                $stmtSet = $pdo->prepare("UPDATE course_plan_faculty_auth SET role = 'HEAD', is_head = 1, is_mqc = 0 WHERE id = :id");
+                $stmtSet->execute([':id' => $targetFaculty['id']]);
+            } else if ($newRole === 'MQC') {
+                // Mutual Exclusivity:
+                // 1. Unassign any other faculty in this department who is currently MQC
+                $stmtClearMqc = $pdo->prepare("UPDATE course_plan_faculty_auth SET role = 'FACULTY', is_mqc = 0 WHERE department_name = :dept AND is_mqc = 1 AND id != :id");
+                $stmtClearMqc->execute([':dept' => $deptName, ':id' => $targetFaculty['id']]);
+
+                // 2. Set this faculty to MQC, and ensure is_head is 0 (CANNOT be both)
+                $stmtSet = $pdo->prepare("UPDATE course_plan_faculty_auth SET role = 'MQC', is_head = 0, is_mqc = 1 WHERE id = :id");
+                $stmtSet->execute([':id' => $targetFaculty['id']]);
+            } else {
+                // Reset to standard FACULTY
+                $stmtSet = $pdo->prepare("UPDATE course_plan_faculty_auth SET role = 'FACULTY', is_head = 0, is_mqc = 0 WHERE id = :id");
+                $stmtSet->execute([':id' => $targetFaculty['id']]);
+            }
+
+            $pdo->commit();
+
+            // Fetch updated record
+            $stmtUpdated = $pdo->prepare("SELECT id, department_name, faculty_name, faculty_id, role, is_head, is_mqc FROM course_plan_faculty_auth WHERE id = :id");
+            $stmtUpdated->execute([':id' => $targetFaculty['id']]);
+            $updated = $stmtUpdated->fetch(PDO::FETCH_ASSOC);
+
+            echo json_encode([
+                'success' => true,
+                'message' => "Successfully updated {$targetFaculty['faculty_name']} to {$newRole} in {$deptName}.",
+                'faculty' => $updated
+            ]);
+            exit;
+        } catch (Exception $ex) {
+            $pdo->rollBack();
+            echo json_encode(['success' => false, 'error' => 'Database error: ' . $ex->getMessage()]);
+            exit;
+        }
     }
 
 } catch (Exception $e) {
