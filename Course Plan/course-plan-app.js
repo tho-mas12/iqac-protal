@@ -285,8 +285,13 @@ class CoursePlanApp {
       }
       await this.fetchPlans();
     } else if (this.currentUser.role === 'hod') {
-      if (r.name !== 'hod' && r.name !== 'dashboard') {
-        window.history.replaceState(null, '', '/course-plan/hod');
+      if (r.name === 'dashboard' || this.currentDashboardView === 'faculty') {
+        this.currentDashboardView = 'faculty';
+      } else {
+        this.currentDashboardView = 'hod';
+        if (r.name !== 'hod') {
+          window.history.replaceState(null, '', '/course-plan/hod');
+        }
       }
       await this.fetchPlans();
     } else if (this.currentUser.role === 'admin') {
@@ -2788,8 +2793,8 @@ class CoursePlanApp {
       if (this.currentUser && this.currentUser.role === 'admin') {
         if (this.adminFilter !== 'all') url += `&status=${encodeURIComponent(this.adminFilter)}`;
         if (this.adminDeptFilter !== 'all') url += `&department=${encodeURIComponent(this.adminDeptFilter)}`;
-      } else if (this.currentUser && this.currentUser.role === 'faculty') {
-        if (this.currentUser.is_hod && this.currentDashboardView === 'hod') {
+      } else if (this.currentUser && (this.currentUser.role === 'faculty' || this.currentUser.role === 'hod')) {
+        if ((this.currentUser.is_hod || this.currentUser.role === 'hod') && this.currentDashboardView === 'hod') {
           url += `&view=hod&department=${encodeURIComponent(this.currentUser.hod_department || this.currentUser.department_name)}`;
         } else {
           url += `&department=${encodeURIComponent(this.currentUser.department_name)}&faculty_name=${encodeURIComponent(this.currentUser.faculty_name)}`;
@@ -2846,7 +2851,7 @@ class CoursePlanApp {
       // Dashboard view based on user role
       if (this.currentUser.role === 'admin') {
         root.innerHTML = this.renderAdminDashboardHtml();
-      } else if (this.currentUser.role === 'hod' || (this.currentUser.is_hod && this.currentDashboardView === 'hod')) {
+      } else if (this.currentDashboardView === 'hod' || (this.currentUser.role === 'hod' && this.currentDashboardView !== 'faculty')) {
         root.innerHTML = this.renderHODDashboardHtml();
       } else {
         root.innerHTML = this.renderFacultyDashboardHtml();
@@ -2874,7 +2879,26 @@ class CoursePlanApp {
 
       authStatusEl.innerHTML = `
         <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-          ${isFaculty ? `
+          ${isHOD ? `
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchToFacultyDashboard()" 
+              class="px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold ${this.currentDashboardView === 'faculty' ? 'bg-indigo-600 text-white shadow-xs' : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200'} transition flex items-center gap-1 cursor-pointer"
+              title="My Teaching Course Plans (Fill & Edit)"
+            >
+              <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
+              <span>My Plans (Fill)</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchToHODDashboard()" 
+              class="px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold ${this.currentDashboardView === 'hod' ? 'bg-amber-600 text-white shadow-xs' : 'bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-300'} transition flex items-center gap-1 cursor-pointer"
+              title="Review & approve department faculty course plans"
+            >
+              <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+              <span>HOD Review</span>
+            </button>
+          ` : isFaculty ? `
             <button 
               type="button" 
               onclick="coursePlanApp.navigateTo('/course-plan/dashboard')" 
@@ -2882,15 +2906,6 @@ class CoursePlanApp {
             >
               <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
               <span>Dashboard</span>
-            </button>
-          ` : isHOD ? `
-            <button 
-              type="button" 
-              onclick="coursePlanApp.navigateTo('/course-plan/hod')" 
-              class="px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition flex items-center gap-1 cursor-pointer shadow-2xs"
-            >
-              <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
-              <span>HOD Portal</span>
             </button>
           ` : `
             <button 
@@ -3781,6 +3796,15 @@ class CoursePlanApp {
           </div>
 
           <div class="flex items-center gap-3 flex-wrap">
+            <button 
+              type="button" 
+              onclick="coursePlanApp.startNewCoursePlan()" 
+              class="px-4 py-2.5 bg-amber-400 hover:bg-amber-300 text-indigo-950 font-black rounded-xl text-xs transition shadow-sm flex items-center gap-2 cursor-pointer active:scale-95"
+              title="Create and fill a new course plan for your teaching courses"
+            >
+              <i data-lucide="plus-circle" class="w-4 h-4"></i>
+              <span>+ Create / Fill My Course Plan</span>
+            </button>
             <button 
               type="button" 
               onclick="coursePlanApp.switchToFacultyDashboard()" 

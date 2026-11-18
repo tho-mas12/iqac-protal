@@ -261,7 +261,7 @@ try {
             'id' => $authRow ? (int)$authRow['id'] : null,
             'faculty_id' => $authRow ? $authRow['faculty_id'] : $facultyId,
             'username' => $authRow ? ($authRow['faculty_id'] ?: $authRow['faculty_email'] ?: $curName) : $curName,
-            'role' => $isHod ? 'hod' : 'faculty',
+            'role' => 'faculty',
             'user_role' => $userRole,
             'is_hod' => $isHod,
             'is_head' => $isHead,
@@ -392,9 +392,9 @@ try {
         $params = [];
 
         // Role-based filtering
-        if ($currentUser && $currentUser['role'] === 'faculty') {
+        if ($currentUser && ($currentUser['role'] === 'faculty' || $currentUser['role'] === 'hod')) {
             $viewMode = isset($_GET['view']) ? trim($_GET['view']) : '';
-            if ($viewMode === 'hod' && !empty($currentUser['is_hod'])) {
+            if ($viewMode === 'hod' && (!empty($currentUser['is_hod']) || $currentUser['role'] === 'hod')) {
                 // HOD viewing their department status & submissions
                 $targetDept = !empty($currentUser['hod_department']) ? $currentUser['hod_department'] : $currentUser['department_name'];
                 $sql .= " AND department_name = :dept";
@@ -409,14 +409,6 @@ try {
                 $params[':fac'] = $currentUser['faculty_name'];
                 $params[':dept'] = $currentUser['department_name'];
                 $params[':fac_like'] = '%' . $currentUser['faculty_name'] . '%';
-            }
-        } else if ($currentUser && $currentUser['role'] === 'hod') {
-            // Strictly filter to HOD's department
-            $sql .= " AND department_name = :dept";
-            $params[':dept'] = $currentUser['department_name'];
-            if ($filterStatus && $filterStatus !== 'all') {
-                $sql .= " AND hod_status = :hstatus";
-                $params[':hstatus'] = $filterStatus;
             }
         } else if ($currentUser && $currentUser['role'] === 'admin') {
             // IQAC Admin view
