@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <base href="/AAA/">
+  <title>IQAC Annual Academic Audit (AAA) 2026-2027 | St. Joseph's College (Autonomous)</title>
+  
+  <!-- Standalone Pre-compiled Tailwind CSS (100% Offline & Reliable) -->
+  <link rel="stylesheet" href="/AAA/css/tailwind.min.css" />
+  <link rel="stylesheet" href="css/tailwind.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Chart.js: Local vendor script -->
+  <script src="/AAA/vendor/chart.umd.min.js"></script>
+
+  <!-- Lucide Icons: Local vendor script -->
+  <script src="/AAA/vendor/lucide.min.js"></script>
+
+    <!-- Official Academic & Collegiate Typography (Google Fonts) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Custom Stylesheet with Academic Light Palette -->
+  <link rel="stylesheet" href="/AAA/css/styles.css" />
+  <link rel="icon" type="image/png" href="/AAA/assets/weblogo.png" />
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex selection:bg-blue-100 selection:text-blue-900">
+  <!-- Arctic Frost Aura Gradient Background Layers (multiply over #faf8f2) -->
+  <div class="aura-layer-1" aria-hidden="true"></div>
+  <div class="aura-layer-2" aria-hidden="true"></div>
+
+  <!-- ================= 1. DISTINCT LIGHT-TINTED LEFT SIDEBAR WITH PALETTE THEME ================= -->
+  <aside id="app-sidebar" class="hidden w-72 bg-[#f0f5f9]/90 backdrop-blur-md text-slate-800 shrink-0 flex flex-col justify-between border-r border-[#4F8FC0]/25 transition-all duration-300 z-50 sticky top-0 h-screen overflow-y-auto shadow-xs">
+    <div class="p-5 space-y-6">
+      
+      <!-- Institutional Logo & Header (Vertical Stack: Small Logo on Top, Details Below) -->
+      <div class="bg-white rounded-2xl p-4 border border-[#4F8FC0]/25 shadow-2xs flex flex-col items-center text-center transition hover:shadow-xs">
+        <!-- Small Logo inside a neat radius rectangle box -->
+        <div class="w-12 h-14 rounded-xl bg-gradient-to-b from-[#f0f5f9] via-white to-[#FFE3B3]/25 border border-[#4F8FC0]/30 flex items-center justify-center p-1.5 shadow-2xs mb-2.5">
+          <img src="/AAA/assets/weblogo.png" alt="St. Joseph's College Crest" class="h-10 w-auto object-contain drop-shadow-xs" />
+        </div>
+        <!-- College Details Below -->
+        <div class="w-full">
+          <h1 class="text-sm font-black text-[#26648E] tracking-tight leading-snug">
+            St. Joseph's College
+          </h1>
+          <p class="text-[11px] font-bold text-slate-700">
+            (Autonomous)
+          </p>
+          <p class="text-[10px] text-[#4F8FC0] font-extrabold uppercase tracking-wider mt-0.5">
+            Estd. 1844 • Tiruchirappalli
+          </p>
+          <div class="mt-2 flex items-center justify-center gap-1.5">
+            <span class="inline-block px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-[#FFE3B3] text-[#26648E] border border-[#fedba0] shadow-2xs">
+              AAA 2026–2027
+            </span>
+            <span class="w-1.5 h-1.5 rounded-full bg-[#53D2DC] shadow-2xs"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Menu Items -->
+      <div class="space-y-1.5">
+        <div class="text-[10px] font-black uppercase tracking-wider text-slate-400 px-2 pb-1">
+          Navigation Modules
+        </div>
+
+        <!-- 1. Attribute Forms (1 to 10) -->
+        <button id="nav-btn-form" type="button" onclick="app.switchView('form')" class="w-full text-left px-3.5 py-2.5 rounded-xl flex items-center gap-2.5 transition text-xs font-bold text-white bg-[#26648E] shadow-md shadow-[#26648E]/25 border border-[#26648E]">
+          <i data-lucide="book-open" class="w-4 h-4 text-[#53D2DC]"></i>
+          <span>Attribute Forms (1-10)</span>
+        </button>
+
+        <!-- 2. Data Filter & Explorer Hub -->
+        <button id="nav-btn-filter" type="button" onclick="app.switchView('filter')" class="w-full text-left px-3.5 py-2.5 rounded-xl flex items-center gap-2.5 transition text-xs font-semibold text-slate-700 hover:text-[#26648E] hover:bg-white bg-white/80 border border-slate-200 shadow-2xs">
+          <i data-lucide="filter" class="w-4 h-4 text-[#4F8FC0]"></i>
+          <span>Data Filter & Explorer</span>
+        </button>
+
+        <!-- 3. Department Data Hub (Admin Only) -->
+        <button id="nav-btn-dept-data" type="button" onclick="app.switchView('dept-data')" class="w-full text-left px-3.5 py-2.5 rounded-xl flex items-center gap-2.5 transition text-xs font-semibold text-slate-700 hover:text-[#26648E] hover:bg-white bg-white/80 border border-slate-200 shadow-2xs">
+          <i data-lucide="folder-kanban" class="w-4 h-4 text-[#26648E]"></i>
+          <span>Department Data</span>
+        </button>
+
+        <!-- 3. Admin & Access Hub -->
+        <button id="nav-btn-admin" type="button" onclick="app.switchView('admin')" class="w-full text-left px-3.5 py-2.5 rounded-xl flex items-center gap-2.5 transition text-xs font-semibold text-slate-700 hover:text-[#26648E] hover:bg-white bg-white/80 border border-slate-200 shadow-2xs">
+          <i data-lucide="shield-check" class="w-4 h-4 text-[#26648E]"></i>
+          <span>Admin & Access Hub</span>
+        </button>
+
+        <!-- 4. College Analytics (15m Dashboard) -->
+        <button id="nav-btn-dashboard" type="button" onclick="app.switchView('dashboard')" class="w-full text-left px-3.5 py-2.5 rounded-xl flex items-center gap-2.5 transition text-xs font-semibold text-slate-700 hover:text-[#26648E] hover:bg-white bg-white/80 border border-slate-200 shadow-2xs">
+          <i data-lucide="bar-chart-3" class="w-4 h-4 text-emerald-600"></i>
+          <span>College Analytics (15m)</span>
+        </button>
+
+        <!-- 5. Department Info & Security Profile (For Department Users) -->
+        <button id="nav-btn-dept-profile" type="button" onclick="app.switchView('dept-profile')" class="w-full text-left px-3.5 py-2.5 rounded-xl flex items-center gap-2.5 transition text-xs font-semibold text-slate-700 hover:text-[#26648E] hover:bg-white bg-white/80 border border-slate-200 shadow-2xs">
+          <i data-lucide="user-check" class="w-4 h-4 text-[#4F8FC0]"></i>
+          <span>Department Info</span>
+        </button>
+      </div>
+
+      <!-- Submission Deadline Widget in Sidebar -->
+      <div id="sidebar-deadline-widget" class="bg-white rounded-xl p-3 border border-[#4F8FC0]/25 space-y-1 shadow-2xs">
+        <div class="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-[#4F8FC0]">
+          <i data-lucide="clock" class="w-3.5 h-3.5 text-[#26648E]"></i>
+          <span>Submission Deadline</span>
+        </div>
+        <div id="sidebar-deadline-text" class="text-xs font-extrabold text-[#26648E] font-mono">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom Sidebar Actions (Logout & Minimal Footer) -->
+    <div class="p-5 border-t border-slate-200 space-y-2">
+      <button type="button" onclick="authManager.logout()" class="w-full py-2 px-3 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition">
+        <i data-lucide="log-out" class="w-4 h-4"></i>
+        <span>Logout</span>
+      </button>
+
+      <div class="text-[10px] text-slate-400 text-center font-medium">
+        IQAC • St. Joseph's College
+      </div>
+    </div>
+  </aside>
+
+
+  <!-- ================= 2. MAIN ACADEMIC WORKSPACE ================= -->
+  <div class="flex-1 flex flex-col min-w-0 transition-all duration-300 bg-transparent relative z-1">
+    
+    <!-- Top Action Bar with Floating Blinking Sidebar Toggle Button -->
+    <header class="bg-white/75 backdrop-blur-xl border-b border-slate-200/60 sticky top-0 z-40 px-5 py-3 flex items-center justify-between shadow-xs transition-all">
+      
+      <!-- Blinking / Glowing Hide-Show Toggle Button -->
+      <div class="flex items-center gap-3">
+        <button 
+          id="sidebar-toggle-btn" 
+          type="button" 
+          onclick="app.toggleSidebar()" 
+          title="Toggle Left Menu Sidebar"
+          class="sidebar-blink-btn px-3 py-1.5 bg-[#FFE3B3] hover:bg-[#ffe0a3] text-[#26648E] font-black rounded-xl text-xs flex items-center gap-2 shadow-sm transition transform active:scale-95 cursor-pointer border border-[#fedba0] ring-2 ring-[#53D2DC]/60"
+        >
+          <i data-lucide="panel-left-open" id="sidebar-toggle-icon" class="w-4 h-4 text-[#26648E]"></i>
+          <span id="sidebar-toggle-text">Show Menu</span>
+        </button>
+
+        <span class="text-xs font-extrabold text-[#26648E] tracking-tight hidden sm:inline">
+          Annual Academic Audit (AAA)
+        </span>
+
+        
+      </div>
+
+      <!-- Right Header Actions: Active Department Name Badge & Print -->
+      <div class="flex items-center gap-3">
+        <!-- Active Department Name in Top Right Corner -->
+        <div id="top-dept-name-badge" class="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-[#26648E]/10 via-[#4F8FC0]/10 to-[#FFE3B3]/25 border border-[#4F8FC0]/30 rounded-xl shadow-2xs">
+          <i data-lucide="building-2" class="w-3.5 h-3.5 text-[#26648E]"></i>
+          <span id="top-dept-display-name" class="text-xs font-black text-[#26648E] tracking-tight max-w-[220px] md:max-w-sm truncate">
+            Department
+          </span>
+        </div>
+        <button type="button" onclick="window.print()" title="Print / Export PDF" class="p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition border border-slate-200">
+          <i data-lucide="printer" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main View Content Area -->
+    <main class="w-full px-3 sm:px-6 lg:px-8 py-5 flex-1">
+      
+      <!-- VIEW 0: Central Admin Dashboard & Access Control Hub -->
+      <section id="view-admin" class="hidden">
+        <div id="admin-container"></div>
+      </section>
+
+      <!-- VIEW 1: Form View (Attribute Cards Gallery & Sheet Forms) -->
+      <section id="view-form">
+        <div id="form-container" class="w-full"></div>
+      </section>
+
+      <!-- VIEW 2: 15m Panel Dashboard & KPIs -->
+      <section id="view-dashboard" class="hidden">
+        <div id="dashboard-container" class="space-y-6"></div>
+      </section>
+
+      <!-- VIEW 3: Cross-Department Attribute Data Filter Hub -->
+      <section id="view-filter" class="hidden">
+        <div id="filter-container" class="w-full"></div>
+      </section>
+
+      <!-- VIEW 5: Department Data Hub (Separate Page) -->
+      <section id="view-dept-data" class="hidden">
+        <div id="dept-data-container" class="w-full"></div>
+      </section>
+
+      <!-- VIEW 4: Department Profile Info & Credentials Hub -->
+      <section id="view-dept-profile" class="hidden">
+        <div id="dept-profile-container" class="w-full space-y-6"></div>
+      </section>
+
+    </main>
+
+    <!-- Minimal Institutional Footer -->
+    <footer class="bg-slate-50 border-t border-slate-200 px-4 py-2.5 text-center text-xs text-slate-500">
+      Internal Quality Assurance Cell (IQAC) • St. Joseph's College (Autonomous), Tiruchirappalli
+    </footer>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="/AAA/js/sample-data.js"></script>
+  <script src="/AAA/js/all-attributes-schema.js"></script>
+  <script src="/AAA/js/attribute1-schema.js"></script>
+  <script src="/AAA/js/excel-exporter.js"></script>
+  <script src="/AAA/js/data-store.js"></script>
+  <script src="/AAA/js/notifications.js"></script>
+  <script src="/AAA/js/auth.js"></script>
+  <script src="/AAA/js/admin-dashboard.js"></script>
+  <script src="/AAA/js/attribute-filter-hub.js"></script>
+  <script src="/AAA/js/form-builder.js"></script>
+  <script src="/AAA/js/dashboard-renderer.js"></script>
+  <script src="/AAA/js/app.js"></script>
+</body>
+</html>

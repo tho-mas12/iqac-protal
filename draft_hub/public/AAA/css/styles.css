@@ -1,0 +1,264 @@
+/* =========================================================
+   Arctic Frost - Aura Theme Specification
+   Base color on BODY - blend modes composite against this (#faf8f2)
+   ========================================================= */
+body {
+  background-color: #faf8f2 !important;
+  color: #1e293b;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  letter-spacing: -0.012em;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+.aura-bg {
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+}
+
+/* Layer 1 - multiply */
+.aura-layer-1 {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(rgba(0,0,0,0) 0%, rgba(200,230,255,0.12) 28%, rgb(255,255,255) 18%, rgb(150,200,255) 68%, rgb(100,130,200) 100%);
+  mix-blend-mode: multiply;
+  filter: blur(90px);
+  transform: translateZ(0);
+  will-change: transform;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Layer 2 - multiply */
+.aura-layer-2 {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(rgba(0,0,0,0) 0%, rgba(200,230,255,0.22) 34%, rgb(255,255,255) 66%, rgb(150,200,255) 82%, rgb(100,130,200) 100%);
+  mix-blend-mode: multiply;
+  filter: blur(90px);
+  transform: translateZ(0);
+  will-change: transform;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@media (min-width: 768px) {
+  .aura-layer-1, .aura-layer-2 {
+    filter: blur(130px);
+  }
+}
+
+/* Arctic Frost Card Styling & Micro-Interactions */
+.arctic-card {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(203, 213, 225, 0.75);
+  border-radius: 1.25rem;
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.arctic-card:hover {
+  background: rgba(255, 255, 255, 0.98);
+  border-color: #3b82f6;
+  transform: translateY(-5px);
+  box-shadow: 0 16px 32px -8px rgba(38, 100, 142, 0.16), 0 6px 14px -3px rgba(38, 100, 142, 0.08);
+}
+
+/* IQAC Annual Academic Audit (AAA) 2026-2027 - Academic Palette Theme */
+:root {
+  --color-primary: #26648E;    /* Deep Classic Ocean / Academic Blue */
+  --color-secondary: #4F8FC0;  /* Soft Cerulean / Slate Blue */
+  --color-cyan: #53D2DC;       /* Vibrant Cyan / Turquoise Accent */
+  --color-peach: #FFE3B3;      /* Warm Cream / Soft Champagne Peach */
+  --color-bg-page: #f8fafc;
+  --color-bg-sidebar: #f0f5f9;
+  --color-border: rgba(79, 143, 192, 0.25);
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  letter-spacing: -0.012em;
+  background-color: #f8fafc;
+  color: #1e293b;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  background-image: radial-gradient(rgba(79, 143, 192, 0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #f0f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #c3d7e8;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #4F8FC0;
+}
+
+/* Academic Card & Container Styles */
+.academic-card {
+  background: #ffffff;
+  border: 1px solid rgba(79, 143, 192, 0.25);
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px 0 rgba(38, 100, 142, 0.05), 0 1px 2px -1px rgba(38, 100, 142, 0.05);
+  transition: all 0.2s ease-in-out;
+}
+.academic-card:hover {
+  border-color: #4F8FC0;
+  box-shadow: 0 4px 10px -1px rgba(38, 100, 142, 0.12);
+}
+
+/* Academic Header Banners */
+.academic-banner {
+  background: linear-gradient(135deg, rgba(38, 100, 142, 0.08) 0%, rgba(79, 143, 192, 0.08) 50%, rgba(255, 227, 179, 0.25) 100%);
+  border: 1px solid rgba(79, 143, 192, 0.35);
+  border-radius: 1rem;
+}
+
+/* Academic Badges */
+.badge-peach {
+  background-color: #FFE3B3;
+  color: #26648E;
+  border: 1px solid #fedba0;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-cyan {
+  background-color: rgba(83, 210, 220, 0.18);
+  color: #125e64;
+  border: 1px solid rgba(83, 210, 220, 0.45);
+  font-weight: 800;
+}
+
+.badge-blue {
+  background-color: rgba(79, 143, 192, 0.12);
+  color: #26648E;
+  border: 1px solid rgba(79, 143, 192, 0.3);
+  font-weight: 800;
+}
+
+/* Glowing Blinking Menu Toggle Button with vibrant Cyan / Peach glow */
+@keyframes academicBlinkGlow {
+  0%, 100% {
+    box-shadow: 0 0 14px rgba(83, 210, 220, 0.8), 0 0 4px rgba(255, 227, 179, 0.9);
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    box-shadow: 0 0 4px rgba(83, 210, 220, 0.3);
+    transform: scale(0.97);
+    opacity: 0.85;
+  }
+}
+
+.sidebar-blink-btn {
+  animation: academicBlinkGlow 2s infinite ease-in-out !important;
+}
+
+/* Primary Theme Button */
+.btn-primary-theme {
+  background-color: #26648E;
+  color: #ffffff;
+  transition: all 0.2s ease-in-out;
+}
+.btn-primary-theme:hover {
+  background-color: #1f5072;
+}
+
+/* Accent Theme Button */
+.btn-accent-theme {
+  background-color: #53D2DC;
+  color: #1a424a;
+  transition: all 0.2s ease-in-out;
+}
+.btn-accent-theme:hover {
+  background-color: #3ec8d3;
+}
+
+/* Glass panel */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(79, 143, 192, 0.25);
+}
+
+/* Table controls */
+table tbody tr:hover td {
+  background-color: rgba(79, 143, 192, 0.08);
+}
+
+/* Animations */
+.animate-fadeIn {
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Dynamic Toast Progress Animation */
+@keyframes toastProgress {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+
+/* Department Side Blinking Submission Deadline Box in Noticeable Coral/Amber Alert */
+@keyframes deptDeadlineBlink {
+  0%, 100% {
+    box-shadow: 0 0 16px rgba(239, 68, 68, 0.45), 0 0 5px rgba(245, 158, 11, 0.6);
+    border-color: #f87171;
+    background-color: #fff1f2;
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 4px rgba(245, 158, 11, 0.2);
+    border-color: #fca5a5;
+    background-color: #ffffff;
+    transform: scale(0.98);
+  }
+}
+
+.dept-deadline-blink {
+  animation: deptDeadlineBlink 1.8s infinite ease-in-out !important;
+}
+
+
+/* Collegiate Official Crest Typography */
+.college-crest-title, .academic-crest-heading {
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.025em;
+}
+
+
+/* Arctic Frost Glassmorphic Dropzone & Bulk Import Styles */
+.dropzone-area {
+  border: 2px dashed rgba(79, 143, 192, 0.5);
+  background: rgba(239, 246, 255, 0.4);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.dropzone-area:hover, .dropzone-area.dragover {
+  border-color: #2563eb;
+  background: rgba(219, 234, 254, 0.7);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.12);
+}

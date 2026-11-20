@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Department {
+  id            String       @id @default(cuid())
+  name          String
+  code          String       @unique
+  shift         String       @default("Shift I") // "Shift I", "Shift II", "Units", etc.
+  driveFolderId String?      // Google Drive Folder ID
+  isActive      Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  users         User[]
+  invitations   Invitation[]
+}
+
+model User {
+  id                String      @id @default(cuid())
+  username          String      @unique
+  password          String      // Hashed bcrypt password
+  name              String
+  role              String      // "DEPARTMENT", "DIRECTOR", "STAFF", "ADMIN"
+  departmentId      String?
+  department        Department? @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  isPasswordChanged Boolean     @default(false)
+  isActive          Boolean     @default(true)
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}
+
+model Invitation {
+  id                String      @id @default(cuid())
+  programTitle      String
+  departmentId      String
+  department        Department  @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  shift             String
+  category          String      // Endowment Lecture, Conference, Webinar, Seminar, Orientation, Skill Development, Induction, FDP, Workshop, Club Activity, Gender Based, Career Guidance, Placement Lecture Series, Training, or custom
+  customCategory    String?
+  fromDate          DateTime
+  toDate            DateTime?
+  
+  // File Details
+  driveFileId       String?
+  driveViewLink     String?     @db.LongText
+  driveDownloadLink String?     @db.LongText
+  localFilePath     String?     @db.LongText
+  fileData          String?     @db.LongText
+  fileName          String
+  fileSize          Int?
+  mimeType          String?
+  
+  // Workflow Status: "PENDING", "REMARKS", "APPROVED"
+  status            String      @default("PENDING")
+  revisionCount     Int         @default(0) // 0 = initial, 1 = after 1st correction, etc.
+  
+  // Director Checklist Review Flags
+  checkLogo         Boolean     @default(false)
+  checkTitle        Boolean     @default(false)
+  checkHeaders      Boolean     @default(false)
+  checkOthers       Boolean     @default(false)
+  directorRemarks   String?     @db.Text
+  remarkedAt        DateTime?
+  approvedAt        DateTime?
+  
+  // Staff Hard Copy Status
+  hardCopyReceived   Boolean     @default(false)
+  hardCopyReceivedAt DateTime?
+  hardCopyStaffName  String?
+
+  // Staff ERP Mail Dispatch Status
+  mailSent           Boolean     @default(false)
+  mailSentAt         DateTime?
+  mailSentStaffName  String?
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  history           InvitationHistory[]
+}
+
+model InvitationHistory {
+  id           String      @id @default(cuid())
+  invitationId String
+  invitation   Invitation  @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  action       String      // "UPLOAD", "REMARKS_ADDED", "REUPLOAD_CORRECTION", "APPROVED", "HARD_COPY_MARKED", "REMARKS_EDITED"
+  actorName    String
+  actorRole    String
+  notes        String?     @db.Text
+  driveFileId  String?
+  fileData     String?     @db.LongText
+  timestamp    DateTime    @default(now())
+}
+
+model SystemSettings {
+  id                        String   @id @default("default")
+  whatsappSenderNumber      String   @default("9626806328")
+  whatsappReceiverNumber    String   @default("7418671366")
+  whatsappEnabled           Boolean  @default(true)
+  whatsappProvider          String   @default("ultramsg") // "ultramsg", "greenapi", "custom_webhook"
+  whatsappInstanceId        String?
+  whatsappApiKey            String?
+  whatsappCustomWebhookUrl  String?
+  announcementText          String?  @db.Text
+  updatedAt                 DateTime @updatedAt
+}

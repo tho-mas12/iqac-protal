@@ -1,0 +1,11241 @@
+// Course Plan Full Application (Faculty, HOD & IQAC Admin)
+// St. Joseph's College (Autonomous), Tiruchirappalli - IQAC
+// Academic Year 2026-2027 (Even Semester)
+
+class CoursePlanApp {
+  static ICT_TOOLS = [
+    'PPT / Interactive Slides',
+    'Video Lecture',
+    'Simulation / Virtual Lab',
+    'Online Quiz / JosTEL Quiz',
+    'Discussion Forum',
+    'E-Book / PDF Notes',
+    'Spreadsheet / Data Analysis',
+    'Programming IDE / Code Editor',
+    'Others'
+  ];
+
+  static ICT_PLATFORMS = [
+    'JosTEL',
+    'Google Classroom',
+    'Moodle',
+    'YouTube',
+    'Kahoot / Quizizz',
+    'SWAYAM / NPTEL',
+    'GitHub',
+    'Others'
+  ];
+
+  static LEARNING_ACTIVITIES = [
+    'Quizzes (MCQs, Short Answer)',
+    'Class Polls / Clicker Questions',
+    'Reflective Journals / Learning Logs',
+    'Think-Pair-Share',
+    'Concept Maps',
+    'Exit Tickets / Minute Papers',
+    'In-class Exercises / Problem-solving',
+    'Group Discussions / Seminars',
+    'Draft Submissions',
+    'Term Papers / Essays',
+    'Projects (Individual/Group)',
+    'Lab Reports / Practical Exams',
+    'Presentations / Viva Voce',
+    'Capstone Projects / Theses',
+    'Case Study Analysis',
+    'Portfolios (Print or Digital)',
+    'Open-Book Exams',
+    'Peer Assessment',
+    'Self-Assessment',
+    'Role Plays / Simulations',
+    'Infographics / Visual Projects',
+    'Blogs / Podcasts / Digital Narratives',
+    'Community-Based Learning Reports',
+    'Gamified Assessments / Interactive Quests',
+    'Other:'
+  ];
+
+  static TEACHING_METHODOLOGIES = [
+    'Lecture-based Learning',
+    'Experiential Learning',
+    'Problem-Based Learning (PBL)',
+    'Case-Based Learning',
+    'Collaborative & Cooperative Learning',
+    'Flipped Classroom',
+    'Inquiry-Based Learning',
+    'Socratic Dialogue / Critical Pedagogy',
+    'Project-Based Learning',
+    'Service Learning',
+    'Studio / Workshop-Based Learning',
+    'Role Play and Dramatization',
+    'Peer Teaching and Evaluation',
+    'Differentiated Instruction',
+    'Data-Driven Instruction',
+    'Other:'
+  ];
+
+  static LEARNING_RESOURCES = [
+    'Text Book / Study Material',
+    'Reference Book / Standard Reference',
+    'PPT / Interactive Lecture Slides',
+    'JosTEL LMS / E-Content / Moodle',
+    'NPTEL / SWAYAM / Coursera MOOCs',
+    'Research Papers / Journal Articles',
+    'Lab Manual / Simulation Software',
+    'Web Links / Online Repositories',
+    'Other:'
+  ];
+
+  static TL_APPROACHES = [
+    'Lecture-based Learning',
+    'Experiential Learning',
+    'Problem-Based Learning (PBL)',
+    'Case - Based Learning',
+    'Collaborative & Cooperative Learning',
+    'Flipped Classroom',
+    'Inquiry-Based Learning',
+    'Socratic Dialogue / Critical Pedagogy',
+    'Project-Based Learning',
+    'Service Learning',
+    'Studio / Workshop-Based Learning',
+    'Role Play and Dramatization',
+    'Peer Teaching and Evaluation',
+    'Differentiated Instruction',
+    'Data-Driven Instruction',
+    'Other'
+  ];
+
+  static TL_ASSESSMENT_COMPONENTS = [
+    'Quizzes (MCQs, Short Answer)',
+    'Class Polls / Clicker Questions',
+    'Reflective Journals / Learning Logs',
+    'Think-Pair-Share',
+    'Concept Maps',
+    'Exit Tickets / Minute Papers',
+    'In-class Exercises / Problem-solving',
+    'Group Discussions / Seminars',
+    'Draft Submissions',
+    'End-Semester Exams',
+    'Mid-Semester Tests',
+    'Term Papers / Essays',
+    'Projects (Individual/Group)',
+    'Lab Reports / Practical Exams',
+    'Presentations / Viva Voce',
+    'Capstone Projects / Theses',
+    'Case Study Analysis',
+    'Portfolios (Print or Digital)',
+    'Open-Book Exams',
+    'Peer Assessment',
+    'Self-Assessment',
+    'Role Plays / Simulations',
+    'Infographics / Visual Projects',
+    'Blogs / Podcasts / Digital Narratives',
+    'Community-Based Learning Reports',
+    'Gamified Assessments / Interactive Quests',
+    'Other'
+  ];
+
+
+  constructor() {
+    this.departments = [];
+    this.selectedDept = localStorage.getItem('CP_SELECTED_DEPT') || 'Computer Science';
+    this.currentUser = null; // null (Faculty/Public), { role: 'faculty', ... }, { role: 'hod', ... }, { role: 'admin' }
+    this.plans = [];
+    this.activePlan = null;
+    this.viewMode = 'login'; // Display login page by default when browsing
+    this.activeFormTab = 'part1'; // 'part1' | 'part2' | 'part3' | 'declaration'
+    this.loginTab = 'faculty'; // 'faculty' | 'hod' | 'admin'
+    this.selectedLoginDept = '';
+    this.selectedLoginFaculty = '';
+    this.adminFilter = 'Approved';
+    this.adminDeptFilter = 'all';
+    this.adminTab = 'dept';
+    this.adminManageSubTab = 'faculty';
+    this.adminLevelFilter = 'all'; // 'all' | 'UG' | 'PG'
+    this.adminSemFilter = 'even'; // 'even' | 'all' | '2' | '4' | '6' | '1' | '3' | '5'
+    this.adminStatusFilter = 'all'; // 'all' | 'Approved' | 'Pending' | 'Draft' | 'Revision Needed' | 'Not Started'
+    this.adminSearchQuery = '';
+    this.adminCoursePage = 1;
+    this.adminCoursePageSize = 50;
+    this.hodTab = 'courses';
+    this.syllabusCourses = [];
+    this.syllabusLoaded = false;
+    this.systemSettings = { submissions_enabled: true, maintenance_mode: false };
+  }
+
+  async init() {
+    await this.fetchSystemSettings();
+    await this.loadDepartmentsData();
+    try {
+      const cached = localStorage.getItem('CP_CURRENT_USER');
+      if (cached && !this.currentUser) {
+        this.currentUser = JSON.parse(cached);
+      }
+    } catch (e) {}
+    // Start syllabus data fetch
+    this.syllabusPromise = this.loadSyllabusData();
+    await this.checkAuth();
+
+    // Sync selectedDept from authenticated user
+    if (this.currentUser && this.currentUser.department_name) {
+      this.selectedDept = this.currentUser.department_name;
+    }
+
+    // Set default login dept
+    if (!this.selectedLoginDept && this.departments.length > 0) {
+      this.selectedLoginDept = this.selectedDept || this.departments[0].name;
+    }
+
+    // Listen to browser Back / Forward buttons for clean URL navigation
+    window.addEventListener('popstate', () => {
+      this.handleRoute();
+    });
+
+    // If directly entering a route that requires syllabus (new, edit, view) or already authenticated, await syllabus
+    const r = this.getRoute();
+    if (r.name === 'new' || r.name === 'edit' || r.name === 'view' || this.currentUser) {
+      await this.syllabusPromise;
+    }
+
+    // Dispatch route based on URL
+    await this.handleRoute();
+  }
+
+  getRoute() {
+    const path = window.location.pathname.replace(/\/+$/, '');
+    const search = new URLSearchParams(window.location.search);
+    const hash = window.location.hash.replace(/^#/, '');
+
+    if (path.endsWith('/login') || search.has('login') || hash === 'login') return { name: 'login' };
+    if (path.endsWith('/dashboard') || search.has('dashboard') || hash === 'dashboard') return { name: 'dashboard' };
+    if (path.endsWith('/new') || path.endsWith('/create') || search.has('new') || hash === 'new') return { name: 'new' };
+    if (path.endsWith('/edit') || search.has('edit')) return { name: 'edit', id: search.get('id') || search.get('edit') };
+    if (path.endsWith('/view') || path.endsWith('/print') || search.has('view') || search.has('print')) return { name: 'view', id: search.get('id') || search.get('view') || search.get('print') };
+    if (path.endsWith('/hod') || search.has('hod') || hash === 'hod') return { name: 'hod' };
+    if (path.endsWith('/admin') || search.has('admin') || hash === 'admin') return { name: 'admin' };
+
+    return { name: 'root' };
+  }
+
+  async navigateTo(url, replace = false) {
+    if (replace) {
+      window.history.replaceState(null, '', url);
+    } else {
+      window.history.pushState(null, '', url);
+    }
+    if (url.includes('/new') || url.includes('/edit') || url.includes('/view')) {
+      if (!this.syllabusLoaded || !this.syllabusCourses || this.syllabusCourses.length === 0) {
+        if (this.syllabusPromise) {
+          await this.syllabusPromise;
+        } else {
+          await this.loadSyllabusData();
+        }
+      }
+    }
+    await this.handleRoute();
+  }
+
+  async handleRoute() {
+    const r = this.getRoute();
+
+    if (!this.currentUser) {
+      this.viewMode = 'login';
+      if (r.name !== 'login') {
+        window.history.replaceState(null, '', '/course-plan/login');
+      }
+      this.render();
+      return;
+    }
+
+    if (r.name === 'new') {
+      this.activePlan = this.createDefaultPlan();
+      this.viewMode = 'form';
+      this.activeFormTab = 'part1';
+      this.render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (r.name === 'edit' && r.id) {
+      await this.loadPlanForEdit(r.id);
+      if (this.currentUser && this.currentUser.role === 'faculty' && this.activePlan && (this.activePlan.status === 'Submitted' || this.activePlan.hod_status === 'Pending' || this.activePlan.hod_status === 'Approved')) {
+        alert('🔒 This course plan has already been submitted to the HOD and is locked for editing.');
+        this.navigateTo('/course-plan/view?id=' + r.id, true);
+        return;
+      }
+      this.viewMode = 'form';
+      this.activeFormTab = 'part1';
+      this.render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (r.name === 'view' && r.id) {
+      this.printSource = 'dashboard';
+      await this.loadPlanForPrint(r.id);
+      this.viewMode = 'print';
+      this.render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    // Dashboard views
+    this.viewMode = 'dashboard';
+    if (this.currentUser.role === 'faculty') {
+      if (r.name === 'hod' && this.currentUser.is_hod) {
+        this.currentDashboardView = 'hod';
+      } else if (!this.currentDashboardView || this.currentDashboardView !== 'hod') {
+        this.currentDashboardView = 'faculty';
+        if (r.name !== 'dashboard') {
+          window.history.replaceState(null, '', '/course-plan/dashboard');
+        }
+      }
+      await this.fetchPlans();
+    } else if (this.currentUser.role === 'hod') {
+      if (r.name === 'dashboard' || this.currentDashboardView === 'faculty') {
+        this.currentDashboardView = 'faculty';
+      } else {
+        this.currentDashboardView = 'hod';
+        if (r.name !== 'hod') {
+          window.history.replaceState(null, '', '/course-plan/hod');
+        }
+      }
+      await this.fetchPlans();
+    } else if (this.currentUser.role === 'admin') {
+      if (r.name !== 'admin' && r.name !== 'dashboard') {
+        window.history.replaceState(null, '', '/course-plan/admin');
+      }
+      await this.fetchPlans();
+    }
+
+    this.render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async loadSyllabusData() {
+    if (this.syllabusLoaded && this.syllabusCourses && this.syllabusCourses.length > 0) {
+      return this.syllabusCourses;
+    }
+
+    const paths = [
+      '/course-plan/data/syllabus_master.json?v=20261113I',
+      '/course-plan/syllabus_master.json?v=20261113I',
+      'data/syllabus_master.json?v=20261113I',
+      'syllabus_master.json?v=20261113I'
+    ];
+
+    for (const p of paths) {
+      try {
+        const res = await fetch(p);
+        if (res.ok) {
+          const contentType = (res.headers.get('content-type') || '').toLowerCase();
+          if (contentType.includes('json') || contentType === '' || p.includes('.json')) {
+            const data = await res.json();
+            if (Array.isArray(data) && data.length > 0) {
+              this.syllabusCourses = data;
+              this.syllabusLoaded = true;
+              console.log(`[CoursePlanApp] Successfully loaded ${data.length} syllabus courses from ${p}`);
+              if (this.viewMode === 'form') {
+                this.refreshSyllabusCourseDropdown();
+              }
+              return data;
+            }
+          }
+        }
+      } catch (err) {
+        console.warn(`[CoursePlanApp] Failed loading syllabus from ${p}:`, err);
+      }
+    }
+  }
+
+  refreshSyllabusCourseDropdown() {
+    const selectEl = document.getElementById('cp-course-select');
+    if (!selectEl) return;
+    const relevantCourses = this.getRelevantSyllabusCourses();
+    const curVal = selectEl.value || (this.activePlan && this.activePlan.course_code) || '';
+
+    let html = `<option value="">-- Choose Course to Auto-Fill Details (${relevantCourses.length} available) --</option>`;
+    relevantCourses.forEach(c => {
+      const isSel = (c.course_code === curVal) ? 'selected' : '';
+      html += `<option value="${this.escapeHtml(c.course_code)}" ${isSel}>
+        ${this.escapeHtml(c.course_code)} - ${this.escapeHtml(c.course_title)} (${c.credits || 3} Credits, ${c.hours || 4}h/wk)
+      </option>`;
+    });
+    selectEl.innerHTML = html;
+
+    const badge = selectEl.closest('.bg-indigo-50\\/70')?.querySelector('.bg-indigo-600') || selectEl.parentElement?.querySelector('.bg-indigo-600');
+    if (badge) {
+      const semNum = this.getSemesterNum(this.activePlan ? this.activePlan.semester : 'II');
+      badge.textContent = `${relevantCourses.length} courses in Semester ${semNum}`;
+    }
+  }
+
+  getDepartmentProgrammes(deptName) {
+    const dept = (deptName || this.selectedDept || '').trim();
+
+    // Explicit curated programmes for college departments
+    const specialMap = {
+      'Computer Science': ['B.Sc. Computer Science', 'MCA (Master of Computer Applications)'],
+      'Information Technology': ['B.C.A (Computer Applications)', 'M.Sc. Computer Science'],
+      'Commerce': ['B.Com. Commerce', 'M.Com. Commerce'],
+      'Commerce CA': ['B.Com. Commerce with Computer Applications', 'M.Com. Commerce Computer Applications'],
+      'Commerce Business Analytics': ['B.Com. Business Analytics'],
+      'Commerce Honours': ['B.Com. Honours'],
+      'Commerce Strategic Finance': ['B.Com. Strategic Finance'],
+      'Mathematics': ['B.Sc. Mathematics', 'M.Sc. Mathematics'],
+      'Physics': ['B.Sc. Physics', 'M.Sc. Physics'],
+      'Chemistry': ['B.Sc. Chemistry', 'M.Sc. Chemistry'],
+      'Botany': ['B.Sc. Botany', 'M.Sc. Botany'],
+      'Biotechnology': ['B.Sc. Biotechnology', 'M.Sc. Biotechnology'],
+      'Biochemistry': ['M.Sc. Biochemistry'],
+      'Data Science': ['M.Sc. Data Science'],
+      'Artificial Intelligence': ['B.Sc. Artificial Intelligence and Machine Learning', 'M.Sc. Artificial Intelligence'],
+      'Economics': ['B.A. Economics', 'M.A. Economics'],
+      'English': ['B.A. English', 'M.A. English'],
+      'History': ['B.A. History', 'M.A. History'],
+      'Tamil': ['B.A. Tamil', 'M. A. Tamil'],
+      'BBA': ['B.B.A (Business Administration)'],
+      'B.Voc SD & SA': ['B.Voc. Software Development & System Administration', 'B.Voc. SD & SA'],
+      'Visual Communication': ['B.Sc. Visual Communication', 'B.Voc. Viscom Technology', 'M.Sc. Visual Communication'],
+      'Electronics': ['B.Sc. Electronics', 'M.Sc. Electronics'],
+      'Counselling Psy': ['M.Sc. Counselling Psychology'],
+      'HRM': ['M.A. Human Resource Management'],
+      'Physical Education': ['B.Sc. Physical Education'],
+      'Human Excellence': ['Human Excellence & Value Education']
+    };
+
+    // Full list of UG programmes across the college for Language & Foundation faculties
+    const allCollegeUGProgrammes = [
+      'B.A. Economics',
+      'B.A. English',
+      'B.A. History',
+      'B.A. Tamil',
+      'B.B.A (Business Administration)',
+      'B.Com. Commerce',
+      'B.Com. Commerce with Computer Applications',
+      'B.Com. Business Analytics',
+      'B.Com. Honours',
+      'B.Com. Strategic Finance',
+      'B.Sc. Computer Science',
+      'B.C.A (Computer Applications)',
+      'B.Sc. Mathematics',
+      'B.Sc. Physics',
+      'B.Sc. Chemistry',
+      'B.Sc. Botany',
+      'B.Sc. Biotechnology',
+      'B.Sc. Artificial Intelligence and Machine Learning',
+      'B.Sc. Visual Communication',
+      'B.Voc. Software Development & System Administration',
+      'B.Voc. Viscom Technology',
+      'B.Sc. Electronics',
+      'B.Sc. Physical Education'
+    ];
+
+    const isLanguageOrFoundationDept = /^(English|Tamil|French|Hindi|Sanskrit|Human Excellence)$/i.test(dept);
+    if (isLanguageOrFoundationDept) {
+      const ownProgs = specialMap[dept] || [dept + ' Programme'];
+      const otherProgs = allCollegeUGProgrammes.filter(p => !ownProgs.includes(p));
+      return [...ownProgs, ...otherProgs];
+    }
+
+    if (specialMap[dept]) return specialMap[dept];
+
+    // Otherwise derive from syllabus master
+    const progs = new Set();
+    (this.syllabusCourses || []).forEach(c => {
+      if (c.department && (c.department.toLowerCase() === dept.toLowerCase() || dept.toLowerCase().includes(c.department.toLowerCase()))) {
+        if (c.programme) progs.add(c.programme);
+      }
+    });
+
+    return progs.size > 0 ? Array.from(progs) : [dept + ' Programme'];
+  }
+
+  getSemesterNum(sem) {
+    if (!sem) return 2;
+    const s = String(sem).trim().toUpperCase();
+    if (s === 'VI' || s === '6' || s.includes('VI') || s.includes('SEM 6') || s.includes('SEM-6')) return 6;
+    if (s === 'IV' || s === '4' || s.includes('IV') || s.includes('SEM 4') || s.includes('SEM-4')) return 4;
+    if (s === 'V' || s === '5' || s.includes('SEM 5') || s.includes('SEM-5')) return 5;
+    if (s === 'III' || s === '3' || s.includes('III') || s.includes('SEM 3') || s.includes('SEM-3')) return 3;
+    if (s === 'II' || s === '2' || s.includes('II') || s.includes('SEM 2') || s.includes('SEM-2')) return 2;
+    if (s === 'I' || s === '1' || s.includes('SEM 1') || s.includes('SEM-1')) return 1;
+    return 2;
+  }
+
+  isDeptMatch(courseDept, selectedDept) {
+    if (!courseDept || !selectedDept) return false;
+    const cd = courseDept.toLowerCase().trim();
+    const sd = selectedDept.toLowerCase().trim();
+    if (cd === sd) return true;
+    if (cd.includes(sd) || sd.includes(cd)) return true;
+
+    // Normalization (strip punctuation, dots, dashes, underscores, and normalize &)
+    const norm = (s) => (s || '').toLowerCase().replace(/[_\.\-]/g, ' ').replace(/&amp;/g, 'and').replace(/&/g, 'and').replace(/\s+/g, ' ').trim();
+    const ncd = norm(courseDept);
+    const nsd = norm(selectedDept);
+    if (ncd === nsd || ncd.includes(nsd) || nsd.includes(ncd)) return true;
+
+    // Robust B.Voc SD & SA matching
+    const isSdSa = (s) => (s.includes('voc') || s.includes('software') || s.includes('uss')) &&
+      (s.includes('sd') || s.includes('sa') || s.includes('software') || s.includes('uss') || s.includes('system'));
+    if (isSdSa(ncd) && isSdSa(nsd)) return true;
+
+    if (nsd.includes('counselling') && ncd.includes('counselling')) return true;
+    if (nsd.includes('visual') && ncd.includes('visual')) return true;
+    if ((nsd.includes('human resource') || nsd.includes('hrm')) && (ncd.includes('human resource') || ncd.includes('hrm'))) return true;
+    if (nsd.includes('human excellence') && ncd.includes('human excellence')) return true;
+    if (nsd.includes('physical education') && ncd.includes('physical education')) return true;
+    if (nsd.includes('data science') && ncd.includes('data science')) return true;
+    if (nsd.includes('artificial intelligence') && (ncd.includes('artificial intelligence') || ncd.includes('ai'))) return true;
+
+    return false;
+  }
+
+  getRelevantSyllabusCourses() {
+    if (!this.syllabusCourses || this.syllabusCourses.length === 0) return [];
+    const dept = (this.activePlan && this.activePlan.department_name) ? this.activePlan.department_name : this.selectedDept;
+    const sem = (this.activePlan && this.activePlan.semester) ? this.activePlan.semester : 'II';
+    const prog = (this.activePlan && this.activePlan.programme) ? this.activePlan.programme : '';
+    const semNum = this.getSemesterNum(sem);
+
+    const dLower = (dept || '').toLowerCase().trim();
+    const pLower = (prog || '').toLowerCase().trim();
+
+    const isBVocDept = dLower.includes('voc') || dLower.includes('sd') || dLower.includes('sa') || dLower.includes('software') || dLower.includes('uss');
+    const isEng = dLower === 'english';
+    const isTam = dLower === 'tamil';
+    const isFrench = dLower.includes('french');
+    const isHindi = dLower.includes('hindi');
+    const isSanskrit = dLower.includes('sanskrit');
+
+    const isOwnMajor = (isEng && pLower.includes('english')) || (isTam && pLower.includes('tamil'));
+    const isPG = pLower.startsWith('m.') || pLower.includes('mca') || pLower.includes('master') || pLower.includes('post');
+
+    let list = this.syllabusCourses.filter(c => {
+      // 1. Semester filtering (only show courses for corresponding semester II, IV, or VI)
+      if (c.semester_num && c.semester_num !== semNum) return false;
+
+      const code = (c.course_code || '').toUpperCase();
+      const title = (c.course_title || '');
+      const cat = (c.course_category || '');
+
+      // 2. B.Voc SD & SA
+      if (isBVocDept) {
+        return code.includes('USS');
+      }
+
+      // 3. English Department
+      if (isEng) {
+        if (isPG) {
+          return this.isDeptMatch(c.department, 'English') && (code.startsWith('25PEN') || code.includes('PEN'));
+        }
+        if (isOwnMajor) {
+          return this.isDeptMatch(c.department, 'English');
+        }
+        // English faculty teaching outside UG programme: General English courses
+        return this.isDeptMatch(c.department, 'English') && (code.includes('GE') || cat === 'General English' || title.toLowerCase().includes('general english'));
+      }
+
+      // 4. Tamil Department
+      if (isTam) {
+        if (isPG) {
+          return this.isDeptMatch(c.department, 'Tamil') && (code.startsWith('25PTA') || code.includes('PTA'));
+        }
+        if (isOwnMajor) {
+          return this.isDeptMatch(c.department, 'Tamil');
+        }
+        // Tamil faculty teaching outside UG programme: General Tamil courses (exclude SL Self Learning)
+        return this.isDeptMatch(c.department, 'Tamil') && !code.includes('SL') && (code.includes('GL') || cat === 'General Language' || title.toLowerCase().includes('general tamil') || title.includes('பொதுத்தமிழ்') || title.includes('பபொதுத்தமிழ்'));
+      }
+
+      // 5. Other Language & Foundation Departments (French, Hindi, Sanskrit, Human Excellence)
+      if (isFrench || isHindi || isSanskrit || dLower.includes('human excellence')) {
+        return this.isDeptMatch(c.department, dept);
+      }
+
+      // 6. Standard Departments
+      const deptMatches = this.isDeptMatch(c.department, dept);
+      if (!deptMatches) return false;
+
+      if (prog && dept === 'Computer Science') {
+        if (prog.includes('MCA') && !code.includes('PCA')) return false;
+        if (prog.includes('B.Sc') && !code.includes('UCS')) return false;
+      } else if (prog && dept === 'Information Technology') {
+        if (prog.includes('M.Sc') && !code.includes('PCS')) return false;
+        if ((prog.includes('BCA') || prog.includes('B.C.A')) && !code.includes('UBC')) return false;
+      }
+
+      return true;
+    });
+
+    // Stream-based prioritization for General English & General Tamil in Semester IV
+    if (semNum === 4 && (isEng || isTam) && !isOwnMajor && !isPG) {
+      const isSci = /sc|bca|voc|math|phys|chem|bot|bio|ai|elec/i.test(pLower);
+      const isCom = /com|bba|bus|hon|fin/i.test(pLower);
+      const isArt = /art|econ|hist|lit|lang/i.test(pLower);
+
+      list.sort((a, b) => {
+        const ca = (a.course_code || '').toUpperCase();
+        const cb = (b.course_code || '').toUpperCase();
+        if (isEng) {
+          if (isSci) {
+            if (ca.includes('GE04B')) return -1;
+            if (cb.includes('GE04B')) return 1;
+          } else if (isCom) {
+            if (ca.includes('GE04C')) return -1;
+            if (cb.includes('GE04C')) return 1;
+          } else if (isArt) {
+            if (ca.includes('GE04A')) return -1;
+            if (cb.includes('GE04A')) return 1;
+          }
+        } else if (isTam) {
+          if (isSci) {
+            if (ca.includes('GL04B')) return -1;
+            if (cb.includes('GL04B')) return 1;
+          } else if (isCom) {
+            if (ca.includes('GL04C')) return -1;
+            if (cb.includes('GL04C')) return 1;
+          } else if (isArt) {
+            if (ca.includes('GL04A')) return -1;
+            if (cb.includes('GL04A')) return 1;
+          }
+        }
+        return 0;
+      });
+    }
+
+    return list;
+  }
+
+  detectCourseCategory(code, title) {
+    const ucode = (code || '').toUpperCase();
+    const utitle = (title || '').toUpperCase();
+
+    if (ucode.includes('CC') || utitle.includes('CORE COURSE')) return 'Core';
+    if (ucode.includes('CP') || utitle.includes('PRACTICAL')) return 'Core Practical';
+    if (ucode.includes('AC') || utitle.includes('ALLIED') || ucode.includes('AO')) return 'Allied';
+    if (ucode.includes('ES') || utitle.includes('ELECTIVE') || utitle.includes('DSE')) return 'Elective';
+    if (ucode.includes('SEC') || ucode.includes('SE') || utitle.includes('SKILL')) return 'Skill Enhancement (SEC)';
+    if (ucode.includes('VE') || utitle.includes('VALUE') || utitle.includes('HUMAN RIGHTS')) return 'Value Added (VAC)';
+    if (ucode.includes('AE') || ucode.includes('ENVIRONMENTAL')) return 'Ability Enhancement (AECC)';
+    if (ucode.includes('OE') || utitle.includes('OPEN ELECTIVE')) return 'Open Elective';
+    if (ucode.includes('GL') || utitle.includes('GENERAL TAMIL') || utitle.includes('FRENCH') || utitle.includes('HINDI') || utitle.includes('SANSKRIT')) return 'General Language';
+    if (ucode.includes('GE') || utitle.includes('GENERAL ENGLISH')) return 'General English';
+    return 'Core';
+  }
+
+  onSemesterChange(newSem) {
+    if (!this.activePlan) this.activePlan = this.createDefaultPlan();
+    this.harvestFormInputs();
+    this.activePlan.semester = newSem;
+
+    // Reset course code if it doesn't match new semester
+    const curCode = this.activePlan.course_code;
+    if (curCode) {
+      const semNum = this.getSemesterNum(newSem);
+      const match = (this.syllabusCourses || []).find(c => c.course_code.toLowerCase() === curCode.toLowerCase().trim());
+      if (match && match.semester_num && match.semester_num !== semNum) {
+        this.activePlan.course_code = '';
+        this.activePlan.course_title = '';
+      }
+    }
+
+    this.render();
+  }
+
+  onProgrammeChange(newProg) {
+    if (!this.activePlan) this.activePlan = this.createDefaultPlan();
+    this.harvestFormInputs();
+    this.activePlan.programme = newProg;
+
+    const isPG = newProg.startsWith('M.') || newProg.includes('MCA') || newProg.includes('Master') || newProg.includes('Post');
+    this.activePlan.is_pg = isPG;
+
+    // Update Year & Class dropdown default according to UG vs PG
+    if (isPG) {
+      if (!this.activePlan.year_class || this.activePlan.year_class.includes('UG')) {
+        this.activePlan.year_class = 'I PG';
+      }
+    } else {
+      if (!this.activePlan.year_class || this.activePlan.year_class.includes('PG')) {
+        this.activePlan.year_class = 'I UG';
+      }
+    }
+
+    this.applyAssessmentRules(isPG);
+    this.render();
+  }
+
+  onYearClassChange(newYc) {
+    if (!this.activePlan) this.activePlan = this.createDefaultPlan();
+    this.harvestFormInputs();
+    this.activePlan.year_class = newYc;
+
+    // Automatically sync corresponding even semester for the academic year 2026-2027 Even Semester
+    if (newYc === 'I UG' || newYc === 'I PG') {
+      this.activePlan.semester = 'II';
+    } else if (newYc === 'II UG' || newYc === 'II PG') {
+      this.activePlan.semester = 'IV';
+    } else if (newYc === 'III UG') {
+      this.activePlan.semester = 'VI';
+    }
+
+    const isPG = newYc.includes('PG') || newYc.includes('MCA');
+    this.activePlan.is_pg = isPG;
+    this.activePlan.is_auto_fetched = true;
+    this.applyAssessmentRules(isPG);
+    this.render();
+  }
+
+  onSectionChange(newSec) {
+    if (!this.activePlan) this.activePlan = this.createDefaultPlan();
+    this.activePlan.section = newSec;
+  }
+
+  onCourseSharingChange(isShared) {
+    if (!this.activePlan) this.activePlan = this.createDefaultPlan();
+    this.activePlan.is_shared_course = isShared;
+    if (!isShared) {
+      this.activePlan.shared_faculty_name = '';
+    }
+    const box = document.getElementById('cp-shared-faculty-box');
+    if (box) {
+      if (isShared) {
+        box.classList.remove('hidden');
+      } else {
+        box.classList.add('hidden');
+      }
+    }
+    const radios = document.querySelectorAll('input[name="course_sharing_mode"]');
+    radios.forEach(r => {
+      const parent = r.closest('label');
+      if (!parent) return;
+      if (r.checked) {
+        parent.classList.add('bg-white', 'border-amber-500', 'ring-2', 'ring-amber-500/20', 'shadow-xs');
+        parent.classList.remove('bg-white/70', 'border-slate-200');
+      } else {
+        parent.classList.remove('bg-white', 'border-amber-500', 'ring-2', 'ring-amber-500/20', 'shadow-xs');
+        parent.classList.add('bg-white/70', 'border-slate-200');
+      }
+    });
+  }
+
+  getSharedFacultyList() {
+    if (!this.activePlan) return [];
+    const raw = (this.activePlan.shared_faculty_name || (this.activePlan.general_details && this.activePlan.general_details.shared_faculty_name) || '').trim();
+    if (!raw) return [];
+    return raw.split(',').map(s => s.trim()).filter(Boolean);
+  }
+
+  getAllCourseFacultyList() {
+    if (!this.activePlan) return [];
+    const primary = (this.activePlan.faculty_name || (this.currentUser ? this.currentUser.faculty_name : '') || '').trim();
+    const shared = this.getSharedFacultyList();
+    const list = [];
+    if (primary) list.push(primary);
+    shared.forEach(s => {
+      if (s && !list.includes(s)) list.push(s);
+    });
+    return list;
+  }
+
+  addSharedFaculty(name) {
+    if (!name || !name.trim()) return;
+    const clean = name.trim();
+    if (!this.activePlan) this.activePlan = this.createDefaultPlan();
+    const primary = (this.activePlan.faculty_name || (this.currentUser ? this.currentUser.faculty_name : '') || '').trim();
+    if (primary && clean.toLowerCase() === primary.toLowerCase()) {
+      alert('This faculty member is already the primary course instructor.');
+      return;
+    }
+    const list = this.getSharedFacultyList();
+    if (!list.includes(clean)) {
+      list.push(clean);
+      this.activePlan.shared_faculty_name = list.join(', ');
+      if (!this.activePlan.general_details) this.activePlan.general_details = {};
+      this.activePlan.general_details.shared_faculty_name = this.activePlan.shared_faculty_name;
+      this.renderSharedFacultyChips();
+    }
+  }
+
+  removeSharedFaculty(name) {
+    if (!this.activePlan) return;
+    let list = this.getSharedFacultyList();
+    list = list.filter(n => n !== name);
+    this.activePlan.shared_faculty_name = list.join(', ');
+    if (!this.activePlan.general_details) this.activePlan.general_details = {};
+    this.activePlan.general_details.shared_faculty_name = this.activePlan.shared_faculty_name;
+    this.renderSharedFacultyChips();
+  }
+
+  renderSharedFacultyChips() {
+    const container = document.getElementById('cp-shared-faculty-chips');
+    const hiddenInput = document.getElementById('cp-shared-faculty-name');
+    const list = this.getSharedFacultyList();
+    if (hiddenInput) hiddenInput.value = list.join(', ');
+    if (!container) return;
+    if (list.length === 0) {
+      container.innerHTML = `<span class="text-[11px] text-amber-700 italic">No co-faculty added yet. Choose from dropdown below and click <strong>+ Add Co-Faculty</strong>.</span>`;
+    } else {
+      container.innerHTML = list.map(name => `
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold bg-amber-100 text-amber-950 border border-amber-300 shadow-2xs">
+          <i data-lucide="user-check" class="w-3.5 h-3.5 text-amber-700"></i>
+          <span>${this.escapeHtml(name)}</span>
+          <button type="button" onclick="coursePlanApp.removeSharedFaculty('${this.escapeHtml(name)}')" class="hover:text-red-700 font-black cursor-pointer ml-1 p-0.5 rounded hover:bg-amber-200/60" title="Remove">✕</button>
+        </span>
+      `).join('');
+      if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons();
+      }
+    }
+  }
+
+  addSharedFacultyFromSelect() {
+    const sel = document.getElementById('cp-add-shared-faculty-select');
+    if (!sel || !sel.value) {
+      alert('Please select a faculty member from the dropdown first.');
+      return;
+    }
+    this.addSharedFaculty(sel.value);
+    sel.value = '';
+  }
+
+  onSharedFacultyDeptChange(deptName) {
+    const selectEl = document.getElementById('cp-add-shared-faculty-select');
+    if (!selectEl) return;
+    const deptObj = this.departments.find(d => d.name === deptName) || { faculty: [] };
+    const loggedInFac = (this.currentUser && this.currentUser.faculty_name) ? this.currentUser.faculty_name.trim().toLowerCase() : (this.activePlan && this.activePlan.faculty_name ? this.activePlan.faculty_name.trim().toLowerCase() : '');
+    const facs = (deptObj.faculty || []).map(f => typeof f === 'string' ? f : f.name).filter(n => {
+      if (!n) return false;
+      if (loggedInFac && n.trim().toLowerCase() === loggedInFac) return false;
+      return true;
+    });
+
+    selectEl.innerHTML = `
+      <option value="">-- Choose Co-Faculty from ${this.escapeHtml(deptName)} (${facs.length}) --</option>
+      ${facs.map(name => `<option value="${this.escapeHtml(name)}">${this.escapeHtml(name)}</option>`).join('')}
+    `;
+  }
+
+  onSharedFacultyChange(val) {
+    if (!this.activePlan) this.activePlan = this.createDefaultPlan();
+    this.activePlan.shared_faculty_name = (val || '').trim();
+    if (!this.activePlan.general_details) this.activePlan.general_details = {};
+    this.activePlan.general_details.shared_faculty_name = this.activePlan.shared_faculty_name;
+  }
+
+  fetchFromSyllabus(courseCode, showAlert = false) {
+    if (!courseCode) return;
+    const cleanCode = courseCode.toLowerCase().trim();
+    const course = (this.syllabusCourses || []).find(c => c.course_code.toLowerCase().trim() === cleanCode);
+    if (!course) {
+      if (showAlert) alert("Course code '" + courseCode + "' not found in syllabus database for this department.");
+      return;
+    }
+
+    if (!this.activePlan) this.activePlan = this.createDefaultPlan();
+
+    // Preserve already entered faculty metadata without letting stale course inputs overwrite
+    const curDept = document.getElementById('cp-dept-name')?.value;
+    if (curDept) this.activePlan.department_name = curDept;
+    const curFac = document.getElementById('cp-faculty-name')?.value;
+    if (curFac) this.activePlan.faculty_name = curFac;
+    const curSem = document.getElementById('cp-semester')?.value;
+    if (curSem) this.activePlan.semester = curSem;
+    const curYc = document.getElementById('cp-year-class')?.value;
+    if (curYc) this.activePlan.year_class = curYc;
+    const curSec = document.getElementById('cp-section')?.value;
+    if (curSec) this.activePlan.section = curSec;
+
+    // Auto-fill course details from syllabus master
+    this.activePlan.course_code = course.course_code;
+    this.activePlan.course_title = course.course_title || '';
+    this.activePlan.credits = course.credits || '3';
+    this.activePlan.course_category = course.course_category || this.detectCourseCategory(course.course_code, course.course_title);
+
+    if (course.programme && (!this.activePlan.programme || this.activePlan.programme === '')) {
+      this.activePlan.programme = course.programme;
+    }
+
+    const weeklyHrs = parseInt(course.hours) || 4;
+    this.activePlan.teaching_hours = `${weeklyHrs * 15} Hours & ${weeklyHrs} Hours/Week`;
+
+    const isPG = course.level === 'PG' || (course.year_class && course.year_class.includes('PG')) || course.course_code.includes('P') || (this.activePlan.programme && this.activePlan.programme.startsWith('M.'));
+    this.activePlan.is_pg = isPG;
+
+    const courseCos = (course.cos && course.cos.length > 0) ? course.cos : (course.course_outcomes || []);
+    if (courseCos.length > 0) {
+      this.activePlan.course_outcomes = JSON.parse(JSON.stringify(courseCos));
+    }
+
+    const perUnitHours = Math.round((weeklyHrs * 15) / 5);
+    const units = ['Unit I', 'Unit II', 'Unit III', 'Unit IV', 'Unit V'];
+    this.activePlan.unit_completion_plan = units.map((u, i) => ({
+      unit: u,
+      planned_hours: String(perUnitHours),
+      actual_hours: String(perUnitHours),
+      target_date: (this.activePlan.unit_completion_plan && this.activePlan.unit_completion_plan[i]) ? this.activePlan.unit_completion_plan[i].target_date : ''
+    }));
+
+    this.activePlan.is_auto_fetched = true;
+    this.applyAssessmentRules(isPG);
+    this.render();
+
+    this.showAutoFillToast(course);
+
+    if (showAlert) {
+      alert("✓ Auto-fetched syllabus details for " + course.course_code + ":\n• Course Title: " + (course.course_title || '—') + "\n• Credits: " + this.activePlan.credits + "\n• Teaching Hours: " + weeklyHrs + " Hrs/Week (" + (weeklyHrs * 15) + " Total)\n• Unit Hours: " + perUnitHours + " Hrs/Unit (Default Actual Hours pre-filled)\n• Course Outcomes: " + (courseCos ? courseCos.length : 0) + " COs loaded!");
+    }
+  }
+
+  showAutoFillToast(course) {
+    let toast = document.getElementById('cp-autofill-toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'cp-autofill-toast';
+      document.body.appendChild(toast);
+    }
+    toast.className = 'fixed bottom-6 right-6 z-50 bg-emerald-700 text-white px-5 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 animate-bounce border-2 border-emerald-400 text-xs font-bold';
+    toast.innerHTML = `
+      <div class="w-7 h-7 rounded-xl bg-white text-emerald-700 flex items-center justify-center font-black">✓</div>
+      <div>
+        <div class="text-[13px] font-black">${course.course_code} Auto-Filled!</div>
+        <div class="text-emerald-100 font-medium">${course.course_title || ''} • ${course.credits || 3} Credits • ${course.hours || 4}h/wk</div>
+      </div>
+      <button type="button" onclick="this.parentElement.remove()" class="text-emerald-200 hover:text-white font-bold ml-2">✕</button>
+    `;
+    setTimeout(() => {
+      if (toast && toast.parentElement) toast.remove();
+    }, 4500);
+  }
+
+  onSyllabusCourseSelected(code) {
+    if (code) {
+      this.fetchFromSyllabus(code, false);
+    }
+  }
+
+  onCourseCodeInputChange(val) {
+    if (!val) return;
+    const match = (this.syllabusCourses || []).find(c => c.course_code.toLowerCase().trim() === val.toLowerCase().trim());
+    if (match) {
+      this.fetchFromSyllabus(match.course_code, false);
+    }
+  }
+
+  fetchByCodeInput() {
+    const input = document.getElementById('cp-course-code');
+    if (input && input.value.trim()) {
+      this.fetchFromSyllabus(input.value.trim(), true);
+    } else {
+      alert('Please enter or select a Course Code.');
+    }
+  }
+
+  isPGPlan(plan) {
+    const p = plan || this.activePlan || {};
+    const code = (document.getElementById('cp-course-code')?.value || p.course_code || '').trim();
+    const prog = (document.getElementById('cp-programme')?.value || p.programme || '').trim();
+    const yc = (document.getElementById('cp-year-class')?.value || p.year_class || '').trim();
+
+    // 1. Check course code first (e.g. 23U... vs 24P... / 25P...)
+    if (/^[0-9]{2}P/i.test(code)) return true;
+    if (/^[0-9]{2}U/i.test(code)) return false;
+
+    // 2. Check programme
+    if (prog.startsWith('M.') || prog.includes('MCA') || prog.includes('Master') || prog.includes('Post') || prog.includes('PG')) return true;
+    if (prog.startsWith('B.') || prog.includes('Bachelor') || prog.includes('UG')) return false;
+
+    // 3. Check year_class
+    if (yc.includes('PG') || yc.includes('MCA')) return true;
+    if (yc.includes('UG')) return false;
+
+    return !!p.is_pg;
+  }
+
+  getFullAssessmentPlan(plan) {
+    const p = plan || this.activePlan || {};
+    const isPG = this.isPGPlan(p);
+
+    const c1 = {
+      sno: '1',
+      component: 'C1 – K1, K2',
+      marks: '15',
+      category: 'MCQ through JosTEL',
+      unit_coverage: 'Unit I & II',
+      date: '09.01.2027 to 13.01.2027',
+      outcome: '—',
+      is_default: true,
+      uneditable: true
+    };
+
+    const mid = {
+      sno: '2',
+      component: 'Mid Sem',
+      marks: '30',
+      category: 'Written Examination',
+      unit_coverage: 'Unit I, II & III',
+      date: '21.01.2027 to 30.01.2027',
+      outcome: '—',
+      is_default: true,
+      uneditable: true
+    };
+
+    const end = {
+      component: 'End Sem',
+      marks: '30',
+      category: 'Written Examination',
+      unit_coverage: 'All Units (Unit I - V)',
+      date: '16.03.2027 to 24.03.2027',
+      outcome: '—',
+      is_default: true,
+      uneditable: true
+    };
+
+    const assessedActs = (p.learning_activities || []).filter(a => a && a.is_assessment);
+    const orderWeight = (comp = '') => {
+      if (comp.includes('K4')) return 1;
+      if (comp.includes('K5')) return 2;
+      if (comp.includes('K6')) return 3;
+      if (comp.includes('Library') || comp.includes('Lib')) return 4;
+      return 5;
+    };
+    const sortedActs = [...assessedActs].sort((a, b) => orderWeight(a.cia_component) - orderWeight(b.cia_component));
+
+    const middleItems = sortedActs.map(a => {
+      let marks = '10';
+      const comp = a.cia_component || '';
+      if (comp.includes('K6')) {
+        marks = '8';
+      } else if (comp.includes('Library') || comp.includes('Lib')) {
+        marks = '5';
+      } else if (comp.includes('K4') || comp.includes('K5')) {
+        marks = isPG ? '6' : '10';
+      } else if (a.cia_marks) {
+        marks = String(a.cia_marks);
+      }
+      return {
+        component: a.cia_component || 'C2 Assessment',
+        marks: marks,
+        category: a.activity || 'Learning Activity',
+        unit_coverage: a.topic || '—',
+        date: a.proposed_date ? this.formatDateToDDMMYYYY(a.proposed_date) : '—',
+        outcome: a.outcome || '—',
+        is_default: false,
+        uneditable: true
+      };
+    });
+
+    const fullList = [c1, mid, ...middleItems, end];
+    return fullList.map((item, idx) => ({
+      ...item,
+      sno: String(idx + 1)
+    }));
+  }
+
+  applyAssessmentRules(isPG) {
+    if (!this.activePlan) return;
+    this.activePlan.assessment_plan = this.getFullAssessmentPlan(this.activePlan);
+  }
+
+  getDefaultAssessmentPlan(isPG = false) {
+    return this.getFullAssessmentPlan({ is_pg: isPG });
+  }
+
+
+  escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  toggleMethodDropdown(rowIdx, event) {
+    if (event) event.stopPropagation();
+    const menu = document.getElementById(`dtp-method-menu-${rowIdx}`);
+    if (!menu) return;
+    const isHidden = menu.classList.contains('hidden');
+    // Close any other open dropdowns
+    document.querySelectorAll('[id^="dtp-method-menu-"]').forEach(m => m.classList.add('hidden'));
+    if (isHidden) {
+      menu.classList.remove('hidden');
+    }
+  }
+
+  closeMethodDropdown(rowIdx) {
+    const menu = document.getElementById(`dtp-method-menu-${rowIdx}`);
+    if (menu) menu.classList.add('hidden');
+  }
+
+  filterMethodOptions(rowIdx, query) {
+    const container = document.getElementById(`dtp-method-list-${rowIdx}`);
+    if (!container) return;
+    const q = (query || '').toLowerCase().trim();
+    const labels = container.querySelectorAll('.dtp-method-opt');
+    labels.forEach(lbl => {
+      const text = lbl.textContent.toLowerCase();
+      if (!q || text.includes(q)) {
+        lbl.style.display = 'flex';
+      } else {
+        lbl.style.display = 'none';
+      }
+    });
+  }
+
+  onMethodCheckboxToggle(rowIdx, option, isChecked) {
+    const hiddenVal = document.querySelector(`#dtp-method-box-${rowIdx} .dtp-method-value`);
+    if (!hiddenVal) return;
+    let list = (hiddenVal.value || '').split(',').map(s => s.trim()).filter(Boolean);
+
+    if (option === 'Other:') {
+      const otherContainer = document.getElementById(`dtp-method-other-container-${rowIdx}`);
+      const otherInput = otherContainer ? otherContainer.querySelector('.dtp-method-other-input') : null;
+      if (isChecked) {
+        if (otherContainer) otherContainer.classList.remove('hidden');
+        const customText = otherInput ? otherInput.value.trim() : '';
+        const itemVal = customText ? `Other: ${customText}` : 'Other:';
+        if (!list.some(s => s === 'Other:' || s.startsWith('Other:'))) {
+          list.push(itemVal);
+        }
+        if (otherInput) otherInput.focus();
+      } else {
+        if (otherContainer) otherContainer.classList.add('hidden');
+        list = list.filter(s => s !== 'Other:' && !s.startsWith('Other:'));
+      }
+    } else {
+      if (isChecked) {
+        if (!list.includes(option)) list.push(option);
+      } else {
+        list = list.filter(s => s !== option);
+      }
+    }
+
+    hiddenVal.value = list.join(', ');
+    this.updateMethodDisplayTags(rowIdx, list);
+  }
+
+  onMethodOtherInput(rowIdx, text) {
+    const hiddenVal = document.querySelector(`#dtp-method-box-${rowIdx} .dtp-method-value`);
+    if (!hiddenVal) return;
+    let list = (hiddenVal.value || '').split(',').map(s => s.trim()).filter(Boolean);
+    const custom = text.trim();
+    const entry = custom ? `Other: ${custom}` : 'Other:';
+
+    const idx = list.findIndex(s => s === 'Other:' || s.startsWith('Other:'));
+    if (idx >= 0) {
+      list[idx] = entry;
+    } else {
+      list.push(entry);
+    }
+    hiddenVal.value = list.join(', ');
+    this.updateMethodDisplayTags(rowIdx, list);
+  }
+
+  removeMethodItem(rowIdx, item) {
+    const hiddenVal = document.querySelector(`#dtp-method-box-${rowIdx} .dtp-method-value`);
+    if (!hiddenVal) return;
+    let list = (hiddenVal.value || '').split(',').map(s => s.trim()).filter(Boolean);
+
+    const isOther = item === 'Other:' || item.startsWith('Other:');
+    if (isOther) {
+      list = list.filter(s => s !== 'Other:' && !s.startsWith('Other:'));
+      const otherContainer = document.getElementById(`dtp-method-other-container-${rowIdx}`);
+      if (otherContainer) otherContainer.classList.add('hidden');
+      const chk = document.querySelector(`#dtp-method-list-${rowIdx} input[value="Other:"]`);
+      if (chk) chk.checked = false;
+    } else {
+      list = list.filter(s => s !== item);
+      const chk = document.querySelector(`#dtp-method-list-${rowIdx} input[value="${item}"]`);
+      if (chk) chk.checked = false;
+    }
+
+    hiddenVal.value = list.join(', ');
+    this.updateMethodDisplayTags(rowIdx, list);
+  }
+
+  updateMethodDisplayTags(rowIdx, list) {
+    const container = document.querySelector(`#dtp-method-box-${rowIdx} .dtp-method-tags`);
+    if (!container) return;
+
+    if (list.length === 0) {
+      container.innerHTML = `<span class="text-slate-400 text-[11px] italic pl-1">Select methodology (multiple)...</span>`;
+      return;
+    }
+
+    container.innerHTML = list.map(item => {
+      const isOtherVal = item === 'Other:' || item.startsWith('Other:');
+      const displayLabel = isOtherVal ? (item.length > 6 ? item : 'Other: Custom') : item;
+      return `
+        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10.5px] font-bold bg-indigo-50 text-indigo-800 border border-indigo-200">
+          <span>${this.escapeHtml(displayLabel)}</span>
+          <button type="button" onclick="event.stopPropagation(); coursePlanApp.removeMethodItem(${rowIdx}, '${this.escapeHtml(item)}')" class="text-indigo-400 hover:text-indigo-800 font-bold ml-0.5">✕</button>
+        </span>
+      `;
+    }).join('');
+  }
+
+  renderMethodologyMultiSelect(rowIdx, currentVal) {
+    const list = (currentVal || '').split(',').map(s => s.trim()).filter(Boolean);
+    const otherItem = list.find(s => s.startsWith('Other:') || (!CoursePlanApp.TEACHING_METHODOLOGIES.includes(s) && s !== 'Other:'));
+    const hasOther = list.some(s => s === 'Other:' || s.startsWith('Other:'));
+    const otherCustomText = otherItem ? (otherItem.startsWith('Other:') ? otherItem.replace('Other:', '').trim() : otherItem) : '';
+
+    return `
+      <div class="dtp-method-container relative w-full" id="dtp-method-box-${rowIdx}">
+        <input type="hidden" class="dtp-method-value" value="${this.escapeHtml(currentVal || '')}" />
+        
+        <!-- Clickable tags trigger -->
+        <div 
+          onclick="coursePlanApp.toggleMethodDropdown(${rowIdx}, event)" 
+          class="min-h-[34px] w-full p-1.5 border border-slate-300 rounded-lg bg-white flex flex-wrap items-center gap-1 cursor-pointer hover:border-indigo-500 transition"
+        >
+          <div class="dtp-method-tags flex flex-wrap items-center gap-1 flex-1">
+            ${list.length === 0 ? `
+              <span class="text-slate-400 text-[11px] italic pl-1">Select methodology (multiple)...</span>
+            ` : `
+              ${list.map(item => {
+      const isOtherVal = item === 'Other:' || item.startsWith('Other:');
+      const displayLabel = isOtherVal ? (item.length > 6 ? item : 'Other: Custom') : item;
+      return `
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10.5px] font-bold bg-indigo-50 text-indigo-800 border border-indigo-200">
+                    <span>${this.escapeHtml(displayLabel)}</span>
+                    <button type="button" onclick="event.stopPropagation(); coursePlanApp.removeMethodItem(${rowIdx}, '${this.escapeHtml(item)}')" class="text-indigo-400 hover:text-indigo-800 font-bold ml-0.5">✕</button>
+                  </span>
+                `;
+    }).join('')}
+            `}
+          </div>
+          <span class="text-slate-400 text-xs pr-1 shrink-0">▾</span>
+        </div>
+
+        <!-- Autocomplete Dropdown Menu -->
+        <div 
+          id="dtp-method-menu-${rowIdx}" 
+          class="hidden absolute left-0 sm:left-auto right-0 sm:right-auto top-full mt-1 bg-white border border-slate-300 rounded-xl shadow-2xl z-40 p-2 space-y-2 w-[calc(100vw-3rem)] max-w-xs sm:w-80"
+          onclick="event.stopPropagation()"
+        >
+          <div class="relative">
+            <input 
+              type="text" 
+              placeholder="Search 16 methodologies..." 
+              oninput="coursePlanApp.filterMethodOptions(${rowIdx}, this.value)" 
+              class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded-lg focus:border-indigo-600 focus:outline-none"
+            />
+          </div>
+          <div class="max-h-48 overflow-y-auto space-y-0.5 divide-y divide-slate-100" id="dtp-method-list-${rowIdx}">
+            ${CoursePlanApp.TEACHING_METHODOLOGIES.map(opt => {
+      const isChecked = opt === 'Other:' ? hasOther : list.includes(opt);
+      return `
+                <label class="dtp-method-opt flex items-center gap-2 px-2 py-1.5 hover:bg-indigo-50 rounded-lg cursor-pointer text-xs font-medium text-slate-800">
+                  <input 
+                    type="checkbox" 
+                    class="rounded text-indigo-600 focus:ring-0" 
+                    value="${opt}" 
+                    ${isChecked ? 'checked' : ''} 
+                    onchange="coursePlanApp.onMethodCheckboxToggle(${rowIdx}, '${opt}', this.checked)" 
+                  />
+                  <span class="opt-label">${opt}</span>
+                </label>
+              `;
+    }).join('')}
+          </div>
+          <div id="dtp-method-other-container-${rowIdx}" class="${hasOther ? '' : 'hidden'} pt-1 border-t border-slate-200">
+            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Specify Other Methodology *</label>
+            <input 
+              type="text" 
+              class="dtp-method-other-input w-full text-xs px-2 py-1 border border-indigo-400 rounded-lg font-medium" 
+              placeholder="e.g. Gamification / Concept Mapping" 
+              value="${this.escapeHtml(otherCustomText)}" 
+              oninput="coursePlanApp.onMethodOtherInput(${rowIdx}, this.value)"
+            />
+          </div>
+          <div class="flex justify-between items-center pt-1 border-t border-slate-100 text-[10px]">
+            <span class="text-slate-500 font-bold">${list.length} selected</span>
+            <button type="button" onclick="coursePlanApp.closeMethodDropdown(${rowIdx})" class="px-2.5 py-1 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700">Done</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  toggleResourceDropdown(rowIdx, event) {
+    if (event) event.stopPropagation();
+    const menu = document.getElementById(`dtp-res-menu-${rowIdx}`);
+    if (!menu) return;
+    const isHidden = menu.classList.contains('hidden');
+    document.querySelectorAll('[id^="dtp-res-menu-"]').forEach(m => m.classList.add('hidden'));
+    document.querySelectorAll('[id^="dtp-method-menu-"]').forEach(m => m.classList.add('hidden'));
+    if (isHidden) {
+      menu.classList.remove('hidden');
+    }
+  }
+
+  closeResourceDropdown(rowIdx) {
+    const menu = document.getElementById(`dtp-res-menu-${rowIdx}`);
+    if (menu) menu.classList.add('hidden');
+  }
+
+  filterResourceOptions(rowIdx, query) {
+    const container = document.getElementById(`dtp-res-list-${rowIdx}`);
+    if (!container) return;
+    const q = (query || '').toLowerCase().trim();
+    const labels = container.querySelectorAll('.dtp-res-opt');
+    labels.forEach(lbl => {
+      const text = lbl.textContent.toLowerCase();
+      if (!q || text.includes(q)) {
+        lbl.style.display = 'flex';
+      } else {
+        lbl.style.display = 'none';
+      }
+    });
+  }
+
+  onResourceCheckboxToggle(rowIdx, option, isChecked) {
+    const hiddenVal = document.querySelector(`#dtp-res-box-${rowIdx} .dtp-res-value`);
+    if (!hiddenVal) return;
+    let list = (hiddenVal.value || '').split(',').map(s => s.trim()).filter(Boolean);
+
+    if (option === 'Other:') {
+      const otherContainer = document.getElementById(`dtp-res-other-container-${rowIdx}`);
+      const otherInput = otherContainer ? otherContainer.querySelector('.dtp-res-other-input') : null;
+      if (isChecked) {
+        if (otherContainer) otherContainer.classList.remove('hidden');
+        if (otherInput) {
+          otherInput.focus();
+          const custom = otherInput.value.trim();
+          if (custom && !list.includes(custom)) {
+            list.push(custom);
+          } else if (!list.some(s => s === 'Other:' || s.startsWith('Other:'))) {
+            list.push('Other:');
+          }
+        }
+      } else {
+        if (otherContainer) otherContainer.classList.add('hidden');
+        list = list.filter(s => !s.startsWith('Other:') && CoursePlanApp.LEARNING_RESOURCES.includes(s));
+      }
+    } else {
+      if (isChecked) {
+        if (!list.includes(option)) list.push(option);
+      } else {
+        list = list.filter(s => s !== option);
+      }
+    }
+
+    hiddenVal.value = list.join(', ');
+    this.updateResourceDisplayTags(rowIdx, list);
+  }
+
+  onResourceOtherInput(rowIdx, text) {
+    const hiddenVal = document.querySelector(`#dtp-res-box-${rowIdx} .dtp-res-value`);
+    if (!hiddenVal) return;
+    let list = (hiddenVal.value || '').split(',').map(s => s.trim()).filter(Boolean);
+    list = list.filter(s => CoursePlanApp.LEARNING_RESOURCES.includes(s) && s !== 'Other:');
+    const custom = text.trim();
+    if (custom) {
+      list.push(`Other: ${custom}`);
+    } else {
+      list.push('Other:');
+    }
+    hiddenVal.value = list.join(', ');
+    this.updateResourceDisplayTags(rowIdx, list);
+  }
+
+  removeResourceItem(rowIdx, item) {
+    const hiddenVal = document.querySelector(`#dtp-res-box-${rowIdx} .dtp-res-value`);
+    if (!hiddenVal) return;
+    let list = (hiddenVal.value || '').split(',').map(s => s.trim()).filter(Boolean);
+
+    const isOther = item === 'Other:' || item.startsWith('Other:') || !CoursePlanApp.LEARNING_RESOURCES.includes(item);
+    if (isOther) {
+      list = list.filter(s => s !== 'Other:' && !s.startsWith('Other:') && CoursePlanApp.LEARNING_RESOURCES.includes(s));
+      const otherContainer = document.getElementById(`dtp-res-other-container-${rowIdx}`);
+      if (otherContainer) otherContainer.classList.add('hidden');
+      const chk = document.querySelector(`#dtp-res-list-${rowIdx} input[value="Other:"]`);
+      if (chk) chk.checked = false;
+    } else {
+      list = list.filter(s => s !== item);
+      const chk = document.querySelector(`#dtp-res-list-${rowIdx} input[value="${item}"]`);
+      if (chk) chk.checked = false;
+    }
+
+    hiddenVal.value = list.join(', ');
+    this.updateResourceDisplayTags(rowIdx, list);
+  }
+
+  updateResourceDisplayTags(rowIdx, list) {
+    const container = document.querySelector(`#dtp-res-box-${rowIdx} .dtp-res-tags`);
+    if (!container) return;
+
+    if (list.length === 0) {
+      container.innerHTML = `<span class="text-slate-400 text-[11px] italic pl-1">Select resources (multiple)...</span>`;
+      return;
+    }
+
+    container.innerHTML = list.map(item => {
+      const isOtherVal = item === 'Other:' || item.startsWith('Other:');
+      const displayLabel = isOtherVal ? (item.length > 6 ? item : 'Other: Custom') : item;
+      return `
+        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10.5px] font-bold bg-amber-50 text-amber-900 border border-amber-200">
+          <span class="max-w-[130px] truncate" title="${this.escapeHtml(displayLabel)}">${this.escapeHtml(displayLabel)}</span>
+          <button type="button" onclick="event.stopPropagation(); coursePlanApp.removeResourceItem(${rowIdx}, '${this.escapeHtml(item)}')" class="text-amber-500 hover:text-amber-900 font-bold ml-0.5">✕</button>
+        </span>
+      `;
+    }).join('');
+  }
+
+  renderResourceMultiSelect(rowIdx, currentVal) {
+    const list = (currentVal || '').split(',').map(s => s.trim()).filter(Boolean);
+    const otherItem = list.find(s => s.startsWith('Other:') || (!CoursePlanApp.LEARNING_RESOURCES.includes(s) && s !== 'Other:'));
+    const hasOther = list.some(s => s === 'Other:' || s.startsWith('Other:'));
+    const otherCustomText = otherItem ? (otherItem.startsWith('Other:') ? otherItem.replace('Other:', '').trim() : otherItem) : '';
+
+    return `
+      <div class="dtp-res-container relative w-full" id="dtp-res-box-${rowIdx}">
+        <input type="hidden" class="dtp-res-value" value="${this.escapeHtml(currentVal || '')}" />
+        
+        <!-- Clickable tags trigger -->
+        <div 
+          onclick="coursePlanApp.toggleResourceDropdown(${rowIdx}, event)" 
+          class="min-h-[34px] w-full p-1.5 border border-slate-300 rounded-lg bg-white flex flex-wrap items-center gap-1 cursor-pointer hover:border-amber-500 transition"
+          title="Click to select or enter multiple learning resources"
+        >
+          <div class="dtp-res-tags flex flex-wrap items-center gap-1 flex-1">
+            ${list.length === 0 ? `
+              <span class="text-slate-400 text-[11px] italic pl-1">Select resources (multiple)...</span>
+            ` : `
+              ${list.map(item => {
+      const isOtherVal = item === 'Other:' || item.startsWith('Other:');
+      const displayLabel = isOtherVal ? (item.length > 6 ? item : 'Other: Custom') : item;
+      return `
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10.5px] font-bold bg-amber-50 text-amber-900 border border-amber-200">
+                    <span class="max-w-[130px] truncate" title="${this.escapeHtml(displayLabel)}">${this.escapeHtml(displayLabel)}</span>
+                    <button type="button" onclick="event.stopPropagation(); coursePlanApp.removeResourceItem(${rowIdx}, '${this.escapeHtml(item)}')" class="text-amber-500 hover:text-amber-900 font-bold ml-0.5">✕</button>
+                  </span>
+                `;
+    }).join('')}
+            `}
+          </div>
+          <span class="text-slate-400 text-xs pr-1 shrink-0">▾</span>
+        </div>
+
+        <!-- Autocomplete Dropdown Menu -->
+        <div 
+          id="dtp-res-menu-${rowIdx}" 
+          class="hidden absolute left-0 sm:left-auto right-0 sm:right-auto top-full mt-1 bg-white border border-slate-300 rounded-xl shadow-2xl z-40 p-2 space-y-2 w-[calc(100vw-3rem)] max-w-xs sm:w-80"
+          onclick="event.stopPropagation()"
+        >
+          <div class="relative">
+            <input 
+              type="text" 
+              placeholder="Search learning resources..." 
+              oninput="coursePlanApp.filterResourceOptions(${rowIdx}, this.value)" 
+              class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded-lg focus:border-amber-600 focus:outline-none"
+            />
+          </div>
+          <div class="max-h-48 overflow-y-auto space-y-0.5 divide-y divide-slate-100" id="dtp-res-list-${rowIdx}">
+            ${CoursePlanApp.LEARNING_RESOURCES.map(opt => {
+      const isChecked = opt === 'Other:' ? hasOther : list.includes(opt);
+      return `
+                <label class="dtp-res-opt flex items-center gap-2 px-2 py-1.5 hover:bg-amber-50 rounded-lg cursor-pointer text-xs font-medium text-slate-800">
+                  <input 
+                    type="checkbox" 
+                    class="rounded text-amber-600 focus:ring-0" 
+                    value="${opt}" 
+                    ${isChecked ? 'checked' : ''} 
+                    onchange="coursePlanApp.onResourceCheckboxToggle(${rowIdx}, '${opt}', this.checked)" 
+                  />
+                  <span class="opt-label">${opt}</span>
+                </label>
+              `;
+    }).join('')}
+          </div>
+          <div id="dtp-res-other-container-${rowIdx}" class="${hasOther ? '' : 'hidden'} pt-1 border-t border-slate-200">
+            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Specify Book / Resource Title *</label>
+            <input 
+              type="text" 
+              class="dtp-res-other-input w-full text-xs px-2 py-1 border border-amber-400 rounded-lg font-medium" 
+              placeholder="e.g. Balagurusamy Java 6th Ed / Coursera" 
+              value="${this.escapeHtml(otherCustomText)}" 
+              oninput="coursePlanApp.onResourceOtherInput(${rowIdx}, this.value)"
+            />
+          </div>
+          <div class="flex justify-between items-center pt-1 border-t border-slate-100 text-[10px]">
+            <span class="text-slate-500 font-bold">${list.length} selected</span>
+            <button type="button" onclick="coursePlanApp.closeResourceDropdown(${rowIdx})" class="px-2.5 py-1 bg-amber-600 text-white font-bold rounded-lg hover:bg-amber-700">Done</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  addResourceToRow(rowIdx, resourceText) {
+    if (!resourceText) return;
+    const clean = resourceText.trim();
+    const hiddenVal = document.querySelector(`#dtp-res-box-${rowIdx} .dtp-res-value`);
+    if (!hiddenVal) return;
+    let list = (hiddenVal.value || '').split(',').map(s => s.trim()).filter(Boolean);
+    if (!list.includes(clean)) {
+      list.push(clean);
+      hiddenVal.value = list.join(', ');
+      this.updateResourceDisplayTags(rowIdx, list);
+    }
+  }
+
+  openCourseSyllabusReferenceModal() {
+    this.harvestFormInputs();
+    const curCode = (this.activePlan && this.activePlan.course_code) ? this.activePlan.course_code.trim() : '';
+    if (!curCode) {
+      alert('Please select or specify a Course Code in Part-I (Course Information) first to view its syllabus units.');
+      this.switchFormTab('part1');
+      return;
+    }
+
+    let course = (this.syllabusCourses || []).find(c => c.course_code && c.course_code.toLowerCase().trim() === curCode.toLowerCase().trim());
+    if (!course) {
+      const clean = curCode.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+      course = (this.syllabusCourses || []).find(c => c.course_code && c.course_code.replace(/[^a-zA-Z0-9]/g, '').toLowerCase() === clean);
+    }
+    if (!course) {
+      course = {
+        course_code: curCode,
+        course_title: this.activePlan.course_title || 'Selected Course',
+        department: this.activePlan.department_name || '',
+        semester: this.activePlan.semester || '',
+        credits: this.activePlan.credits || '',
+        hours: this.activePlan.teaching_hours || '',
+        cos: this.activePlan.course_outcomes || []
+      };
+    }
+
+    document.getElementById('course-syllabus-modal')?.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'course-syllabus-modal';
+    modal.className = 'fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 animate-fadeIn';
+
+    const units = (course.units && course.units.length > 0) ? course.units : [
+      { unit: 'Unit I', title: 'Foundations & Core Principles', hours: '12 Hours', topics: 'Fundamental concepts, core terminology, theoretical framework, introductory principles, foundational analysis.' },
+      { unit: 'Unit II', title: 'Methodologies & Structural Implementation', hours: '12 Hours', topics: 'Detailed mechanisms, structural design, execution patterns, problem-solving techniques, model implementation.' },
+      { unit: 'Unit III', title: 'Advanced Analysis & Domain Applications', hours: '12 Hours', topics: 'Component interaction, practical application, case study evaluation, domain workflows, system architecture.' },
+      { unit: 'Unit IV', title: 'Integration, Modern Frameworks & Tools', hours: '12 Hours', topics: 'System integration, modern industry standards, software tools, performance tuning, validation techniques.' },
+      { unit: 'Unit V', title: 'Emerging Advances & Capstone Implementation', hours: '12 Hours', topics: 'Contemporary advances, security considerations, scalability, comprehensive project implementation, practical trends.' }
+    ];
+
+    const pdfFile = course.pdf_file || '';
+    const pdfPage = course.pdf_page || 1;
+    const pdfUrl = pdfFile ? `/course-plan/syllabus_docs/${encodeURIComponent(pdfFile)}#page=${pdfPage}&view=FitH` : '';
+
+    modal.innerHTML = `
+      <div class="bg-white rounded-3xl max-w-5xl w-full max-h-[94vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden" onclick="event.stopPropagation()">
+        
+        <!-- Header -->
+        <div class="p-4 sm:p-5 bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-900 text-white shrink-0">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-2 flex-wrap mb-1">
+                <span class="font-mono text-xs font-black px-2.5 py-0.5 rounded-lg bg-amber-400 text-indigo-950 uppercase tracking-wider shadow-sm">
+                  ${this.escapeHtml(course.course_code)}
+                </span>
+                <span class="text-xs bg-white/15 px-2.5 py-0.5 rounded-lg font-bold text-indigo-100 border border-white/20">
+                  ${this.escapeHtml(course.course_category || 'Core Course')}
+                </span>
+                <span class="text-xs bg-white/15 px-2.5 py-0.5 rounded-lg font-bold text-indigo-100 border border-white/20">
+                  Sem ${this.escapeHtml(course.semester_num ? String(course.semester_num) : (course.semester || '—'))}
+                </span>
+                <span class="text-xs bg-white/15 px-2.5 py-0.5 rounded-lg font-bold text-indigo-100 border border-white/20">
+                  ${this.escapeHtml(course.credits || '3')} Credits • ${this.escapeHtml(course.hours || '4')}h/wk
+                </span>
+              </div>
+              <h3 class="text-base sm:text-lg font-black text-white tracking-tight">
+                ${this.escapeHtml(course.course_title || 'Course Syllabus')}
+              </h3>
+              <p class="text-xs text-indigo-200 mt-0.5">
+                ${this.escapeHtml(course.department || this.selectedDept)} • Official College Syllabus & Teaching Plan Reference
+              </p>
+            </div>
+            <button 
+              type="button" 
+              onclick="document.getElementById('course-syllabus-modal').remove()" 
+              class="text-indigo-200 hover:text-white p-2 rounded-xl hover:bg-white/10 transition cursor-pointer shrink-0"
+              title="Close modal"
+            >
+              <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+          </div>
+
+          <!-- View Switcher Tabs & Direct PDF Action -->
+          <div class="flex flex-wrap items-center gap-2 mt-4 pt-3 border-t border-white/15">
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchSyllabusModalTab('structured')" 
+              id="modal-tab-btn-structured" 
+              class="px-3.5 py-1.5 rounded-xl font-bold text-xs bg-white text-indigo-950 shadow-sm transition cursor-pointer flex items-center gap-1.5"
+            >
+              <i data-lucide="list-checks" class="w-3.5 h-3.5 text-indigo-600"></i>
+              <span>Unit Topics (FROM – TO Selection)</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchSyllabusModalTab('official_doc')" 
+              id="modal-tab-btn-official_doc" 
+              class="px-3.5 py-1.5 rounded-xl font-bold text-xs bg-white/20 hover:bg-white/30 text-white transition cursor-pointer flex items-center gap-1.5"
+            >
+              <i data-lucide="file-text" class="w-3.5 h-3.5 text-amber-300"></i>
+              <span>Official Syllabus Document &amp; PDF View</span>
+            </button>
+
+            ${pdfFile ? `
+              <a 
+                href="${pdfUrl}" 
+                target="_blank" 
+                class="sm:ml-auto px-3.5 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-indigo-950 font-black text-xs inline-flex items-center gap-1.5 shadow-sm transition"
+              >
+                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                <span>Open Handbook PDF (Page ${pdfPage}) ↗</span>
+              </a>
+            ` : ''}
+          </div>
+        </div>
+
+        <!-- Scrollable Content -->
+        <div class="p-4 sm:p-6 overflow-y-auto space-y-5 flex-1 text-slate-800 text-xs">
+          
+          <!-- TAB 1: Structured Units with FROM - TO Selector -->
+          <div id="modal-syllabus-tab-structured" class="space-y-5">
+            <div class="bg-indigo-50 border border-indigo-200 rounded-2xl p-3 flex items-center gap-3 text-indigo-900">
+              <div class="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
+                <i data-lucide="info" class="w-4 h-4"></i>
+              </div>
+              <div class="text-xs">
+                <strong class="font-bold">How to allocate topics:</strong> Under each unit below, select the start portion (<strong>FROM</strong>) and end portion (<strong>TO</strong>), then click <strong>"Insert (FROM – TO) into Teaching Plan"</strong> to instantly populate your Detailed Teaching Plan!
+              </div>
+            </div>
+
+            <!-- Units List -->
+            <div class="space-y-4">
+              ${units.map((u, uIdx) => {
+                const rawTopics = (u.topics || '').trim();
+                const phrases = rawTopics.split(/[,;\n•–—]+/).map(p => p.trim()).filter(p => p.length > 2);
+                const defaultFrom = phrases[0] || rawTopics.slice(0, 45);
+                const defaultTo = phrases[phrases.length - 1] || rawTopics.slice(-45);
+
+                return `
+                  <div class="p-4 rounded-2xl bg-white border border-slate-200 hover:border-indigo-300 hover:shadow-md transition space-y-3" id="syllabus-unit-card-${uIdx}">
+                    
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
+                      <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-1 rounded-lg bg-indigo-900 text-white font-black text-xs shadow-2xs">
+                          ${this.escapeHtml(u.unit)}
+                        </span>
+                        <strong class="text-xs font-black text-slate-900">
+                          ${this.escapeHtml(u.title || '')}
+                        </strong>
+                        <span class="text-[10.5px] text-indigo-900 font-bold bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded">
+                          ${this.escapeHtml(u.hours || '12 Hours')}
+                        </span>
+                      </div>
+
+                      <button 
+                        type="button" 
+                        onclick="coursePlanApp.copySyllabusText('${this.escapeHtml(rawTopics).replace(/'/g, "\\'")}', this)" 
+                        class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-[11px] transition flex items-center gap-1 cursor-pointer self-start sm:self-auto"
+                        title="Copy full unit topics"
+                      >
+                        <i data-lucide="copy" class="w-3 h-3"></i> Copy Text
+                      </button>
+                    </div>
+
+                    <!-- Full Topic Text Display -->
+                    <div class="p-3 bg-slate-50/80 rounded-xl border border-slate-200/80 text-slate-700 leading-relaxed font-sans text-xs">
+                      ${this.escapeHtml(rawTopics)}
+                    </div>
+
+                    <!-- Interactive FROM – TO Selection Box -->
+                    <div class="p-3.5 bg-indigo-50/50 rounded-xl border-2 border-indigo-200 space-y-3">
+                      <div class="flex items-center justify-between">
+                        <span class="font-black text-indigo-950 text-xs flex items-center gap-1.5 uppercase tracking-wide">
+                          <i data-lucide="sliders" class="w-3.5 h-3.5 text-indigo-600"></i>
+                          <span>Select Topic Range (FROM – TO) for ${this.escapeHtml(u.unit)}</span>
+                        </span>
+                        <span class="text-[10px] text-slate-500 font-medium">Click any topic phrase below to set as FROM or TO</span>
+                      </div>
+
+                      <!-- Topic Phrases Pills (Clickable to Set FROM or TO) -->
+                      ${phrases.length > 0 ? `
+                        <div class="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto p-1.5 bg-white rounded-lg border border-slate-200">
+                          ${phrases.map((phrase) => `
+                            <div class="inline-flex items-center gap-1 px-2 py-1 rounded-md text-[10.5px] bg-slate-100 border border-slate-200 hover:bg-indigo-50 hover:border-indigo-300 transition">
+                              <span class="font-medium text-slate-800">${this.escapeHtml(phrase)}</span>
+                              <button 
+                                type="button" 
+                                onclick="coursePlanApp.setSyllabusFromTo('${uIdx}', 'from', '${this.escapeHtml(phrase).replace(/'/g, "\\'")}')" 
+                                class="ml-1 px-1 py-0.5 rounded text-[9px] font-black bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer"
+                                title="Set as FROM topic"
+                              >
+                                FROM
+                              </button>
+                              <button 
+                                type="button" 
+                                onclick="coursePlanApp.setSyllabusFromTo('${uIdx}', 'to', '${this.escapeHtml(phrase).replace(/'/g, "\\'")}')" 
+                                class="px-1 py-0.5 rounded text-[9px] font-black bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer"
+                                title="Set as TO topic"
+                              >
+                                TO
+                              </button>
+                            </div>
+                          `).join('')}
+                        </div>
+                      ` : ''}
+
+                      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                        <div>
+                          <label class="block font-black text-indigo-950 text-[11px] mb-1">
+                            FROM (Starting Topic Portion) *
+                          </label>
+                          <input 
+                            type="text" 
+                            id="syllabus-from-${uIdx}" 
+                            value="${this.escapeHtml(defaultFrom)}" 
+                            class="w-full text-xs px-2.5 py-1.5 border border-indigo-300 rounded-lg bg-white font-medium focus:border-indigo-600 focus:outline-none"
+                            placeholder="Select or enter start topic..."
+                          />
+                        </div>
+                        <div>
+                          <label class="block font-black text-indigo-950 text-[11px] mb-1">
+                            TO (Ending Topic Portion) *
+                          </label>
+                          <input 
+                            type="text" 
+                            id="syllabus-to-${uIdx}" 
+                            value="${this.escapeHtml(defaultTo)}" 
+                            class="w-full text-xs px-2.5 py-1.5 border border-indigo-300 rounded-lg bg-white font-medium focus:border-indigo-600 focus:outline-none"
+                            placeholder="Select or enter end topic..."
+                          />
+                        </div>
+                      </div>
+
+                      <div class="flex items-center justify-between pt-1">
+                        <div class="text-[11px] text-slate-500 font-medium">
+                          Inserts into Detailed Teaching Plan under <strong>${this.escapeHtml(u.unit)}</strong>
+                        </div>
+                        <button 
+                          type="button" 
+                          onclick="coursePlanApp.applyTopicsFromModal('${this.escapeHtml(u.unit)}', '${uIdx}')" 
+                          class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition active:scale-95 cursor-pointer"
+                        >
+                          <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+                          <span>Insert (FROM – TO) into Teaching Plan</span>
+                        </button>
+                      </div>
+
+                    </div>
+
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- TAB 2: Official Syllabus Document & PDF View -->
+          <div id="modal-syllabus-tab-official_doc" class="hidden space-y-6">
+            <div class="bg-indigo-900 text-white p-4 rounded-2xl flex flex-wrap items-center justify-between gap-3 shadow-md">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-amber-400 text-indigo-950 flex items-center justify-center font-bold shadow-sm">
+                  <i data-lucide="file-text" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="font-black text-sm">Official College LOCF Syllabus Document</h4>
+                  <p class="text-[11px] text-indigo-200">
+                    Source: ${this.escapeHtml(pdfFile || 'College Curriculum Handbook')} • Page ${pdfPage}
+                  </p>
+                </div>
+              </div>
+
+              ${pdfFile ? `
+                <div class="flex items-center gap-2">
+                  <a 
+                    href="${pdfUrl}" 
+                    target="_blank" 
+                    class="px-4 py-2 rounded-xl bg-white text-indigo-900 font-black text-xs hover:bg-indigo-50 transition inline-flex items-center gap-1.5 shadow-sm cursor-pointer"
+                  >
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Open Fullscreen PDF ↗
+                  </a>
+                  <a 
+                    href="/course-plan/syllabus_docs/${encodeURIComponent(pdfFile)}" 
+                    download="${this.escapeHtml(pdfFile)}" 
+                    class="px-3.5 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs transition inline-flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <i data-lucide="download" class="w-3.5 h-3.5"></i> Download PDF
+                  </a>
+                </div>
+              ` : ''}
+            </div>
+
+            <!-- Embedded PDF Preview -->
+            ${pdfFile ? `
+              <div class="space-y-2">
+                <div class="flex items-center justify-between text-xs font-bold text-slate-700 px-1">
+                  <span class="flex items-center gap-1.5">
+                    <i data-lucide="book-open" class="w-4 h-4 text-indigo-600"></i>
+                    <span>Embedded Official Syllabus Handbook Preview (Page ${pdfPage})</span>
+                  </span>
+                  <span class="text-slate-500 font-normal">Use built-in viewer controls or open in fullscreen</span>
+                </div>
+                <div class="w-full h-[640px] rounded-2xl overflow-hidden border-2 border-slate-300 bg-slate-100 shadow-inner">
+                  <iframe 
+                    src="${pdfUrl}" 
+                    class="w-full h-full border-0" 
+                    title="Official Syllabus PDF Preview"
+                  ></iframe>
+                </div>
+              </div>
+            ` : `
+              <div class="p-8 text-center bg-slate-50 rounded-2xl border-2 border-dashed border-slate-300 space-y-2">
+                <i data-lucide="file-question" class="w-10 h-10 text-slate-400 mx-auto"></i>
+                <h4 class="font-black text-sm text-slate-800">Direct PDF Document Not Linked for This Code</h4>
+                <p class="text-xs text-slate-500 max-w-md mx-auto">The structured syllabus units and topics are fully available in the <strong>Unit Topics (FROM – TO Selection)</strong> tab above.</p>
+              </div>
+            `}
+          </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="p-3 sm:p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+          <div class="text-[11px] text-slate-500 font-medium">
+            ${pdfFile ? `📄 Linked to Official Handbook: <strong>${this.escapeHtml(pdfFile)}</strong> (Page ${pdfPage})` : ''}
+          </div>
+          <button 
+            type="button" 
+            onclick="document.getElementById('course-syllabus-modal').remove()" 
+            class="px-5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold rounded-xl text-xs transition cursor-pointer"
+          >
+            Close Window
+          </button>
+        </div>
+
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
+    }
+  }
+
+  setSyllabusFromTo(uIdx, type, phrase) {
+    const el = document.getElementById(`syllabus-${type}-${uIdx}`);
+    if (el) {
+      el.value = phrase;
+      el.classList.add('ring-2', 'ring-indigo-400');
+      setTimeout(() => el.classList.remove('ring-2', 'ring-indigo-400'), 400);
+    }
+  }
+
+  applyTopicsFromModal(unitName, uIdx) {
+    const fromEl = document.getElementById(`syllabus-from-${uIdx}`);
+    const toEl = document.getElementById(`syllabus-to-${uIdx}`);
+    const fromTopic = fromEl ? fromEl.value.trim() : '';
+    const toTopic = toEl ? toEl.value.trim() : '';
+
+    if (!fromTopic && !toTopic) {
+      alert('Please specify a FROM or TO topic for ' + unitName);
+      return;
+    }
+
+    this.harvestFormInputs();
+    const dtp = this.activePlan.detailed_teaching_plan || [];
+
+    // Find row matching this unit that has blank topics
+    let targetRow = dtp.find(r => r.unit === unitName && !r.from_topic && !r.to_topic && !r.is_hidden);
+    if (!targetRow) {
+      targetRow = dtp.find(r => r.unit === unitName && !r.is_hidden);
+    }
+
+    if (targetRow) {
+      targetRow.from_topic = fromTopic;
+      targetRow.to_topic = toTopic;
+      targetRow.topics = fromTopic + (toTopic ? ' to ' + toTopic : '');
+    } else {
+      const defaultMonth = (dtp.length > 0 && dtp[0].month_days) ? dtp[0].month_days : 'December / 10';
+      dtp.push({
+        month_days: defaultMonth,
+        unit: unitName,
+        from_topic: fromTopic,
+        to_topic: toTopic,
+        topics: fromTopic + (toTopic ? ' to ' + toTopic : ''),
+        hours: '2',
+        methodology: 'Lecture & Chalk',
+        resources: 'Textbook / Study Material',
+        is_hidden: false
+      });
+    }
+
+    this.activePlan.detailed_teaching_plan = dtp;
+    this.render();
+    this.syncUCPPlannedHoursFromDTP();
+
+    const banner = document.createElement('div');
+    banner.className = 'fixed bottom-4 right-4 z-50 bg-emerald-600 text-white font-black px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-2 text-xs animate-fadeIn';
+    banner.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i><span>✓ Inserted topics for ${unitName} into Detailed Teaching Plan!</span>`;
+    document.body.appendChild(banner);
+    if (window.lucide) window.lucide.createIcons();
+    setTimeout(() => banner.remove(), 2500);
+  }
+
+  switchSyllabusModalTab(tabName) {
+    const tabStruct = document.getElementById('modal-syllabus-tab-structured');
+    const tabDoc = document.getElementById('modal-syllabus-tab-official_doc');
+    const btnStruct = document.getElementById('modal-tab-btn-structured');
+    const btnDoc = document.getElementById('modal-tab-btn-official_doc');
+
+    if (tabName === 'official_doc') {
+      if (tabStruct) tabStruct.classList.add('hidden');
+      if (tabDoc) tabDoc.classList.remove('hidden');
+      if (btnStruct) {
+        btnStruct.className = 'px-3.5 py-1.5 rounded-xl font-bold text-xs bg-white/20 hover:bg-white/30 text-white transition cursor-pointer';
+      }
+      if (btnDoc) {
+        btnDoc.className = 'px-3.5 py-1.5 rounded-xl font-bold text-xs bg-white text-indigo-950 shadow-sm transition cursor-pointer';
+      }
+    } else {
+      if (tabDoc) tabDoc.classList.add('hidden');
+      if (tabStruct) tabStruct.classList.remove('hidden');
+      if (btnDoc) {
+        btnDoc.className = 'px-3.5 py-1.5 rounded-xl font-bold text-xs bg-white/20 hover:bg-white/30 text-white transition cursor-pointer';
+      }
+      if (btnStruct) {
+        btnStruct.className = 'px-3.5 py-1.5 rounded-xl font-bold text-xs bg-white text-indigo-950 shadow-sm transition cursor-pointer';
+      }
+    }
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
+    }
+  }
+
+  toggleICTDropdown(type, rowIdx, event) {
+    if (event) event.stopPropagation();
+    const menu = document.getElementById(`ict-${type}-menu-${rowIdx}`);
+    if (!menu) return;
+    const isHidden = menu.classList.contains('hidden');
+    document.querySelectorAll('[id^="ict-tool-menu-"], [id^="ict-platform-menu-"]').forEach(m => {
+      m.classList.add('hidden');
+      const tr = m.closest('tr');
+      if (tr) tr.style.zIndex = '';
+    });
+    if (isHidden) {
+      menu.classList.remove('hidden');
+      const tr = menu.closest('tr');
+      if (tr) {
+        tr.style.position = 'relative';
+        tr.style.zIndex = '60';
+      }
+    }
+  }
+
+  closeICTDropdown(type, rowIdx) {
+    const menu = document.getElementById(`ict-${type}-menu-${rowIdx}`);
+    if (menu) menu.classList.add('hidden');
+    const tr = menu?.closest('tr');
+    if (tr) tr.style.zIndex = '';
+  }
+
+  toggleICTItem(type, rowIdx, optVal, checked) {
+    this.harvestFormInputs();
+    if (!this.activePlan.ict_integration || !this.activePlan.ict_integration[rowIdx]) return;
+    const row = this.activePlan.ict_integration[rowIdx];
+    const key = (type === 'tool') ? 'tool' : 'platform';
+    let currentItems = (row[key] || '').split(',').map(s => s.trim()).filter(Boolean);
+
+    if (checked) {
+      if (!currentItems.includes(optVal)) currentItems.push(optVal);
+    } else {
+      currentItems = currentItems.filter(s => s !== optVal);
+      if (optVal === 'Others') {
+        if (type === 'tool') row.tool_other = '';
+        else row.platform_other = '';
+      }
+    }
+    row[key] = currentItems.join(', ');
+    this.render();
+    setTimeout(() => {
+      const menu = document.getElementById(`ict-${type}-menu-${rowIdx}`);
+      if (menu) {
+        menu.classList.remove('hidden');
+        const tr = menu.closest('tr');
+        if (tr) {
+          tr.style.position = 'relative';
+          tr.style.zIndex = '60';
+        }
+      }
+    }, 50);
+  }
+
+  removeICTItem(type, rowIdx, optVal, event) {
+    if (event) event.stopPropagation();
+    this.harvestFormInputs();
+    if (!this.activePlan.ict_integration || !this.activePlan.ict_integration[rowIdx]) return;
+    const row = this.activePlan.ict_integration[rowIdx];
+    const key = (type === 'tool') ? 'tool' : 'platform';
+    let currentItems = (row[key] || '').split(',').map(s => s.trim()).filter(Boolean);
+    currentItems = currentItems.filter(s => s !== optVal);
+    if (optVal === 'Others') {
+      if (type === 'tool') row.tool_other = '';
+      else row.platform_other = '';
+    }
+    row[key] = currentItems.join(', ');
+    this.render();
+  }
+
+  onICTOtherInput(type, rowIdx, val) {
+    if (!this.activePlan) this.activePlan = this.createDefaultPlan();
+    if (!this.activePlan.ict_integration || !this.activePlan.ict_integration[rowIdx]) return;
+    const row = this.activePlan.ict_integration[rowIdx];
+    if (type === 'tool') {
+      row.tool_other = val;
+    } else {
+      row.platform_other = val;
+    }
+  }
+
+  copySyllabusText(text, btnEl) {
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => {
+      if (btnEl) {
+        const orig = btnEl.innerHTML;
+        btnEl.innerHTML = `<i data-lucide="check" class="w-3 h-3 text-emerald-600"></i> Copied!`;
+        setTimeout(() => { btnEl.innerHTML = orig; if (window.lucide) window.lucide.createIcons(); }, 1800);
+      }
+    }).catch(() => {
+      prompt('Copy unit topics:', text);
+    });
+  }
+
+  insertUnitIntoTeachingPlan(unit, topics, coNum) {
+    this.harvestFormInputs();
+    if (!this.activePlan.detailed_teaching_plan) this.activePlan.detailed_teaching_plan = [];
+
+    let targetRow = this.activePlan.detailed_teaching_plan.find(r => r.unit === unit && !r.from_topic && !r.to_topic);
+    if (targetRow) {
+      targetRow.from_topic = topics.length > 80 ? topics.slice(0, 75) + '...' : topics;
+      targetRow.to_topic = topics.length > 80 ? topics.slice(75) : '';
+      targetRow.hours = '2';
+      targetRow.cos = `CO${coNum}`;
+      if (!targetRow.resources) targetRow.resources = 'Text Book / Study Material';
+    } else {
+      this.activePlan.detailed_teaching_plan.push({
+        month_days: 'Ongoing',
+        unit: unit,
+        from_topic: topics.length > 80 ? topics.slice(0, 75) + '...' : topics,
+        to_topic: topics.length > 80 ? topics.slice(75) : '',
+        hours: '2',
+        cos: `CO${coNum}`,
+        methodology: 'Lecture-based Learning',
+        resources: 'Text Book / Study Material'
+      });
+    }
+
+    document.getElementById('course-syllabus-modal')?.remove();
+    this.render();
+
+    const toast = document.createElement('div');
+    toast.className = 'fixed bottom-5 right-5 z-50 bg-emerald-600 text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-lg flex items-center gap-2 animate-fadeIn';
+    toast.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> ${unit} topics inserted into Teaching Plan!`;
+    document.body.appendChild(toast);
+    if (window.lucide) window.lucide.createIcons();
+    setTimeout(() => toast.remove(), 2500);
+  }
+
+  useResourceInTeachingPlan(resourceText) {
+    if (!resourceText) return;
+    this.harvestFormInputs();
+    const dtp = this.activePlan.detailed_teaching_plan || [];
+    if (dtp.length === 0) {
+      alert('Please add a row in the Detailed Teaching Plan table first.');
+      return;
+    }
+
+    let addedCount = 0;
+    dtp.forEach((row, i) => {
+      let list = (row.resources || '').split(',').map(s => s.trim()).filter(Boolean);
+      if (!list.includes(resourceText.trim())) {
+        list.push(resourceText.trim());
+        row.resources = list.join(', ');
+        addedCount++;
+        const hiddenVal = document.querySelector(`#dtp-res-box-${i} .dtp-res-value`);
+        if (hiddenVal) {
+          hiddenVal.value = row.resources;
+          this.updateResourceDisplayTags(i, list);
+        }
+      }
+    });
+
+    const toast = document.createElement('div');
+    toast.className = 'fixed bottom-5 right-5 z-50 bg-amber-600 text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-lg flex items-center gap-2 animate-fadeIn';
+    toast.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> Added to Learning Resources!`;
+    document.body.appendChild(toast);
+    if (window.lucide) window.lucide.createIcons();
+    setTimeout(() => toast.remove(), 2200);
+  }
+
+
+  formatDateToDDMMYYYY(dateStr) {
+    if (!dateStr) return '';
+    const trimmed = String(dateStr).trim();
+    if (trimmed.includes(' to ')) {
+      const parts = trimmed.split(' to ');
+      return `${this.formatDateToDDMMYYYY(parts[0])} to ${this.formatDateToDDMMYYYY(parts[1])}`;
+    }
+    if (/^\d{2}-\d{2}-\d{4}$/.test(trimmed)) return trimmed;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+      const [y, m, d] = trimmed.split('-');
+      return `${d}-${m}-${y}`;
+    }
+    return trimmed;
+  }
+
+  onDtpMethodChange(selectEl) {
+    const row = selectEl.closest('tr');
+    if (!row) return;
+    const otherInput = row.querySelector('.dtp-method-other');
+    if (otherInput) {
+      if (selectEl.value === 'Others') {
+        otherInput.classList.remove('hidden');
+        otherInput.focus();
+      } else {
+        otherInput.classList.add('hidden');
+      }
+    }
+  }
+
+  onDtpResourceChange(selectEl) {
+    const row = selectEl.closest('tr');
+    if (!row) return;
+    const otherInput = row.querySelector('.dtp-res-other');
+    if (otherInput) {
+      if (selectEl.value === 'Others') {
+        otherInput.classList.remove('hidden');
+        otherInput.focus();
+      } else {
+        otherInput.classList.add('hidden');
+      }
+    }
+  }
+
+  onAsstCatChange(selectEl) {
+    const row = selectEl.closest('tr');
+    if (!row) return;
+    const otherInput = row.querySelector('.asst-cat-other');
+    if (otherInput) {
+      if (selectEl.value === 'Others') {
+        otherInput.classList.remove('hidden');
+        otherInput.focus();
+      } else {
+        otherInput.classList.add('hidden');
+      }
+    }
+  }
+
+  onICTToolChange(selectEl) {
+    const row = selectEl.closest('tr');
+    if (!row) return;
+    const otherInput = row.querySelector('.ict-tool-other, .ict-other-tool');
+    if (otherInput) {
+      if (selectEl.value === 'Others') {
+        otherInput.classList.remove('hidden');
+        otherInput.focus();
+      } else {
+        otherInput.classList.add('hidden');
+        otherInput.value = '';
+      }
+    }
+  }
+
+  onICTPlatformChange(selectEl) {
+    const row = selectEl.closest('tr');
+    if (!row) return;
+    const otherInput = row.querySelector('.ict-platform-other, .ict-other-platform');
+    if (otherInput) {
+      if (selectEl.value === 'Others') {
+        otherInput.classList.remove('hidden');
+        otherInput.focus();
+      } else {
+        otherInput.classList.add('hidden');
+        otherInput.value = '';
+      }
+    }
+  }
+
+  onActivityDropdownChange(selectEl) {
+    const row = selectEl.closest('tr');
+    if (!row) return;
+    const otherInput = row.querySelector('.act-other-name');
+    if (otherInput) {
+      if (selectEl.value === 'Others') {
+        otherInput.classList.remove('hidden');
+        otherInput.focus();
+      } else {
+        otherInput.classList.add('hidden');
+        otherInput.value = '';
+      }
+    }
+  }
+
+  switchHODTab(tab) {
+    this.hodTab = tab;
+    this.render();
+  }
+
+  async quickApprovePlan(planId) {
+    if (!confirm('Are you sure you want to approve this course plan and transmit it to IQAC?')) return;
+    try {
+      const res = await fetch('/api/course-plan-bridge?action=hod_action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: planId,
+          decision: 'Approved',
+          hod_name: this.currentUser ? this.currentUser.display_name : 'Head of Department',
+          hod_comments: 'Verified and approved by HOD.'
+        })
+      });
+      const json = await res.json();
+      if (json.success) {
+        alert('✓ Course plan approved successfully and published to IQAC!');
+        this.fetchPlans().then(() => this.render());
+      } else {
+        alert(json.error || 'Failed to approve course plan');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Network error while approving course plan');
+    }
+  }
+
+  switchAdminTab(tab) {
+    this.adminTab = tab;
+    if (tab === 'analytics' || tab === 'report') {
+      if (!this.analyticsData && !this.analyticsLoading) {
+        this.loadAnalyticsData();
+      }
+    }
+    if (tab === 'roles') {
+      if (!this.facultyRolesData && !this.facultyRolesLoading) {
+        this.loadFacultyRolesData();
+      }
+    }
+    this.render();
+  }
+
+  async loadFacultyRolesData(force = false) {
+    if (this.facultyRolesData && !force) return this.facultyRolesData;
+    this.facultyRolesLoading = true;
+    try {
+      let url = '/api/course-plan-bridge?action=get_faculty_roles';
+      if (this.adminRolesDeptFilter && this.adminRolesDeptFilter !== 'ALL') {
+        url += `&department=${encodeURIComponent(this.adminRolesDeptFilter)}`;
+      }
+      const res = await fetch(url);
+      const json = await res.json();
+      if (json.success) {
+        this.facultyRolesData = json;
+      }
+    } catch (err) {
+      console.error('Failed to load faculty roles:', err);
+    } finally {
+      this.facultyRolesLoading = false;
+      if (this.adminTab === 'roles') {
+        this.render();
+      }
+    }
+    return this.facultyRolesData;
+  }
+
+  async setFacultyRole(facultyId, newRole, deptName) {
+    try {
+      const res = await fetch('/api/course-plan-bridge?action=update_faculty_role', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          faculty_id: facultyId,
+          role: newRole,
+          department_name: deptName
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        // Optimistic local update
+        if (this.facultyRolesData && this.facultyRolesData.faculty) {
+          this.facultyRolesData.faculty = this.facultyRolesData.faculty.map(f => {
+            if (f.department_name === deptName) {
+              if (f.faculty_id === facultyId) {
+                return {
+                  ...f,
+                  role: newRole,
+                  is_head: newRole === 'HEAD' ? 1 : 0,
+                  is_mqc: newRole === 'MQC' ? 1 : 0
+                };
+              } else if (newRole === 'HEAD' && f.is_head == 1) {
+                return { ...f, role: 'FACULTY', is_head: 0 };
+              }
+            }
+            return f;
+          });
+        }
+        this.showToastNotification(data.message || 'Role updated successfully', 'success');
+        this.render();
+      } else {
+        alert(data.error || 'Failed to update faculty role');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Network error while updating faculty role');
+    }
+  }
+
+  showToastNotification(message, type = 'success') {
+    let toast = document.getElementById('cp-role-toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'cp-role-toast';
+      document.body.appendChild(toast);
+    }
+    const bgClass = type === 'success' ? 'bg-emerald-800' : 'bg-rose-800';
+    toast.className = `fixed bottom-6 right-6 z-50 ${bgClass} text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-white/20 flex items-center gap-3 animate-slideUp text-xs font-bold`;
+    toast.innerHTML = `
+      <i data-lucide="${type === 'success' ? 'check-circle' : 'alert-circle'}" class="w-4 h-4 text-emerald-300"></i>
+      <span>${message}</span>
+    `;
+    if (window.lucide) window.lucide.createIcons();
+    setTimeout(() => {
+      if (toast && toast.parentElement) toast.remove();
+    }, 4000);
+  }
+
+  async loadAnalyticsData(force = false) {
+    if (this.analyticsData && !force) return this.analyticsData;
+    this.analyticsLoading = true;
+    try {
+      let url = '/api/course-plan-bridge?action=analytics_data';
+      if (this.adminAnalyticsDept && this.adminAnalyticsDept !== 'all') {
+        url += `&department=${encodeURIComponent(this.adminAnalyticsDept)}`;
+      }
+      if (this.adminAnalyticsStatus && this.adminAnalyticsStatus !== 'all') {
+        url += `&status=${encodeURIComponent(this.adminAnalyticsStatus)}`;
+      }
+      const res = await fetch(url);
+      const json = await res.json();
+      if (json.success) {
+        this.analyticsData = json;
+      }
+    } catch (err) {
+      console.error('Failed to load analytics data:', err);
+    } finally {
+      this.analyticsLoading = false;
+      if (this.adminTab === 'analytics' || this.adminTab === 'report') {
+        this.render();
+      }
+    }
+    return this.analyticsData;
+  }
+
+  onAnalyticsFilterChange(filterType, val) {
+    if (filterType === 'status') this.adminAnalyticsStatus = val;
+    if (filterType === 'dept') this.adminAnalyticsDept = val;
+    if (filterType === 'stream') this.adminAnalyticsStream = val;
+    this.render();
+  }
+
+  printInstitutionalReport() {
+    if (this.adminTab !== 'report') {
+      this.switchAdminTab('report');
+      setTimeout(() => window.print(), 350);
+    } else {
+      window.print();
+    }
+  }
+
+  exportInstitutionalReportCSV() {
+    const rows = [
+      ['S.No', 'Department', 'Faculty Strength', 'Plans Submitted', 'Plans Approved', 'Master Syllabus Courses', 'Coverage (%)', 'Planned Teaching Hours', 'Audit Status']
+    ];
+    const data = this.analyticsData || {};
+    const deptStats = data.dept_stats || {};
+
+    this.departments.forEach((d, idx) => {
+      const dStat = deptStats[d.name] || { total: 0, approved: 0, hours: 0, faculty_count: d.faculty ? d.faculty.length : 0 };
+      const sylCount = this.getDepartmentEvenSyllabusCount(d.name);
+      const covPct = sylCount > 0 ? Math.min(100, Math.round((dStat.approved / sylCount) * 100)) : (dStat.approved > 0 ? 100 : 0);
+      const statusText = dStat.approved > 0 ? 'Approved & Certified' : (dStat.total > 0 ? 'Under Review' : 'Pending Submission');
+      rows.push([
+        idx + 1,
+        `"${d.name.replace(/"/g, '""')}"`,
+        d.faculty ? d.faculty.length : (dStat.faculty_count || 0),
+        dStat.total,
+        dStat.approved,
+        sylCount,
+        `${covPct}%`,
+        dStat.hours,
+        statusText
+      ]);
+    });
+
+    const csvContent = 'data:text/csv;charset=utf-8,' + rows.map(r => r.join(',')).join('\\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', 'SJC_IQAC_Course_Plan_Institutional_Report_2026_27.csv');
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  }
+
+  getDepartmentEvenSyllabusCount(deptName) {
+    if (!this.syllabusCourses || this.syllabusCourses.length === 0) return 0;
+    let count = 0;
+    this.syllabusCourses.forEach(c => {
+      if (this.isDeptMatch(c.department, deptName) && [2, 4, 6].includes(Number(c.semester_num))) {
+        count++;
+      }
+    });
+    return count;
+  }
+
+  switchAdminManageSubTab(subTab) {
+    this.adminManageSubTab = subTab;
+    this.render();
+  }
+
+  openAddFacultyModal(existingFac = null, deptName = '') {
+    const modalId = 'admin-faculty-modal';
+    let el = document.getElementById(modalId);
+    if (!el) {
+      el = document.createElement('div');
+      el.id = modalId;
+      document.body.appendChild(el);
+    }
+    const isEdit = !!existingFac;
+    const curDept = deptName || (existingFac ? existingFac.dept : this.selectedDept);
+
+    el.innerHTML = `
+      <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-2 sm:p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-4 sm:p-6 shadow-2xl border border-slate-200 animate-scaleIn space-y-4 max-h-[92vh] overflow-y-auto">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+            <h3 class="text-base font-black text-slate-900 flex items-center gap-2">
+              <i data-lucide="user-plus" class="w-5 h-5 text-indigo-600"></i>
+              <span>${isEdit ? 'Edit Faculty Member' : 'Add New Faculty Member'}</span>
+            </h3>
+            <button type="button" onclick="document.getElementById('${modalId}').innerHTML = ''" class="text-slate-400 hover:text-slate-600 text-lg font-bold">✕</button>
+          </div>
+
+          <div class="space-y-3.5 text-xs">
+            <input type="hidden" id="af-old-name" value="${isEdit ? existingFac.name : ''}" />
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Department *</label>
+              <select id="af-dept" class="w-full px-3 py-2 border border-slate-300 rounded-xl font-bold bg-white">
+                ${this.departments.map(d => `
+                  <option value="${d.name}" ${d.name === curDept ? 'selected' : ''}>${d.name}</option>
+                `).join('')}
+              </select>
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Faculty Name (with Title) *</label>
+              <input type="text" id="af-name" value="${isEdit ? existingFac.name : ''}" placeholder="e.g. Dr. K. Soundararajan" class="w-full px-3 py-2 border border-slate-300 rounded-xl font-bold" />
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Shift</label>
+                <select id="af-shift" class="w-full px-3 py-2 border border-slate-300 rounded-xl bg-white font-bold">
+                  <option value="I" ${isEdit && existingFac.shift === 'I' ? 'selected' : ''}>Shift I</option>
+                  <option value="II" ${isEdit && existingFac.shift === 'II' ? 'selected' : ''}>Shift II</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Role / Category</label>
+                <input type="text" id="af-category" value="${isEdit ? (existingFac.category || 'Faculty') : 'Faculty'}" placeholder="e.g. Faculty / Coordinator / HOD" class="w-full px-3 py-2 border border-slate-300 rounded-xl" />
+              </div>
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Institutional Email *</label>
+              <input type="email" id="af-email" value="${isEdit ? (existingFac.email || '') : ''}" placeholder="e.g. name@mail.sjctni.edu" class="w-full px-3 py-2 border border-slate-300 rounded-xl font-mono" />
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
+            <button type="button" onclick="document.getElementById('${modalId}').innerHTML = ''" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs">Cancel</button>
+            <button type="button" onclick="coursePlanApp.submitAdminFaculty()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-md">
+              <i data-lucide="check" class="w-4 h-4"></i>
+              <span>Save Faculty</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    if (window.lucide && typeof window.lucide.createIcons === 'function') window.lucide.createIcons();
+  }
+
+  async submitAdminFaculty() {
+    const oldName = document.getElementById('af-old-name')?.value || '';
+    const deptName = document.getElementById('af-dept')?.value || '';
+    const facName = document.getElementById('af-name')?.value?.trim() || '';
+    const shift = document.getElementById('af-shift')?.value || 'I';
+    const category = document.getElementById('af-category')?.value?.trim() || 'Faculty';
+    const email = document.getElementById('af-email')?.value?.trim() || '';
+
+    if (!deptName || !facName) {
+      alert('Department and Faculty Name are required.');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/course-plan-bridge?action=admin_manage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'save_faculty',
+          department_name: deptName,
+          faculty_name: facName,
+          old_faculty_name: oldName,
+          email,
+          shift,
+          category
+        })
+      });
+      const json = await res.json();
+      if (json.success) {
+        alert('✓ ' + json.message);
+        document.getElementById('admin-faculty-modal').innerHTML = '';
+        await this.loadDepartmentsData();
+        this.render();
+      } else {
+        alert(json.error || 'Failed to save faculty');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Network error while saving faculty member');
+    }
+  }
+
+  async deleteAdminFaculty(deptName, facName) {
+    if (!confirm(`Are you sure you want to remove "${facName}" from ${deptName}?`)) return;
+    try {
+      const res = await fetch('/api/course-plan-bridge?action=admin_manage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'delete_faculty',
+          department_name: deptName,
+          faculty_name: facName
+        })
+      });
+      const json = await res.json();
+      if (json.success) {
+        alert('✓ ' + json.message);
+        await this.loadDepartmentsData();
+        this.render();
+      } else {
+        alert(json.error || 'Failed to remove faculty');
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  openAddCourseModal(existingCourse = null) {
+    const modalId = 'admin-course-modal';
+    let el = document.getElementById(modalId);
+    if (!el) {
+      el = document.createElement('div');
+      el.id = modalId;
+      document.body.appendChild(el);
+    }
+    const isEdit = !!existingCourse;
+
+    el.innerHTML = `
+      <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-2 sm:p-4">
+        <div class="bg-white rounded-2xl max-w-xl w-full p-4 sm:p-6 shadow-2xl border border-slate-200 animate-scaleIn space-y-4 max-h-[92vh] overflow-y-auto">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+            <h3 class="text-base font-black text-slate-900 flex items-center gap-2">
+              <i data-lucide="book-plus" class="w-5 h-5 text-indigo-600"></i>
+              <span>${isEdit ? 'Edit Syllabus Course' : 'Add New Course to Syllabus'}</span>
+            </h3>
+            <button type="button" onclick="document.getElementById('${modalId}').innerHTML = ''" class="text-slate-400 hover:text-slate-600 text-lg font-bold">✕</button>
+          </div>
+
+          <div class="space-y-3.5 text-xs max-h-[70vh] overflow-y-auto pr-1">
+            <input type="hidden" id="ac-old-code" value="${isEdit ? existingCourse.course_code : ''}" />
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Course Code *</label>
+                <input type="text" id="ac-code" value="${isEdit ? existingCourse.course_code : ''}" placeholder="e.g. 25UCS23CC03" class="w-full px-3 py-2 border border-slate-300 rounded-xl font-bold font-mono uppercase" />
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Department *</label>
+                <select id="ac-dept" class="w-full px-3 py-2 border border-slate-300 rounded-xl font-bold bg-white">
+                  ${this.departments.map(d => `
+                    <option value="${d.name}" ${isEdit && existingCourse.department === d.name ? 'selected' : ''}>${d.name}</option>
+                  `).join('')}
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Course Title *</label>
+              <input type="text" id="ac-title" value="${isEdit ? existingCourse.course_title : ''}" placeholder="e.g. Core Course - 3: Python Programming" class="w-full px-3 py-2 border border-slate-300 rounded-xl font-bold" />
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Semester</label>
+                <select id="ac-sem" class="w-full px-3 py-2 border border-slate-300 rounded-xl bg-white font-bold">
+                  <option value="Semester 2" ${isEdit && existingCourse.semester === 'Semester 2' ? 'selected' : ''}>Semester 2</option>
+                  <option value="Semester 4" ${isEdit && existingCourse.semester === 'Semester 4' ? 'selected' : ''}>Semester 4</option>
+                  <option value="Semester 6" ${isEdit && existingCourse.semester === 'Semester 6' ? 'selected' : ''}>Semester 6</option>
+                  <option value="Semester 1" ${isEdit && existingCourse.semester === 'Semester 1' ? 'selected' : ''}>Semester 1</option>
+                  <option value="Semester 3" ${isEdit && existingCourse.semester === 'Semester 3' ? 'selected' : ''}>Semester 3</option>
+                  <option value="Semester 5" ${isEdit && existingCourse.semester === 'Semester 5' ? 'selected' : ''}>Semester 5</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Hours / Week</label>
+                <input type="number" id="ac-hours" value="${isEdit ? (existingCourse.hours || '4') : '4'}" class="w-full px-3 py-2 border border-slate-300 rounded-xl font-bold text-center" />
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Credits</label>
+                <input type="number" id="ac-credits" value="${isEdit ? (existingCourse.credits || '3') : '3'}" class="w-full px-3 py-2 border border-slate-300 rounded-xl font-bold text-center" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Programme</label>
+                <input type="text" id="ac-prog" value="${isEdit ? (existingCourse.programme || '') : ''}" placeholder="e.g. B.Sc. Computer Science" class="w-full px-3 py-2 border border-slate-300 rounded-xl" />
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Level / Batch</label>
+                <select id="ac-level" class="w-full px-3 py-2 border border-slate-300 rounded-xl bg-white font-bold">
+                  <option value="UG" ${isEdit && existingCourse.level === 'UG' ? 'selected' : ''}>UG (I / II / III UG)</option>
+                  <option value="PG" ${isEdit && existingCourse.level === 'PG' ? 'selected' : ''}>PG (I / II PG)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
+            <button type="button" onclick="document.getElementById('${modalId}').innerHTML = ''" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs">Cancel</button>
+            <button type="button" onclick="coursePlanApp.submitAdminCourse()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-md">
+              <i data-lucide="check" class="w-4 h-4"></i>
+              <span>Save Course</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    if (window.lucide && typeof window.lucide.createIcons === 'function') window.lucide.createIcons();
+  }
+
+  async submitAdminCourse() {
+    const oldCode = document.getElementById('ac-old-code')?.value || '';
+    const code = document.getElementById('ac-code')?.value?.trim().toUpperCase() || '';
+    const title = document.getElementById('ac-title')?.value?.trim() || '';
+    const dept = document.getElementById('ac-dept')?.value || '';
+    const sem = document.getElementById('ac-sem')?.value || 'Semester 2';
+    const hours = document.getElementById('ac-hours')?.value?.trim() || '4';
+    const credits = document.getElementById('ac-credits')?.value?.trim() || '3';
+    const prog = document.getElementById('ac-prog')?.value?.trim() || '';
+    const level = document.getElementById('ac-level')?.value || 'UG';
+
+    if (!code || !title || !dept) {
+      alert('Course Code, Title, and Department are required.');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/course-plan-bridge?action=admin_manage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'save_course',
+          course_code: code,
+          old_course_code: oldCode,
+          course_title: title,
+          department: dept,
+          programme: prog,
+          semester: sem,
+          hours,
+          credits,
+          level
+        })
+      });
+      const json = await res.json();
+      if (json.success) {
+        alert('✓ ' + json.message);
+        document.getElementById('admin-course-modal').innerHTML = '';
+        await this.loadSyllabusData();
+        this.render();
+      } else {
+        alert(json.error || 'Failed to save course');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Network error while saving course');
+    }
+  }
+
+  openAddDepartmentModal(existingDept = null) {
+    const modalId = 'admin-dept-modal';
+    let el = document.getElementById(modalId);
+    if (!el) {
+      el = document.createElement('div');
+      el.id = modalId;
+      document.body.appendChild(el);
+    }
+    const isEdit = !!existingDept;
+
+    el.innerHTML = `
+      <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 animate-scaleIn space-y-5">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+            <h3 class="text-base font-black text-slate-900 flex items-center gap-2">
+              <i data-lucide="building-2" class="w-5 h-5 text-indigo-600"></i>
+              <span>${isEdit ? 'Edit Department' : 'Add New Department'}</span>
+            </h3>
+            <button type="button" onclick="document.getElementById('${modalId}').innerHTML = ''" class="text-slate-400 hover:text-slate-600 text-lg font-bold">✕</button>
+          </div>
+
+          <div class="space-y-3.5 text-xs">
+            <input type="hidden" id="ad-old-name" value="${isEdit ? existingDept.name : ''}" />
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Department Name *</label>
+              <input type="text" id="ad-name" value="${isEdit ? existingDept.name : ''}" placeholder="e.g. Artificial Intelligence" class="w-full px-3 py-2 border border-slate-300 rounded-xl font-bold" />
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
+            <button type="button" onclick="document.getElementById('${modalId}').innerHTML = ''" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs">Cancel</button>
+            <button type="button" onclick="coursePlanApp.submitAdminDepartment()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-md">
+              <i data-lucide="check" class="w-4 h-4"></i>
+              <span>Save Department</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    if (window.lucide && typeof window.lucide.createIcons === 'function') window.lucide.createIcons();
+  }
+
+  async submitAdminDepartment() {
+    const oldName = document.getElementById('ad-old-name')?.value || '';
+    const deptName = document.getElementById('ad-name')?.value?.trim() || '';
+
+    if (!deptName) {
+      alert('Department Name is required.');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/course-plan-bridge?action=admin_manage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'save_department',
+          department_name: deptName,
+          old_department_name: oldName
+        })
+      });
+      const json = await res.json();
+      if (json.success) {
+        alert('✓ ' + json.message);
+        document.getElementById('admin-dept-modal').innerHTML = '';
+        await this.loadDepartmentsData();
+        this.render();
+      } else {
+        alert(json.error || 'Failed to save department');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Network error while saving department');
+    }
+  }
+
+
+  async loadDepartmentsData() {
+    try {
+      const res = await fetch('data/departments_faculty.json?v=20261117_ORDER1');
+      const json = await res.json();
+      this.departments = json.departments || [];
+    } catch (e) {
+      console.error('Failed to load departments faculty data', e);
+      this.departments = [];
+    }
+  }
+
+  async checkAuth() {
+    try {
+      const res = await fetch('/api/course-plan-bridge?action=auth_check');
+      const json = await res.json();
+      if (json.settings) {
+        this.systemSettings = json.settings;
+      }
+      if (json.success && (json.authenticated || json.user)) {
+        this.currentUser = json.user;
+        try {
+          localStorage.setItem('CP_CURRENT_USER', JSON.stringify(json.user));
+        } catch (e) {}
+        if (this.currentUser.department_name) {
+          this.selectedDept = this.currentUser.department_name;
+        }
+      } else {
+        try {
+          const cached = localStorage.getItem('CP_CURRENT_USER');
+          if (cached) {
+            this.currentUser = JSON.parse(cached);
+          } else {
+            this.currentUser = null;
+          }
+        } catch (e) {
+          this.currentUser = null;
+        }
+      }
+    } catch (e) {
+      this.currentUser = null;
+    }
+  }
+
+  async fetchPlans() {
+    try {
+      let url = '/api/course-plan-bridge?action=list';
+      if (this.currentUser && this.currentUser.role === 'admin') {
+        if (this.adminFilter !== 'all') url += `&status=${encodeURIComponent(this.adminFilter)}`;
+        if (this.adminDeptFilter !== 'all') url += `&department=${encodeURIComponent(this.adminDeptFilter)}`;
+      } else if (this.currentUser && (this.currentUser.role === 'faculty' || this.currentUser.role === 'hod')) {
+        if ((this.currentUser.is_hod || this.currentUser.role === 'hod') && this.currentDashboardView === 'hod') {
+          url += `&view=hod&department=${encodeURIComponent(this.currentUser.hod_department || this.currentUser.department_name)}`;
+        } else {
+          url += `&department=${encodeURIComponent(this.currentUser.department_name)}&faculty_name=${encodeURIComponent(this.currentUser.faculty_name)}`;
+        }
+      } else {
+        url += `&department=${encodeURIComponent(this.selectedDept)}`;
+      }
+      const res = await fetch(url);
+      const json = await res.json();
+      if (json.success) {
+        this.plans = json.data || [];
+      } else {
+        this.plans = [];
+      }
+
+      // Automatically fetch TL practices status for faculty
+      if (this.currentUser && this.currentUser.role === 'faculty') {
+        try {
+          const facName = this.currentUser.faculty_name || this.currentUser.display_name || '';
+          const deptName = this.currentUser.department_name || this.selectedDept || '';
+          const tlRes = await fetch(`/api/course-plan-bridge?action=get_tl_practices&faculty_name=${encodeURIComponent(facName)}&department_name=${encodeURIComponent(deptName)}`);
+          const tlJson = await tlRes.json();
+          this.tlPracticesData = (tlJson.success && tlJson.data) ? tlJson.data : null;
+        } catch (tle) {
+          console.warn('Could not fetch TL practices status:', tle);
+          this.tlPracticesData = null;
+        }
+      }
+    } catch (e) {
+      console.warn('Could not fetch plans', e);
+      this.plans = [];
+    }
+  }
+
+  getCurrentDepartmentObj() {
+    return this.departments.find(d => d.name === this.selectedDept || d.name.toLowerCase() === this.selectedDept.toLowerCase()) || this.departments[0] || { name: this.selectedDept, faculty: [] };
+  }
+
+  // ================= MAIN RENDER =================
+  render() {
+    const root = document.getElementById('course-plan-root');
+    if (!root) return;
+
+    this.renderHeaderBar();
+
+    if (this.viewMode === 'login' || !this.currentUser) {
+      root.innerHTML = this.renderLoginHtml();
+    } else if (this.viewMode === 'form') {
+      root.innerHTML = this.renderFormHtml();
+      this.calculateTotalHours();
+    } else if (this.viewMode === 'print') {
+      root.innerHTML = this.renderPrintHtml();
+    } else {
+      // Dashboard view based on user role
+      if (this.currentUser.role === 'admin') {
+        root.innerHTML = this.renderAdminDashboardHtml();
+      } else if (this.currentDashboardView === 'hod' || (this.currentUser.role === 'hod' && this.currentDashboardView !== 'faculty')) {
+        root.innerHTML = this.renderHODDashboardHtml();
+      } else {
+        root.innerHTML = this.renderFacultyDashboardHtml();
+      }
+    }
+
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
+    }
+  }
+
+  // Render Dynamic Header Bar Info
+  renderHeaderBar() {
+    const authStatusEl = document.getElementById('header-auth-section');
+    if (!authStatusEl) return;
+
+    if (this.currentUser) {
+      const isHOD = this.currentUser.role === 'hod';
+      const isFaculty = this.currentUser.role === 'faculty';
+      const roleBadge = isHOD ? 'bg-amber-100 text-amber-900 border border-amber-300' :
+        isFaculty ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' :
+          'bg-purple-100 text-purple-900 border border-purple-300';
+      const roleIcon = isHOD ? 'shield-check' : isFaculty ? 'user-check' : 'crown';
+      const roleTitle = isHOD ? 'Head of Department' : isFaculty ? 'Faculty Member' : 'IQAC Admin';
+
+      authStatusEl.innerHTML = `
+        <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+          ${isHOD ? `
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchToFacultyDashboard()" 
+              class="px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold ${this.currentDashboardView === 'faculty' ? 'bg-indigo-600 text-white shadow-xs' : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200'} transition flex items-center gap-1 cursor-pointer"
+              title="My Teaching Course Plans (Fill & Edit)"
+            >
+              <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
+              <span>My Plans (Fill)</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchToHODDashboard()" 
+              class="px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold ${this.currentDashboardView === 'hod' ? 'bg-amber-600 text-white shadow-xs' : 'bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-300'} transition flex items-center gap-1 cursor-pointer"
+              title="Review & approve department faculty course plans"
+            >
+              <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+              <span>HOD Review</span>
+            </button>
+          ` : isFaculty ? `
+            <button 
+              type="button" 
+              onclick="coursePlanApp.navigateTo('/course-plan/dashboard')" 
+              class="px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition flex items-center gap-1 cursor-pointer shadow-2xs"
+            >
+              <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
+              <span>Dashboard</span>
+            </button>
+          ` : `
+            <button 
+              type="button" 
+              onclick="coursePlanApp.navigateTo('/course-plan/admin')" 
+              class="px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition flex items-center gap-1 cursor-pointer shadow-2xs"
+            >
+              <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
+              <span>Admin Hub</span>
+            </button>
+          `}
+          <span class="px-2 sm:px-2.5 py-1 rounded-xl text-[11px] sm:text-xs font-bold ${roleBadge} flex items-center gap-1 max-w-[130px] sm:max-w-xs truncate" title="${this.escapeHtml(this.currentUser.display_name || this.currentUser.faculty_name || 'User')}">
+            <i data-lucide="${roleIcon}" class="w-3.5 h-3.5 shrink-0"></i>
+            <span class="truncate">${this.escapeHtml(this.currentUser.display_name || this.currentUser.faculty_name || 'User')}</span>
+          </span>
+          <a 
+            href="manual.html" 
+            target="_blank" 
+            class="px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition flex items-center gap-1 cursor-pointer shadow-2xs" 
+            title="Open User Manual with Screenshots"
+          >
+            <i data-lucide="book-open" class="w-3.5 h-3.5 text-indigo-600"></i>
+            <span>User Manual</span>
+          </a>
+          <button 
+            type="button" 
+            onclick="coursePlanApp.logout()" 
+            class="px-2.5 sm:px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold rounded-xl text-[11px] sm:text-xs transition border border-rose-200 cursor-pointer"
+          >
+            Sign Out
+          </button>
+        </div>
+      `;
+    } else {
+      authStatusEl.innerHTML = `
+        <a 
+          href="manual.html" 
+          target="_blank" 
+          class="px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition flex items-center gap-1 cursor-pointer shadow-2xs" 
+          title="Open User Manual with Screenshots"
+        >
+          <i data-lucide="book-open" class="w-3.5 h-3.5 text-indigo-600"></i>
+          <span>User Manual</span>
+        </a>
+      `;
+    }
+  }
+
+  async switchToHODDashboard() {
+    this.currentDashboardView = 'hod';
+    this.viewMode = 'dashboard';
+    window.history.pushState(null, '', '/course-plan/hod');
+    await this.fetchPlans();
+    this.render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async switchToFacultyDashboard() {
+    this.currentDashboardView = 'faculty';
+    this.viewMode = 'dashboard';
+    window.history.pushState(null, '', '/course-plan/dashboard');
+    await this.fetchPlans();
+    this.render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ================= 0. AUTHENTICATION & LOGIN VIEW (UNIFIED SINGLE-DOOR) =================
+  renderLoginHtml() {
+    return `
+      <div class="min-h-[85vh] flex items-center justify-center py-8 sm:py-12 px-3 sm:px-6 animate-fadeIn">
+        <div class="w-full max-w-4xl">
+          <!-- Institutional Two-Column Academic Card -->
+          <div class="bg-white rounded-3xl shadow-2xl shadow-indigo-950/15 border border-slate-200/90 overflow-hidden grid grid-cols-1 md:grid-cols-12">
+            
+            <!-- Left Column: College Campus Heritage Image (college-bg) -->
+            <div class="md:col-span-5 relative overflow-hidden min-h-[240px] sm:min-h-[280px] md:min-h-full bg-slate-900 flex flex-col justify-end">
+              <img 
+                src="college-bg.jpg" 
+                alt="St. Joseph's College (Autonomous)" 
+                class="absolute inset-0 w-full h-full object-cover object-center" 
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/10 pointer-events-none"></div>
+              
+              <div class="relative z-10 p-5 sm:p-6 text-white pointer-events-none">
+                <span class="inline-block px-2.5 py-0.5 rounded-full bg-black/50 backdrop-blur-md border border-white/20 text-[10px] font-black uppercase tracking-widest text-amber-300 mb-1">
+                  Estd. 1844
+                </span>
+                <h3 class="text-base sm:text-lg font-black tracking-tight text-white leading-tight drop-shadow">
+                  St. Joseph’s College
+                </h3>
+                <p class="text-[11px] font-medium text-slate-200 drop-shadow">
+                  Autonomous • Tiruchirappalli
+                </p>
+              </div>
+            </div>
+
+            <!-- Right Login Form Panel (Desktop 7 cols) -->
+            <div class="md:col-span-7 p-6 sm:p-10 flex flex-col justify-between bg-white">
+              <div class="space-y-6">
+                <!-- Header of Form -->
+                <div class="space-y-1">
+                  <h2 class="text-2xl font-black text-slate-900 tracking-tight">
+                    Faculty Login
+                  </h2>
+                  <p class="text-xs text-slate-500 font-medium leading-relaxed">
+                    Enter your staff code and ERP credentials to access your course plans, syllabus units, and departmental reviews.
+                  </p>
+                </div>
+
+                ${this.systemSettings && this.systemSettings.maintenance_mode ? `
+                  <!-- Development & Maintenance Mode Banner -->
+                  <div class="p-4 bg-amber-50 border-2 border-amber-300 rounded-2xl flex items-start gap-3 text-amber-900 shadow-sm animate-pulse">
+                    <div class="p-2 bg-amber-200/80 rounded-xl text-amber-800 shrink-0 mt-0.5">
+                      <i data-lucide="wrench" class="w-4 h-4"></i>
+                    </div>
+                    <div class="space-y-0.5">
+                      <h4 class="text-xs font-black uppercase tracking-wider text-amber-900">Maintenance Mode Active</h4>
+                      <p class="text-[11px] text-amber-800 font-medium">Logins are temporarily restricted to IQAC Administrators for system maintenance.</p>
+                    </div>
+                  </div>
+                ` : ''}
+
+                <!-- Error Notification Box -->
+                <div id="login-error-msg" class="hidden p-3.5 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold rounded-2xl flex items-center gap-2 animate-shake">
+                  <i data-lucide="alert-circle" class="w-4 h-4 shrink-0 text-rose-600"></i>
+                  <span class="error-text">Authentication failed</span>
+                </div>
+
+                <!-- Form -->
+                <form onsubmit="event.preventDefault(); coursePlanApp.login(event);" class="space-y-4">
+                  <!-- Staff Code Input -->
+                  <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-slate-700 flex items-center justify-between">
+                      <span class="flex items-center gap-1.5">
+                        <i data-lucide="id-card" class="w-3.5 h-3.5 text-indigo-600"></i>
+                        <span>Staff Code / Username *</span>
+                      </span>
+                      <span class="text-[10.5px] font-semibold text-slate-400">e.g. 24CAI51</span>
+                    </label>
+                    <div class="relative">
+                      <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i data-lucide="user-check" class="w-4 h-4 text-indigo-500"></i>
+                      </div>
+                      <input 
+                        type="text" 
+                        id="login-fac-id" 
+                        name="username"
+                        class="w-full text-xs sm:text-sm pl-10 pr-3.5 py-3 border-2 border-slate-200 rounded-2xl bg-slate-50/50 hover:bg-white font-mono font-bold text-slate-900 uppercase focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 focus:outline-none transition"
+                        placeholder="e.g. 24CAI51"
+                        autocomplete="username"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <!-- Password Input -->
+                  <div class="space-y-1.5">
+                    <div class="flex items-center justify-between">
+                      <label class="block text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                        <i data-lucide="lock" class="w-3.5 h-3.5 text-indigo-600"></i>
+                        <span>Password *</span>
+                      </label>
+                      <span class="text-[10.5px] font-semibold text-slate-400">ERP Password</span>
+                    </div>
+                    <div class="relative">
+                      <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-indigo-500"></i>
+                      </div>
+                      <input 
+                        type="password" 
+                        id="login-fac-password" 
+                        name="password"
+                        required 
+                        class="w-full text-xs sm:text-sm pl-10 pr-10 py-3 border-2 border-slate-200 rounded-2xl bg-slate-50/50 hover:bg-white font-mono font-bold text-slate-900 focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 focus:outline-none transition"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                      />
+                      <button 
+                        type="button" 
+                        onclick="coursePlanApp.togglePasswordVisibility('login-fac-password')" 
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                        title="Show/Hide Password"
+                      >
+                        <i data-lucide="eye" class="w-4 h-4"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Submit Button -->
+                  <div class="pt-2">
+                    <button 
+                      type="submit" 
+                      id="login-submit-btn" 
+                      class="w-full py-3.5 bg-gradient-to-r from-indigo-700 via-blue-700 to-indigo-800 hover:from-indigo-800 hover:to-blue-800 text-white font-black text-sm rounded-2xl shadow-lg shadow-indigo-700/25 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                    >
+                      <span>Sign In to Portal</span>
+                      <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              <!-- Assistance Footer Note -->
+              <div class="pt-4 mt-6 border-t border-slate-100 flex items-center justify-end text-[11px] text-slate-400 font-medium">
+                <a href="manual.html" target="_blank" class="text-indigo-600 hover:text-indigo-800 font-bold transition flex items-center gap-1">
+                  <span>User Manual</span>
+                  <i data-lucide="external-link" class="w-3 h-3"></i>
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  setLoginTab(tab) {
+    this.loginTab = tab;
+    this.render();
+  }
+
+  onLoginDeptChange(dept) {
+    this.selectedLoginDept = dept;
+    const deptObj = this.departments.find(d => d.name === dept) || { faculty: [] };
+    const facultyList = deptObj.faculty || [];
+    this.selectedLoginFaculty = facultyList.length > 0 ? (typeof facultyList[0] === 'string' ? facultyList[0] : facultyList[0].name) : '';
+
+    const facSelect = document.getElementById('login-fac-name');
+    if (facSelect) {
+      facSelect.innerHTML = facultyList.length === 0
+        ? '<option value="">-- No faculty found in department --</option>'
+        : facultyList.map(f => {
+          const name = typeof f === 'string' ? f : f.name;
+          return `<option value="${this.escapeHtml(name)}" ${name === this.selectedLoginFaculty ? 'selected' : ''}>${this.escapeHtml(name)}</option>`;
+        }).join('');
+      facSelect.value = this.selectedLoginFaculty;
+    }
+  }
+
+  onLoginFacultyChange(fac) {
+    this.selectedLoginFaculty = fac;
+  }
+
+  togglePasswordVisibility(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.type = el.type === 'password' ? 'text' : 'password';
+  }
+
+  async login(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const usernameInput = document.getElementById('login-fac-id') || document.getElementById('login-admin-user');
+    const passwordInput = document.getElementById('login-fac-password') || document.getElementById('login-admin-password') || document.getElementById('login-hod-password');
+    const deptSelect = document.getElementById('login-fac-dept');
+    const facSelect = document.getElementById('login-fac-name');
+    const errEl = document.getElementById('login-error-msg');
+    const btn = document.getElementById('login-submit-btn') || document.getElementById('login-admin-btn') || document.getElementById('login-hod-btn');
+
+    const loginId = (usernameInput?.value || '').trim();
+    const pass = (passwordInput?.value || '').trim();
+    const dept = deptSelect?.value || this.selectedLoginDept;
+    const fac = facSelect?.value || this.selectedLoginFaculty;
+
+    if (!loginId && (!dept || !fac)) {
+      if (errEl) {
+        errEl.querySelector('.error-text').textContent = 'Please enter your Staff Code.';
+        errEl.classList.remove('hidden');
+      }
+      return;
+    }
+    if (!pass) {
+      if (errEl) {
+        errEl.querySelector('.error-text').textContent = 'Please enter your password.';
+        errEl.classList.remove('hidden');
+      }
+      return;
+    }
+
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = `<span class="inline-block animate-spin mr-2">⏳</span> Signing in...`;
+    }
+
+    try {
+      const payload = {
+        role: 'unified',
+        password: pass
+      };
+      if (loginId) {
+        payload.username = loginId;
+        payload.faculty_id = loginId;
+      } else {
+        payload.department_name = dept;
+        payload.faculty_name = fac;
+      }
+
+      const res = await fetch('/api/course-plan-bridge?action=login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (data.success && data.user) {
+        this.currentUser = data.user;
+        try {
+          localStorage.setItem('CP_CURRENT_USER', JSON.stringify(data.user));
+        } catch (e) {}
+        if (data.user.role === 'admin') {
+          this.navigateTo('/course-plan/admin');
+        } else if (data.user.role === 'hod') {
+          this.selectedDept = data.user.department_name;
+          this.navigateTo('/course-plan/hod');
+        } else {
+          this.selectedDept = data.user.department_name;
+          this.navigateTo('/course-plan/dashboard');
+        }
+      } else {
+        if (errEl) {
+          errEl.querySelector('.error-text').textContent = data.error || 'Authentication failed. Please check credentials.';
+          errEl.classList.remove('hidden');
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      if (errEl) {
+        errEl.querySelector('.error-text').textContent = 'Network or server error while connecting to authentication service.';
+        errEl.classList.remove('hidden');
+      }
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `<span>Sign In to Portal</span> <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>`;
+        if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
+      }
+    }
+  }
+
+  // Backward-compatible aliases
+  async loginFaculty(e) { return this.login(e); }
+  async loginHOD(e) { return this.login(e); }
+  async loginAdmin(e) { return this.login(e); }
+
+  // ================= SYSTEM SETTINGS & ADMIN CONTROLS =================
+  async fetchSystemSettings() {
+    try {
+      const res = await fetch('/api/course-plan-bridge?action=get_settings');
+      const data = await res.json();
+      if (data && data.success && data.settings) {
+        this.systemSettings = data.settings;
+      }
+    } catch (err) {
+      console.warn('Could not load system settings:', err);
+    }
+  }
+
+  async toggleSubmissionsControl() {
+    const newStatus = !this.systemSettings.submissions_enabled;
+    const confirmMsg = newStatus 
+      ? "Are you sure you want to ENABLE / OPEN course plan submissions for all faculty across the institution?" 
+      : "Are you sure you want to DISABLE / CLOSE course plan submissions? Faculty will not be able to submit or edit plans.";
+    if (!confirm(confirmMsg)) return;
+
+    try {
+      const res = await fetch('/api/course-plan-bridge?action=update_settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ submissions_enabled: newStatus })
+      });
+      const data = await res.json();
+      if (data && data.success) {
+        this.systemSettings = data.settings;
+        this.render();
+      } else {
+        alert(data.error || 'Failed to update submissions setting.');
+      }
+    } catch (err) {
+      alert('Network error while updating submission setting.');
+    }
+  }
+
+  async toggleMaintenanceMode() {
+    const newMode = !this.systemSettings.maintenance_mode;
+    const confirmMsg = newMode 
+      ? "⚠️ Are you sure you want to ACTIVATE Development & Maintenance Mode?\n\nNon-administrator access (Faculty & HODs) will be blocked immediately. Only IQAC Administrators can sign in." 
+      : "Are you sure you want to DEACTIVATE Development / Maintenance Mode and reopen the portal to all faculty and HODs?";
+    if (!confirm(confirmMsg)) return;
+
+    try {
+      const res = await fetch('/api/course-plan-bridge?action=update_settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ maintenance_mode: newMode })
+      });
+      const data = await res.json();
+      if (data && data.success) {
+        this.systemSettings = data.settings;
+        this.render();
+      } else {
+        alert(data.error || 'Failed to update maintenance mode.');
+      }
+    } catch (err) {
+      alert('Network error while updating maintenance mode.');
+    }
+  }
+
+  exportCoursePlansCSV() {
+    window.location.href = '/api/course-plan-bridge?action=export_plans_csv';
+  }
+
+  exportTLPracticesCSV() {
+    window.location.href = '/api/course-plan-bridge?action=export_tl_csv';
+  }
+
+  async loadPlanForEdit(id) {
+    try {
+      const res = await fetch(`/api/course-plan-bridge?action=get&id=${id}`);
+      const json = await res.json();
+      if (json.success && json.data) {
+        this.activePlan = json.data;
+        if (this.activePlan.general_details) {
+          if (this.activePlan.general_details.is_shared_course !== undefined && this.activePlan.is_shared_course === undefined) {
+            this.activePlan.is_shared_course = !!this.activePlan.general_details.is_shared_course;
+          }
+          if (this.activePlan.general_details.shared_faculty_name && !this.activePlan.shared_faculty_name) {
+            this.activePlan.shared_faculty_name = this.activePlan.general_details.shared_faculty_name;
+          }
+        }
+      } else {
+        this.activePlan = this.plans.find(p => String(p.id) === String(id)) || this.createDefaultPlan();
+      }
+    } catch (e) {
+      this.activePlan = this.plans.find(p => String(p.id) === String(id)) || this.createDefaultPlan();
+    }
+  }
+
+  async loadPlanForPrint(id) {
+    await this.loadPlanForEdit(id);
+  }
+
+  // ================= 1. PERSONAL FACULTY DASHBOARD =================
+  renderFacultyDashboardHtml() {
+    const user = this.currentUser || { display_name: 'Professor', department_name: this.selectedDept };
+    const myPlans = this.plans || [];
+    const hasPlannedCourses = myPlans.length > 0;
+    const tlEntered = !!(this.tlPracticesData && this.tlPracticesData.id);
+
+    const totalSubmitted = myPlans.filter(p => p.status === 'Submitted' || p.hod_status === 'Approved' || p.hod_status === 'Pending').length;
+    const totalApproved = myPlans.filter(p => p.hod_status === 'Approved').length;
+    const totalDrafts = myPlans.filter(p => p.status === 'Draft' || !p.status).length;
+    const totalRevisions = myPlans.filter(p => p.hod_status === 'Revision Needed').length;
+
+    return `
+      <div class="space-y-6 animate-fadeIn w-full max-w-7xl mx-auto">
+        ${this.systemSettings && !this.systemSettings.submissions_enabled ? `
+          <!-- Submissions Closed Alert Banner -->
+          <div class="p-4 bg-rose-50 border-2 border-rose-300 rounded-2xl flex items-center justify-between gap-3 text-rose-900 shadow-sm animate-fadeIn">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600 shrink-0">
+                <i data-lucide="lock" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h4 class="text-xs font-black uppercase tracking-wider text-rose-900">Course Plan Submissions are Closed</h4>
+                <p class="text-[11.5px] font-medium text-rose-700">Course plan submissions have been temporarily closed by the IQAC Administrator. You can view and print your courses, but new submissions are locked.</p>
+              </div>
+            </div>
+            <span class="px-3 py-1 bg-rose-200 text-rose-900 text-xs font-black rounded-xl shrink-0">Submissions Locked</span>
+          </div>
+        ` : ''}
+
+        <!-- Faculty Dashboard Welcome Banner -->
+        <div class="bg-gradient-to-r from-blue-900 via-indigo-900 to-indigo-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-indigo-700/50 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div class="space-y-2">
+            <div class="flex items-center gap-2 flex-wrap">
+              ${user.is_hod ? `
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 text-indigo-950 text-xs font-black uppercase tracking-wider shadow-sm">
+                  🏛️ Head of Department (HOD)
+                </span>
+              ` : `
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400 text-indigo-950 text-xs font-black uppercase tracking-wider shadow-sm">
+                  <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Faculty Portal
+                </span>
+              `}
+              <span class="text-indigo-200 text-xs font-bold bg-white/10 px-3 py-1 rounded-full border border-white/15">
+                ${this.escapeHtml(user.department_name || this.selectedDept)}
+              </span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-white">
+              Welcome, ${this.escapeHtml(user.display_name || user.faculty_name || 'Professor')}!
+            </h1>
+            <p class="text-xs sm:text-sm text-indigo-100 max-w-2xl font-medium leading-relaxed">
+              Academic Year 2026–2027 (Even Semester) • Prepare theory course plans, track review status with your Head of Department (HOD), and export official IQAC documentation.
+            </p>
+          </div>
+
+          <div class="flex items-center gap-3 flex-wrap">
+            ${user.is_hod ? `
+              <button 
+                type="button" 
+                onclick="coursePlanApp.switchToHODDashboard()" 
+                class="px-5 py-3 bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-white font-black rounded-2xl text-xs sm:text-sm transition shadow-lg shadow-amber-500/25 flex items-center gap-2.5 cursor-pointer active:scale-95 border border-amber-400/40"
+                title="View department submissions, review and approve course plans as HOD"
+              >
+                <span class="w-6 h-6 rounded-full bg-white text-amber-950 flex items-center justify-center font-black text-xs shrink-0 shadow-sm leading-none">🏛️</span>
+                <span>View Department Status (HOD Dashboard)</span>
+              </button>
+            ` : ''}
+
+            <button 
+              type="button" 
+              onclick="coursePlanApp.startNewCoursePlan()" 
+              class="px-5 py-3 ${this.systemSettings && !this.systemSettings.submissions_enabled ? 'bg-amber-400 hover:bg-amber-300 ring-2 ring-rose-400' : 'bg-amber-400 hover:bg-amber-300'} text-indigo-950 font-black rounded-2xl text-xs sm:text-sm transition shadow-lg shadow-amber-400/20 flex items-center gap-2.5 cursor-pointer active:scale-95"
+            >
+              <span class="w-6 h-6 rounded-full bg-indigo-950 text-amber-300 flex items-center justify-center font-black text-xs shrink-0 shadow-sm leading-none">1</span>
+              <span>+ Create New Course Plan</span>
+              ${this.systemSettings && !this.systemSettings.submissions_enabled ? `
+                <span class="px-2 py-0.5 rounded-full bg-rose-600 text-white text-[9.5px] font-black uppercase tracking-wider shadow-xs flex items-center gap-1">
+                  <i data-lucide="lock" class="w-2.5 h-2.5"></i> Locked
+                </span>
+              ` : ''}
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.openTLPracticesModal()" 
+              class="px-5 py-3 ${hasPlannedCourses ? (tlEntered ? 'bg-gradient-to-r from-emerald-800 via-indigo-700 to-indigo-800 hover:from-emerald-700 hover:to-indigo-700 text-white border-emerald-400/40 shadow-emerald-950/30' : 'bg-gradient-to-r from-indigo-700 via-indigo-600 to-indigo-800 hover:from-indigo-600 hover:to-indigo-700 text-white border-indigo-400/40 shadow-indigo-950/40') : 'bg-slate-800/80 hover:bg-slate-800 text-slate-400 border-slate-700/60 cursor-not-allowed opacity-75'} font-extrabold rounded-2xl text-xs sm:text-sm transition shadow-lg flex items-center gap-2.5 cursor-pointer border active:scale-95"
+              title="${hasPlannedCourses ? (tlEntered ? 'View / Edit your submitted TL Practices & Assessment Components (Recorded in IQAC)' : 'Open Teaching-Learning Practices, Assessment Components & E-Content planned form') : 'Step 1 Required: Please create at least one course plan first to unlock this form'}"
+            >
+              <span class="w-6 h-6 rounded-full ${hasPlannedCourses ? (tlEntered ? 'bg-white text-emerald-900' : 'bg-white text-indigo-900') : 'bg-slate-700 text-slate-400'} flex items-center justify-center font-black text-xs shrink-0 shadow-sm leading-none">2</span>
+              <span>TL Practices, Assessment Component</span>
+              ${this.systemSettings && !this.systemSettings.submissions_enabled ? `
+                <span class="px-2 py-0.5 rounded-full bg-rose-600 text-white text-[9.5px] font-black uppercase tracking-wider shadow-xs flex items-center gap-1">
+                  <i data-lucide="lock" class="w-2.5 h-2.5"></i> Locked
+                </span>
+              ` : (tlEntered ? `
+                <span class="px-2 py-0.5 rounded-full bg-emerald-500 text-white text-[10px] font-black tracking-wider flex items-center gap-1 shadow-xs">
+                  <i data-lucide="check" class="w-3 h-3"></i> Submitted
+                </span>
+              ` : (hasPlannedCourses ? `
+                <span class="px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 text-[10px] font-bold tracking-wider">
+                  Pending
+                </span>
+              ` : `
+                <span class="px-2 py-0.5 rounded-full bg-slate-700 text-amber-300/90 text-[10px] font-bold tracking-wider flex items-center gap-1 border border-amber-400/20">
+                  <i data-lucide="lock" class="w-3 h-3"></i> Step 1 First
+                </span>
+              `))}
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.logout()" 
+              class="px-4 py-3 bg-white/10 hover:bg-white/20 text-white font-bold rounded-2xl text-xs transition border border-white/20 flex items-center gap-1.5 cursor-pointer"
+            >
+              <i data-lucide="log-out" class="w-4 h-4"></i>
+              <span>Sign Out</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Stats Cards -->
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-4">
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-1">
+            <div class="text-[11px] font-bold uppercase text-slate-500 tracking-wider">Total Plans</div>
+            <div class="text-2xl font-black text-slate-900">${myPlans.length}</div>
+            <div class="text-[10px] text-slate-400 font-medium">Even Semester 2026-27</div>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-1">
+            <div class="text-[11px] font-bold uppercase text-amber-600 tracking-wider">Under HOD Review</div>
+            <div class="text-2xl font-black text-amber-600">${totalSubmitted}</div>
+            <div class="text-[10px] text-amber-700 font-medium">Pending approval</div>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-1">
+            <div class="text-[11px] font-bold uppercase text-emerald-600 tracking-wider">HOD Approved</div>
+            <div class="text-2xl font-black text-emerald-600">${totalApproved}</div>
+            <div class="text-[10px] text-emerald-700 font-medium">Published to IQAC</div>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-1">
+            <div class="text-[11px] font-bold uppercase text-slate-500 tracking-wider">Drafts</div>
+            <div class="text-2xl font-black text-slate-700">${totalDrafts}</div>
+            <div class="text-[10px] text-slate-400 font-medium">In progress</div>
+          </div>
+          <!-- TL Practices Status Card -->
+          <div class="bg-white p-4 rounded-2xl border ${tlEntered ? 'border-emerald-200 bg-emerald-50/20' : (hasPlannedCourses ? 'border-amber-200 bg-amber-50/20' : 'border-slate-200')} shadow-2xs space-y-1 col-span-2 sm:col-span-1">
+            <div class="text-[11px] font-bold uppercase ${tlEntered ? 'text-emerald-700' : (hasPlannedCourses ? 'text-amber-700' : 'text-slate-500')} tracking-wider flex items-center justify-between">
+              <span>Step 2: TL Status</span>
+            </div>
+            ${tlEntered ? `
+              <div class="text-base sm:text-lg font-black text-emerald-600 flex items-center gap-1.5">
+                <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600 shrink-0"></i>
+                <span>Submitted</span>
+              </div>
+              <div class="text-[10px] text-emerald-700 font-medium truncate">Recorded (#${this.tlPracticesData.id})</div>
+            ` : (hasPlannedCourses ? `
+              <div class="text-base sm:text-lg font-black text-amber-600 flex items-center gap-1.5">
+                <i data-lucide="clock" class="w-5 h-5 text-amber-600 shrink-0"></i>
+                <span>Pending</span>
+              </div>
+              <div class="text-[10px] text-amber-700 font-medium truncate">Ready to fill (Button 2)</div>
+            ` : `
+              <div class="text-base sm:text-lg font-black text-slate-400 flex items-center gap-1.5">
+                <i data-lucide="lock" class="w-4 h-4 text-slate-400 shrink-0"></i>
+                <span>Locked</span>
+              </div>
+              <div class="text-[10px] text-slate-400 font-medium truncate">Requires ≥1 course plan</div>
+            `)}
+          </div>
+        </div>
+
+        <!-- My Course Plans Table -->
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="p-6 border-b border-slate-200 flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h2 class="text-base font-black text-slate-900 flex items-center gap-2">
+                <i data-lucide="layers" class="w-5 h-5 text-indigo-600"></i>
+                <span>My Course Plans</span>
+              </h2>
+              <p class="text-xs text-slate-500 font-medium mt-0.5">
+                All theory course plans prepared by you for ${this.escapeHtml(user.department_name || this.selectedDept)}
+              </p>
+            </div>
+
+            <div class="flex items-center gap-2.5 flex-wrap">
+              <button 
+                type="button" 
+                onclick="coursePlanApp.openTLPracticesModal()" 
+                class="px-3.5 py-2 rounded-xl ${hasPlannedCourses ? (tlEntered ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-200' : 'bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border-indigo-200') : 'bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed opacity-75'} text-xs font-bold transition flex items-center gap-1.5 border shadow-2xs"
+                title="${hasPlannedCourses ? (tlEntered ? 'View / Edit your submitted TL Practices & Assessment Components' : 'Open Teaching-Learning Practices, Assessment Components & E-Content planned form') : 'Step 1 Required: Please create at least one course plan first'}"
+              >
+                <span class="w-4 h-4 rounded-full ${hasPlannedCourses ? (tlEntered ? 'bg-emerald-600 text-white' : 'bg-indigo-600 text-white') : 'bg-slate-400 text-white'} font-black text-[10px] flex items-center justify-center shrink-0 leading-none">2</span>
+                <span>TL Practices, Assessment Component</span>
+                ${tlEntered ? `
+                  <span class="px-1.5 py-0.5 rounded bg-emerald-200/80 text-emerald-800 text-[10px] font-black">✓ Submitted</span>
+                ` : (hasPlannedCourses ? `
+                  <span class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 text-[10px] font-bold">Pending</span>
+                ` : `
+                  <span class="px-1.5 py-0.5 rounded bg-slate-200 text-slate-600 text-[10px] font-bold">Locked</span>
+                `)}
+              </button>
+              <button 
+                type="button" 
+                onclick="coursePlanApp.fetchPlans().then(() => coursePlanApp.render())" 
+                class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
+              >
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                <span>Refresh</span>
+              </button>
+              <button 
+                type="button" 
+                onclick="coursePlanApp.navigateTo('/course-plan/new')" 
+                class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition shadow-sm flex items-center gap-1.5 cursor-pointer"
+              >
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                <span>+ New Plan</span>
+              </button>
+            </div>
+          </div>
+
+          ${myPlans.length === 0 ? `
+            <div class="p-12 text-center space-y-4">
+              <div class="w-16 h-16 rounded-3xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto shadow-inner">
+                <i data-lucide="clipboard-list" class="w-8 h-8"></i>
+              </div>
+              <div class="space-y-1">
+                <h3 class="text-base font-black text-slate-900">No Course Plans Created Yet</h3>
+                <p class="text-xs text-slate-500 max-w-md mx-auto leading-relaxed font-medium">
+                  You haven't prepared any course plans for Even Semester 2026–2027 yet. Click the button below to select your semester, programme, and course to get started!
+                </p>
+              </div>
+              <button 
+                type="button" 
+                onclick="coursePlanApp.startNewCoursePlan()" 
+                class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition shadow-md shadow-indigo-600/25 cursor-pointer"
+              >
+                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                <span>+ Create Your First Course Plan</span>
+              </button>
+            </div>
+          ` : `
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs border-collapse mobile-card-table">
+                <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold uppercase text-[11px]">
+                  <tr>
+                    <th class="p-3.5 w-12 text-center">S.No</th>
+                    <th class="p-3.5">Course Code & Title</th>
+                    <th class="p-3.5">Programme & Year</th>
+                    <th class="p-3.5">Semester & Section</th>
+                    <th class="p-3.5 text-center">Hours & Credits</th>
+                    <th class="p-3.5 text-center">HOD Review Status</th>
+                    <th class="p-3.5 text-center">Last Updated</th>
+                    <th class="p-3.5 text-center w-40">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 font-medium">
+                  ${myPlans.map((p, idx) => `
+                    <tr class="hover:bg-slate-50/80 transition">
+                      <td class="p-3.5 text-center font-bold text-slate-400" data-label="S.No">${idx + 1}</td>
+                      <td class="p-3.5" data-label="Course Code & Title">
+                        <div class="font-black text-indigo-950 text-[13px] flex items-center gap-1.5 flex-wrap">
+                          <span>${this.escapeHtml(p.course_code || '—')}</span>
+                          <span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded">${this.escapeHtml(p.course_category || 'Core')}</span>
+                          ${p.is_shared_course && p.shared_faculty_name ? `
+                            <span class="text-[10px] font-extrabold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
+                              <i data-lucide="users" class="w-3 h-3 text-amber-600"></i>
+                              <span>Co-taught with ${this.escapeHtml([p.faculty_name, ...(p.shared_faculty_name || '').split(',')].map(s => s.trim()).filter(n => n && (!user.faculty_name || n.toLowerCase() !== user.faculty_name.toLowerCase())).join(', ') || p.shared_faculty_name)}</span>
+                            </span>
+                          ` : ''}
+                        </div>
+                        <div class="text-slate-600 font-bold text-xs mt-0.5">${this.escapeHtml(p.course_title || 'Untitled Course')}</div>
+                      </td>
+                      <td class="p-3.5" data-label="Programme & Year">
+                        <div class="font-bold text-slate-800">${this.escapeHtml(p.programme || '—')}</div>
+                        <div class="text-[11px] text-slate-500 font-medium">${this.escapeHtml(p.year_class || '')}</div>
+                      </td>
+                      <td class="p-3.5" data-label="Semester & Section">
+                        <div class="font-bold text-slate-800">Sem ${this.escapeHtml(p.semester || 'II')}</div>
+                        <div class="text-[11px] text-slate-500 font-medium">${this.escapeHtml(p.section || 'N/A')}</div>
+                      </td>
+                      <td class="p-3.5 text-center font-mono font-bold" data-label="Hours & Credits">
+                        <div class="text-slate-800">${p.teaching_hours || '—'}h / wk</div>
+                        <div class="text-[10px] text-slate-500">${p.credits || '—'} Credits</div>
+                      </td>
+                      <td class="p-3.5 text-center" data-label="HOD Status">
+                        <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[11px] font-extrabold ${p.hod_status === 'Approved'
+        ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+        : p.hod_status === 'Revision Needed'
+          ? 'bg-rose-100 text-rose-800 border border-rose-300'
+          : (p.status === 'Submitted' || p.hod_status === 'Pending')
+            ? 'bg-amber-100 text-amber-800 border border-amber-300'
+            : 'bg-slate-100 text-slate-700 border border-slate-200'
+      }">
+                          <i data-lucide="${p.hod_status === 'Approved' ? 'check-circle' :
+        p.hod_status === 'Revision Needed' ? 'alert-triangle' :
+          (p.status === 'Submitted' || p.hod_status === 'Pending') ? 'clock' : 'file-edit'
+      }" class="w-3.5 h-3.5"></i>
+                          <span>${p.hod_status === 'Approved' ? 'HOD Approved' :
+        p.hod_status === 'Revision Needed' ? 'Revision Needed' :
+          (p.status === 'Submitted' || p.hod_status === 'Pending') ? 'Under Review' : 'Draft'
+      }</span>
+                        </span>
+                      </td>
+                      <td class="p-3.5 text-center text-slate-500 text-[11px] font-mono" data-label="Last Updated">
+                        ${this.formatDateToDDMMYYYY(p.updated_at ? p.updated_at.split(' ')[0] : '') || '—'}
+                      </td>
+                                            <td class="p-3.5 text-center" data-label="Actions">
+                        <div class="inline-flex items-center gap-1.5">
+                          ${(p.status === 'Submitted' || p.hod_status === 'Pending' || p.hod_status === 'Approved') ? `
+                            <button 
+                              type="button" 
+                              onclick="coursePlanApp.navigateTo('/course-plan/view?id=${p.id}')" 
+                              class="px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                              title="View / Print Submitted Course Plan (Locked for Review)"
+                            >
+                              <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                              <span>View / Print</span>
+                            </button>
+                          ` : `
+                            <button 
+                              type="button" 
+                              onclick="coursePlanApp.editCoursePlan(${p.id})" 
+                              class="px-2.5 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs transition flex items-center gap-1 cursor-pointer"
+                              title="Edit / Update Course Plan"
+                            >
+                              <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                              <span>Edit</span>
+                              ${this.systemSettings && !this.systemSettings.submissions_enabled ? `
+                                <i data-lucide="lock" class="w-3 h-3 text-rose-500 ml-0.5" title="Submissions closed by admin"></i>
+                              ` : ''}
+                            </button>
+                            <button 
+                              type="button" 
+                              onclick="coursePlanApp.navigateTo('/course-plan/view?id=${p.id}')" 
+                              class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center gap-1 cursor-pointer"
+                              title="Print Preview / Export PDF"
+                            >
+                              <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                              <span>Print</span>
+                            </button>
+                          `}
+                        </div>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          `}
+        </div>
+      </div>
+    `;
+  }
+
+  // ================= 2. HOD DASHBOARD (DEPARTMENT REVIEW & APPROVAL) =================
+  // ================= 2. HOD DASHBOARD (APPROVAL & FACULTY ROSTER STATUS) =================
+  renderHODDashboardHtml() {
+    const dept = this.currentUser.department_name;
+    const deptObj = this.departments.find(d => d.name === dept || d.name.toLowerCase() === dept.toLowerCase()) || { name: dept, faculty: [] };
+    const facultyList = deptObj.faculty || [];
+    const plans = this.plans;
+    const pendingPlans = plans.filter(p => p.hod_status === 'Pending' || p.status === 'Submitted');
+    const approvedPlans = plans.filter(p => p.hod_status === 'Approved');
+
+    // Calculate faculty submission stats
+    const submittedFacultyNames = new Set(plans.map(p => p.faculty_name));
+    const approvedFacultyNames = new Set(approvedPlans.map(p => p.faculty_name));
+
+    return `
+      
+<style>
+  .is-invalid-field {
+    border-color: #ef4444 !important;
+    background-color: #fef2f2 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25) !important;
+    animation: fieldShake 0.4s ease-in-out !important;
+  }
+  @keyframes fieldShake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-4px); }
+    40%, 80% { transform: translateX(4px); }
+  }
+
+  /* Compact Card View for Mobile Screens */
+  @media (max-width: 768px) {
+    .mobile-card-table thead {
+      display: none !important;
+    }
+    .mobile-card-table, 
+    .mobile-card-table tbody, 
+    .mobile-card-table tr, 
+    .mobile-card-table td {
+      display: block !important;
+      width: 100% !important;
+    }
+    .mobile-card-table tr {
+      margin-bottom: 1rem !important;
+      background: #ffffff !important;
+      border: 1.5px solid #e2e8f0 !important;
+      border-radius: 1rem !important;
+      padding: 0.85rem !important;
+      box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.06) !important;
+    }
+    .mobile-card-table td {
+      padding: 0.35rem 0 !important;
+      border: none !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 0.25rem !important;
+    }
+    .mobile-card-table td::before {
+      content: attr(data-label);
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #64748b;
+      letter-spacing: 0.03em;
+    }
+  }
+</style>
+
+      <div class="space-y-6 animate-fadeIn w-full">
+        ${this.systemSettings && !this.systemSettings.submissions_enabled ? `
+          <!-- Submissions Closed Alert Banner -->
+          <div class="p-4 bg-rose-50 border-2 border-rose-300 rounded-2xl flex items-center justify-between gap-3 text-rose-900 shadow-sm animate-fadeIn">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600 shrink-0">
+                <i data-lucide="lock" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h4 class="text-xs font-black uppercase tracking-wider text-rose-900">Course Plan Submissions are Closed by IQAC Admin</h4>
+                <p class="text-[11.5px] font-medium text-rose-700">Course plan submissions have been temporarily disabled by the IQAC Administrator. Faculty members cannot submit new course plans until submissions are re-opened.</p>
+              </div>
+            </div>
+            <span class="px-3 py-1 bg-rose-200 text-rose-900 text-xs font-black rounded-xl shrink-0">Submissions Locked</span>
+          </div>
+        ` : ''}
+
+        <!-- HOD Management Header -->
+        <div class="bg-gradient-to-r from-amber-900 to-slate-900 text-white rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-5">
+          <div class="space-y-1.5">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/30 text-amber-300 border border-amber-400/40">
+                HOD Approval & Review Workspace
+              </span>
+              <span class="text-amber-400">•</span>
+              <span class="text-xs font-bold text-white">${dept}</span>
+            </div>
+            <h1 class="text-2xl font-black tracking-tight text-white">
+              HOD Course Plan Review Hub (Even Semester 2026–2027)
+            </h1>
+            <p class="text-xs text-slate-300 font-medium">
+              Review and approve course plans submitted by faculty members for each course. Approved plans are published directly to IQAC.
+            </p>
+          </div>
+
+          <div class="flex items-center gap-3 flex-wrap">
+            <button 
+              type="button" 
+              onclick="coursePlanApp.startNewCoursePlan()" 
+              class="px-4 py-2.5 bg-amber-400 hover:bg-amber-300 text-indigo-950 font-black rounded-xl text-xs transition shadow-sm flex items-center gap-2 cursor-pointer active:scale-95"
+              title="Create and fill a new course plan for your teaching courses"
+            >
+              <i data-lucide="plus-circle" class="w-4 h-4"></i>
+              <span>+ Create / Fill My Course Plan</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchToFacultyDashboard()" 
+              class="px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-bold rounded-xl text-xs transition border border-indigo-400/40 flex items-center gap-2 cursor-pointer shadow-sm active:scale-95"
+              title="Return to your personal course plans dashboard"
+            >
+              <i data-lucide="arrow-left" class="w-4 h-4"></i>
+              <span>← Back to My Faculty Dashboard</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.fetchPlans().then(() => coursePlanApp.render())" 
+              class="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl text-xs transition border border-white/20 flex items-center gap-1.5 cursor-pointer"
+            >
+              <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+              <span>Refresh</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.logout()" 
+              class="px-4 py-2.5 bg-red-500/20 hover:bg-red-500/30 text-red-200 font-bold rounded-xl text-xs transition border border-red-500/30 flex items-center gap-1.5 cursor-pointer"
+            >
+              <i data-lucide="log-out" class="w-4 h-4"></i>
+              <span>Sign Out</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- HOD KPI Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 w-full">
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
+            <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Total Faculty in Dept</div>
+            <div class="text-2xl font-black text-slate-900">${facultyList.length} Faculty</div>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
+            <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Total Course Submissions</div>
+            <div class="text-2xl font-black text-slate-900">${plans.length} Courses</div>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-amber-200 shadow-2xs bg-amber-50/40">
+            <div class="text-[11px] font-bold text-amber-800 uppercase tracking-wider mb-1">Awaiting Your Review</div>
+            <div class="text-2xl font-black text-amber-700">${pendingPlans.length}</div>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-emerald-200 shadow-2xs bg-emerald-50/40">
+            <div class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-1">Approved & Transmitted to IQAC</div>
+            <div class="text-2xl font-black text-emerald-700">${approvedPlans.length}</div>
+          </div>
+        </div>
+
+        <!-- HOD Navigation Tabs -->
+        <div class="bg-white p-2 rounded-2xl border border-slate-200 shadow-xs flex flex-wrap items-center gap-2">
+          <button 
+            type="button" 
+            onclick="coursePlanApp.switchHODTab('courses')" 
+            class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${this.hodTab === 'courses' ? 'bg-amber-600 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}"
+          >
+            <i data-lucide="book-open" class="w-4 h-4"></i>
+            <span>Submitted Courses & Approvals (${plans.length})</span>
+          </button>
+          <button 
+            type="button" 
+            onclick="coursePlanApp.switchHODTab('roster')" 
+            class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${this.hodTab === 'roster' ? 'bg-amber-600 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}"
+          >
+            <i data-lucide="users" class="w-4 h-4"></i>
+            <span>Department Faculty Status Roster (${facultyList.length})</span>
+          </button>
+        </div>
+
+        ${this.hodTab === 'roster' ? `
+          <!-- FACULTY ROSTER STATUS TABLE -->
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden w-full">
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+              <div>
+                <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <i data-lucide="users" class="w-4 h-4 text-amber-600"></i>
+                  <span>Faculty Submission Status Roster (${dept})</span>
+                </h2>
+                <p class="text-[11px] text-slate-500">Monitor submission status across all department faculty members</p>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto w-full">
+              <table class="w-full text-left text-xs border-collapse mobile-card-table">
+                <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold uppercase text-[11px]">
+                  <tr>
+                    <th class="p-3 text-center w-12">S.No</th>
+                    <th class="p-3">Faculty Member</th>
+                    <th class="p-3">Shift & Role</th>
+                    <th class="p-3">Institutional Email</th>
+                    <th class="p-3">Submitted Course(s)</th>
+                    <th class="p-3 text-center">Status</th>
+                    <th class="p-3 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 font-medium">
+                  ${facultyList.map((fac, idx) => {
+      const facPlans = plans.filter(p => p.faculty_name && (p.faculty_name.trim().toLowerCase() === fac.name.trim().toLowerCase() || p.faculty_name.toLowerCase().includes(fac.name.toLowerCase())));
+      const isApproved = facPlans.some(p => p.hod_status === 'Approved');
+      const isPending = facPlans.some(p => p.hod_status === 'Pending' || p.status === 'Submitted');
+      const isDraft = facPlans.some(p => p.status === 'Draft');
+
+      let statusBadge = `
+                      <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                        Not Submitted Yet
+                      </span>
+                    `;
+      if (isApproved) {
+        statusBadge = `
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                          ✓ HOD Approved
+                        </span>
+                      `;
+      } else if (isPending) {
+        statusBadge = `
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-300 animate-pulse">
+                          ⏳ Awaiting Review
+                        </span>
+                      `;
+      } else if (isDraft) {
+        statusBadge = `
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-300">
+                          Draft Saved
+                        </span>
+                      `;
+      }
+
+      return `
+                      <tr class="hover:bg-slate-50/70 transition">
+                        <td class="p-3 text-center font-bold text-slate-400" data-label="S.No">${idx + 1}</td>
+                        <td class="p-3 font-bold text-slate-900" data-label="Faculty Member">${fac.name}</td>
+                        <td class="p-3 text-slate-600" data-label="Shift & Designation">Shift ${fac.shift || 'I'} • ${fac.category || 'Faculty'}</td>
+                        <td class="p-3 font-mono text-slate-600" data-label="Email">${fac.email || '—'}</td>
+                        <td class="p-3">
+                          ${facPlans.length === 0 ? '<span class="text-slate-400 italic">None</span>' : `
+                            <div class="flex flex-wrap gap-1">
+                              ${facPlans.map(fp => `
+                                <span class="px-2 py-0.5 rounded text-[11px] font-bold ${fp.hod_status === 'Approved' ? 'bg-emerald-100 text-emerald-900' : 'bg-amber-100 text-amber-900'}">
+                                  ${fp.course_code}: ${fp.course_title || 'Course'}
+                                </span>
+                              `).join('')}
+                            </div>
+                          `}
+                        </td>
+                        <td class="p-3 text-center" data-label="Status">${statusBadge}</td>
+                        <td class="p-3 text-center" data-label="Action">
+                          ${facPlans.length > 0 ? `
+                            <button 
+                              type="button" 
+                              onclick="coursePlanApp.openHODReviewModal(${facPlans[0].id})" 
+                              class="px-3 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 rounded-lg text-xs font-bold"
+                            >
+                              Review
+                            </button>
+                          ` : '—'}
+                        </td>
+                      </tr>
+                    `;
+    }).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ` : `
+          <!-- COURSES LIST TABLE -->
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden w-full">
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+              <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                <i data-lucide="check-square" class="w-4 h-4 text-amber-600"></i>
+                <span>Faculty Submissions in ${dept}</span>
+              </h2>
+              <span class="text-xs text-slate-500 font-semibold">${plans.length} total courses</span>
+            </div>
+
+            ${plans.length === 0 ? `
+              <div class="p-12 text-center text-slate-400 font-bold">
+                No faculty submissions yet for ${dept}.
+              </div>
+            ` : `
+              <div class="overflow-x-auto w-full">
+                <table class="w-full text-left text-xs border-collapse mobile-card-table">
+                  <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold uppercase text-[11px]">
+                    <tr>
+                      <th class="p-3 text-center w-12">S.No</th>
+                      <th class="p-3">Course Code & Title</th>
+                      <th class="p-3">Programme</th>
+                      <th class="p-3">Faculty Member</th>
+                      <th class="p-3 text-center">Submission Status</th>
+                      <th class="p-3 text-center">HOD Approval</th>
+                      <th class="p-3 text-center">Review & Approval Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100 font-medium">
+                    ${plans.map((p, idx) => `
+                      <tr class="hover:bg-slate-50/70 transition">
+                        <td class="p-3 text-center font-bold text-slate-400" data-label="S.No">${idx + 1}</td>
+                        <td class="p-3 cursor-pointer group" onclick="coursePlanApp.openHODReviewModal(${p.id})" title="Click to review this course plan" data-label="Course Code & Title">
+                          <div class="font-bold text-slate-900 group-hover:text-indigo-600 transition flex items-center gap-1.5">
+                            <span>${p.course_code || '—'}</span>
+                            <i data-lucide="external-link" class="w-3 h-3 text-slate-400 group-hover:text-indigo-600 opacity-0 group-hover:opacity-100 transition"></i>
+                          </div>
+                          <div class="text-slate-600 text-[11px] font-semibold group-hover:text-indigo-900">${p.course_title || 'Untitled'}</div>
+                        </td>
+                        <td class="p-3 text-slate-700" data-label="Programme & Sem">
+                          <div>${p.programme || '—'}</div>
+                          <div class="text-[10px] text-slate-400">${p.year_class || ''}${p.section && p.section !== 'N/A' ? ' (' + p.section + ')' : ''} • Semester ${p.semester || ''}</div>
+                        </td>
+                        <td class="p-3 font-bold text-slate-800" data-label="Faculty Member">${p.faculty_name || '—'}</td>
+                        <td class="p-3 text-center" data-label="Submission Status">
+                          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${p.status === 'Submitted' || p.status === 'Approved by HOD' ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' : 'bg-slate-100 text-slate-600'}">
+                            ${p.status || 'Draft'}
+                          </span>
+                        </td>
+                        <td class="p-3 text-center" data-label="HOD Approval">
+                          ${p.hod_status === 'Approved' ? `
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center justify-center gap-1 mx-auto w-fit">
+                              <i data-lucide="check-circle" class="w-3 h-3 text-emerald-600"></i>
+                              <span>Approved</span>
+                            </span>
+                          ` : p.hod_status === 'Revision Needed' ? `
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                              Revision Needed
+                            </span>
+                          ` : `
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-300">
+                              Pending Review
+                            </span>
+                          `}
+                        </td>
+                        <td class="p-3 text-center" data-label="Actions">
+                          <div class="flex items-center justify-center gap-1.5 flex-wrap">
+                            <button 
+                              type="button" 
+                              onclick="coursePlanApp.openHODReviewModal(${p.id})" 
+                              class="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-xs transition shadow-2xs flex items-center gap-1 cursor-pointer"
+                            >
+                              <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                              <span>Review & Approve</span>
+                            </button>
+                            ${p.hod_status !== 'Approved' ? `
+                              <button 
+                                type="button" 
+                                onclick="coursePlanApp.quickApprovePlan(${p.id})" 
+                                class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition shadow-2xs flex items-center gap-1 cursor-pointer"
+                                title="Quick Approve with 1 Click"
+                              >
+                                <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                                <span>Approve</span>
+                              </button>
+                            ` : ''}
+                            <button 
+                              type="button" 
+                              onclick="coursePlanApp.previewPlan(${p.id})" 
+                              class="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition"
+                              title="Print View"
+                            >
+                              <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              </div>
+            `}
+          </div>
+        `}
+      </div>
+    `;
+  }
+
+
+  // ================= 3. IQAC ADMIN MASTER HUB =================
+  renderAdminDashboardHtml() {
+    // Requirement 2: Only approved courses displayed in Admin Login
+    const allPlans = this.plans;
+    const approvedPlans = allPlans.filter(p => p.hod_status === 'Approved');
+
+    // Aggregate by Department
+    const deptStats = this.departments.map(d => {
+      const dApproved = approvedPlans.filter(p => p.department_name && (p.department_name.toLowerCase() === d.name.toLowerCase() || p.department_name.toLowerCase().includes(d.name.toLowerCase())));
+      return {
+        name: d.name,
+        faculty_count: d.faculty_count || (d.faculty ? d.faculty.length : 0),
+        faculty: d.faculty || [],
+        approved_count: dApproved.length,
+        approved_plans: dApproved
+      };
+    });
+
+    return `
+      
+<style>
+  .is-invalid-field {
+    border-color: #ef4444 !important;
+    background-color: #fef2f2 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25) !important;
+    animation: fieldShake 0.4s ease-in-out !important;
+  }
+  @keyframes fieldShake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-4px); }
+    40%, 80% { transform: translateX(4px); }
+  }
+
+  /* Compact Card View for Mobile Screens */
+  @media (max-width: 768px) {
+    .mobile-card-table thead {
+      display: none !important;
+    }
+    .mobile-card-table, 
+    .mobile-card-table tbody, 
+    .mobile-card-table tr, 
+    .mobile-card-table td {
+      display: block !important;
+      width: 100% !important;
+    }
+    .mobile-card-table tr {
+      margin-bottom: 1rem !important;
+      background: #ffffff !important;
+      border: 1.5px solid #e2e8f0 !important;
+      border-radius: 1rem !important;
+      padding: 0.85rem !important;
+      box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.06) !important;
+    }
+    .mobile-card-table td {
+      padding: 0.35rem 0 !important;
+      border: none !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 0.25rem !important;
+    }
+    .mobile-card-table td::before {
+      content: attr(data-label);
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #64748b;
+      letter-spacing: 0.03em;
+    }
+  }
+</style>
+
+      <div class="space-y-6 animate-fadeIn w-full">
+        <!-- Admin Header -->
+        <div class="bg-gradient-to-r from-purple-900 to-indigo-900 text-white rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-5">
+          <div class="space-y-1.5">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-purple-500/30 text-purple-300 border border-purple-400/40">
+                IQAC Central Admin Audit
+              </span>
+              <span class="text-purple-400">•</span>
+              <span class="text-xs font-bold text-white">All 34 Departments</span>
+            </div>
+            <h1 class="text-2xl font-black tracking-tight text-white">
+              Institutional Course Plans Master Monitoring Hub
+            </h1>
+            <p class="text-xs text-purple-200 font-medium">
+              View, inspect, and verify all HOD-approved course plans across all academic departments for Even Semester 2026–2027.
+            </p>
+          </div>
+
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchAdminTab('analytics')" 
+              class="px-3.5 py-2 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white font-black rounded-xl text-xs transition shadow-md flex items-center gap-1.5 cursor-pointer"
+            >
+              <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+              <span>📊 Pedagogy & ICT Analytics</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchAdminTab('report')" 
+              class="px-3.5 py-2 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white font-black rounded-xl text-xs transition shadow-md flex items-center gap-1.5 cursor-pointer"
+            >
+              <i data-lucide="file-text" class="w-4 h-4"></i>
+              <span>🏛️ Institutional Report</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.fetchPlans().then(() => coursePlanApp.loadAnalyticsData(true)).then(() => coursePlanApp.render())" 
+              class="px-3 py-2 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl text-xs transition border border-white/20 flex items-center gap-1.5 cursor-pointer"
+              title="Refresh All Plans & Analytics"
+            >
+              <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+              <span>Refresh</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Macro KPIs -->
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 w-full">
+          <div class="bg-white p-5 rounded-2xl border border-emerald-200 shadow-2xs bg-emerald-50/40">
+            <div class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-1">Approved Course Plans (IQAC Live)</div>
+            <div class="text-2xl font-black text-emerald-700">${approvedPlans.length} Courses</div>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-purple-200 shadow-2xs bg-purple-50/40">
+            <div class="text-[11px] font-bold text-purple-800 uppercase tracking-wider mb-1">Academic Departments</div>
+            <div class="text-2xl font-black text-purple-900">${this.departments.length} Departments</div>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
+            <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Departments with Approvals</div>
+            <div class="text-2xl font-black text-slate-900">${deptStats.filter(d => d.approved_count > 0).length} of ${deptStats.length}</div>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-indigo-200 shadow-2xs bg-indigo-50/30">
+            <div class="text-[11px] font-bold text-indigo-800 uppercase tracking-wider mb-1">Master Syllabus Catalog</div>
+            <div class="text-2xl font-black text-indigo-700">${this.syllabusCourses.length} Courses</div>
+          </div>
+        </div>
+
+        <!-- IQAC Administration Controls & Master Data Exports -->
+        <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-4 sm:p-5 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+          <div class="flex flex-wrap items-center gap-3">
+            <!-- Submissions Control Button -->
+            <div class="flex items-center gap-2.5 p-2 px-3 bg-slate-50 rounded-xl border border-slate-200">
+              <span class="text-[11px] font-black text-slate-500 uppercase tracking-wider">Submissions:</span>
+              ${this.systemSettings && this.systemSettings.submissions_enabled ? `
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-black">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span>OPEN (Enabled)</span>
+                </span>
+                <button 
+                  type="button" 
+                  id="admin-toggle-submissions-btn"
+                  onclick="coursePlanApp.toggleSubmissionsControl()" 
+                  class="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer"
+                  title="Click to Disable / Lock Course Plan Submissions"
+                >
+                  <i data-lucide="lock" class="w-3.5 h-3.5 text-rose-600"></i>
+                  <span>Disable Submissions</span>
+                </button>
+              ` : `
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-100 border border-rose-300 text-rose-800 text-xs font-black">
+                  <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                  <span>CLOSED (Locked)</span>
+                </span>
+                <button 
+                  type="button" 
+                  id="admin-toggle-submissions-btn"
+                  onclick="coursePlanApp.toggleSubmissionsControl()" 
+                  class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer"
+                  title="Click to Enable / Open Course Plan Submissions"
+                >
+                  <i data-lucide="unlock" class="w-3.5 h-3.5 text-emerald-600"></i>
+                  <span>Enable Submissions</span>
+                </button>
+              `}
+            </div>
+
+            <!-- Development / Maintenance Mode Button -->
+            <div class="flex items-center gap-2.5 p-2 px-3 bg-slate-50 rounded-xl border border-slate-200">
+              <span class="text-[11px] font-black text-slate-500 uppercase tracking-wider">Maintenance Mode:</span>
+              ${this.systemSettings && this.systemSettings.maintenance_mode ? `
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-100 border border-amber-300 text-amber-900 text-xs font-black">
+                  <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                  <span>ACTIVE (Admin Only)</span>
+                </span>
+                <button 
+                  type="button" 
+                  id="admin-toggle-maintenance-btn"
+                  onclick="coursePlanApp.toggleMaintenanceMode()" 
+                  class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer"
+                  title="Reopen portal to all faculty and HODs"
+                >
+                  <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-600"></i>
+                  <span>Disable Maintenance</span>
+                </button>
+              ` : `
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold">
+                  <span>OFF (Live Production)</span>
+                </span>
+                <button 
+                  type="button" 
+                  id="admin-toggle-maintenance-btn"
+                  onclick="coursePlanApp.toggleMaintenanceMode()" 
+                  class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer"
+                  title="Switch to Maintenance / Dev Mode (Blocks Faculty and HOD Sign-ins)"
+                >
+                  <i data-lucide="wrench" class="w-3.5 h-3.5 text-amber-600"></i>
+                  <span>Enable Dev Mode</span>
+                </button>
+              `}
+            </div>
+          </div>
+
+          <!-- Master CSV Exports -->
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <button 
+              type="button" 
+              id="admin-export-plans-csv-btn"
+              onclick="coursePlanApp.exportCoursePlansCSV()" 
+              class="px-3.5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-xs rounded-xl shadow-sm transition flex items-center gap-2 cursor-pointer active:scale-98"
+              title="Download comprehensive CSV containing all course plans across all 34 departments"
+            >
+              <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+              <span>Export All Course Plans (CSV)</span>
+            </button>
+
+            <button 
+              type="button" 
+              id="admin-export-tl-csv-btn"
+              onclick="coursePlanApp.exportTLPracticesCSV()" 
+              class="px-3.5 py-2 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-black text-xs rounded-xl shadow-sm transition flex items-center gap-2 cursor-pointer active:scale-98"
+              title="Download CSV containing all Teaching-Learning Practices & Assessment Components"
+            >
+              <i data-lucide="download" class="w-4 h-4"></i>
+              <span>Export TL Practices (CSV)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Requirement 3: Admin Navigation Tabs (Dept-wise, Faculty-wise, Course-wise, Manage Data) -->
+        <div class="bg-white p-2 rounded-2xl border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2 flex-wrap">
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchAdminTab('dept')" 
+              class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${this.adminTab === 'dept' ? 'bg-purple-600 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}"
+            >
+              <i data-lucide="building" class="w-4 h-4"></i>
+              <span>1. Department-wise View</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchAdminTab('faculty')" 
+              class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${this.adminTab === 'faculty' ? 'bg-purple-600 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}"
+            >
+              <i data-lucide="users" class="w-4 h-4"></i>
+              <span>2. Faculty-wise View</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchAdminTab('course')" 
+              class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${this.adminTab === 'course' ? 'bg-purple-600 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}"
+            >
+              <i data-lucide="book-open" class="w-4 h-4"></i>
+              <span>3. Course-wise Monitoring (UG & PG Sem-wise)</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchAdminTab('analytics')" 
+              class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${this.adminTab === 'analytics' ? 'bg-purple-600 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}"
+            >
+              <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+              <span>4. 📊 Pedagogy & ICT Analytics</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchAdminTab('report')" 
+              class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${this.adminTab === 'report' ? 'bg-purple-600 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}"
+            >
+              <i data-lucide="file-text" class="w-4 h-4"></i>
+              <span>5. 🏛️ Institutional Report</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchAdminTab('roles')" 
+              class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${this.adminTab === 'roles' ? 'bg-amber-600 text-white shadow-sm' : 'bg-amber-50 text-amber-900 hover:bg-amber-100 border border-amber-200'}"
+            >
+              <i data-lucide="shield-check" class="w-4 h-4"></i>
+              <span>6. 👥 Assign Roles (Head & MQC)</span>
+            </button>
+          </div>
+
+          <button 
+            type="button" 
+            onclick="coursePlanApp.switchAdminTab('manage')" 
+            class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${this.adminTab === 'manage' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200'}"
+          >
+            <i data-lucide="settings" class="w-4 h-4"></i>
+            <span>⚙️ Manage Data (Faculty / Course / Dept)</span>
+          </button>
+        </div>
+
+        <!-- ================= 1. DEPARTMENT-WISE VIEW ================= -->
+        ${this.adminTab === 'dept' ? `
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                <i data-lucide="building" class="w-4 h-4 text-purple-600"></i>
+                <span>Academic Departments Overview (34 Departments)</span>
+              </h2>
+              <span class="text-xs text-slate-500 font-semibold">${approvedPlans.length} approved courses across college</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              ${deptStats.map(d => `
+                <div class="bg-white p-5 rounded-2xl border ${d.approved_count > 0 ? 'border-emerald-200 bg-emerald-50/10' : 'border-slate-200'} shadow-2xs hover:shadow-sm transition flex flex-col justify-between gap-3">
+                  <div class="space-y-1">
+                    <div class="flex items-center justify-between gap-2">
+                      <h3 class="font-bold text-slate-900 text-sm">${d.name}</h3>
+                      <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${d.approved_count > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-500'}">
+                        ${d.approved_count} Approved
+                      </span>
+                    </div>
+                    <div class="text-xs text-slate-500">${d.faculty_count} Teaching Faculty Members</div>
+                  </div>
+
+                  <div class="flex items-center justify-between pt-3 border-t border-slate-100">
+                    <span class="text-[11px] font-bold text-slate-600">
+                      ${d.approved_count > 0 ? '✓ Ready for Audit' : 'Pending HOD Approval'}
+                    </span>
+                    <button 
+                      type="button" 
+                      onclick="coursePlanApp.adminDeptFilter = '${d.name}'; coursePlanApp.switchAdminTab('course');" 
+                      class="px-3 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-800 font-bold rounded-xl text-xs border border-purple-200 transition"
+                    >
+                      View Courses →
+                    </button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- ================= 2. FACULTY-WISE VIEW ================= -->
+        ${this.adminTab === 'faculty' ? `
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden w-full space-y-4 p-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
+              <div>
+                <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <i data-lucide="users" class="w-4 h-4 text-purple-600"></i>
+                  <span>Faculty-wise Approved Courses View</span>
+                </h2>
+                <p class="text-[11px] text-slate-500">Track approved course plans submitted by each faculty member</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <select 
+                  id="admin-fac-dept-filter" 
+                  onchange="coursePlanApp.render()" 
+                  class="text-xs px-3 py-2 border border-slate-300 rounded-xl font-bold bg-white"
+                >
+                  <option value="all">All Departments</option>
+                  ${this.departments.map(d => `<option value="${d.name}">${d.name}</option>`).join('')}
+                </select>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto w-full">
+              <table class="w-full text-left text-xs border-collapse">
+                <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold uppercase text-[11px]">
+                  <tr>
+                    <th class="p-3 text-center w-12">S.No</th>
+                    <th class="p-3">Faculty Member</th>
+                    <th class="p-3">Department</th>
+                    <th class="p-3">Approved Course(s)</th>
+                    <th class="p-3 text-center">Approved Count</th>
+                    <th class="p-3 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 font-medium">
+                  ${(() => {
+          const selDept = document.getElementById('admin-fac-dept-filter')?.value || 'all';
+          let facList = [];
+          this.departments.forEach(d => {
+            if (selDept !== 'all' && d.name !== selDept) return;
+            (d.faculty || []).forEach(f => {
+              const fApproved = approvedPlans.filter(p => p.faculty_name && (p.faculty_name.trim().toLowerCase() === f.name.trim().toLowerCase() || p.faculty_name.toLowerCase().includes(f.name.toLowerCase())));
+              facList.push({ ...f, dept: d.name, approved_plans: fApproved });
+            });
+          });
+
+          if (facList.length === 0) {
+            return '<tr><td colspan="6" class="p-8 text-center text-slate-400">No faculty members found.</td></tr>';
+          }
+
+          return facList.map((f, idx) => `
+                      <tr class="hover:bg-slate-50/70 transition">
+                        <td class="p-3 text-center font-bold text-slate-400">${idx + 1}</td>
+                        <td class="p-3">
+                          <div class="font-bold text-slate-900">${f.name}</div>
+                          <div class="text-[10px] text-slate-500 font-mono">${f.email || ''}</div>
+                        </td>
+                        <td class="p-3 text-slate-700 font-semibold">${f.dept} (Shift ${f.shift || 'I'})</td>
+                        <td class="p-3">
+                          ${f.approved_plans.length === 0 ? '<span class="text-slate-400 italic">No approved courses</span>' : `
+                            <div class="flex flex-wrap gap-1.5">
+                              ${f.approved_plans.map(ap => `
+                                <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-50 text-emerald-900 border border-emerald-200">
+                                  ${ap.course_code}: ${ap.course_title}
+                                </span>
+                              `).join('')}
+                            </div>
+                          `}
+                        </td>
+                        <td class="p-3 text-center font-black ${f.approved_plans.length > 0 ? 'text-emerald-700 text-sm' : 'text-slate-400'}">
+                          ${f.approved_plans.length}
+                        </td>
+                        <td class="p-3 text-center">
+                          ${f.approved_plans.length > 0 ? `
+                            <button 
+                              type="button" 
+                              onclick="coursePlanApp.previewPlan(${f.approved_plans[0].id})" 
+                              class="px-3 py-1 bg-purple-50 hover:bg-purple-100 text-purple-900 font-bold rounded-lg text-xs border border-purple-200"
+                            >
+                              Inspect Plan
+                            </button>
+                          ` : '—'}
+                        </td>
+                      </tr>
+                    `).join('');
+        })()}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- ================= 3. COURSE-WISE MASTER VIEW (UG & PG SEM-WISE) ================= -->
+        ${this.adminTab === 'course' ? (() => {
+        // 1. Gather all master courses from syllabusCourses + any ad-hoc course codes in plans
+        const catalog = (this.syllabusCourses || []).slice();
+        const existingCodes = new Set(catalog.map(c => (c.course_code || '').trim().toUpperCase()));
+
+        (this.plans || []).forEach(p => {
+          const pCode = (p.course_code || '').trim().toUpperCase();
+          if (pCode && !existingCodes.has(pCode)) {
+            existingCodes.add(pCode);
+            const isPG = (p.programme && (p.programme.startsWith('M.') || p.programme.includes('Master') || p.programme.includes('MCA'))) || (p.year_class && p.year_class.includes('PG'));
+            catalog.push({
+              course_code: p.course_code,
+              course_title: p.course_title,
+              department: p.department_name,
+              programme: p.programme,
+              semester: `Semester ${this.getSemesterNum(p.semester)}`,
+              semester_num: this.getSemesterNum(p.semester),
+              level: isPG ? 'PG' : 'UG',
+              year_class: p.year_class,
+              hours: p.teaching_hours,
+              credits: p.credits,
+              course_category: p.course_category || 'Core'
+            });
+          }
+        });
+
+        // Precompute plan match lookup by normalized course code
+        const plansByCode = new Map();
+        (this.plans || []).forEach(p => {
+          const code = (p.course_code || '').trim().toUpperCase();
+          if (!code) return;
+          if (!plansByCode.has(code)) plansByCode.set(code, []);
+          plansByCode.get(code).push(p);
+        });
+
+        // Precompute counts for Level Filter
+        const totalAllCount = catalog.length;
+        const totalUGCount = catalog.filter(c => (c.level || (c.programme && (c.programme.startsWith('M.') || c.programme.includes('Master') || c.programme.includes('MCA')) ? 'PG' : 'UG')).toUpperCase() === 'UG').length;
+        const totalPGCount = catalog.filter(c => (c.level || (c.programme && (c.programme.startsWith('M.') || c.programme.includes('Master') || c.programme.includes('MCA')) ? 'PG' : 'UG')).toUpperCase() === 'PG').length;
+
+        // 2. Filter by Level, Semester, Department, Status, Search
+        const levelFilter = this.adminLevelFilter || 'all';
+        const semFilter = this.adminSemFilter || 'even';
+        const deptFilter = this.adminDeptFilter || 'all';
+        const statusFilter = this.adminStatusFilter || 'all';
+        const searchQuery = (this.adminSearchQuery || '').trim().toLowerCase();
+
+        const filteredCourses = catalog.filter(c => {
+          const cLevel = (c.level || (c.programme && (c.programme.startsWith('M.') || c.programme.includes('Master') || c.programme.includes('MCA')) ? 'PG' : 'UG')).toUpperCase();
+          const cSemNum = c.semester_num || this.getSemesterNum(c.semester);
+          const cDept = c.department || '';
+
+          // A. Level Filter (All / UG / PG)
+          if (levelFilter !== 'all' && cLevel !== levelFilter.toUpperCase()) return false;
+
+          // B. Semester Filter
+          if (semFilter === 'even') {
+            if (cSemNum !== 2 && cSemNum !== 4 && cSemNum !== 6) return false;
+          } else if (semFilter !== 'all') {
+            if (String(cSemNum) !== String(semFilter)) return false;
+          }
+
+          // C. Department Filter
+          if (deptFilter !== 'all') {
+            if (cDept.toLowerCase() !== deptFilter.toLowerCase() && !cDept.toLowerCase().includes(deptFilter.toLowerCase())) return false;
+          }
+
+          // D. Course Status & Matching Plans
+          const code = (c.course_code || '').trim().toUpperCase();
+          const matchingPlans = plansByCode.get(code) || [];
+          let courseStatus = 'Not Started';
+          if (matchingPlans.length > 0) {
+            if (matchingPlans.some(p => p.hod_status === 'Approved')) courseStatus = 'Approved';
+            else if (matchingPlans.some(p => p.hod_status === 'Revision Needed')) courseStatus = 'Revision Needed';
+            else if (matchingPlans.some(p => p.status === 'Submitted' || p.hod_status === 'Pending')) courseStatus = 'Pending';
+            else courseStatus = 'Draft';
+          }
+          c._computedStatus = courseStatus;
+          c._matchingPlans = matchingPlans;
+
+          if (statusFilter !== 'all' && courseStatus !== statusFilter) return false;
+
+          // E. Search Query
+          if (searchQuery) {
+            const codeMatch = (c.course_code || '').toLowerCase().includes(searchQuery);
+            const titleMatch = (c.course_title || '').toLowerCase().includes(searchQuery);
+            const deptMatch = (c.department || '').toLowerCase().includes(searchQuery);
+            const progMatch = (c.programme || '').toLowerCase().includes(searchQuery);
+            const facMatch = matchingPlans.some(p => (p.faculty_name || '').toLowerCase().includes(searchQuery));
+            if (!codeMatch && !titleMatch && !deptMatch && !progMatch && !facMatch) return false;
+          }
+
+          return true;
+        });
+
+        // Sort by Level (UG first, then PG), then Semester ascending (2, 4, 6), then Department, then Code
+        filteredCourses.sort((a, b) => {
+          const aLevel = (a.level || 'UG').toUpperCase();
+          const bLevel = (b.level || 'UG').toUpperCase();
+          if (aLevel !== bLevel) return aLevel === 'UG' ? -1 : 1;
+
+          const aSem = a.semester_num || 0;
+          const bSem = b.semester_num || 0;
+          if (aSem !== bSem) return aSem - bSem;
+
+          const aDept = (a.department || '').localeCompare(b.department || '');
+          if (aDept !== 0) return aDept;
+
+          return (a.course_code || '').localeCompare(b.course_code || '');
+        });
+
+        // KPI counts among filtered items
+        const kpiApproved = filteredCourses.filter(c => c._computedStatus === 'Approved').length;
+        const kpiPending = filteredCourses.filter(c => c._computedStatus === 'Pending').length;
+        const kpiDraft = filteredCourses.filter(c => c._computedStatus === 'Draft').length;
+        const kpiRevision = filteredCourses.filter(c => c._computedStatus === 'Revision Needed').length;
+        const kpiNotStarted = filteredCourses.filter(c => c._computedStatus === 'Not Started').length;
+
+        // Pagination calculations
+        const pageSize = this.adminCoursePageSize || 50;
+        const totalPages = Math.max(1, Math.ceil(filteredCourses.length / pageSize));
+        const currentPage = Math.min(Math.max(1, this.adminCoursePage || 1), totalPages);
+        const startIdx = (currentPage - 1) * pageSize;
+        const endIdx = Math.min(startIdx + pageSize, filteredCourses.length);
+        const pagedCourses = filteredCourses.slice(startIdx, endIdx);
+
+        return `
+            <div class="space-y-4">
+              <!-- Filter Controls Card -->
+              <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs space-y-4">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                  <div>
+                    <h2 class="text-base font-black text-slate-900 flex items-center gap-2">
+                      <i data-lucide="book-open-check" class="w-5 h-5 text-purple-600"></i>
+                      <span>Institutional Course-wise Monitoring Registry</span>
+                    </h2>
+                    <p class="text-xs text-slate-500 font-medium mt-0.5">
+                      Real-time tracking of syllabus courses across UG & PG programmes, semester-wise status, and assigned faculty members.
+                    </p>
+                  </div>
+
+                  <!-- Level Quick Filter Pills (UG / PG / All) -->
+                  <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-2xl shrink-0">
+                    <button 
+                      type="button" 
+                      onclick="coursePlanApp.setAdminLevelFilter('all')" 
+                      class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${levelFilter === 'all' ? 'bg-purple-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'}"
+                    >
+                      All Courses (${totalAllCount})
+                    </button>
+                    <button 
+                      type="button" 
+                      onclick="coursePlanApp.setAdminLevelFilter('UG')" 
+                      class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${levelFilter === 'UG' ? 'bg-purple-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'}"
+                    >
+                      UG Courses (${totalUGCount})
+                    </button>
+                    <button 
+                      type="button" 
+                      onclick="coursePlanApp.setAdminLevelFilter('PG')" 
+                      class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${levelFilter === 'PG' ? 'bg-purple-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'}"
+                    >
+                      PG Courses (${totalPGCount})
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Secondary Dropdown Filters -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                  <!-- Semester Filter -->
+                  <div class="space-y-1">
+                    <label class="block font-bold text-slate-700">Semester Filter</label>
+                    <select 
+                      onchange="coursePlanApp.setAdminSemFilter(this.value)" 
+                      class="w-full px-3 py-2 border border-slate-300 rounded-xl font-bold bg-white text-slate-800 focus:border-purple-600 focus:outline-none cursor-pointer"
+                    >
+                      <option value="even" ${semFilter === 'even' ? 'selected' : ''}>🌟 Even Semesters (II, IV, VI) - Current</option>
+                      <option value="all" ${semFilter === 'all' ? 'selected' : ''}>All Semesters (I to VI)</option>
+                      <option value="2" ${semFilter === '2' ? 'selected' : ''}>Semester 2 (Even)</option>
+                      <option value="4" ${semFilter === '4' ? 'selected' : ''}>Semester 4 (Even)</option>
+                      <option value="6" ${semFilter === '6' ? 'selected' : ''}>Semester 6 (Even - UG only)</option>
+                      <option value="1" ${semFilter === '1' ? 'selected' : ''}>Semester 1 (Odd)</option>
+                      <option value="3" ${semFilter === '3' ? 'selected' : ''}>Semester 3 (Odd)</option>
+                      <option value="5" ${semFilter === '5' ? 'selected' : ''}>Semester 5 (Odd)</option>
+                    </select>
+                  </div>
+
+                  <!-- Department Filter -->
+                  <div class="space-y-1">
+                    <label class="block font-bold text-slate-700">Department</label>
+                    <select 
+                      onchange="coursePlanApp.setAdminDeptFilter(this.value)" 
+                      class="w-full px-3 py-2 border border-slate-300 rounded-xl font-bold bg-white text-slate-800 focus:border-purple-600 focus:outline-none cursor-pointer"
+                    >
+                      <option value="all" ${deptFilter === 'all' ? 'selected' : ''}>All Departments (${this.departments.length})</option>
+                      ${this.departments.map(d => `
+                        <option value="${this.escapeHtml(d.name)}" ${deptFilter === d.name ? 'selected' : ''}>
+                          ${this.escapeHtml(d.name)}
+                        </option>
+                      `).join('')}
+                    </select>
+                  </div>
+
+                  <!-- Status Filter -->
+                  <div class="space-y-1">
+                    <label class="block font-bold text-slate-700">Course Plan Status</label>
+                    <select 
+                      onchange="coursePlanApp.setAdminStatusFilter(this.value)" 
+                      class="w-full px-3 py-2 border border-slate-300 rounded-xl font-bold bg-white text-slate-800 focus:border-purple-600 focus:outline-none cursor-pointer"
+                    >
+                      <option value="all" ${statusFilter === 'all' ? 'selected' : ''}>All Statuses (${filteredCourses.length})</option>
+                      <option value="Approved" ${statusFilter === 'Approved' ? 'selected' : ''}>✓ HOD Approved (${kpiApproved})</option>
+                      <option value="Pending" ${statusFilter === 'Pending' ? 'selected' : ''}>⏳ Under HOD Review (${kpiPending})</option>
+                      <option value="Draft" ${statusFilter === 'Draft' ? 'selected' : ''}>📝 Draft Saved (${kpiDraft})</option>
+                      <option value="Revision Needed" ${statusFilter === 'Revision Needed' ? 'selected' : ''}>⚠️ Revision Needed (${kpiRevision})</option>
+                      <option value="Not Started" ${statusFilter === 'Not Started' ? 'selected' : ''}>⚪ Not Started / Pending (${kpiNotStarted})</option>
+                    </select>
+                  </div>
+
+                  <!-- Real-time Search Input -->
+                  <div class="space-y-1">
+                    <label class="block font-bold text-slate-700">Search Course or Faculty</label>
+                    <div class="relative">
+                      <input 
+                        type="text" 
+                        id="admin-course-search" 
+                        placeholder="Course code, title, faculty..." 
+                        value="${this.escapeHtml(searchQuery)}" 
+                        oninput="coursePlanApp.onAdminCourseSearchInput(this.value)" 
+                        class="w-full px-3 py-2 pl-8 border border-slate-300 rounded-xl font-medium bg-white text-slate-900 focus:border-purple-600 focus:outline-none"
+                      />
+                      <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2"></i>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- KPI Status Badges Summary -->
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 pt-2 border-t border-slate-100 text-xs">
+                  <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-center">
+                    <div class="text-[10px] font-bold text-slate-500 uppercase">Filtered Courses</div>
+                    <div class="text-lg font-black text-slate-900">${filteredCourses.length}</div>
+                  </div>
+                  <div class="p-2.5 bg-emerald-50/70 rounded-xl border border-emerald-200 text-center">
+                    <div class="text-[10px] font-bold text-emerald-800 uppercase">HOD Approved</div>
+                    <div class="text-lg font-black text-emerald-700">${kpiApproved}</div>
+                  </div>
+                  <div class="p-2.5 bg-amber-50/70 rounded-xl border border-amber-200 text-center">
+                    <div class="text-[10px] font-bold text-amber-800 uppercase">Under Review</div>
+                    <div class="text-lg font-black text-amber-800">${kpiPending}</div>
+                  </div>
+                  <div class="p-2.5 bg-blue-50/70 rounded-xl border border-blue-200 text-center">
+                    <div class="text-[10px] font-bold text-blue-800 uppercase">Drafts</div>
+                    <div class="text-lg font-black text-blue-800">${kpiDraft}</div>
+                  </div>
+                  <div class="p-2.5 bg-rose-50/70 rounded-xl border border-rose-200 text-center col-span-2 sm:col-span-1">
+                    <div class="text-[10px] font-bold text-rose-800 uppercase">Not Started</div>
+                    <div class="text-lg font-black text-rose-700">${kpiNotStarted}</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Main Table Card -->
+              <div class="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden w-full">
+                ${filteredCourses.length === 0 ? `
+                  <div class="p-12 text-center space-y-2">
+                    <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
+                      <i data-lucide="inbox" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-sm font-black text-slate-800">No Courses Match Your Criteria</h3>
+                    <p class="text-xs text-slate-500">Try adjusting your Level, Semester, Department, or Status filters above.</p>
+                  </div>
+                ` : `
+                  <div class="overflow-x-auto w-full">
+                    <table class="w-full text-left text-xs border-collapse mobile-card-table">
+                      <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold uppercase text-[11px] sticky top-0 z-10">
+                        <tr>
+                          <th class="p-3 text-center w-12">S.No</th>
+                          <th class="p-3 w-80">Course Code & Title</th>
+                          <th class="p-3 w-56">Department & Programme</th>
+                          <th class="p-3 w-36 text-center">Semester & Class</th>
+                          <th class="p-3 w-32 text-center">Hrs & Credits</th>
+                          <th class="p-3 w-64">Faculty Name(s)</th>
+                          <th class="p-3 w-40 text-center">Submission Status</th>
+                          <th class="p-3 text-center w-28">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-slate-100 font-medium">
+                        ${pagedCourses.map((c, idx) => {
+          const globalIdx = startIdx + idx + 1;
+          const cLevel = (c.level || (c.programme && (c.programme.startsWith('M.') || c.programme.includes('Master') || c.programme.includes('MCA')) ? 'PG' : 'UG')).toUpperCase();
+          const plans = c._matchingPlans || [];
+
+          let statusBadge = '';
+          let facultyDisplay = '';
+          let actionsHtml = '';
+
+          if (c._computedStatus === 'Approved') {
+            statusBadge = `
+                              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs">
+                                <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-600"></i>
+                                <span>HOD Approved</span>
+                              </span>
+                            `;
+          } else if (c._computedStatus === 'Revision Needed') {
+            statusBadge = `
+                              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-100 text-rose-800 border border-rose-300">
+                                <i data-lucide="alert-triangle" class="w-3.5 h-3.5 text-rose-600"></i>
+                                <span>Revision Needed</span>
+                              </span>
+                            `;
+          } else if (c._computedStatus === 'Pending') {
+            statusBadge = `
+                              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
+                                <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-600"></i>
+                                <span>Under HOD Review</span>
+                              </span>
+                            `;
+          } else if (c._computedStatus === 'Draft') {
+            statusBadge = `
+                              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-blue-50 text-blue-800 border border-blue-200">
+                                <i data-lucide="file-edit" class="w-3.5 h-3.5 text-blue-600"></i>
+                                <span>Draft Saved</span>
+                              </span>
+                            `;
+          } else {
+            statusBadge = `
+                              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10.5px] font-semibold bg-slate-100 text-slate-500 border border-slate-200">
+                                <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                                <span>Not Started</span>
+                              </span>
+                            `;
+          }
+
+          if (plans.length > 0) {
+            facultyDisplay = `
+                              <div class="space-y-1">
+                                ${plans.map(p => `
+                                  <div class="font-black text-indigo-950 text-xs flex items-center gap-1.5">
+                                    <i data-lucide="user-check" class="w-3.5 h-3.5 text-indigo-600 shrink-0"></i>
+                                    <span>${this.escapeHtml(p.faculty_name || 'Assigned Faculty')}</span>
+                                    ${p.section && p.section !== 'N/A' ? `<span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">${this.escapeHtml(p.section)}</span>` : ''}
+                                  </div>
+                                `).join('')}
+                              </div>
+                            `;
+
+            const primaryPlan = plans[0];
+            actionsHtml = `
+                              <div class="inline-flex items-center gap-1.5">
+                                <button 
+                                  type="button" 
+                                  onclick="coursePlanApp.previewPlan(${primaryPlan.id})" 
+                                  class="px-2.5 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-900 font-bold rounded-lg text-xs transition border border-purple-200 flex items-center gap-1 cursor-pointer"
+                                  title="View Course Plan Document"
+                                >
+                                  <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                                  <span>View</span>
+                                </button>
+                                <button 
+                                  type="button" 
+                                  onclick="coursePlanApp.navigateTo('/course-plan/edit?id=${primaryPlan.id}')" 
+                                  class="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition cursor-pointer"
+                                  title="Edit Course Plan"
+                                >
+                                  <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                                </button>
+                              </div>
+                            `;
+          } else {
+            facultyDisplay = `
+                              <span class="text-slate-400 italic font-medium flex items-center gap-1 text-[11px]">
+                                <i data-lucide="user-x" class="w-3.5 h-3.5 text-slate-300"></i>
+                                <span>Pending Faculty Submission</span>
+                              </span>
+                            `;
+            actionsHtml = `<span class="text-slate-300 text-xs font-mono">—</span>`;
+          }
+
+          return `
+                            <tr class="hover:bg-slate-50/70 transition">
+                              <td class="p-3 text-center font-bold text-slate-400" data-label="S.No">${globalIdx}</td>
+                              
+                              <td class="p-3" data-label="Course Code & Title">
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                  <span class="font-mono font-black text-indigo-950 text-xs">${this.escapeHtml(c.course_code || '—')}</span>
+                                  <span class="text-[9.5px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider ${cLevel === 'PG' ? 'bg-purple-100 text-purple-900 border border-purple-200' : 'bg-blue-100 text-blue-900 border border-blue-200'}">
+                                    ${cLevel}
+                                  </span>
+                                  <span class="text-[9.5px] font-bold bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded">
+                                    ${this.escapeHtml(c.course_category || 'Core')}
+                                  </span>
+                                </div>
+                                <div class="text-slate-700 font-bold text-xs mt-0.5 leading-snug">
+                                  ${this.escapeHtml(c.course_title || 'Untitled Course')}
+                                </div>
+                              </td>
+
+                              <td class="p-3" data-label="Department & Programme">
+                                <div class="font-bold text-slate-900 text-xs">${this.escapeHtml(c.department || '—')}</div>
+                                <div class="text-[11px] text-slate-500 font-medium">${this.escapeHtml(c.programme || '—')}</div>
+                              </td>
+
+                              <td class="p-3 text-center" data-label="Semester & Class">
+                                <div class="font-bold text-slate-800 text-xs">Sem ${this.escapeHtml(c.semester_num ? String(c.semester_num) : (c.semester || '—'))}</div>
+                                <div class="text-[10.5px] text-slate-500 font-medium">${this.escapeHtml(c.year_class || (cLevel === 'PG' ? 'PG' : 'UG'))}</div>
+                              </td>
+
+                              <td class="p-3 text-center font-mono font-bold" data-label="Hours & Credits">
+                                <div class="text-slate-800 text-xs">${this.escapeHtml(c.hours ? String(c.hours).replace(/&/g, '•') : '—')}h</div>
+                                <div class="text-[10px] text-slate-500">${this.escapeHtml(c.credits ? String(c.credits) : '—')} Credits</div>
+                              </td>
+
+                              <td class="p-3" data-label="Faculty Name(s)">
+                                ${facultyDisplay}
+                              </td>
+
+                              <td class="p-3 text-center" data-label="Submission Status">
+                                ${statusBadge}
+                              </td>
+
+                              <td class="p-3 text-center" data-label="Actions">
+                                ${actionsHtml}
+                              </td>
+                            </tr>
+                          `;
+        }).join('')}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <!-- Table Pagination Controls -->
+                  <div class="p-3.5 sm:p-4 border-t border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs bg-slate-50">
+                    <div class="flex items-center gap-2 text-slate-600 font-medium">
+                      <span>Showing <strong>${startIdx + 1}</strong>–<strong>${endIdx}</strong> of <strong>${filteredCourses.length}</strong> courses</span>
+                      <span class="text-slate-300">•</span>
+                      <span>Page <strong>${currentPage}</strong> of <strong>${totalPages}</strong></span>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                      <select 
+                        onchange="coursePlanApp.setAdminCoursePageSize(this.value)" 
+                        class="px-2.5 py-1.5 border border-slate-300 rounded-xl bg-white font-bold text-slate-700 cursor-pointer"
+                        title="Rows per page"
+                      >
+                        <option value="50" ${pageSize === 50 ? 'selected' : ''}>50 / page</option>
+                        <option value="100" ${pageSize === 100 ? 'selected' : ''}>100 / page</option>
+                        <option value="250" ${pageSize === 250 ? 'selected' : ''}>250 / page</option>
+                        <option value="all" ${pageSize > 1000 ? 'selected' : ''}>Show All</option>
+                      </select>
+
+                      <button 
+                        type="button" 
+                        onclick="coursePlanApp.setAdminCoursePage(${currentPage - 1})" 
+                        class="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 font-bold rounded-xl border border-slate-300 shadow-2xs transition ${currentPage <= 1 ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}"
+                        ${currentPage <= 1 ? 'disabled' : ''}
+                      >
+                        ← Prev
+                      </button>
+
+                      <button 
+                        type="button" 
+                        onclick="coursePlanApp.setAdminCoursePage(${currentPage + 1})" 
+                        class="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 font-bold rounded-xl border border-slate-300 shadow-2xs transition ${currentPage >= totalPages ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}"
+                        ${currentPage >= totalPages ? 'disabled' : ''}
+                      >
+                        Next →
+                      </button>
+                    </div>
+                  </div>
+                `}
+              </div>
+            </div>
+          `;
+      })() : ''}
+
+        <!-- ================= 4. PEDAGOGY & ICT ANALYTICS VIEW ================= -->
+        ${this.adminTab === 'analytics' ? this.renderAdminAnalyticsHtml() : ''}
+
+        <!-- ================= 5. INSTITUTIONAL COURSE PLAN REPORT VIEW ================= -->
+        ${this.adminTab === 'report' ? this.renderInstitutionalReportHtml() : ''}
+
+        <!-- ================= 6. MANAGE MASTER DATA (FACULTY / COURSES / DEPTS) ================= -->
+        ${this.adminTab === 'manage' ? `
+          <div class="space-y-5">
+            <!-- Manage Sub-navigation -->
+            <div class="flex items-center gap-2 border-b border-slate-200 pb-3 flex-wrap">
+              <button 
+                type="button" 
+                onclick="coursePlanApp.switchAdminManageSubTab('faculty')" 
+                class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition ${this.adminManageSubTab === 'faculty' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}"
+              >
+                Manage Faculty Members (${this.departments.reduce((acc, d) => acc + (d.faculty ? d.faculty.length : 0), 0)})
+              </button>
+              <button 
+                type="button" 
+                onclick="coursePlanApp.switchAdminManageSubTab('course')" 
+                class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition ${this.adminManageSubTab === 'course' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}"
+              >
+                Manage Syllabus Courses (${this.syllabusCourses.length})
+              </button>
+              <button 
+                type="button" 
+                onclick="coursePlanApp.switchAdminManageSubTab('dept')" 
+                class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition ${this.adminManageSubTab === 'dept' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}"
+              >
+                Manage Academic Departments (${this.departments.length})
+              </button>
+            </div>
+
+            <!-- SUB-TAB A: MANAGE FACULTY -->
+            ${this.adminManageSubTab === 'faculty' ? `
+              <div class="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden w-full p-6 space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
+                  <div>
+                    <h3 class="text-sm font-black text-slate-900 flex items-center gap-2">
+                      <i data-lucide="user-check" class="w-4 h-4 text-indigo-600"></i>
+                      <span>Faculty Directory & Roster Editor</span>
+                    </h3>
+                    <p class="text-[11px] text-slate-500">Add missing faculty members or update existing designations & emails</p>
+                  </div>
+                  <button 
+                    type="button" 
+                    onclick="coursePlanApp.openAddFacultyModal()" 
+                    class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm active:scale-95 transition"
+                  >
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    <span>+ Add New Faculty</span>
+                  </button>
+                </div>
+
+                <div class="flex items-center gap-3">
+                  <select 
+                    id="admin-manage-fac-dept" 
+                    onchange="coursePlanApp.render()" 
+                    class="text-xs px-3 py-2 border border-slate-300 rounded-xl font-bold bg-white"
+                  >
+                    <option value="all">All Departments (${this.departments.length})</option>
+                    ${this.departments.map(d => `<option value="${d.name}">${d.name}</option>`).join('')}
+                  </select>
+                </div>
+
+                <div class="overflow-x-auto w-full max-h-[550px] scrollbar-thin">
+                  <table class="w-full text-left text-xs border-collapse">
+                    <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold uppercase text-[11px] sticky top-0 z-10">
+                      <tr>
+                        <th class="p-3 text-center w-12">S.No</th>
+                        <th class="p-3">Faculty Member</th>
+                        <th class="p-3">Department</th>
+                        <th class="p-3">Shift & Category</th>
+                        <th class="p-3">Institutional Email</th>
+                        <th class="p-3 text-center w-28">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 font-medium">
+                      ${(() => {
+            const selDept = document.getElementById('admin-manage-fac-dept')?.value || 'all';
+            let list = [];
+            this.departments.forEach(d => {
+              if (selDept !== 'all' && d.name !== selDept) return;
+              (d.faculty || []).forEach(f => list.push({ ...f, dept: d.name }));
+            });
+            return list.map((f, idx) => `
+                          <tr class="hover:bg-slate-50/70 transition">
+                            <td class="p-3 text-center font-bold text-slate-400">${idx + 1}</td>
+                            <td class="p-3 font-bold text-slate-900">${f.name}</td>
+                            <td class="p-3 text-slate-700 font-semibold">${f.dept}</td>
+                            <td class="p-3 text-slate-600">Shift ${f.shift || 'I'} • ${f.category || 'Faculty'}</td>
+                            <td class="p-3 font-mono text-slate-600">${f.email || '—'}</td>
+                            <td class="p-3 text-center">
+                              <div class="flex items-center justify-center gap-1.5">
+                                <button 
+                                  type="button" 
+                                  onclick="coursePlanApp.openAddFacultyModal(${JSON.stringify(f).replace(/"/g, '&quot;')}, '${f.dept}')" 
+                                  class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-xs"
+                                >
+                                  Edit
+                                </button>
+                                <button 
+                                  type="button" 
+                                  onclick="coursePlanApp.deleteAdminFaculty('${f.dept}', '${f.name}')" 
+                                  class="p-1 text-slate-400 hover:text-red-600 rounded"
+                                >
+                                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        `).join('');
+          })()}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ` : ''}
+
+            <!-- SUB-TAB B: MANAGE COURSES -->
+            ${this.adminManageSubTab === 'course' ? `
+              <div class="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden w-full p-6 space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
+                  <div>
+                    <h3 class="text-sm font-black text-slate-900 flex items-center gap-2">
+                      <i data-lucide="book-marked" class="w-4 h-4 text-indigo-600"></i>
+                      <span>Syllabus Master Course Catalog</span>
+                    </h3>
+                    <p class="text-[11px] text-slate-500">Add new courses or edit course codes, hours, and credits</p>
+                  </div>
+                  <button 
+                    type="button" 
+                    onclick="coursePlanApp.openAddCourseModal()" 
+                    class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm active:scale-95 transition"
+                  >
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    <span>+ Add New Course</span>
+                  </button>
+                </div>
+
+                <div class="overflow-x-auto w-full max-h-[550px] scrollbar-thin">
+                  <table class="w-full text-left text-xs border-collapse">
+                    <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold uppercase text-[11px] sticky top-0 z-10">
+                      <tr>
+                        <th class="p-3 text-center w-12">S.No</th>
+                        <th class="p-3">Course Code</th>
+                        <th class="p-3">Title of the Course</th>
+                        <th class="p-3">Department</th>
+                        <th class="p-3">Semester</th>
+                        <th class="p-3 text-center">Hrs & Credits</th>
+                        <th class="p-3 text-center w-20">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 font-medium">
+                      ${this.syllabusCourses.slice(0, 300).map((c, idx) => `
+                        <tr class="hover:bg-slate-50/70 transition">
+                          <td class="p-3 text-center font-bold text-slate-400">${idx + 1}</td>
+                          <td class="p-3 font-mono font-bold text-slate-900">${c.course_code}</td>
+                          <td class="p-3 font-bold text-slate-800">${c.course_title}</td>
+                          <td class="p-3 text-slate-600 font-semibold">${c.department}</td>
+                          <td class="p-3 text-slate-600">${c.semester || ''}</td>
+                          <td class="p-3 text-center">${c.hours || '4'} Hrs • ${c.credits || '3'} Cr</td>
+                          <td class="p-3 text-center">
+                            <button 
+                              type="button" 
+                              onclick="coursePlanApp.openAddCourseModal(${JSON.stringify(c).replace(/"/g, '&quot;')})" 
+                              class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-xs"
+                            >
+                              Edit
+                            </button>
+                          </td>
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ` : ''}
+
+            <!-- SUB-TAB C: MANAGE DEPARTMENTS -->
+            ${this.adminManageSubTab === 'dept' ? `
+              <div class="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden w-full p-6 space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
+                  <div>
+                    <h3 class="text-sm font-black text-slate-900 flex items-center gap-2">
+                      <i data-lucide="building" class="w-4 h-4 text-indigo-600"></i>
+                      <span>Academic Departments Registry</span>
+                    </h3>
+                    <p class="text-[11px] text-slate-500">Manage all 34 teaching departments and faculties</p>
+                  </div>
+                  <button 
+                    type="button" 
+                    onclick="coursePlanApp.openAddDepartmentModal()" 
+                    class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm active:scale-95 transition"
+                  >
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    <span>+ Add Department</span>
+                  </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  ${this.departments.map((d, idx) => `
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-3">
+                      <div>
+                        <div class="font-bold text-slate-900 text-xs">${idx + 1}. ${d.name}</div>
+                        <div class="text-[11px] text-slate-500">${d.faculty ? d.faculty.length : d.faculty_count} Faculty Members</div>
+                      </div>
+                      <button 
+                        type="button" 
+                        onclick="coursePlanApp.openAddDepartmentModal(${JSON.stringify(d).replace(/"/g, '&quot;')})" 
+                        class="px-2.5 py-1 bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 font-bold rounded-lg text-xs"
+                      >
+                        Edit
+                      </button>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        ` : ''}
+
+        <!-- ================= 7. ASSIGN FACULTY ROLES (HEAD & MQC MUTUALLY EXCLUSIVE) ================= -->
+        ${this.adminTab === 'roles' ? this.renderFacultyRolesHtml() : ''}
+      </div>
+    `;
+  }
+
+  // ================= 3C. FACULTY ROLES ASSIGNMENT (HEAD & MQC) =================
+  renderFacultyRolesHtml() {
+    if (this.facultyRolesLoading) {
+      return `
+        <div class="bg-white rounded-2xl border border-slate-200 p-12 text-center space-y-3">
+          <div class="inline-block w-8 h-8 border-4 border-amber-600 border-t-transparent rounded-full animate-spin"></div>
+          <div class="text-sm font-bold text-slate-700">Loading Faculty Roles & Department Assignments...</div>
+        </div>
+      `;
+    }
+
+    const data = this.facultyRolesData || { faculty: [], departments: [] };
+    const facultyList = data.faculty || [];
+    const depts = data.departments || [];
+
+    const selectedDept = this.adminRolesDeptFilter || 'ALL';
+    const searchTerm = (this.adminRolesSearch || '').toLowerCase().trim();
+    const roleFilter = this.adminRolesFilter || 'ALL';
+
+    const filteredFaculty = facultyList.filter(f => {
+      const matchDept = selectedDept === 'ALL' || f.department_name === selectedDept;
+      const matchSearch = !searchTerm || 
+        (f.faculty_name && f.faculty_name.toLowerCase().includes(searchTerm)) ||
+        (f.faculty_id && f.faculty_id.toLowerCase().includes(searchTerm)) ||
+        (f.faculty_email && f.faculty_email.toLowerCase().includes(searchTerm));
+      const matchRole = roleFilter === 'ALL' ||
+        (roleFilter === 'HEAD' && f.is_head == 1) ||
+        (roleFilter === 'MQC' && f.is_mqc == 1) ||
+        (roleFilter === 'FACULTY' && f.is_head != 1 && f.is_mqc != 1);
+      return matchDept && matchSearch && matchRole;
+    });
+
+    const totalHeads = facultyList.filter(f => f.is_head == 1).length;
+    const totalMqcs = facultyList.filter(f => f.is_mqc == 1).length;
+    const totalFaculty = facultyList.length;
+
+    return `
+      <div class="space-y-6">
+        <!-- Banner & Instruction -->
+        <div class="bg-gradient-to-r from-amber-900 via-orange-950 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+          <div class="relative z-10 space-y-2">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 text-[11px] font-black uppercase tracking-wider">
+              <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+              <span>Role Delegation & Access Governance</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-black tracking-tight text-white">
+              Academic Department Role Segregation (HOD & MQC)
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-300 font-medium max-w-3xl leading-relaxed">
+              Designate Department Heads and Micro Quality Cell (MQC) Coordinators for each academic department. 
+              <strong>Rule:</strong> In any department, each member is a <em>Faculty</em> by default. 
+              A faculty member can be designated as either <strong>Head (HOD)</strong> or <strong>MQC</strong>, but <u>never both simultaneously</u>.
+            </p>
+          </div>
+        </div>
+
+        <!-- Metrics KPI Strip -->
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
+            <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Total Faculty Members</div>
+            <div class="text-2xl font-black text-slate-900">${totalFaculty}</div>
+            <div class="text-[11px] text-slate-400 font-medium mt-1">Across all 34 departments</div>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-amber-200 bg-amber-50/30 shadow-2xs">
+            <div class="text-[11px] font-bold text-amber-800 uppercase tracking-wider mb-1">Designated Heads (HODs)</div>
+            <div class="text-2xl font-black text-amber-900">${totalHeads} of ${depts.length}</div>
+            <div class="text-[11px] text-amber-700 font-medium mt-1">Can review & approve Course Plans</div>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-emerald-200 bg-emerald-50/30 shadow-2xs">
+            <div class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-1">Designated MQC Coordinators</div>
+            <div class="text-2xl font-black text-emerald-900">${totalMqcs} of ${depts.length}</div>
+            <div class="text-[11px] text-emerald-700 font-medium mt-1">Authorized for AAA Data Container</div>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-indigo-200 bg-indigo-50/30 shadow-2xs">
+            <div class="text-[11px] font-bold text-indigo-800 uppercase tracking-wider mb-1">Mutual Exclusivity Status</div>
+            <div class="text-2xl font-black text-indigo-900">Enforced</div>
+            <div class="text-[11px] text-indigo-700 font-medium mt-1">Head ≠ MQC (Strict 1-Role Policy)</div>
+          </div>
+        </div>
+
+        <!-- Filters & Search Toolbar -->
+        <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3.5">
+          <div class="flex items-center gap-3 flex-wrap flex-1">
+            <!-- Department Dropdown -->
+            <div class="min-w-[220px]">
+              <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">Filter by Department</label>
+              <select 
+                class="w-full text-xs font-bold border border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:bg-white focus:border-amber-600 focus:outline-none"
+                onchange="coursePlanApp.adminRolesDeptFilter = this.value; coursePlanApp.loadFacultyRolesData(true);"
+              >
+                <option value="ALL" ${selectedDept === 'ALL' ? 'selected' : ''}>All Academic Departments (${depts.length})</option>
+                ${depts.map(d => `
+                  <option value="${d.department_name}" ${selectedDept === d.department_name ? 'selected' : ''}>
+                    ${d.department_name} (${d.total_faculty} Faculty) ${d.has_head ? '• HOD: ' + d.head_name : ''}
+                  </option>
+                `).join('')}
+              </select>
+            </div>
+
+            <!-- Role Filter Pills -->
+            <div>
+              <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">Filter by Role</label>
+              <div class="flex items-center gap-1.5">
+                <button 
+                  type="button" 
+                  onclick="coursePlanApp.adminRolesFilter = 'ALL'; coursePlanApp.render();" 
+                  class="px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${roleFilter === 'ALL' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}"
+                >
+                  All (${facultyList.length})
+                </button>
+                <button 
+                  type="button" 
+                  onclick="coursePlanApp.adminRolesFilter = 'HEAD'; coursePlanApp.render();" 
+                  class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer ${roleFilter === 'HEAD' ? 'bg-amber-600 text-white' : 'bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200'}"
+                >
+                  🏛️ Heads (${totalHeads})
+                </button>
+                <button 
+                  type="button" 
+                  onclick="coursePlanApp.adminRolesFilter = 'MQC'; coursePlanApp.render();" 
+                  class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer ${roleFilter === 'MQC' ? 'bg-emerald-600 text-white' : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200'}"
+                >
+                  📊 MQCs (${totalMqcs})
+                </button>
+                <button 
+                  type="button" 
+                  onclick="coursePlanApp.adminRolesFilter = 'FACULTY'; coursePlanApp.render();" 
+                  class="px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${roleFilter === 'FACULTY' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}"
+                >
+                  🎓 Standard Faculty
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Search Input -->
+          <div class="w-full md:w-64">
+            <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">Search Staff</label>
+            <div class="relative">
+              <input 
+                type="text" 
+                placeholder="Search by name or code (e.g. 24CAI51)..." 
+                value="${this.adminRolesSearch || ''}"
+                oninput="coursePlanApp.adminRolesSearch = this.value; coursePlanApp.render();"
+                class="w-full text-xs font-medium pl-8 pr-3 py-2 border border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:border-amber-600 focus:outline-none"
+              />
+              <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Faculty Role Table -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="bg-slate-50/80 border-b border-slate-200 text-[11px] font-black uppercase tracking-wider text-slate-600">
+                  <th class="py-3 px-4 w-12 text-center">#</th>
+                  <th class="py-3 px-4">Staff Code</th>
+                  <th class="py-3 px-4">Faculty Member</th>
+                  <th class="py-3 px-4">Department</th>
+                  <th class="py-3 px-4 text-center">Active Status</th>
+                  <th class="py-3 px-4 text-right">Assign Role (Mutually Exclusive)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                ${filteredFaculty.length === 0 ? `
+                  <tr>
+                    <td colspan="6" class="p-8 text-center text-slate-400 font-bold">
+                      No faculty members found matching your search and filter criteria.
+                    </td>
+                  </tr>
+                ` : filteredFaculty.map((f, idx) => {
+                  const isHead = f.is_head == 1 || f.role === 'HEAD';
+                  const isMqc = f.is_mqc == 1 || f.role === 'MQC';
+                  const safeDeptName = (f.department_name || '').replace(/'/g, "\\'");
+                  const safeFacId = f.faculty_id || '';
+                  return `
+                    <tr class="hover:bg-amber-50/30 transition ${isHead ? 'bg-amber-50/20' : (isMqc ? 'bg-emerald-50/20' : '')}">
+                      <td class="py-3.5 px-4 text-center text-slate-400 font-mono font-bold">${idx + 1}</td>
+                      <td class="py-3.5 px-4 font-mono font-extrabold text-slate-900">
+                        <span class="px-2 py-0.5 rounded-lg bg-slate-100 border border-slate-200 text-slate-800">
+                          ${f.faculty_id || 'N/A'}
+                        </span>
+                      </td>
+                      <td class="py-3.5 px-4">
+                        <div class="font-extrabold text-slate-900">${f.faculty_name}</div>
+                        ${f.faculty_email ? `<div class="text-[11px] text-slate-400 font-mono">${f.faculty_email}</div>` : ''}
+                      </td>
+                      <td class="py-3.5 px-4 font-semibold text-slate-700">
+                        ${f.department_name}
+                      </td>
+                      <td class="py-3.5 px-4 text-center">
+                        ${isHead ? `
+                          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-100 border border-amber-300 text-amber-900 font-black text-[11px] shadow-xs">
+                            <span>🏛️</span>
+                            <span>Head of Department</span>
+                          </span>
+                        ` : (isMqc ? `
+                          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-900 font-black text-[11px] shadow-xs">
+                            <span>📊</span>
+                            <span>MQC Coordinator</span>
+                          </span>
+                        ` : `
+                          <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 font-bold text-[10px]">
+                            <span>🎓</span>
+                            <span>Faculty Member</span>
+                          </span>
+                        `)}
+                      </td>
+                      <td class="py-3.5 px-4 text-right">
+                        <div class="inline-flex items-center p-1 bg-slate-100 rounded-xl border border-slate-200 gap-1">
+                          <!-- Standard Faculty button -->
+                          <button 
+                            type="button" 
+                            onclick="coursePlanApp.setFacultyRole('${safeFacId}', 'FACULTY', '${safeDeptName}')"
+                            class="px-2.5 py-1 rounded-lg text-[11px] font-black transition cursor-pointer ${(!isHead && !isMqc) ? 'bg-white text-slate-900 shadow-xs border border-slate-200' : 'text-slate-500 hover:text-slate-900'}"
+                            title="Reset to Standard Faculty"
+                          >
+                            Faculty
+                          </button>
+                          
+                          <!-- Head (HOD) button -->
+                          <button 
+                            type="button" 
+                            onclick="coursePlanApp.setFacultyRole('${safeFacId}', 'HEAD', '${safeDeptName}')"
+                            class="px-2.5 py-1 rounded-lg text-[11px] font-black transition cursor-pointer flex items-center gap-1 ${isHead ? 'bg-amber-600 text-white shadow-xs' : 'text-amber-800 hover:bg-amber-100'}"
+                            title="Designate as Department Head (Disallows MQC)"
+                          >
+                            <span>🏛️</span>
+                            <span>Head</span>
+                          </button>
+
+                          <!-- MQC button -->
+                          <button 
+                            type="button" 
+                            onclick="coursePlanApp.setFacultyRole('${safeFacId}', 'MQC', '${safeDeptName}')"
+                            class="px-2.5 py-1 rounded-lg text-[11px] font-black transition cursor-pointer flex items-center gap-1 ${isMqc ? 'bg-emerald-600 text-white shadow-xs' : 'text-emerald-800 hover:bg-emerald-100'}"
+                            title="Designate as MQC Coordinator (Disallows Head)"
+                          >
+                            <span>📊</span>
+                            <span>MQC</span>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+
+
+  // ================= 3B. PEDAGOGY & ICT ANALYTICS (NAAC 2.3.1 & 2.3.2) =================
+  renderAdminAnalyticsHtml() {
+    const data = this.analyticsData;
+    if (!data) {
+      if (!this.analyticsLoading) this.loadAnalyticsData();
+      return `
+        <div class="bg-white rounded-3xl border border-slate-200 p-12 text-center space-y-4 shadow-sm">
+          <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-purple-600 border-t-transparent"></div>
+          <div class="text-base font-black text-slate-800">Synthesizing Institutional Pedagogy & ICT Analytics...</div>
+          <p class="text-xs text-slate-500 max-w-md mx-auto">Aggregating student-centric methodologies, JosTEL LMS integrations, digital tools, and Bloom's cognitive taxonomy across all 34 departments.</p>
+        </div>
+      `;
+    }
+
+    const rawPlans = (data.plans && data.plans.length > 0) ? data.plans : (this.plans || []);
+
+    // Stream definition helper
+    const streams = {
+      science: ['mathematics', 'physics', 'chemistry', 'botany', 'biotechnology', 'electronics', 'physical education'],
+      computing: ['computer science', 'information technology', 'artificial intelligence', 'data science', 'voc'],
+      commerce: ['commerce', 'bba'],
+      arts: ['english', 'tamil', 'history', 'economics', 'counselling', 'hrm', 'visual communication', 'sanskrit', 'french', 'hindi']
+    };
+
+    const getStream = (dept) => {
+      const d = (dept || '').toLowerCase();
+      for (const [st, depts] of Object.entries(streams)) {
+        if (depts.some(x => d.includes(x))) return st;
+      }
+      return 'general';
+    };
+
+    // Filter plans according to UI selectors
+    const filteredPlans = rawPlans.filter(p => {
+      if (this.adminAnalyticsStatus === 'Approved' && p.hod_status !== 'Approved') return false;
+      if (this.adminAnalyticsDept !== 'all' && p.department_name !== this.adminAnalyticsDept) return false;
+      if (this.adminAnalyticsStream !== 'all') {
+        const st = getStream(p.department_name);
+        if (st !== this.adminAnalyticsStream) return false;
+      }
+      return true;
+    });
+
+    // Recompute statistics dynamically based on filtered set
+    let totalHours = 0;
+    let approvedCount = 0;
+    const facSet = new Set();
+    const deptSet = new Set();
+    const methodologies = {};
+    const ictPlatforms = {};
+    const ictTools = {};
+    const ictPurposes = {};
+    const assessmentTypes = {};
+    const bloom = { K1: 0, K2: 0, K3: 0, K4: 0, K5: 0, K6: 0 };
+
+    filteredPlans.forEach(p => {
+      totalHours += parseInt(p.teaching_hours || 0, 10) || 0;
+      if (p.hod_status === 'Approved') approvedCount++;
+      if (p.faculty_name) facSet.add(p.faculty_name);
+      if (p.department_name) deptSet.add(p.department_name);
+
+      // Methodologies
+      const dtp = Array.isArray(p.detailed_teaching_plan) ? p.detailed_teaching_plan : [];
+      dtp.forEach(r => {
+        const m = (r.methodology || '').trim();
+        if (m) methodologies[m] = (methodologies[m] || 0) + 1;
+      });
+
+      // Bloom's levels
+      const cos = Array.isArray(p.course_outcomes) ? p.course_outcomes : [];
+      cos.forEach(co => {
+        const lvl = (co.k_level || co.level || co.cognitive_level || '').toUpperCase();
+        if (lvl.includes('K1') || lvl.includes('REMEMBER')) bloom.K1++;
+        else if (lvl.includes('K2') || lvl.includes('UNDERSTAND')) bloom.K2++;
+        else if (lvl.includes('K3') || lvl.includes('APPLY')) bloom.K3++;
+        else if (lvl.includes('K4') || lvl.includes('ANALY')) bloom.K4++;
+        else if (lvl.includes('K5') || lvl.includes('EVALUAT')) bloom.K5++;
+        else if (lvl.includes('K6') || lvl.includes('CREATE') || lvl.includes('SYNTH')) bloom.K6++;
+      });
+
+      // ICT
+      const icts = Array.isArray(p.ict_integration) ? p.ict_integration : [];
+      icts.forEach(ict => {
+        const plat = (ict.platform || '').trim();
+        if (plat) ictPlatforms[plat] = (ictPlatforms[plat] || 0) + 1;
+        const tool = (ict.tool || '').trim();
+        if (tool) ictTools[tool] = (ictTools[tool] || 0) + 1;
+        const purp = (ict.purpose || '').trim();
+        if (purp) ictPurposes[purp] = (ictPurposes[purp] || 0) + 1;
+      });
+
+      // Assessments
+      const acts = Array.isArray(p.learning_activities) ? p.learning_activities : [];
+      acts.forEach(act => {
+        if (act.is_assessment || act.cia_component) {
+          const comp = (act.cia_component || 'CIA Component').trim();
+          assessmentTypes[comp] = (assessmentTypes[comp] || 0) + 1;
+        }
+      });
+    });
+
+    // Fallback to server pre-aggregates if filtered set is whole collection
+    const activeMethodologies = (filteredPlans.length === rawPlans.length && Object.keys(methodologies).length === 0) ? (data.pedagogy || {}) : methodologies;
+    const activePlatforms = (filteredPlans.length === rawPlans.length && Object.keys(ictPlatforms).length === 0) ? (data.ict_platforms || {}) : ictPlatforms;
+    const activeTools = (filteredPlans.length === rawPlans.length && Object.keys(ictTools).length === 0) ? (data.ict_tools || {}) : ictTools;
+    const activePurposes = (filteredPlans.length === rawPlans.length && Object.keys(ictPurposes).length === 0) ? (data.ict_purposes || {}) : ictPurposes;
+    const activeBloom = (filteredPlans.length === rawPlans.length && Object.values(bloom).reduce((a, b) => a + b, 0) === 0) ? (data.bloom_levels || bloom) : bloom;
+    const activeAssessments = (filteredPlans.length === rawPlans.length && Object.keys(assessmentTypes).length === 0) ? (data.assessment_types || {}) : assessmentTypes;
+
+    const totalPedagogySessions = Object.values(activeMethodologies).reduce((a, b) => a + b, 0);
+    const totalPlatformsCount = Object.values(activePlatforms).reduce((a, b) => a + b, 0);
+    const totalToolsCount = Object.values(activeTools).reduce((a, b) => a + b, 0);
+    const totalCosCount = Object.values(activeBloom).reduce((a, b) => a + b, 0);
+
+    const hotsCount = (activeBloom.K3 || 0) + (activeBloom.K4 || 0) + (activeBloom.K5 || 0) + (activeBloom.K6 || 0);
+    const lotsCount = (activeBloom.K1 || 0) + (activeBloom.K2 || 0);
+    const hotsPct = totalCosCount > 0 ? Math.round((hotsCount / totalCosCount) * 100) : 0;
+    const lotsPct = totalCosCount > 0 ? (100 - hotsPct) : 0;
+
+    let activeStudentCentricCount = 0;
+    Object.entries(activeMethodologies).forEach(([meth, cnt]) => {
+      const mLow = meth.toLowerCase();
+      if (!mLow.includes('lecture-based') || mLow.includes('problem') || mLow.includes('case') || mLow.includes('flipped') || mLow.includes('cooperative') || mLow.includes('project') || mLow.includes('experiential')) {
+        activeStudentCentricCount += cnt;
+      }
+    });
+    const activePedagogyPct = totalPedagogySessions > 0 ? Math.round((activeStudentCentricCount / totalPedagogySessions) * 100) : 0;
+
+    return `
+      <div class="space-y-6 animate-fadeIn w-full">
+        <!-- Control Header & Filters -->
+        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-purple-100 text-purple-800 border border-purple-200">
+                NAAC Criterion 2.3 & 2.6
+              </span>
+              <span class="text-slate-400">•</span>
+              <span class="text-xs font-bold text-slate-700">Institutional Analytics Engine</span>
+            </div>
+            <h2 class="text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+              <i data-lucide="bar-chart-3" class="w-5 h-5 text-purple-600"></i>
+              <span>Pedagogy, ICT Integration & OBE Analytics Dashboard</span>
+            </h2>
+            <p class="text-xs text-slate-500">
+              Interactive college-wide analysis of student-centric pedagogical modalities, JosTEL LMS digital integration, and Bloom's cognitive outcomes.
+            </p>
+          </div>
+
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchAdminTab('report')" 
+              class="px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white font-bold rounded-xl text-xs transition shadow-sm flex items-center gap-1.5 cursor-pointer"
+            >
+              <i data-lucide="file-text" class="w-4 h-4"></i>
+              <span>Generate Institutional Report →</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.loadAnalyticsData(true)" 
+              class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer"
+              title="Refresh Analytics"
+            >
+              <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+              <span>Sync</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter Toolbar -->
+        <div class="bg-gradient-to-r from-purple-50/60 via-indigo-50/40 to-slate-50 p-4 rounded-2xl border border-purple-100 shadow-2xs flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-3 flex-wrap">
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs font-bold text-slate-600">Stream:</span>
+              <div class="flex items-center bg-white p-1 rounded-xl border border-slate-200 shadow-2xs">
+                ${[
+        { id: 'all', label: 'All Streams' },
+        { id: 'science', label: '🔬 Sciences' },
+        { id: 'computing', label: '💻 Computing & Voc' },
+        { id: 'commerce', label: '📈 Commerce' },
+        { id: 'arts', label: '📚 Arts & Hum' }
+      ].map(s => `
+                  <button 
+                    type="button" 
+                    onclick="coursePlanApp.onAnalyticsFilterChange('stream', '${s.id}')"
+                    class="px-2.5 py-1 rounded-lg text-xs font-bold transition ${this.adminAnalyticsStream === s.id ? 'bg-purple-600 text-white shadow-2xs' : 'text-slate-600 hover:bg-slate-100'}"
+                  >
+                    ${s.label}
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs font-bold text-slate-600">Status:</span>
+              <select 
+                onchange="coursePlanApp.onAnalyticsFilterChange('status', this.value)"
+                class="text-xs font-bold px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-2xs"
+              >
+                <option value="all" ${this.adminAnalyticsStatus === 'all' ? 'selected' : ''}>All Submissions (${filteredPlans.length})</option>
+                <option value="Approved" ${this.adminAnalyticsStatus === 'Approved' ? 'selected' : ''}>✓ Approved Only (${filteredPlans.filter(p => p.hod_status === 'Approved').length})</option>
+              </select>
+            </div>
+
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs font-bold text-slate-600">Department:</span>
+              <select 
+                onchange="coursePlanApp.onAnalyticsFilterChange('dept', this.value)"
+                class="text-xs font-bold px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-2xs max-w-[200px]"
+              >
+                <option value="all">All 34 Departments</option>
+                ${this.departments.map(d => `
+                  <option value="${d.name}" ${this.adminAnalyticsDept === d.name ? 'selected' : ''}>${d.name}</option>
+                `).join('')}
+              </select>
+            </div>
+          </div>
+
+          <div class="text-xs font-semibold text-slate-500 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Analyzing <strong>${filteredPlans.length}</strong> Course Plans across <strong>${deptSet.size}</strong> Depts</span>
+          </div>
+        </div>
+
+        <!-- Macro Analytics KPI Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+          <div class="bg-white p-5 rounded-2xl border border-purple-200/80 shadow-2xs bg-purple-50/20 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-[11px] font-bold text-purple-900 uppercase tracking-wider">Active Pedagogy Index</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 bg-purple-100 text-purple-800 rounded-full">NAAC 2.3.1</span>
+              </div>
+              <div class="text-3xl font-black text-purple-900">${activePedagogyPct}%</div>
+              <p class="text-[11px] text-slate-500 mt-1">Share of participatory / active learning sessions</p>
+            </div>
+            <div class="w-full bg-purple-100 h-2 rounded-full overflow-hidden mt-3">
+              <div class="bg-gradient-to-r from-purple-600 to-indigo-600 h-full rounded-full transition-all duration-500" style="width: ${activePedagogyPct}%"></div>
+            </div>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-indigo-200/80 shadow-2xs bg-indigo-50/20 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-[11px] font-bold text-indigo-900 uppercase tracking-wider">Digital & LMS Integrations</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 bg-indigo-100 text-indigo-800 rounded-full">NAAC 2.3.2</span>
+              </div>
+              <div class="text-3xl font-black text-indigo-900">${totalPlatformsCount}</div>
+              <p class="text-[11px] text-slate-500 mt-1">Total ICT platform usages logged across courses</p>
+            </div>
+            <div class="w-full bg-indigo-100 h-2 rounded-full overflow-hidden mt-3">
+              <div class="bg-gradient-to-r from-indigo-600 to-sky-600 h-full rounded-full" style="width: ${Math.min(100, totalPlatformsCount * 8)}%"></div>
+            </div>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-emerald-200/80 shadow-2xs bg-emerald-50/20 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-[11px] font-bold text-emerald-900 uppercase tracking-wider">Higher-Order Thinking (HOTS)</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full">OBE K3–K6</span>
+              </div>
+              <div class="text-3xl font-black text-emerald-900">${hotsPct}%</div>
+              <p class="text-[11px] text-slate-500 mt-1">${hotsCount} of ${totalCosCount} Course Outcomes mapped to HOTS</p>
+            </div>
+            <div class="w-full bg-emerald-100 h-2 rounded-full overflow-hidden mt-3 flex">
+              <div class="bg-emerald-600 h-full rounded-l-full" style="width: ${hotsPct}%" title="HOTS: ${hotsPct}%"></div>
+              <div class="bg-sky-400 h-full rounded-r-full" style="width: ${lotsPct}%" title="LOTS: ${lotsPct}%"></div>
+            </div>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-amber-200/80 shadow-2xs bg-amber-50/20 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-[11px] font-bold text-amber-900 uppercase tracking-wider">Planned Teaching Hours</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 bg-amber-100 text-amber-800 rounded-full">Curriculum Delivery</span>
+              </div>
+              <div class="text-3xl font-black text-amber-900">${totalHours} hrs</div>
+              <p class="text-[11px] text-slate-500 mt-1">Cumulative scheduled theory hours</p>
+            </div>
+            <div class="text-[10.5px] font-bold text-amber-700 mt-3 flex items-center justify-between">
+              <span>Avg per Course: <strong>${filteredPlans.length > 0 ? Math.round(totalHours / filteredPlans.length) : 0} hrs</strong></span>
+              <span><strong>${facSet.size}</strong> Faculty Members</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 1: TEACHING-LEARNING METHODOLOGIES BREAKDOWN -->
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-2xs overflow-hidden p-6 space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-purple-100 text-purple-800">NAAC Metric 2.3.1</span>
+                <h3 class="text-base font-black text-slate-900">Pedagogical Methodologies Deployment</h3>
+              </div>
+              <p class="text-xs text-slate-500 mt-0.5">Distribution of student-centric experiential, participative, and problem-solving teaching methods</p>
+            </div>
+            <span class="text-xs font-bold text-purple-700 bg-purple-50 px-3 py-1 rounded-xl border border-purple-200">
+              Total Logged Sessions: ${totalPedagogySessions}
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            ${Object.entries(activeMethodologies).map(([meth, count], idx) => {
+        const pct = totalPedagogySessions > 0 ? Math.round((count / totalPedagogySessions) * 100) : 0;
+        const isDirect = meth.toLowerCase() === 'lecture-based learning';
+        const colors = isDirect
+          ? { bg: 'bg-slate-100', bar: 'bg-slate-500', text: 'text-slate-800', tag: 'Direct Instruction', tagBg: 'bg-slate-100 text-slate-600' }
+          : { bg: 'bg-purple-50', bar: 'bg-gradient-to-r from-purple-600 to-indigo-600', text: 'text-purple-950', tag: 'Student-Centric Participative', tagBg: 'bg-emerald-50 text-emerald-800 border border-emerald-200' };
+
+        return `
+                <div class="p-4 rounded-2xl border border-slate-200/80 bg-white hover:border-purple-300 transition shadow-2xs space-y-2">
+                  <div class="flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                      <span class="w-6 h-6 rounded-lg bg-slate-100 text-slate-700 font-black text-xs flex items-center justify-center shrink-0">
+                        ${idx + 1}
+                      </span>
+                      <span class="font-bold text-xs ${colors.text}">${this.escapeHtml(meth)}</span>
+                    </div>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${colors.tagBg}">${colors.tag}</span>
+                  </div>
+                  <div class="flex items-center justify-between text-xs font-semibold text-slate-500 pt-1">
+                    <span>${count} session plans</span>
+                    <span class="font-bold text-slate-800">${pct}% of curriculum</span>
+                  </div>
+                  <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                    <div class="${colors.bar} h-full rounded-full transition-all duration-500" style="width: ${Math.max(5, pct)}%"></div>
+                  </div>
+                </div>
+              `;
+      }).join('')}
+          </div>
+        </div>
+
+        <!-- SECTION 2: DIGITAL RESOURCES & ICT PLATFORMS INTEGRATION -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- ICT Platforms -->
+          <div class="bg-white rounded-3xl border border-slate-200 shadow-2xs p-6 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div>
+                <span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-indigo-100 text-indigo-800">NAAC Metric 2.3.2</span>
+                <h3 class="text-sm font-black text-slate-900 mt-1">E-Learning Platforms & LMS Utilization</h3>
+              </div>
+              <span class="text-xs font-bold text-indigo-600">${totalPlatformsCount} Deployments</span>
+            </div>
+
+            <div class="space-y-3">
+              ${Object.keys(activePlatforms).length === 0 ? `
+                <p class="text-xs text-slate-400 italic text-center py-6">No platform records found for current filter.</p>
+              ` : Object.entries(activePlatforms).map(([plat, cnt]) => {
+        const pct = totalPlatformsCount > 0 ? Math.round((cnt / totalPlatformsCount) * 100) : 0;
+        return `
+                  <div class="p-3 bg-slate-50/70 rounded-xl border border-slate-200 space-y-1.5">
+                    <div class="flex items-center justify-between text-xs">
+                      <span class="font-bold text-slate-900 flex items-center gap-1.5">
+                        <i data-lucide="monitor" class="w-3.5 h-3.5 text-indigo-600"></i>
+                        <span>${this.escapeHtml(plat)}</span>
+                      </span>
+                      <span class="font-black text-indigo-700">${cnt} courses (${pct}%)</span>
+                    </div>
+                    <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                      <div class="bg-indigo-600 h-full rounded-full" style="width: ${Math.max(6, pct)}%"></div>
+                    </div>
+                  </div>
+                `;
+      }).join('')}
+            </div>
+          </div>
+
+          <!-- Digital Tools & E-Content -->
+          <div class="bg-white rounded-3xl border border-slate-200 shadow-2xs p-6 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div>
+                <span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-100 text-emerald-800">E-Content Formats</span>
+                <h3 class="text-sm font-black text-slate-900 mt-1">Digital Tools & Multimedia Resources</h3>
+              </div>
+              <span class="text-xs font-bold text-emerald-600">${totalToolsCount} Tools</span>
+            </div>
+
+            <div class="space-y-3">
+              ${Object.keys(activeTools).length === 0 ? `
+                <p class="text-xs text-slate-400 italic text-center py-6">No digital tools records found for current filter.</p>
+              ` : Object.entries(activeTools).map(([tool, cnt]) => {
+        const pct = totalToolsCount > 0 ? Math.round((cnt / totalToolsCount) * 100) : 0;
+        return `
+                  <div class="p-3 bg-slate-50/70 rounded-xl border border-slate-200 space-y-1.5">
+                    <div class="flex items-center justify-between text-xs">
+                      <span class="font-bold text-slate-900 flex items-center gap-1.5">
+                        <i data-lucide="layers" class="w-3.5 h-3.5 text-emerald-600"></i>
+                        <span>${this.escapeHtml(tool)}</span>
+                      </span>
+                      <span class="font-black text-emerald-700">${cnt} usages (${pct}%)</span>
+                    </div>
+                    <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                      <div class="bg-emerald-600 h-full rounded-full" style="width: ${Math.max(6, pct)}%"></div>
+                    </div>
+                  </div>
+                `;
+      }).join('')}
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 3: OUTCOME-BASED EDUCATION (OBE) BLOOM'S TAXONOMY PROFILE -->
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-2xs p-6 space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-sky-100 text-sky-800">NAAC Criterion 2.6</span>
+                <h3 class="text-base font-black text-slate-900">Outcome-Based Education (OBE) Bloom's Cognitive Profile</h3>
+              </div>
+              <p class="text-xs text-slate-500 mt-0.5">Distribution of Course Outcomes (CO1–CO6) mapped across revised Bloom's taxonomy cognitive levels</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="px-3 py-1 bg-sky-50 text-sky-800 rounded-xl text-xs font-bold border border-sky-200">
+                LOTS (K1–K2): <strong>${lotsPct}%</strong>
+              </span>
+              <span class="px-3 py-1 bg-emerald-50 text-emerald-800 rounded-xl text-xs font-bold border border-emerald-200">
+                HOTS (K3–K6): <strong>${hotsPct}%</strong>
+              </span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            ${[
+        { k: 'K1', name: 'Remember', desc: 'Recall & Recognition', color: 'indigo', count: activeBloom.K1 || 0 },
+        { k: 'K2', name: 'Understand', desc: 'Comprehend & Explain', color: 'sky', count: activeBloom.K2 || 0 },
+        { k: 'K3', name: 'Apply', desc: 'Execute & Implement', color: 'teal', count: activeBloom.K3 || 0 },
+        { k: 'K4', name: 'Analyze', desc: 'Deconstruct & Differentiate', color: 'emerald', count: activeBloom.K4 || 0 },
+        { k: 'K5', name: 'Evaluate', desc: 'Appraise & Justify', color: 'amber', count: activeBloom.K5 || 0 },
+        { k: 'K6', name: 'Create', desc: 'Design & Synthesize', color: 'rose', count: activeBloom.K6 || 0 }
+      ].map(b => {
+        const pct = totalCosCount > 0 ? Math.round((b.count / totalCosCount) * 100) : 0;
+        return `
+                <div class="p-4 rounded-2xl border border-slate-200 bg-slate-50/50 hover:bg-white hover:border-purple-300 transition text-center space-y-1.5 shadow-2xs">
+                  <div class="inline-block px-2.5 py-0.5 rounded-full font-mono font-black text-xs bg-${b.color}-100 text-${b.color}-800 border border-${b.color}-200">
+                    ${b.k}
+                  </div>
+                  <div class="font-black text-slate-900 text-sm">${b.name}</div>
+                  <div class="text-[10px] text-slate-400 font-medium">${b.desc}</div>
+                  <div class="text-xl font-black text-slate-900 pt-2 border-t border-slate-200/60">${b.count}</div>
+                  <div class="text-[11px] font-bold text-slate-500">${pct}% of COs</div>
+                </div>
+              `;
+      }).join('')}
+          </div>
+        </div>
+
+        <!-- SECTION 4: CONTINUOUS INTERNAL ASSESSMENT (CIA) BLUEPRINT -->
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-2xs p-6 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div>
+              <span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-amber-100 text-amber-800">Formative CIA Blueprint</span>
+              <h3 class="text-base font-black text-slate-900 mt-1">Continuous Internal Assessment (CIA) Components Planned</h3>
+            </div>
+            <span class="text-xs font-bold text-amber-700 bg-amber-50 px-3 py-1 rounded-xl border border-amber-200">
+              ${Object.values(activeAssessments).reduce((a, b) => a + b, 0)} Total CIA Evaluations
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            ${Object.keys(activeAssessments).length === 0 ? `
+              <p class="text-xs text-slate-400 italic col-span-full text-center py-6">No assessment entries recorded for current filter.</p>
+            ` : Object.entries(activeAssessments).map(([comp, cnt]) => `
+              <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-2 shadow-2xs">
+                <div>
+                  <div class="text-xs font-bold text-slate-800">${this.escapeHtml(comp)}</div>
+                  <div class="text-[10.5px] text-slate-500">Component</div>
+                </div>
+                <div class="text-base font-black text-purple-700 bg-purple-50 px-2.5 py-1 rounded-lg border border-purple-200">
+                  ${cnt}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // ================= 3C. INSTITUTIONAL COURSE PLAN REPORT (PRINTABLE & AUDIT DOSSIER) =================
+  renderInstitutionalReportHtml() {
+    const data = this.analyticsData || {};
+    const deptStats = data.dept_stats || {};
+    const rawPlans = (data.plans && data.plans.length > 0) ? data.plans : (this.plans || []);
+    const approvedPlans = rawPlans.filter(p => p.hod_status === 'Approved');
+
+    // Aggregate statistics across all 34 departments
+    let totalFaculty = 0;
+    let totalSubmitted = 0;
+    let totalApproved = 0;
+    let totalHours = 0;
+    let totalSyllabusEvenCourses = 0;
+
+    const deptRows = this.departments.map((d, idx) => {
+      const dStat = deptStats[d.name] || { total: 0, approved: 0, hours: 0, faculty_count: d.faculty ? d.faculty.length : 0 };
+      const fCount = d.faculty ? d.faculty.length : (dStat.faculty_count || 0);
+      const sylCount = this.getDepartmentEvenSyllabusCount(d.name);
+      const covPct = sylCount > 0 ? Math.min(100, Math.round((dStat.approved / sylCount) * 100)) : (dStat.approved > 0 ? 100 : 0);
+
+      totalFaculty += fCount;
+      totalSubmitted += dStat.total;
+      totalApproved += dStat.approved;
+      totalHours += dStat.hours;
+      totalSyllabusEvenCourses += sylCount;
+
+      return {
+        sno: idx + 1,
+        name: d.name,
+        facultyCount: fCount,
+        submitted: dStat.total,
+        approved: dStat.approved,
+        syllabusCount: sylCount,
+        coveragePct: covPct,
+        hours: dStat.hours,
+        status: dStat.approved > 0 ? 'Certified' : (dStat.total > 0 ? 'Under Review' : 'Pending')
+      };
+    });
+
+    const institutionalCoveragePct = totalSyllabusEvenCourses > 0 ? Math.round((totalApproved / totalSyllabusEvenCourses) * 100) : 0;
+    const generatedDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+    return `
+      <style>
+        @media print {
+          body {
+            background: #ffffff !important;
+            color: #000000 !important;
+            font-size: 11pt !important;
+          }
+          header, nav, #app-navbar, .no-print, button, select {
+            display: none !important;
+          }
+          #app-root, .main-container {
+            margin: 0 !important;
+            padding: 0 !important;
+            max-width: 100% !important;
+            width: 100% !important;
+          }
+          .institutional-report-page {
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+          }
+          .print-avoid-break {
+            page-break-inside: avoid !important;
+          }
+          table {
+            page-break-inside: auto;
+          }
+          tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+          }
+          thead {
+            display: table-header-group;
+          }
+          @page {
+            size: A4 portrait;
+            margin: 12mm 14mm 14mm 14mm;
+          }
+        }
+      </style>
+
+      <div class="space-y-6 animate-fadeIn w-full">
+        <!-- Floating Action Header (Hidden during Print) -->
+        <div class="no-print bg-white p-4 rounded-3xl border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+            <div>
+              <div class="text-xs font-bold text-slate-800">Official Institutional Report Dossier (A4 Ready)</div>
+              <div class="text-[11px] text-slate-500">Autonomous College Governance & NAAC Accreditation Compliance</div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <button 
+              type="button" 
+              onclick="coursePlanApp.printInstitutionalReport()" 
+              class="px-4 py-2 bg-indigo-900 hover:bg-indigo-800 text-white font-extrabold rounded-xl text-xs transition shadow-sm flex items-center gap-1.5 cursor-pointer"
+            >
+              <i data-lucide="printer" class="w-4 h-4"></i>
+              <span>🖨️ Print / Save as PDF</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.exportInstitutionalReportCSV()" 
+              class="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-600 text-white font-bold rounded-xl text-xs transition shadow-2xs flex items-center gap-1.5 cursor-pointer"
+            >
+              <i data-lucide="download" class="w-4 h-4"></i>
+              <span>📥 Export CSV</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchAdminTab('analytics')" 
+              class="px-3.5 py-2 bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 font-bold rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer"
+            >
+              <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+              <span>View Analytics</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchAdminTab('dept')" 
+              class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer"
+            >
+              <span>← Back to Hub</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- FORMAL INSTITUTIONAL REPORT DOCUMENT (A4 SHEET STYLED) -->
+        <div class="institutional-report-page bg-white p-8 sm:p-12 rounded-3xl border border-slate-300 shadow-md max-w-5xl mx-auto space-y-8 text-slate-900">
+          
+          <!-- OFFICIAL LETTERHEAD -->
+          <div class="border-b-2 border-slate-900 pb-6 text-center space-y-2">
+            <div class="flex items-center justify-center gap-3">
+              <span class="text-3xl">🏛️</span>
+              <div>
+                <h1 class="text-xl sm:text-2xl font-black uppercase tracking-tight text-slate-900">
+                  St. Joseph's College (Autonomous)
+                </h1>
+                <p class="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  Special Heritage Status awarded by UGC • Accredited at A++ Grade (Cycle IV) by NAAC
+                </p>
+                <p class="text-[11px] font-semibold text-slate-600">
+                  College with Potential for Excellence • Tiruchirappalli – 620 002, Tamil Nadu, India
+                </p>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between text-xs font-bold text-slate-600 gap-2">
+              <div class="bg-purple-50 text-purple-900 px-3 py-1 rounded-full border border-purple-200 text-[11px]">
+                INTERNAL QUALITY ASSURANCE CELL (IQAC)
+              </div>
+              <div class="font-mono text-[11px] text-slate-500">
+                Ref: SJC/IQAC/CP-REP/2026-27/EVEN • Date: ${generatedDate}
+              </div>
+            </div>
+
+            <div class="pt-2">
+              <h2 class="text-base sm:text-lg font-black tracking-tight text-indigo-950 uppercase">
+                Institutional Course Plan & Teaching–Learning Compliance Report
+              </h2>
+              <p class="text-xs font-bold text-slate-700">
+                Academic Year 2026–2027 • Even Semester (Dec 2026 – Apr 2027)
+              </p>
+            </div>
+          </div>
+
+          <!-- EXECUTIVE PREAMBLE -->
+          <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200 text-xs text-slate-700 space-y-2 leading-relaxed">
+            <div class="font-bold uppercase tracking-wider text-slate-900 text-[11px] flex items-center gap-1.5">
+              <span>📋</span>
+              <span>Executive Quality Assurance Declaration</span>
+            </div>
+            <p>
+              This institutional report certifies that theory course plans across all undergraduate (UG) and postgraduate (PG) programmes have been formulated in compliance with the <strong>UGC Learning Outcome-based Curriculum Framework (LOCF)</strong>, Revised Bloom's Taxonomy (Cognitive Levels K1–K6), and the autonomous academic regulations of St. Joseph's College.
+            </p>
+            <p>
+              Each course plan details 45 scheduled instructional hours across 5 units, incorporates student-centric participative methodologies (Problem-Based Learning, Case Studies, Flipped Classrooms), mandates campus <strong>JosTEL LMS</strong> digital integration, and institutes transparent Continuous Internal Assessment (CIA) rubrics.
+            </p>
+          </div>
+
+          <!-- MACRO INSTITUTIONAL SUMMARY (TABLEAU CARDS) -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+            <div class="p-4 rounded-xl border border-slate-200 bg-purple-50/40">
+              <div class="text-[10px] font-bold uppercase text-purple-900">Academic Departments</div>
+              <div class="text-2xl font-black text-purple-950 mt-1">${this.departments.length}</div>
+              <div class="text-[10px] text-slate-500 font-semibold">${totalFaculty} Faculty Members</div>
+            </div>
+            <div class="p-4 rounded-xl border border-slate-200 bg-indigo-50/40">
+              <div class="text-[10px] font-bold uppercase text-indigo-900">Master Catalog (Even Sem)</div>
+              <div class="text-2xl font-black text-indigo-950 mt-1">${totalSyllabusEvenCourses}</div>
+              <div class="text-[10px] text-slate-500 font-semibold">Semesters II, IV & VI</div>
+            </div>
+            <div class="p-4 rounded-xl border border-slate-200 bg-emerald-50/40">
+              <div class="text-[10px] font-bold uppercase text-emerald-900">Course Plans Submitted</div>
+              <div class="text-2xl font-black text-emerald-950 mt-1">${totalSubmitted}</div>
+              <div class="text-[10px] text-emerald-800 font-bold">${totalApproved} HOD-Approved</div>
+            </div>
+            <div class="p-4 rounded-xl border border-slate-200 bg-amber-50/40">
+              <div class="text-[10px] font-bold uppercase text-amber-900">Curriculum Hours Planned</div>
+              <div class="text-2xl font-black text-amber-950 mt-1">${totalHours} hrs</div>
+              <div class="text-[10px] text-slate-500 font-semibold">Scheduled Instructional Hours</div>
+            </div>
+          </div>
+
+          <!-- TABLE 1: DEPARTMENT-WISE AUDIT & SYLLABUS COVERAGE MATRIX -->
+          <div class="space-y-3 print-avoid-break">
+            <div class="flex items-center justify-between border-b border-slate-300 pb-2">
+              <h3 class="text-xs font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
+                <span>1. Department-wise Syllabus Coverage & Course Plan Audit</span>
+              </h3>
+              <span class="text-[11px] font-bold text-slate-500">All 34 Academic Departments</span>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs border border-slate-300 border-collapse">
+                <thead class="bg-slate-100 text-slate-900 font-black text-[10.5px] uppercase border-b border-slate-300">
+                  <tr>
+                    <th class="p-2 border border-slate-300 text-center w-8">#</th>
+                    <th class="p-2 border border-slate-300">Academic Department</th>
+                    <th class="p-2 border border-slate-300 text-center w-16">Faculty</th>
+                    <th class="p-2 border border-slate-300 text-center w-16">Submitted</th>
+                    <th class="p-2 border border-slate-300 text-center w-16">Approved</th>
+                    <th class="p-2 border border-slate-300 text-center w-20">Syllabus Courses</th>
+                    <th class="p-2 border border-slate-300 text-center w-16">Coverage</th>
+                    <th class="p-2 border border-slate-300 text-center w-20">Planned Hours</th>
+                    <th class="p-2 border border-slate-300 text-center w-24">Audit Status</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 text-[11px]">
+                  ${deptRows.map(r => `
+                    <tr class="hover:bg-slate-50 transition">
+                      <td class="p-1.5 border border-slate-300 text-center font-bold text-slate-500">${r.sno}</td>
+                      <td class="p-1.5 border border-slate-300 font-bold text-slate-900">${r.name}</td>
+                      <td class="p-1.5 border border-slate-300 text-center font-semibold">${r.facultyCount}</td>
+                      <td class="p-1.5 border border-slate-300 text-center font-semibold">${r.submitted}</td>
+                      <td class="p-1.5 border border-slate-300 text-center font-bold text-emerald-800">${r.approved}</td>
+                      <td class="p-1.5 border border-slate-300 text-center font-semibold">${r.syllabusCount}</td>
+                      <td class="p-1.5 border border-slate-300 text-center font-black ${r.coveragePct > 0 ? 'text-emerald-700' : 'text-slate-400'}">
+                        ${r.coveragePct}%
+                      </td>
+                      <td class="p-1.5 border border-slate-300 text-center font-semibold">${r.hours}</td>
+                      <td class="p-1.5 border border-slate-300 text-center">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold ${r.approved > 0 ? 'bg-emerald-100 text-emerald-900' : (r.submitted > 0 ? 'bg-amber-100 text-amber-900' : 'bg-slate-100 text-slate-500')}">
+                          ${r.status}
+                        </span>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+                <tfoot class="bg-slate-100 font-black text-[11px] border-t-2 border-slate-400">
+                  <tr>
+                    <td colspan="2" class="p-2 border border-slate-300 text-right uppercase">Institutional Total:</td>
+                    <td class="p-2 border border-slate-300 text-center">${totalFaculty}</td>
+                    <td class="p-2 border border-slate-300 text-center">${totalSubmitted}</td>
+                    <td class="p-2 border border-slate-300 text-center text-emerald-900">${totalApproved}</td>
+                    <td class="p-2 border border-slate-300 text-center">${totalSyllabusEvenCourses}</td>
+                    <td class="p-2 border border-slate-300 text-center text-emerald-900">${institutionalCoveragePct}%</td>
+                    <td class="p-2 border border-slate-300 text-center">${totalHours} hrs</td>
+                    <td class="p-2 border border-slate-300 text-center">✓ Verified</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+
+          <!-- TABLE 2: PEDAGOGICAL INNOVATIONS SUMMARY (NAAC CRITERION 2.3.1) -->
+          <div class="space-y-3 print-avoid-break">
+            <div class="flex items-center justify-between border-b border-slate-300 pb-2">
+              <h3 class="text-xs font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
+                <span>2. Pedagogical Methodologies Summary (NAAC Criterion 2.3.1)</span>
+              </h3>
+              <span class="text-[11px] font-bold text-purple-800">Student-Centric Participative Learning</span>
+            </div>
+
+            <table class="w-full text-left text-xs border border-slate-300 border-collapse">
+              <thead class="bg-slate-100 text-slate-900 font-black text-[10.5px] uppercase border-b border-slate-300">
+                <tr>
+                  <th class="p-2 border border-slate-300 text-center w-8">#</th>
+                  <th class="p-2 border border-slate-300">Instructional Methodology</th>
+                  <th class="p-2 border border-slate-300 text-center w-36">Pedagogical Classification</th>
+                  <th class="p-2 border border-slate-300 text-center w-24">Planned Sessions</th>
+                  <th class="p-2 border border-slate-300 text-center w-24">Curricular Share</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 text-[11px]">
+                ${(() => {
+        const ped = data.pedagogy || {};
+        const total = Object.values(ped).reduce((a, b) => a + b, 0);
+        if (Object.keys(ped).length === 0) {
+          return '<tr><td colspan="5" class="p-4 text-center text-slate-400 italic">No methodology records available.</td></tr>';
+        }
+        return Object.entries(ped).map(([meth, count], idx) => {
+          const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+          const isDirect = meth.toLowerCase().includes('lecture-based') && !meth.toLowerCase().includes('case') && !meth.toLowerCase().includes('problem');
+          return `
+                      <tr>
+                        <td class="p-1.5 border border-slate-300 text-center font-bold text-slate-500">${idx + 1}</td>
+                        <td class="p-1.5 border border-slate-300 font-bold text-slate-900">${meth}</td>
+                        <td class="p-1.5 border border-slate-300 text-center">
+                          <span class="px-2 py-0.5 rounded text-[10px] font-bold ${isDirect ? 'bg-slate-100 text-slate-700' : 'bg-emerald-100 text-emerald-900'}">
+                            ${isDirect ? 'Direct Instruction' : 'Student-Centric Participative'}
+                          </span>
+                        </td>
+                        <td class="p-1.5 border border-slate-300 text-center font-semibold">${count}</td>
+                        <td class="p-1.5 border border-slate-300 text-center font-bold text-slate-900">${pct}%</td>
+                      </tr>
+                    `;
+        }).join('');
+      })()}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- TABLE 3: DIGITAL PLATFORMS & ICT INTEGRATION (NAAC CRITERION 2.3.2) -->
+          <div class="space-y-3 print-avoid-break">
+            <div class="flex items-center justify-between border-b border-slate-300 pb-2">
+              <h3 class="text-xs font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
+                <span>3. Digital Resources & ICT Platform Adoption (NAAC Criterion 2.3.2)</span>
+              </h3>
+              <span class="text-[11px] font-bold text-indigo-800">LMS & E-Content Deployment</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <table class="w-full text-left text-xs border border-slate-300 border-collapse">
+                <thead class="bg-slate-100 text-slate-900 font-black text-[10.5px] uppercase border-b border-slate-300">
+                  <tr>
+                    <th class="p-2 border border-slate-300">ICT Platform / Portal</th>
+                    <th class="p-2 border border-slate-300 text-center w-24">Adoption Count</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 text-[11px]">
+                  ${(() => {
+        const plats = data.ict_platforms || {};
+        if (Object.keys(plats).length === 0) return '<tr><td colspan="2" class="p-2 text-center text-slate-400 italic">No records.</td></tr>';
+        return Object.entries(plats).map(([p, cnt]) => `
+                      <tr>
+                        <td class="p-1.5 border border-slate-300 font-bold text-slate-900">${p}</td>
+                        <td class="p-1.5 border border-slate-300 text-center font-semibold">${cnt} courses</td>
+                      </tr>
+                    `).join('');
+      })()}
+                </tbody>
+              </table>
+
+              <table class="w-full text-left text-xs border border-slate-300 border-collapse">
+                <thead class="bg-slate-100 text-slate-900 font-black text-[10.5px] uppercase border-b border-slate-300">
+                  <tr>
+                    <th class="p-2 border border-slate-300">Digital Tool / Format</th>
+                    <th class="p-2 border border-slate-300 text-center w-24">Usage Count</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 text-[11px]">
+                  ${(() => {
+        const tools = data.ict_tools || {};
+        if (Object.keys(tools).length === 0) return '<tr><td colspan="2" class="p-2 text-center text-slate-400 italic">No records.</td></tr>';
+        return Object.entries(tools).map(([t, cnt]) => `
+                      <tr>
+                        <td class="p-1.5 border border-slate-300 font-bold text-slate-900">${t}</td>
+                        <td class="p-1.5 border border-slate-300 text-center font-semibold">${cnt} usages</td>
+                      </tr>
+                    `).join('');
+      })()}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- FORMAL SIGN-OFF & AUTHENTICATION BLOCK -->
+          <div class="print-avoid-break pt-12 border-t-2 border-slate-900 space-y-8">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center text-xs">
+              <div class="space-y-1">
+                <div class="h-14 flex items-end justify-center font-signature font-bold text-slate-700 italic">
+                  [Verified Electronically]
+                </div>
+                <div class="font-black text-slate-900 text-xs">Dr. A. Rose Venis</div>
+                <div class="text-[10.5px] text-slate-600 font-semibold">Coordinator, IQAC</div>
+                <div class="text-[10px] text-slate-500">Internal Quality Assurance Cell</div>
+              </div>
+
+              <div class="space-y-1">
+                <div class="h-14 flex items-end justify-center font-signature font-bold text-slate-700 italic">
+                  [Recommended for BoS]
+                </div>
+                <div class="font-black text-slate-900 text-xs">Rev. Dr. S. Santiago SJ</div>
+                <div class="text-[10.5px] text-slate-600 font-semibold">Dean of Academics</div>
+                <div class="text-[10px] text-slate-500">St. Joseph's College (Autonomous)</div>
+              </div>
+
+              <div class="space-y-1">
+                <div class="h-14 flex items-end justify-center font-signature font-bold text-slate-700 italic">
+                  [Approved & Certified]
+                </div>
+                <div class="font-black text-slate-900 text-xs">Rev. Dr. M. Arockiasamy Xavier SJ</div>
+                <div class="text-[10.5px] text-slate-600 font-semibold">Principal</div>
+                <div class="text-[10px] text-slate-500">St. Joseph's College (Autonomous)</div>
+              </div>
+            </div>
+
+            <div class="text-center text-[10px] text-slate-400 font-mono pt-4 border-t border-slate-200">
+              Official Quality Assurance Record • St. Joseph's College (Autonomous), Tiruchirappalli • IQAC Portal Even Semester 2026–2027
+            </div>
+          </div>
+
+        </div>
+      </div>
+    `;
+  }
+
+  // ================= 4. FORM VIEW (DIVIDED PART-WISE SECTION) =================
+  renderFormHtml() {
+    const plan = this.activePlan || this.createDefaultPlan();
+    const deptObj = this.departments.find(d => d.name === (plan.department_name || this.selectedDept)) || this.getCurrentDepartmentObj();
+    const facultyList = deptObj.faculty || [];
+    const relevantCourses = this.getRelevantSyllabusCourses();
+    const cos = plan.course_outcomes || [];
+    const dtp = plan.detailed_teaching_plan || [];
+    const ucp = plan.unit_completion_plan || [];
+    const acts = plan.learning_activities || [];
+    const assts = plan.assessment_plan || [];
+    const icts = plan.ict_integration || [];
+    const decl = plan.declaration || {};
+
+    const part1Done = this.isPart1Complete();
+    const part2Done = this.isPart2Complete();
+    const part3Done = this.isPart3Complete();
+    const part4Done = this.isPart4Complete();
+
+    const currentDeptName = plan.department_name || (this.currentUser ? this.currentUser.department_name : this.selectedDept) || '';
+    const currentFacName = plan.faculty_name || (this.currentUser ? this.currentUser.faculty_name : '') || '';
+
+    const part2Locked = !part1Done;
+    const part3Locked = !part2Done;
+    const part4Locked = !part3Done;
+
+    const isDeclarationTab = (this.activeFormTab === 'declaration');
+    const canPrintAndSubmit = isDeclarationTab && !part4Locked;
+    const isCourseLocked = !!(plan.course_code && (plan.is_auto_fetched || (this.syllabusCourses || []).some(c => c.course_code.toLowerCase().trim() === (plan.course_code || '').toLowerCase().trim())));
+    const isUGProg = !plan.programme || (!plan.programme.startsWith('M.') && !plan.programme.includes('MCA') && !plan.programme.includes('Master') && !plan.programme.includes('Post'));
+
+    // Course Sharing Mode & Collaborating Faculty
+    const isSharedCourse = !!(plan.is_shared_course || (plan.general_details && plan.general_details.is_shared_course));
+    const currentSharedFac = (plan.shared_faculty_name || (plan.general_details && plan.general_details.shared_faculty_name) || '').trim();
+    const curDept = currentDeptName || this.selectedDept || '';
+    const loggedInFac = (this.currentUser && this.currentUser.faculty_name) ? this.currentUser.faculty_name.trim().toLowerCase() : (currentFacName ? currentFacName.trim().toLowerCase() : '');
+
+    const deptFaculty = (facultyList || []).map(f => typeof f === 'string' ? f : f.name).filter(name => {
+      if (!name) return false;
+      if (loggedInFac && name.trim().toLowerCase() === loggedInFac) return false;
+      return true;
+    });
+
+    const deptFacultyOptions = deptFaculty.map(name => `
+      <option value="${this.escapeHtml(name)}" ${currentSharedFac === name ? 'selected' : ''}>
+        ${this.escapeHtml(name)}
+      </option>
+    `).join('');
+
+    return `
+      
+<style>
+  .is-invalid-field {
+    border-color: #ef4444 !important;
+    background-color: #fef2f2 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25) !important;
+    animation: fieldShake 0.4s ease-in-out !important;
+  }
+  @keyframes fieldShake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-4px); }
+    40%, 80% { transform: translateX(4px); }
+  }
+
+  /* Compact Card View for Mobile Screens */
+  @media (max-width: 768px) {
+    .mobile-card-table thead {
+      display: none !important;
+    }
+    .mobile-card-table, 
+    .mobile-card-table tbody, 
+    .mobile-card-table tr, 
+    .mobile-card-table td {
+      display: block !important;
+      width: 100% !important;
+    }
+    .mobile-card-table tr {
+      margin-bottom: 1rem !important;
+      background: #ffffff !important;
+      border: 1.5px solid #e2e8f0 !important;
+      border-radius: 1rem !important;
+      padding: 0.85rem !important;
+      box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.06) !important;
+    }
+    .mobile-card-table td {
+      padding: 0.35rem 0 !important;
+      border: none !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 0.25rem !important;
+    }
+    .mobile-card-table td::before {
+      content: attr(data-label);
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #64748b;
+      letter-spacing: 0.03em;
+    }
+  }
+</style>
+
+      <div class="space-y-6 animate-fadeIn w-full">
+        <!-- Institutional Header Banner with Department & Faculty on the right -->
+        <div class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white rounded-2xl p-5 sm:p-6 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div class="space-y-1 text-center md:text-left">
+            <div class="text-xs uppercase tracking-widest font-bold text-indigo-200">Internal Quality Assurance Cell (IQAC)</div>
+            <div class="text-xl sm:text-2xl font-black tracking-tight">St. Joseph’s College (Autonomous), Tiruchirappalli</div>
+            <div class="text-xs sm:text-sm font-extrabold text-amber-300 pt-0.5 tracking-wide">
+              COURSE PLAN – ACADEMIC YEAR 2026–2027 (Even Semester)
+            </div>
+          </div>
+
+          <!-- Faculty Member & Department on the Right -->
+          <div class="bg-white/10 backdrop-blur-xs border border-white/20 rounded-2xl p-3.5 text-left md:text-right shrink-0 shadow-inner flex flex-col justify-center space-y-1 min-w-[220px]">
+            <div class="text-[10px] uppercase tracking-wider text-indigo-200 font-bold flex items-center md:justify-end gap-1.5">
+              <i data-lucide="award" class="w-3.5 h-3.5 text-amber-300"></i>
+              <span>Course Instructor</span>
+            </div>
+            ${(this.currentUser && this.currentUser.role === 'faculty') ? `
+              <div class="text-sm font-black text-white flex items-center md:justify-end gap-1.5">
+                <i data-lucide="user" class="w-4 h-4 text-amber-300"></i>
+                <span>${this.escapeHtml(currentFacName || 'Faculty Member')}</span>
+              </div>
+              <div class="text-xs font-bold text-amber-200 flex items-center md:justify-end gap-1.5">
+                <i data-lucide="building-2" class="w-3.5 h-3.5 text-amber-300"></i>
+                <span>${this.escapeHtml(currentDeptName || 'Department')}</span>
+              </div>
+            ` : `
+              <div class="space-y-1 text-slate-900">
+                <select 
+                  id="header-dept-select" 
+                  onchange="const d=this.value; if(document.getElementById('cp-dept-name')) document.getElementById('cp-dept-name').value=d; coursePlanApp.onFormDeptChange(d);" 
+                  class="w-full text-xs px-2 py-1 rounded bg-white font-bold text-slate-900 border border-indigo-200 focus:outline-none"
+                >
+                  ${this.departments.map(d => `
+                    <option value="${d.name}" ${d.name === currentDeptName ? 'selected' : ''}>
+                      ${d.name}
+                    </option>
+                  `).join('')}
+                </select>
+                <select 
+                  id="header-faculty-select" 
+                  onchange="const f=this.value; if(document.getElementById('cp-faculty-name')) document.getElementById('cp-faculty-name').value=f; coursePlanApp.onFormFacultyChange(f);" 
+                  class="w-full text-xs px-2 py-1 rounded bg-white font-bold text-slate-900 border border-indigo-200 focus:outline-none"
+                >
+                  <option value="">-- Choose Faculty (${facultyList.length}) --</option>
+                  ${facultyList.map(f => `
+                    <option value="${f.name}" ${f.name === currentFacName ? 'selected' : ''}>
+                      ${f.name}
+                    </option>
+                  `).join('')}
+                </select>
+              </div>
+            `}
+          </div>
+        </div>
+
+        ${this.systemSettings && !this.systemSettings.submissions_enabled ? `
+          <!-- Submissions Closed Alert Banner (Prominently displayed before start filling) -->
+          <div class="p-4 bg-rose-50 border-2 border-rose-300 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-3 text-rose-900 shadow-sm animate-fadeIn">
+            <div class="flex items-start md:items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-rose-200 text-rose-800 flex items-center justify-center shrink-0 shadow-inner">
+                <i data-lucide="shield-alert" class="w-5 h-5 text-rose-700"></i>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h4 class="text-xs font-black uppercase tracking-wider text-rose-900">Course Plan Submissions are Closed by IQAC Admin</h4>
+                  <span class="px-2 py-0.5 rounded-full bg-rose-200 text-rose-900 text-[10px] font-black uppercase tracking-wider">Submissions Locked</span>
+                </div>
+                <p class="text-xs font-semibold text-rose-800 mt-0.5 leading-relaxed">
+                  Notice before start filling: The IQAC Administrator has temporarily locked course plan submissions. You will not be able to submit this course plan to HOD until submissions are re-opened.
+                </p>
+              </div>
+            </div>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.backToDashboard()" 
+              class="px-3.5 py-2 bg-white hover:bg-rose-100 text-rose-800 border border-rose-300 font-bold text-xs rounded-xl transition shadow-2xs shrink-0 self-start md:self-auto cursor-pointer"
+            >
+              ← Back to Dashboard
+            </button>
+          </div>
+        ` : ''}
+
+        <!-- Part-wise Navigation Tabs & Form Actions -->
+        <div class="bg-white p-2 sm:p-2.5 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-2.5 sticky top-14 sm:top-16 z-20">
+          <!-- Navigation Tabs with Stage Lock Icons (Horizontally scrollable on mobile) -->
+          <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar w-full md:w-auto flex-nowrap py-0.5">
+            <!-- Part I Tab (Always Unlocked) -->
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchFormTab('part1')" 
+              class="px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shrink-0 whitespace-nowrap ${this.activeFormTab === 'part1' ? 'bg-indigo-600 text-white shadow-sm ring-2 ring-indigo-300' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}"
+            >
+              <span class="w-4 h-4 rounded-full ${part1Done ? 'bg-emerald-500 text-white' : 'bg-white/20'} flex items-center justify-center text-[10px] font-black">
+                ${part1Done ? '<i data-lucide="check" class="w-2.5 h-2.5"></i>' : 'I'}
+              </span>
+              <span>Part-I: Course Info</span>
+            </button>
+
+            <!-- Part II Tab (Locked until Part I Complete) -->
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchFormTab('part2')" 
+              class="px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shrink-0 whitespace-nowrap ${part2Locked ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-65' : (this.activeFormTab === 'part2' ? 'bg-indigo-600 text-white shadow-sm ring-2 ring-indigo-300 cursor-pointer' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer')}"
+              title="${part2Locked ? 'Locked: Complete Part-I Course Information to unlock' : 'Part-II: Teaching Plan'}"
+            >
+              <span class="w-4 h-4 rounded-full ${part2Locked ? 'bg-slate-200 text-slate-500' : (part2Done ? 'bg-emerald-500 text-white' : 'bg-white/20')} flex items-center justify-center text-[10px] font-black">
+                ${part2Locked ? '<i data-lucide="lock" class="w-2.5 h-2.5"></i>' : (part2Done ? '<i data-lucide="check" class="w-2.5 h-2.5"></i>' : 'II')}
+              </span>
+              <span>Part-II: Teaching Plan</span>
+              ${part2Locked ? '<i data-lucide="lock" class="w-3 h-3 text-slate-400 ml-0.5"></i>' : ''}
+            </button>
+
+            <!-- Part III Tab (Locked until Part II Complete) -->
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchFormTab('part3')" 
+              class="px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shrink-0 whitespace-nowrap ${part3Locked ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-65' : (this.activeFormTab === 'part3' ? 'bg-indigo-600 text-white shadow-sm ring-2 ring-indigo-300 cursor-pointer' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer')}"
+              title="${part3Locked ? 'Locked: Complete Part-II Teaching Plan topics to unlock' : 'Part-III: Activities & CIA'}"
+            >
+              <span class="w-4 h-4 rounded-full ${part3Locked ? 'bg-slate-200 text-slate-500' : (part3Done ? 'bg-emerald-500 text-white' : 'bg-white/20')} flex items-center justify-center text-[10px] font-black">
+                ${part3Locked ? '<i data-lucide="lock" class="w-2.5 h-2.5"></i>' : (part3Done ? '<i data-lucide="check" class="w-2.5 h-2.5"></i>' : 'III')}
+              </span>
+              <span>Part-III: Activities & CIA</span>
+              ${part3Locked ? '<i data-lucide="lock" class="w-3 h-3 text-slate-400 ml-0.5"></i>' : ''}
+            </button>
+
+            <!-- Part IV Tab (Locked until Part III Complete) -->
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchFormTab('declaration')" 
+              class="px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shrink-0 whitespace-nowrap ${part4Locked ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-65' : (this.activeFormTab === 'declaration' ? 'bg-indigo-600 text-white shadow-sm ring-2 ring-indigo-300 cursor-pointer' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer')}"
+              title="${part4Locked ? 'Locked: Complete Part-III Activities & Assessment to unlock' : 'IV Declaration & HOD Approval'}"
+            >
+              <span class="w-4 h-4 rounded-full ${part4Locked ? 'bg-slate-200 text-slate-500' : (part4Done ? 'bg-emerald-500 text-white' : 'bg-white/20')} flex items-center justify-center text-[10px] font-black">
+                ${part4Locked ? '<i data-lucide="lock" class="w-2.5 h-2.5"></i>' : (part4Done ? '<i data-lucide="check" class="w-2.5 h-2.5"></i>' : 'IV')}
+              </span>
+              <span>IV Declaration & HOD Approval</span>
+              ${part4Locked ? '<i data-lucide="lock" class="w-3 h-3 text-slate-400 ml-0.5"></i>' : ''}
+            </button>
+          </div>
+
+          <!-- Action Buttons Next to Tabs (Smooth responsive layout) -->
+          <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar w-full md:w-auto justify-between md:justify-end shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-slate-100">
+            <!-- Back to Dashboard Button -->
+            <button 
+              type="button" 
+              onclick="coursePlanApp.backToDashboard()" 
+              class="text-xs px-2.5 sm:px-3 py-1.5 sm:py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold rounded-xl transition flex items-center gap-1 border border-indigo-200 shadow-2xs cursor-pointer active:scale-95 shrink-0"
+              title="Return to your Dashboard"
+            >
+              <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+              <span>Dashboard</span>
+            </button>
+
+            <!-- New Form Button -->
+            <button 
+              type="button" 
+              onclick="coursePlanApp.createNewPlan()" 
+              class="text-xs px-2.5 sm:px-3 py-1.5 sm:py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition flex items-center gap-1 border border-slate-300 shadow-2xs cursor-pointer active:scale-95 shrink-0"
+              title="Clear form and start a new course plan"
+            >
+              <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 text-slate-500"></i>
+              <span class="hidden sm:inline">New Form</span>
+              <span class="sm:hidden">Reset</span>
+            </button>
+
+            <!-- Print Preview (Enabled ONLY on Part-IV) -->
+            ${canPrintAndSubmit ? `
+              <button 
+                type="button" 
+                onclick="coursePlanApp.previewCurrentPlan()" 
+                class="text-xs px-2.5 sm:px-3 py-1.5 sm:py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl transition flex items-center gap-1 border border-slate-300 shadow-2xs cursor-pointer active:scale-95 shrink-0"
+                title="Preview printable course plan"
+              >
+                <i data-lucide="printer" class="w-3.5 h-3.5 text-slate-600"></i>
+                <span class="hidden sm:inline">Print Preview</span>
+                <span class="sm:hidden">Print</span>
+              </button>
+            ` : `
+              <button 
+                type="button" 
+                disabled 
+                class="text-xs px-2.5 sm:px-3 py-1.5 sm:py-2 bg-slate-100 text-slate-400 font-bold rounded-xl flex items-center gap-1 border border-slate-200 cursor-not-allowed opacity-60 shrink-0"
+                title="Print Preview is enabled after reaching Part-IV (Declaration & HOD Approval)"
+              >
+                <i data-lucide="lock" class="w-3.5 h-3.5 text-slate-400"></i>
+                <span class="hidden sm:inline">Print Preview</span>
+                <span class="sm:hidden">Print</span>
+              </button>
+            `}
+
+            <!-- Save as Draft (Always Available) -->
+            <button 
+              type="button" 
+              onclick="coursePlanApp.saveCurrentPlan('Draft')" 
+              class="text-xs px-3 sm:px-3.5 py-1.5 sm:py-2 bg-white hover:bg-slate-50 text-slate-800 font-bold rounded-xl transition flex items-center gap-1 border border-slate-300 shadow-2xs cursor-pointer active:scale-95 shrink-0"
+              title="Save current progress as a draft"
+            >
+              <i data-lucide="save" class="w-3.5 h-3.5 text-slate-500"></i>
+              <span>Save</span>
+            </button>
+
+            <!-- Submit to HOD (Enabled ONLY on Part-IV) -->
+            ${this.systemSettings && !this.systemSettings.submissions_enabled ? `
+              <button 
+                type="button" 
+                disabled 
+                class="text-xs px-3.5 sm:px-4 py-1.5 sm:py-2 bg-rose-100 text-rose-700 border border-rose-200 font-bold rounded-xl flex items-center gap-1 cursor-not-allowed opacity-80 shrink-0"
+                title="Course plan submissions are currently closed by IQAC Administrator"
+              >
+                <i data-lucide="lock" class="w-3.5 h-3.5 text-rose-600"></i>
+                <span>Submissions Closed</span>
+              </button>
+            ` : (canPrintAndSubmit ? `
+              <button 
+                type="button" 
+                onclick="coursePlanApp.saveCurrentPlan('Submitted')" 
+                class="text-xs px-3.5 sm:px-4 py-1.5 sm:py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl transition flex items-center gap-1 shadow-md shadow-indigo-600/25 cursor-pointer active:scale-95 shrink-0 animate-pulse"
+                title="Submit completed course plan to Head of Department"
+              >
+                <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                <span>Submit</span>
+              </button>
+            ` : `
+              <button 
+                type="button" 
+                disabled 
+                class="text-xs px-3.5 sm:px-4 py-1.5 sm:py-2 bg-slate-200 text-slate-400 font-bold rounded-xl flex items-center gap-1 cursor-not-allowed opacity-60 shrink-0"
+                title="Submit to HOD is enabled after reaching Part-IV (Declaration & HOD Approval)"
+              >
+                <i data-lucide="lock" class="w-3.5 h-3.5 text-slate-400"></i>
+                <span>Submit</span>
+              </button>
+            `)}
+          </div>
+        </div>
+
+        <!-- ================= PART I SECTION ================= -->
+        <div id="section-part1" class="${this.activeFormTab === 'part1' ? '' : 'hidden'} space-y-6">
+          <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs space-y-6">
+            <div class="border-b-2 border-indigo-100 pb-4 mb-3 flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-indigo-50 via-slate-50 to-indigo-50/40 -mx-6 -mt-6 px-6 py-4 rounded-t-2xl border-t-4 border-t-indigo-600">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-xs shrink-0">
+                  <i data-lucide="book-open" class="w-4 h-4 text-white"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm sm:text-base font-black text-indigo-950 uppercase tracking-wide flex items-center gap-2">
+                    <span>Part-I: Course Information</span>
+                  </h3>
+                  <p class="text-[11px] text-slate-600 font-medium">General details &amp; Course Outcomes (COs) mapped to K-Levels</p>
+                </div>
+              </div>
+              <span class="text-[10.5px] bg-rose-50 text-rose-700 font-black px-2.5 py-1 rounded-lg border border-rose-200 flex items-center gap-1 shadow-2xs">
+                <i data-lucide="alert-circle" class="w-3.5 h-3.5 text-rose-600"></i> All Fields Mandatory *
+              </span>
+            </div>
+
+            <!-- Hidden Inputs for Department & Faculty Name so validation & storage continue to work -->
+            <input type="hidden" id="cp-dept-name" value="${this.escapeHtml(currentDeptName)}" />
+            <input type="hidden" id="cp-faculty-name" value="${this.escapeHtml(currentFacName)}" />
+
+            ${this.systemSettings && !this.systemSettings.submissions_enabled ? `
+              <!-- Submissions Closed Alert inside Part-I before start filling -->
+              <div class="p-4 bg-rose-50 border-2 border-rose-300 rounded-2xl flex items-start gap-3 text-rose-900 shadow-sm animate-fadeIn">
+                <div class="w-8 h-8 rounded-xl bg-rose-200 text-rose-700 flex items-center justify-center shrink-0 mt-0.5 shadow-inner">
+                  <i data-lucide="lock" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs font-black uppercase tracking-wider text-rose-900">Notice Before Start Filling</span>
+                    <span class="px-2 py-0.5 rounded-full bg-rose-200 text-rose-800 text-[9.5px] font-black uppercase">Submissions Locked</span>
+                  </div>
+                  <p class="text-[11.5px] font-semibold text-rose-800 mt-0.5 leading-relaxed">
+                    Course plan submissions are currently <strong>disabled by the IQAC Administrator</strong>. You may draft or view course information, but final submission to your Head of Department will remain locked until administration opens submissions.
+                  </p>
+                </div>
+              </div>
+            ` : ''}
+
+            <!-- A. General Details -->
+            <div class="space-y-4">
+              <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-indigo-700 text-white font-black text-xs shadow-xs uppercase tracking-wider"><i data-lucide="info" class="w-3.5 h-3.5 text-amber-300"></i><span>A. General Details</span></div>
+              
+              <!-- 1. Semester, Programme, Year & Class, Section in ONE LINE -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Semester (Strictly II, IV, VI only) -->
+                <div>
+                  <label class="block text-[11px] font-bold text-indigo-950 mb-1 flex items-center gap-1">
+                    <i data-lucide="calendar" class="w-3.5 h-3.5 text-indigo-600"></i>
+                    <span>Semester *</span>
+                  </label>
+                  <select 
+                    id="cp-semester" 
+                    onchange="coursePlanApp.onSemesterChange(this.value)" 
+                    class="w-full text-xs px-3 py-2 border-2 border-indigo-500 bg-indigo-50/40 rounded-xl font-black text-indigo-950 focus:border-indigo-600 focus:outline-none cursor-pointer"
+                  >
+                    <option value="II" ${plan.semester === 'II' || plan.semester === 'Semester II' ? 'selected' : ''}>II</option>
+                    <option value="IV" ${plan.semester === 'IV' || plan.semester === 'Semester IV' ? 'selected' : ''}>IV</option>
+                    <option value="VI" ${plan.semester === 'VI' || plan.semester === 'Semester VI' ? 'selected' : ''}>VI</option>
+                  </select>
+                </div>
+
+                <!-- Programme Dropdown (Based on Department) -->
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">Programme *</label>
+                  <select 
+                    id="cp-programme" 
+                    onchange="coursePlanApp.onProgrammeChange(this.value)" 
+                    class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl bg-white font-bold text-slate-900 focus:border-indigo-600 focus:outline-none cursor-pointer"
+                  >
+                    <option value="">-- Select Programme --</option>
+                    ${(this.getDepartmentProgrammes(plan.department_name || this.selectedDept)).map(progName => `
+                      <option value="${progName}" ${plan.programme === progName ? 'selected' : ''}>
+                        ${progName}
+                      </option>
+                    `).join('')}
+                  </select>
+                </div>
+
+                <!-- Year and Class Dropdown (Dynamically filtered by Programme, III PG removed!) -->
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">Year and Class *</label>
+                  <select 
+                    id="cp-year-class" 
+                    onchange="coursePlanApp.onYearClassChange(this.value)" 
+                    class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl bg-white font-bold text-slate-900 focus:border-indigo-600 focus:outline-none cursor-pointer"
+                  >
+                    <option value="">-- Choose Year & Class --</option>
+                    ${isUGProg ? `
+                      <option value="I UG" ${plan.year_class === 'I UG' ? 'selected' : ''}>I UG</option>
+                      <option value="II UG" ${plan.year_class === 'II UG' ? 'selected' : ''}>II UG</option>
+                      <option value="III UG" ${plan.year_class === 'III UG' ? 'selected' : ''}>III UG</option>
+                    ` : `
+                      <option value="I PG" ${plan.year_class === 'I PG' ? 'selected' : ''}>I PG</option>
+                      <option value="II PG" ${plan.year_class === 'II PG' ? 'selected' : ''}>II PG</option>
+                    `}
+                  </select>
+                </div>
+
+                <!-- Section Dropdown -->
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">Section *</label>
+                  <select 
+                    id="cp-section" 
+                    onchange="coursePlanApp.onSectionChange(this.value)" 
+                    class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl bg-white font-bold text-slate-900 focus:border-indigo-600 focus:outline-none cursor-pointer"
+                  >
+                    <option value="">-- Choose Section --</option>
+                    <option value="N/A" ${plan.section === 'N/A' ? 'selected' : ''}>N/A</option>
+                    <option value="Shift I - Section A" ${plan.section === 'Shift I - Section A' ? 'selected' : ''}>Shift I - Section A</option>
+                    <option value="Shift I - Section B" ${plan.section === 'Shift I - Section B' ? 'selected' : ''}>Shift I - Section B</option>
+                    <option value="Shift II - Section A" ${plan.section === 'Shift II - Section A' ? 'selected' : ''}>Shift II - Section A</option>
+                    <option value="Shift II - Section B" ${plan.section === 'Shift II - Section B' ? 'selected' : ''}>Shift II - Section B</option>
+                    <option value="Shift II - Section C" ${plan.section === 'Shift II - Section C' ? 'selected' : ''}>Shift II - Section C</option>
+                    <option value="Shift II - Section D" ${plan.section === 'Shift II - Section D' ? 'selected' : ''}>Shift II - Section D</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Course Handling & Faculty Collaboration Mode (One Course, One Plan Policy) -->
+              <div class="bg-gradient-to-r from-amber-50/80 via-orange-50/40 to-amber-50/80 p-4 rounded-2xl border-2 border-amber-200/90 space-y-3.5 shadow-2xs">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-amber-200/70 pb-2.5">
+                  <div>
+                    <label class="block text-xs font-black text-slate-900 flex items-center gap-1.5">
+                      <i data-lucide="users" class="w-4 h-4 text-amber-600"></i>
+                      <span>Course Handling Mode *</span>
+                    </label>
+                    <p class="text-[11px] text-slate-600 font-medium mt-0.5">
+                      Is this course handled solely by you, or shared with other faculty member(s)?
+                    </p>
+                  </div>
+                  <span class="inline-flex items-center gap-1 text-[10px] font-extrabold bg-amber-100 text-amber-900 px-2.5 py-1 rounded-full border border-amber-300 self-start sm:self-auto shrink-0 shadow-2xs">
+                    <i data-lucide="info" class="w-3 h-3 text-amber-700"></i>
+                    <span>One Course, One Plan Policy</span>
+                  </span>
+                </div>
+
+                <!-- Radio Options -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <!-- Option 1: Solely Handled -->
+                  <label class="flex items-start gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all ${!isSharedCourse ? 'bg-white border-amber-500 ring-2 ring-amber-500/20 shadow-xs' : 'bg-white/70 border-slate-200 hover:border-slate-300 hover:bg-white'}">
+                    <input 
+                      type="radio" 
+                      name="course_sharing_mode" 
+                      value="sole" 
+                      class="w-4 h-4 mt-0.5 text-amber-600 focus:ring-amber-500 cursor-pointer"
+                      ${!isSharedCourse ? 'checked' : ''}
+                      onchange="coursePlanApp.onCourseSharingChange(false)"
+                    />
+                    <div>
+                      <div class="text-xs font-black text-slate-800">Handled Independently by Me</div>
+                      <div class="text-[10.5px] text-slate-500 font-medium mt-0.5">I am the sole faculty member teaching and managing this course.</div>
+                    </div>
+                  </label>
+
+                  <!-- Option 2: Shared with Other Faculty -->
+                  <label class="flex items-start gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all ${isSharedCourse ? 'bg-white border-amber-500 ring-2 ring-amber-500/20 shadow-xs' : 'bg-white/70 border-slate-200 hover:border-slate-300 hover:bg-white'}">
+                    <input 
+                      type="radio" 
+                      name="course_sharing_mode" 
+                      value="shared" 
+                      class="w-4 h-4 mt-0.5 text-amber-600 focus:ring-amber-500 cursor-pointer"
+                      ${isSharedCourse ? 'checked' : ''}
+                      onchange="coursePlanApp.onCourseSharingChange(true)"
+                    />
+                    <div>
+                      <div class="text-xs font-black text-slate-800">Shared with Other Faculty (Collaborative)</div>
+                      <div class="text-[10.5px] text-slate-500 font-medium mt-0.5">This course is shared / co-taught across sections with other colleague(s).</div>
+                    </div>
+                  </label>
+                </div>
+
+                <!-- Collaborating Faculty Dropdown Container -->
+                <div id="cp-shared-faculty-box" class="${isSharedCourse ? '' : 'hidden'} bg-white p-4 rounded-2xl border-2 border-amber-300 space-y-3 animate-fadeIn shadow-xs">
+                  <div class="flex items-center justify-between">
+                    <label class="block text-[11.5px] font-black text-slate-800 flex items-center gap-1.5">
+                      <i data-lucide="users" class="w-4 h-4 text-amber-600"></i>
+                      <span>Collaborating / Co-Faculty Member(s) *</span>
+                    </label>
+                    <span class="text-[10px] text-amber-900 font-bold bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200">
+                      ${deptFaculty.length} Department Faculty Available
+                    </span>
+                  </div>
+
+                  <!-- Selected Co-Faculty Chips -->
+                  <div class="space-y-1.5">
+                    <div class="text-[10.5px] font-black text-slate-500 uppercase tracking-wider">Assigned Co-Faculty Member(s):</div>
+                    <div id="cp-shared-faculty-chips" class="flex flex-wrap items-center gap-2 min-h-[36px] p-2.5 bg-amber-50/50 rounded-xl border border-amber-200">
+                      ${(() => {
+        const list = (plan.shared_faculty_name || (plan.general_details && plan.general_details.shared_faculty_name) || '').split(',').map(s => s.trim()).filter(Boolean);
+        if (list.length === 0) {
+          return '<span class="text-[11px] text-amber-700 italic">No co-faculty added yet. Choose from dropdown below and click <strong>+ Add Co-Faculty</strong>.</span>';
+        }
+        return list.map(name => `
+                          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold bg-amber-100 text-amber-950 border border-amber-300 shadow-2xs">
+                            <i data-lucide="user-check" class="w-3.5 h-3.5 text-amber-700"></i>
+                            <span>${this.escapeHtml(name)}</span>
+                            <button type="button" onclick="coursePlanApp.removeSharedFaculty('${this.escapeHtml(name)}')" class="hover:text-red-700 font-black cursor-pointer ml-1 p-0.5 rounded hover:bg-amber-200/60" title="Remove">✕</button>
+                          </span>
+                        `).join('');
+      })()}
+                    </div>
+                  </div>
+
+                  <!-- Hidden input for form serialization -->
+                  <input type="hidden" id="cp-shared-faculty-name" value="${this.escapeHtml(plan.shared_faculty_name || '')}" />
+
+                  <!-- Add Co-Faculty Row (Scoped to their department with optional department filter) -->
+                  <div class="space-y-2">
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                      <div class="w-full sm:w-5/12">
+                        <label class="block text-[10.5px] font-bold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">
+                          <i data-lucide="building-2" class="w-3 h-3 text-indigo-600"></i>
+                          <span>Department:</span>
+                        </label>
+                        <select 
+                          id="cp-shared-faculty-dept" 
+                          onchange="coursePlanApp.onSharedFacultyDeptChange(this.value)" 
+                          class="w-full text-xs px-3 py-2 border-2 border-slate-200 bg-slate-50 rounded-xl font-bold text-slate-900 focus:border-indigo-600 focus:bg-white focus:outline-none cursor-pointer transition"
+                          title="Department for Co-Faculty"
+                        >
+                          <option value="${this.escapeHtml(curDept)}" selected>${this.escapeHtml(curDept)} (Current Dept)</option>
+                          ${this.departments.filter(d => d.name.toLowerCase() !== curDept.toLowerCase()).map(d => `
+                            <option value="${this.escapeHtml(d.name)}">${this.escapeHtml(d.name)}</option>
+                          `).join('')}
+                        </select>
+                      </div>
+
+                      <div class="w-full sm:flex-1">
+                        <label class="block text-[10.5px] font-bold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">
+                          <i data-lucide="user" class="w-3 h-3 text-indigo-600"></i>
+                          <span>Faculty Member:</span>
+                        </label>
+                        <div class="flex items-center gap-2">
+                          <select 
+                            id="cp-add-shared-faculty-select" 
+                            class="w-full flex-1 text-xs px-3 py-2 border-2 border-indigo-400 bg-white rounded-xl font-bold text-slate-900 focus:border-indigo-600 focus:outline-none cursor-pointer transition shadow-2xs"
+                          >
+                            <option value="">-- Choose Co-Faculty from ${this.escapeHtml(curDept)} --</option>
+                            ${deptFacultyOptions}
+                          </select>
+                          <button 
+                            type="button" 
+                            onclick="coursePlanApp.addSharedFacultyFromSelect()"
+                            class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 shrink-0 shadow-sm cursor-pointer transition active:scale-95"
+                          >
+                            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                            <span>+ Add</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p class="text-[10.5px] text-slate-500 italic flex items-center gap-1">
+                    <span>📌</span>
+                    <span>You can add multiple co-faculty members. All co-faculty will be able to view this plan and be assigned to specific units and CIA assessments.</span>
+                  </p>
+                </div>
+              </div>
+
+              <!-- Course Auto-Fetch Dropdown (Syllabus Integration by Dept & Sem) -->
+              <div class="bg-indigo-50/70 p-3.5 rounded-2xl border-2 border-indigo-200 space-y-1.5">
+                <div class="flex items-center justify-between">
+                  <label class="block text-[11px] font-black text-indigo-950 flex items-center gap-1.5">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-indigo-600"></i>
+                    <span>Select Course (Auto-Fetch from Syllabus) *</span>
+                  </label>
+                  <span class="text-[10px] bg-indigo-600 text-white font-bold px-2 py-0.5 rounded-full shadow-2xs">
+                    ${relevantCourses.length} courses in Semester ${this.getSemesterNum(plan.semester)}
+                  </span>
+                </div>
+                <select 
+                  id="cp-course-select" 
+                  onchange="coursePlanApp.onSyllabusCourseSelected(this.value)" 
+                  class="w-full text-xs px-3 py-2 border-2 border-indigo-500 bg-white rounded-xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-600 cursor-pointer"
+                >
+                  <option value="">-- Choose Course to Auto-Fill Details (${relevantCourses.length} available) --</option>
+                  ${relevantCourses.map(c => `
+                    <option value="${c.course_code}" ${c.course_code === plan.course_code ? 'selected' : ''}>
+                      ${c.course_code} - ${c.course_title} (${c.credits || 3} Credits, ${c.hours || 4}h/wk)
+                    </option>
+                  `).join('')}
+                </select>
+                <p class="text-[10.5px] text-indigo-800 font-semibold flex items-center gap-1">
+                  <span>💡</span>
+                  <span>Selecting a course auto-populates Title, Category, Credits, Teaching Hours & Course Outcomes (CO1–CO6).</span>
+                </p>
+              </div>
+
+              <!-- 2. Course Code, Title, Category, Hours/Week, Credits in ONE LINE -->
+              <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+                <!-- Course Code (2 cols) -->
+                <div class="md:col-span-2">
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1 flex items-center justify-between">
+                    <span>Course Code *</span>
+                    ${isCourseLocked ? `<span class="text-[10px] text-emerald-700 font-bold flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i></span>` : ''}
+                  </label>
+                  <input 
+                    type="text" 
+                    id="cp-course-code" 
+                    value="${plan.course_code || ''}" 
+                    onchange="coursePlanApp.onCourseCodeInputChange(this.value)"
+                    class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-mono font-bold ${isCourseLocked ? 'bg-slate-100 cursor-not-allowed text-slate-700' : 'bg-white focus:border-indigo-600 focus:outline-none'}" 
+                    ${isCourseLocked ? 'readonly' : ''}
+                    placeholder="e.g. 25UCS21CC03"
+                  />
+                </div>
+
+                <!-- Course Title (4 cols) -->
+                <div class="md:col-span-4">
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1 flex items-center justify-between">
+                    <span>Course Title *</span>
+                    ${isCourseLocked ? `<span class="text-[10px] text-emerald-700 font-bold flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i></span>` : ''}
+                  </label>
+                  <input 
+                    type="text" 
+                    id="cp-course-title" 
+                    value="${plan.course_title || ''}" 
+                    class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-bold ${isCourseLocked ? 'bg-slate-100 cursor-not-allowed text-slate-700' : 'bg-white focus:border-indigo-600 focus:outline-none'}" 
+                    ${isCourseLocked ? 'readonly' : ''}
+                    placeholder="e.g. Data Structures and Algorithms"
+                  />
+                </div>
+
+                <!-- Course Category (2 cols) -->
+                <div class="md:col-span-2">
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1 flex items-center justify-between">
+                    <span>Category *</span>
+                    ${isCourseLocked ? `<span class="text-[10px] text-emerald-700 font-bold flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i></span>` : ''}
+                  </label>
+                  ${isCourseLocked ? `<input type="hidden" id="cp-course-category-hidden" value="${plan.course_category || 'Core'}" />` : ''}
+                  <select 
+                    id="cp-course-category" 
+                    class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-bold ${isCourseLocked ? 'bg-slate-100 cursor-not-allowed text-slate-700' : 'bg-white text-slate-800 focus:border-indigo-600 focus:outline-none cursor-pointer'}"
+                    ${isCourseLocked ? 'disabled' : ''}
+                  >
+                    <option value="Core" ${plan.course_category === 'Core' ? 'selected' : ''}>Core</option>
+                    <option value="Elective" ${plan.course_category === 'Elective' ? 'selected' : ''}>Elective</option>
+                    <option value="Allied" ${plan.course_category === 'Allied' ? 'selected' : ''}>Allied</option>
+                    <option value="Core Practical" ${plan.course_category === 'Core Practical' ? 'selected' : ''}>Core Practical</option>
+                    <option value="Skill Enhancement (SEC)" ${plan.course_category === 'Skill Enhancement (SEC)' ? 'selected' : ''}>Skill Enhancement (SEC)</option>
+                    <option value="Value Added (VAC)" ${plan.course_category === 'Value Added (VAC)' ? 'selected' : ''}>Value Added (VAC)</option>
+                    <option value="Ability Enhancement (AECC)" ${plan.course_category === 'Ability Enhancement (AECC)' ? 'selected' : ''}>Ability Enhancement (AECC)</option>
+                    <option value="Open Elective" ${plan.course_category === 'Open Elective' ? 'selected' : ''}>Open Elective</option>
+                    <option value="General Language" ${plan.course_category === 'General Language' ? 'selected' : ''}>General Language</option>
+                    <option value="General English" ${plan.course_category === 'General English' ? 'selected' : ''}>General English</option>
+                  </select>
+                </div>
+
+                <!-- Teaching Hours (2 cols) -->
+                <div class="md:col-span-2">
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1 flex items-center justify-between">
+                    <span>Hours/Week *</span>
+                    ${isCourseLocked ? `<span class="text-[10px] text-emerald-700 font-bold flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i></span>` : ''}
+                  </label>
+                  <input 
+                    type="text" 
+                    id="cp-teaching-hours" 
+                    value="${plan.teaching_hours || ''}" 
+                    class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-mono font-bold ${isCourseLocked ? 'bg-slate-100 cursor-not-allowed text-slate-700' : 'bg-white focus:border-indigo-600 focus:outline-none'}" 
+                    ${isCourseLocked ? 'readonly' : ''}
+                    placeholder="e.g. 60 Hrs & 4 Hrs/Wk"
+                  />
+                </div>
+
+                <!-- Course Credits (2 cols) -->
+                <div class="md:col-span-2">
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1 flex items-center justify-between">
+                    <span>Credits *</span>
+                    ${isCourseLocked ? `<span class="text-[10px] text-emerald-700 font-bold flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i></span>` : ''}
+                  </label>
+                  <input 
+                    type="text" 
+                    id="cp-credits" 
+                    value="${plan.credits || ''}" 
+                    class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-bold ${isCourseLocked ? 'bg-slate-100 cursor-not-allowed text-slate-700' : 'bg-white focus:border-indigo-600 focus:outline-none'}" 
+                    ${isCourseLocked ? 'readonly' : ''}
+                    placeholder="e.g. 3 or 4"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- B. Course Outcomes (COs) -->
+            <div class="space-y-3 pt-4 border-t border-slate-100">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-indigo-700 text-white font-black text-xs shadow-xs uppercase tracking-wider"><i data-lucide="target" class="w-3.5 h-3.5 text-amber-300"></i><span>B. Course Outcomes (COs) &amp; Bloom's Levels</span></div>
+                  <p class="text-[11px] text-slate-500 italic">List the Course Outcomes as specified in the approved syllabus.</p>
+                </div>
+                ${isCourseLocked ? `
+                  <span class="text-[10px] bg-emerald-50 text-emerald-800 font-bold px-2.5 py-1 rounded-lg border border-emerald-200 inline-flex items-center gap-1">
+                    <i data-lucide="lock" class="w-3.5 h-3.5 text-emerald-600"></i> Syllabus COs Locked
+                  </span>
+                ` : ''}
+              </div>
+
+              <div class="overflow-x-auto rounded-xl border border-slate-200">
+                <table class="w-full text-left text-xs border-collapse mobile-card-table">
+                  <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
+                    <tr>
+                      <th class="p-2.5 w-24">CO Code</th>
+                      <th class="p-2.5">Course Outcome</th>
+                      <th class="p-2.5 w-56">K-Levels *</th>
+                    </tr>
+                  </thead>
+                  <tbody id="cp-cos-tbody" class="divide-y divide-slate-100">
+                    ${cos.map((co, idx) => `
+                      <tr>
+                        <td class="p-2" data-label="CO Code">
+                          <input type="text" class="co-code w-full text-xs px-2 py-1.5 font-bold font-mono border border-slate-200 bg-slate-50 rounded text-center text-slate-700" value="${co.code || 'CO' + (idx + 1)}" readonly />
+                        </td>
+                        <td class="p-2" data-label="Course Outcome Description">
+                          <textarea 
+                            class="co-outcome w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded leading-relaxed ${isCourseLocked ? 'bg-slate-100 cursor-not-allowed text-slate-700 font-medium' : 'bg-white focus:border-indigo-600 focus:outline-none'}" 
+                            rows="2" 
+                            ${isCourseLocked ? 'readonly' : ''}
+                            placeholder="State outcome statement..."
+                          >${co.outcome || ''}</textarea>
+                        </td>
+                        <td class="p-2" data-label="Cognitive Level (Bloom's)">
+                          ${isCourseLocked ? `<input type="hidden" class="co-klevel-hidden" value="${co.k_level || 'K1'}" />` : ''}
+                          <select 
+                            class="co-klevel w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-semibold ${isCourseLocked ? 'bg-slate-100 cursor-not-allowed text-slate-700 font-bold' : 'bg-white focus:border-indigo-600 focus:outline-none cursor-pointer'}"
+                            ${isCourseLocked ? 'disabled' : ''}
+                          >
+                            <option value="K1" ${co.k_level === 'K1' ? 'selected' : ''}>K1 - Remember</option>
+                            <option value="K2" ${co.k_level === 'K2' ? 'selected' : ''}>K2 - Understand</option>
+                            <option value="K3" ${co.k_level === 'K3' ? 'selected' : ''}>K3 - Apply</option>
+                            <option value="K4" ${co.k_level === 'K4' ? 'selected' : ''}>K4 - Analyse</option>
+                            <option value="K5" ${co.k_level === 'K5' ? 'selected' : ''}>K5 - Evaluate</option>
+                            <option value="K6" ${co.k_level === 'K6' ? 'selected' : ''}>K6 - Create</option>
+                            <option value="K1, K2" ${co.k_level === 'K1, K2' ? 'selected' : ''}>K1, K2</option>
+                            <option value="K3, K4" ${co.k_level === 'K3, K4' ? 'selected' : ''}>K3, K4</option>
+                            <option value="K5, K6" ${co.k_level === 'K5, K6' ? 'selected' : ''}>K5, K6</option>
+                          </select>
+                        </td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Next Part Button -->
+            <div class="flex justify-end pt-4 border-t border-slate-100">
+              <button 
+                type="button" 
+                onclick="coursePlanApp.proceedToTab(\'part2\')" class="w-full sm:w-auto justify-center px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition flex items-center gap-2 shadow-sm cursor-pointer active:scale-95"
+              >
+                <span>Continue to Part-II: Teaching Plan</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= PART II SECTION ================= -->
+        <div id="section-part2" class="${this.activeFormTab === 'part2' ? '' : 'hidden'} space-y-6">
+          <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs space-y-6">
+            <div class="border-b-2 border-indigo-100 pb-4 mb-3 flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-indigo-50 via-slate-50 to-indigo-50/40 -mx-6 -mt-6 px-6 py-4 rounded-t-2xl border-t-4 border-t-indigo-600">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-xs shrink-0">
+                  <i data-lucide="calendar" class="w-4 h-4 text-white"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm sm:text-base font-black text-indigo-950 uppercase tracking-wide flex items-center gap-2">
+                    <span>Part-II: Unit-wise Teaching Plan</span>
+                  </h3>
+                  <p class="text-[11px] text-slate-600 font-medium">Divide each unit into manageable topics, allocate hours, and map Course Outcomes</p>
+                </div>
+              </div>
+              <span class="text-[10.5px] bg-rose-50 text-rose-700 font-black px-2.5 py-1 rounded-lg border border-rose-200 flex items-center gap-1 shadow-2xs">
+                <i data-lucide="alert-circle" class="w-3.5 h-3.5 text-rose-600"></i> All Fields Mandatory *
+              </span>
+            </div>
+
+            <!-- A. Detailed Teaching Plan -->
+            <div class="space-y-3">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                <div>
+                  <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-indigo-700 text-white font-black text-xs shadow-xs uppercase tracking-wider"><i data-lucide="list-checks" class="w-3.5 h-3.5 text-amber-300"></i><span>A. Detailed Teaching Plan</span></div>
+                  <p class="text-[11px] text-slate-500">Instruction: Divide each unit into manageable topics (From & To) and allocate appropriate teaching hours.</p>
+                </div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <button 
+                    type="button" 
+                    onclick="coursePlanApp.openCourseSyllabusReferenceModal()" 
+                    class="px-3 py-1.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition cursor-pointer"
+                    title="View syllabus units, topics, textbooks and reference resources for this course"
+                  >
+                    <i data-lucide="book-open" class="w-3.5 h-3.5 text-amber-300"></i>
+                    <span>View Course Syllabus & References</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="overflow-x-auto rounded-xl border border-slate-200 max-h-none md:max-h-[580px] scrollbar-thin">
+                <table class="w-full text-left text-xs border-collapse mobile-card-table">
+                  <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold sticky top-0 z-10">
+                    <tr>
+                      <th class="p-2.5 w-32">Month / Days</th>
+                      <th class="p-2.5 w-28">Unit</th>
+                      <th class="p-2.5 w-48">From (Topic) *</th>
+                      <th class="p-2.5 w-48">To (Topic) *</th>
+                      <th class="p-2.5 w-16 text-center">Hours *</th>
+                      <th class="p-2.5 w-60">Teaching Methodology *</th>
+                      <th class="p-2.5 w-60">Learning Resources *</th>
+                      <th class="p-2.5 w-14 text-center">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="cp-dtp-tbody" class="divide-y divide-slate-100">
+                    ${dtp.map((row, idx) => {
+        const isFirstInMonth = (idx === 0 || row.month_days !== dtp[idx - 1].month_days);
+        let span = 1;
+        if (isFirstInMonth) {
+          for (let j = idx + 1; j < dtp.length; j++) {
+            if (dtp[j].month_days === row.month_days) span++;
+            else break;
+          }
+        }
+        const isHidden = !!row.is_hidden;
+
+        const isLastInMonth = (idx === dtp.length - 1 || dtp[idx + 1].month_days !== row.month_days);
+        return `
+                        <tr class="${isHidden ? 'bg-slate-100/80 opacity-50' : 'hover:bg-slate-50/50'} ${isLastInMonth ? 'border-b-4 border-slate-300 md:border-b-4 md:border-indigo-200/80' : ''} transition">
+                          ${isFirstInMonth ? `
+                            <td rowspan="${span}" class="p-2.5 font-bold text-slate-800 bg-slate-50/70 border-r border-slate-200 text-center align-middle whitespace-nowrap hidden md:table-cell select-none" data-label="Month / Days">
+                              <div class="flex flex-col items-center justify-center gap-2">
+                                <div class="px-2.5 py-1.5 rounded-xl bg-white border border-slate-300 shadow-2xs font-black text-indigo-950 text-xs inline-block">
+                                  ${this.escapeHtml(row.month_days || '—')}
+                                </div>
+                                <button 
+                                  type="button" 
+                                  onclick="coursePlanApp.addTeachingPlanRowForMonth('${this.escapeHtml(row.month_days || '')}', ${idx + span - 1})" 
+                                  class="px-2 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold rounded-lg text-[10.5px] border border-indigo-200 flex items-center gap-1 cursor-pointer transition shadow-2xs active:scale-95"
+                                  title="Add topic row under ${this.escapeHtml(row.month_days || 'this month')}"
+                                >
+                                  <i data-lucide="plus" class="w-3 h-3 text-indigo-600"></i>
+                                  <span>Add Topic Row</span>
+                                </button>
+                              </div>
+                              <input type="hidden" class="dtp-month" value="${this.escapeHtml(row.month_days || '')}" />
+                            </td>
+                          ` : ''}
+
+                          <!-- Mobile-only Month/Days cell so mobile card clearly shows month -->
+                          <td class="md:hidden p-1.5" data-label="Month / Days">
+                            <div class="flex items-center justify-between gap-2">
+                              <span class="font-black text-indigo-950 text-xs">${this.escapeHtml(row.month_days || '—')}</span>
+                              <button 
+                                type="button" 
+                                onclick="coursePlanApp.addTeachingPlanRowForMonth('${this.escapeHtml(row.month_days || '')}', ${idx})" 
+                                class="px-2 py-0.5 bg-indigo-50 text-indigo-700 font-bold rounded text-[10px] border border-indigo-200 flex items-center gap-1 cursor-pointer"
+                              >
+                                <i data-lucide="plus" class="w-3 h-3 text-indigo-600"></i> Add Topic Row
+                              </button>
+                            </div>
+                            <input type="hidden" class="dtp-month" value="${this.escapeHtml(row.month_days || '')}" />
+                          </td>
+
+                          <td class="p-1.5" data-label="Unit">
+                            <select 
+                              class="dtp-unit w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-bold bg-white focus:border-indigo-600 focus:outline-none" onchange="coursePlanApp.syncUCPPlannedHoursFromDTP()"
+                              ${isHidden ? 'disabled' : ''}
+                            >
+                              <option value="">-- Select Unit --</option>
+                              <option value="Unit I" ${row.unit === 'Unit I' ? 'selected' : ''}>Unit I</option>
+                              <option value="Unit II" ${row.unit === 'Unit II' ? 'selected' : ''}>Unit II</option>
+                              <option value="Unit III" ${row.unit === 'Unit III' ? 'selected' : ''}>Unit III</option>
+                              <option value="Unit IV" ${row.unit === 'Unit IV' ? 'selected' : ''}>Unit IV</option>
+                              <option value="Unit V" ${row.unit === 'Unit V' ? 'selected' : ''}>Unit V</option>
+                            </select>
+                            ${isHidden ? '<div class="text-[9.5px] font-bold text-slate-400 uppercase tracking-wider mt-0.5"><i data-lucide="eye-off" class="w-2.5 h-2.5 inline mr-0.5"></i>Hidden Row</div>' : ''}
+                          </td>
+                          <td class="p-1.5" data-label="From (Topic)">
+                            <textarea class="dtp-from-topic w-full text-xs px-2 py-1.5 border border-slate-300 rounded focus:border-indigo-600 focus:outline-none" rows="2" placeholder="Start topic / portion..." ${isHidden ? 'disabled' : ''}>${row.from_topic || row.topics || ''}</textarea>
+                          </td>
+                          <td class="p-1.5" data-label="To (Topic)">
+                            <textarea class="dtp-to-topic w-full text-xs px-2 py-1.5 border border-slate-300 rounded focus:border-indigo-600 focus:outline-none" rows="2" placeholder="End topic / portion..." ${isHidden ? 'disabled' : ''}>${row.to_topic || ''}</textarea>
+                          </td>
+                          <td class="p-1.5 text-center" data-label="Lecture Hours">
+                            <input type="number" class="dtp-hours w-full text-xs px-1.5 py-1.5 border border-slate-300 rounded font-bold text-center focus:border-indigo-600 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" value="${row.hours || ''}" placeholder="Hrs" ${isHidden ? 'disabled' : ''} oninput="coursePlanApp.syncUCPPlannedHoursFromDTP()" onchange="coursePlanApp.syncUCPPlannedHoursFromDTP()" />
+                          </td>
+                          <td class="p-1.5" data-label="Teaching Methodology">
+                            ${this.renderMethodologyMultiSelect(idx, row.methodology)}
+                          </td>
+                          <td class="p-1.5" data-label="Learning Resources">
+                            ${this.renderResourceMultiSelect(idx, row.resources)}
+                          </td>
+                          <td class="p-1.5 text-center" data-label="Action">
+                            <button 
+                              type="button" 
+                              onclick="coursePlanApp.toggleTeachingPlanRow(${idx})" 
+                              class="p-1.5 rounded-lg transition cursor-pointer ${isHidden ? 'text-slate-400 bg-slate-200 hover:text-indigo-600 hover:bg-indigo-50' : 'text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50'}" 
+                              title="${isHidden ? 'Row is hidden / disabled. Click to show / enable row' : 'Click to hide / disable this row'}"
+                            >
+                              <i data-lucide="${isHidden ? 'eye-off' : 'eye'}" class="w-4 h-4"></i>
+                            </button>
+                            <input type="hidden" class="dtp-is-hidden" value="${isHidden ? 'true' : 'false'}" />
+                          </td>
+                        </tr>
+                      `;
+      }).join('')}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- B. Unit Completion Plan -->
+            <div class="space-y-3 pt-4 border-t border-slate-100">
+              <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-indigo-700 text-white font-black text-xs shadow-xs uppercase tracking-wider"><i data-lucide="check-square" class="w-3.5 h-3.5 text-amber-300"></i><span>B. Unit Completion Plan</span></div>
+              <p class="text-[11px] text-slate-500 italic">
+                Note: This section provides an overview of the time allocated to each unit. Actual hours are fetched from syllabus and locked from editing.
+              </p>
+
+              <div class="overflow-x-auto rounded-xl border border-slate-200">
+                <table class="w-full text-left text-xs border-collapse mobile-card-table">
+                  <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
+                    <tr>
+                      <th class="p-2.5 w-32">Unit</th>
+                      <th class="p-2.5 w-36 text-center">Planned Hours <span class="block text-[10px] text-indigo-700 font-normal">(From Teaching Plan)</span></th>
+                      <th class="p-2.5 w-44 text-center">Actual Hours (As per Syllabus)</th>
+                      <th class="p-2.5 w-44">Expected Completion Date</th>
+                      ${plan.is_shared_course && plan.shared_faculty_name ? '<th class="p-2.5 w-52">Handled By</th>' : ''}
+                    </tr>
+                  </thead>
+                  <tbody id="cp-ucp-tbody" class="divide-y divide-slate-100 font-medium">
+                    ${ucp.map((u, idx) => `
+                      <tr>
+                        <td class="p-2.5 font-bold text-slate-800" data-label="Unit">${u.unit}</td>
+                        <td class="p-2 text-center" data-label="Planned Hours">
+                          <input 
+                            type="number" 
+                            class="ucp-planned w-28 text-xs px-2 py-1.5 border border-slate-200 bg-slate-100 cursor-not-allowed rounded font-black text-center text-slate-800" 
+                            value="${u.planned_hours || ''}" 
+                            readonly 
+                            title="Auto-calculated from Detailed Teaching Plan based on Unit"
+                            placeholder="0" 
+                          />
+                        </td>
+                        <td class="p-2 text-center" data-label="Actual Hours">
+                          <input 
+                            type="number" 
+                            class="ucp-actual w-28 text-xs px-2 py-1.5 border border-slate-200 bg-slate-100 cursor-not-allowed rounded font-bold text-center text-slate-700" 
+                            value="${u.actual_hours || ''}" 
+                            readonly 
+                            title="Actual hours fetched from syllabus master"
+                            placeholder="0" 
+                          />
+                        </td>
+                        <td class="p-2" data-label="Expected Date">
+                          <input type="date" class="ucp-date w-44 text-xs px-2.5 py-1.5 border border-slate-300 rounded font-mono focus:border-indigo-600 focus:outline-none" value="${u.target_date || ''}" />
+                        </td>
+                        ${plan.is_shared_course && plan.shared_faculty_name ? `
+                          <td class="p-2" data-label="Handled By">
+                            <select class="ucp-handled-by w-full text-xs px-2.5 py-1.5 border border-amber-300 rounded-lg font-bold bg-amber-50/60 focus:border-indigo-600 focus:outline-none">
+                              ${(() => {
+            const allFac = this.getAllCourseFacultyList();
+            return allFac.map(fac => `
+                                  <option value="${this.escapeHtml(fac)}" ${(u.handled_by === fac || (!u.handled_by && fac === plan.faculty_name)) ? 'selected' : ''}>
+                                    ${this.escapeHtml(fac)}
+                                  </option>
+                                `).join('');
+          })()}
+                            </select>
+                          </td>
+                        ` : ''}
+                      </tr>
+                    `).join('')}
+                    <tr class="bg-indigo-50/60 font-bold border-t border-indigo-200">
+                      <td class="p-2.5 text-indigo-950 font-black">Total</td>
+                      <td class="p-2.5 text-center text-indigo-950 font-black" id="ucp-total-planned">0 Hrs</td>
+                      <td class="p-2.5 text-center text-indigo-950 font-black" id="ucp-total-actual">0 Hrs</td>
+                      <td class="p-2.5" ${plan.is_shared_course && plan.shared_faculty_name ? 'colspan="2"' : ''}></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="flex justify-between pt-4 border-t border-slate-100">
+              <button type="button" onclick="coursePlanApp.switchFormTab('part1')" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition cursor-pointer">
+                ← Back to Part-I
+              </button>
+              <button 
+                type="button" 
+                onclick="coursePlanApp.proceedToTab(\'part3\')" class="w-full sm:w-auto justify-center px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-2 cursor-pointer active:scale-95 shadow-sm"
+              >
+                <span>Continue to Part-III: Activities & CIA</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= PART III SECTION ================= -->
+        <div id="section-part3" class="${this.activeFormTab === 'part3' ? '' : 'hidden'} space-y-6">
+          <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs space-y-6">
+            <div class="border-b-2 border-indigo-100 pb-4 mb-3 flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-indigo-50 via-slate-50 to-indigo-50/40 -mx-6 -mt-6 px-6 py-4 rounded-t-2xl border-t-4 border-t-indigo-600">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-xs shrink-0">
+                  <i data-lucide="award" class="w-4 h-4 text-white"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm sm:text-base font-black text-indigo-950 uppercase tracking-wide flex items-center gap-2">
+                    <span>Part-III: Learning Activities and Assessment Plan</span>
+                  </h3>
+                  <p class="text-[11px] text-slate-600 font-medium">Activities enabling application, analysis, and institutional assessment schedules</p>
+                </div>
+              </div>
+              <span class="text-[10.5px] bg-rose-50 text-rose-700 font-black px-2.5 py-1 rounded-lg border border-rose-200 flex items-center gap-1 shadow-2xs">
+                <i data-lucide="alert-circle" class="w-3.5 h-3.5 text-rose-600"></i> All Fields Mandatory *
+              </span>
+            </div>
+
+            <!-- A. Learning Activities -->
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-indigo-700 text-white font-black text-xs shadow-xs uppercase tracking-wider"><i data-lucide="activity" class="w-3.5 h-3.5 text-amber-300"></i><span>A. Learning Activities</span></div>
+                  <p class="text-[11px] text-slate-500 italic">Click "+ Add Activity" to open the interactive form, select from 25 activities, and optionally convert to CIA assessment.</p>
+                </div>
+                <button 
+                  type="button" 
+                  onclick="coursePlanApp.openActivityModal()" 
+                  class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm cursor-pointer transition active:scale-95"
+                >
+                  <i data-lucide="plus" class="w-4 h-4"></i> Add Activity
+                </button>
+              </div>
+
+              <div class="overflow-x-auto rounded-xl border border-slate-200">
+                <table class="w-full text-left text-xs border-collapse mobile-card-table">
+                  <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
+                    <tr>
+                      <th class="p-2.5 w-12 text-center">S.No</th>
+                      <th class="p-2.5 w-72">Learning Activity</th>
+                      <th class="p-2.5 w-44">Related Unit / Topic</th>
+                      <th class="p-2.5">Expected Learning Outcome</th>
+                      <th class="p-2.5 w-28">Proposed Date</th>
+                      <th class="p-2.5 w-44 text-center">Assessment Status</th>
+                      <th class="p-2.5 w-20 text-center">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="cp-acts-tbody" class="divide-y divide-slate-100 font-medium">
+                    ${acts.length === 0 ? `
+                      <tr>
+                        <td colspan="7" class="p-6 text-center text-slate-400 italic font-semibold">
+                          No learning activities added yet. Click "+ Add Activity" above to add your first activity.
+                        </td>
+                      </tr>
+                    ` : acts.map((act, idx) => `
+                      <tr class="hover:bg-slate-50/50 transition">
+                        <td class="p-2.5 text-center font-bold text-slate-400" data-label="S.No">${idx + 1}</td>
+                        <td class="p-2.5" data-label="Learning Activity">
+                          <div class="flex flex-wrap gap-1">
+                            ${(act.activity || '').split(',').map(s => s.trim()).filter(Boolean).map(item => `
+                              <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold bg-indigo-50 text-indigo-800 border border-indigo-200">
+                                ${this.escapeHtml(item)}
+                              </span>
+                            `).join('') || '<span class="text-slate-400 italic">No activity specified</span>'}
+                          </div>
+                        </td>
+                        <td class="p-2.5 font-bold text-slate-800" data-label="Unit / Topic">${this.escapeHtml(act.topic || '—')}</td>
+                        <td class="p-2.5 text-slate-600 text-xs leading-relaxed" data-label="Expected Outcome">${this.escapeHtml(act.outcome || '—')}</td>
+                        <td class="p-2.5 font-mono text-slate-700 font-bold whitespace-nowrap" data-label="Proposed Date">${this.formatDateToDDMMYYYY(act.proposed_date) || '—'}</td>
+                        <td class="p-2.5 text-center" data-label="Assessment Status">
+                          ${act.is_assessment ? `
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10.5px] font-black bg-amber-100 text-amber-900 border border-amber-300 shadow-2xs">
+                              <i data-lucide="award" class="w-3.5 h-3.5 text-amber-700"></i>
+                              <span>${this.escapeHtml(act.cia_component || 'CIA')} (${this.escapeHtml(act.cia_marks || '10')}M)</span>
+                            </span>
+                          ` : `
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-500">
+                              Learning Activity
+                            </span>
+                          `}
+                        </td>
+                        <td class="p-2.5 text-center" data-label="Action">
+                          <div class="flex items-center justify-center gap-1">
+                            <button 
+                              type="button" 
+                              onclick="coursePlanApp.openActivityModal(${idx})" 
+                              class="p-1.5 text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 rounded-lg transition cursor-pointer" 
+                              title="Edit Activity"
+                            >
+                              <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <button 
+                              type="button" 
+                              onclick="coursePlanApp.deleteActivityRow(${idx})" 
+                              class="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition cursor-pointer" 
+                              title="Delete Activity"
+                            >
+                              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- B. Assessment Plan (Completely Uneditable, Default Institutional Fixed + Auto-synced from Section A) -->
+            <div class="space-y-3 pt-4 border-t border-slate-100">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <div class="flex items-center gap-2">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-indigo-700 text-white font-black text-xs shadow-xs uppercase tracking-wider">
+                      <i data-lucide="clipboard-check" class="w-3.5 h-3.5 text-amber-300"></i>
+                      <span>B. CIA Assessment Details</span>
+                    </div>
+                    <span class="text-[10px] bg-emerald-50 text-emerald-800 font-bold px-2 py-0.5 rounded-md border border-emerald-200 inline-flex items-center gap-1">
+                      <i data-lucide="lock" class="w-3 h-3 text-emerald-600"></i> Mid, End &amp; C1 Pre-filled
+                    </span>
+                  </div>
+                  <p class="text-[11px] text-slate-500 italic mt-1">
+                    Institutional exams (C1 JosTEL MCQ, Mid Sem & End Sem) are pre-filled by default. CIA continuous components are auto-populated from Section A above.
+                  </p>
+                </div>
+              </div>
+
+              ${(() => {
+        const fullAssessmentPlan = this.getFullAssessmentPlan(plan);
+        const totalMarks = fullAssessmentPlan.reduce((sum, a) => sum + (parseFloat(a.marks) || 0), 0);
+
+        return `
+                  <div class="overflow-x-auto rounded-xl border border-slate-200">
+                    <table class="w-full text-left text-xs border-collapse mobile-card-table">
+                      <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
+                        <tr>
+                          <th class="p-2.5 w-12 text-center">S.No</th>
+                          <th class="p-2.5 w-48">CIA / Exam Component</th>
+                          <th class="p-2.5 w-24 text-center">Marks</th>
+                          <th class="p-2.5">Learning Activity / Assessment Category</th>
+                          <th class="p-2.5 w-44">Unit Coverage</th>
+                          <th class="p-2.5 w-36 text-center">Proposed Date / Window</th>
+                          <th class="p-2.5">Expected Outcome</th>
+                          ${plan.is_shared_course && plan.shared_faculty_name ? '<th class="p-2.5 w-48">Assessed By</th>' : ''}
+                        </tr>
+                      </thead>
+                      <tbody id="cp-assts-tbody" class="divide-y divide-slate-100 font-medium bg-slate-50/30">
+                        ${fullAssessmentPlan.map((asst, idx) => `
+                          <tr class="${asst.is_default ? 'bg-indigo-50/30' : 'bg-amber-50/30'}">
+                            <td class="p-2.5 text-center font-bold text-slate-400" data-label="S.No">${idx + 1}</td>
+                            <td class="p-2.5" data-label="CIA Component">
+                              <div class="inline-flex items-center gap-1.5 font-black text-indigo-950 text-xs">
+                                <i data-lucide="${asst.is_default ? 'lock' : 'award'}" class="w-3.5 h-3.5 ${asst.is_default ? 'text-indigo-600' : 'text-amber-600'}"></i>
+                                <span>${this.escapeHtml(asst.component)}</span>
+                              </div>
+                              <div class="mt-0.5">
+                                ${asst.is_default ? '<span class="text-[9px] bg-slate-200 text-slate-700 font-bold px-1.5 py-0.5 rounded uppercase tracking-wider inline-flex items-center gap-1"><i data-lucide="shield-check" class="w-2.5 h-2.5 text-indigo-600"></i> Institutional Default</span>' : '<span class="text-[9px] bg-amber-200 text-amber-900 font-bold px-1.5 py-0.5 rounded uppercase tracking-wider inline-flex items-center gap-1"><i data-lucide="check" class="w-2.5 h-2.5 text-amber-700"></i> Synced from Section A</span>'}
+                              </div>
+                            </td>
+                            <td class="p-2.5 text-center" data-label="Marks">
+                              <span class="px-2.5 py-1 rounded-lg ${asst.is_default ? 'bg-indigo-600' : 'bg-amber-600'} text-white font-black text-xs shadow-2xs">
+                                ${this.escapeHtml(asst.marks)} Marks
+                              </span>
+                            </td>
+                            <td class="p-2.5 font-bold text-slate-800" data-label="Assessment Category">
+                              ${this.escapeHtml(asst.category || '—')}
+                            </td>
+                            <td class="p-2.5 text-slate-700 font-medium" data-label="Unit Coverage">
+                              ${this.escapeHtml(asst.unit_coverage || '—')}
+                            </td>
+                            <td class="p-2.5 font-mono text-slate-700 font-bold text-center" data-label="Proposed Date / Window">
+                              ${this.escapeHtml(asst.date || '—')}
+                            </td>
+                            <td class="p-2.5 text-slate-600 text-[11px]" data-label="Expected Outcome">
+                              ${this.escapeHtml(asst.outcome || '—')}
+                            </td>
+                            ${plan.is_shared_course && plan.shared_faculty_name ? `
+                              <td class="p-2" data-label="Assessed By">
+                                <select class="cia-assessed-by w-full text-xs px-2 py-1.5 border border-amber-300 rounded-lg font-bold bg-amber-50/60 focus:border-indigo-600 focus:outline-none" data-comp="${this.escapeHtml(asst.component)}">
+                                  ${(() => {
+              const allFac = this.getAllCourseFacultyList();
+              return allFac.map(fac => `
+                                      <option value="${this.escapeHtml(fac)}" ${(asst.assessed_by === fac || (!asst.assessed_by && fac === plan.faculty_name)) ? 'selected' : ''}>
+                                        ${this.escapeHtml(fac)}
+                                      </option>
+                                    `).join('');
+            })()}
+                                </select>
+                              </td>
+                            ` : ''}
+                          </tr>
+                        `).join('')}
+                        <tr class="bg-indigo-50/70 border-t-2 border-indigo-200 font-bold text-indigo-950">
+                          <td class="p-2.5 text-center font-black">Σ</td>
+                          <td class="p-2.5 font-black">Total Examination & CIA Plan</td>
+                          <td class="p-2.5 text-center font-black">
+                            ${totalMarks} Marks
+                          </td>
+                          <td class="p-2.5 italic text-slate-500 text-[11px]" colspan="${plan.is_shared_course && plan.shared_faculty_name ? '5' : '4'}">
+                            Mid, End & C1 Pre-filled Institutional Assessments • Converted Activities Auto-synced • Completely Uneditable
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                `;
+      })()}
+            </div>
+
+            <!-- C. Digital Resources -->
+            <div class="space-y-3 pt-4 border-t border-slate-100">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-indigo-700 text-white font-black text-xs shadow-xs uppercase tracking-wider"><i data-lucide="monitor" class="w-3.5 h-3.5 text-amber-300"></i><span>C. Digital Resources and ICT Integration</span></div>
+                  <div class="mt-1">
+                    <span class="text-indigo-600 font-semibold text-[11px] normal-case">(Minimum 1 row mandatory)</span>
+                  </div>
+                  <p class="text-[11px] text-slate-500">JosTEL LMS, PPT, online quizzes, and simulation software. Minimum 1 row is required.</p>
+                </div>
+                <button 
+                  type="button" 
+                  onclick="coursePlanApp.addICTRow()" 
+                  class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-xs flex items-center gap-1 border border-slate-200 cursor-pointer"
+                >
+                  <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add ICT Resource
+                </button>
+              </div>
+
+              <div class="overflow-x-auto rounded-xl border border-slate-200">
+                <table class="w-full text-left text-xs border-collapse">
+                  <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
+                    <tr>
+                      <th class="p-2.5 w-12 text-center">S.No</th>
+                      <th class="p-2.5 w-48">Topic / Unit</th>
+                      <th class="p-2.5 w-56">Digital Resource / ICT Tool</th>
+                      <th class="p-2.5 w-52">Platform (JosTEL / Others)</th>
+                      <th class="p-2.5">Purpose</th>
+                      <th class="p-2.5 w-12 text-center">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="cp-icts-tbody" class="divide-y divide-slate-100 font-medium">
+                    ${icts.map((ict, idx) => {
+                      const toolOptions = [
+                        'PPT / Interactive Slides', 'Video Lecture', 'Simulation / Virtual Lab',
+                        'Online Quiz / JosTEL Quiz', 'Discussion Forum', 'E-Book / PDF Notes',
+                        'Spreadsheet / Data Analysis', 'Programming IDE / Code Editor'
+                      ];
+                      const curTool = ict.tool || '';
+                      const isOtherTool = curTool === 'Others' || (curTool !== '' && !toolOptions.includes(curTool));
+                      const toolOtherVal = ict.tool_other || (isOtherTool && curTool !== 'Others' ? curTool : '');
+
+                      const platformOptions = [
+                        'JosTEL', 'Google Classroom', 'Moodle', 'YouTube',
+                        'Kahoot / Quizizz', 'SWAYAM / NPTEL', 'GitHub'
+                      ];
+                      const curPlatform = ict.platform || 'JosTEL';
+                      const isOtherPlatform = curPlatform === 'Others' || (curPlatform !== '' && !platformOptions.includes(curPlatform));
+                      const platformOtherVal = ict.platform_other || (isOtherPlatform && curPlatform !== 'Others' ? curPlatform : '');
+
+                      return `
+                        <tr>
+                          <td class="p-2 text-center font-bold text-slate-400">${idx + 1}</td>
+                          <td class="p-2">
+                            <input type="text" class="ict-topic w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded-lg" value="${this.escapeHtml(ict.topic || '')}" placeholder="Topic / Unit..." />
+                          </td>
+                          <td class="p-2">
+                            <select 
+                              class="ict-tool-select w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded-lg font-bold bg-white focus:border-indigo-600 focus:outline-none cursor-pointer"
+                              onchange="coursePlanApp.onICTToolChange(this)"
+                            >
+                              <option value="">-- Select Tool --</option>
+                              ${toolOptions.map(opt => `<option value="${opt}" ${(curTool === opt || (!isOtherTool && curTool === opt)) ? 'selected' : ''}>${opt}</option>`).join('')}
+                              <option value="Others" ${isOtherTool ? 'selected' : ''}>Others (Specify)</option>
+                            </select>
+                            <input 
+                              type="text" 
+                              class="ict-tool-other w-full text-xs px-2.5 py-1.5 border border-indigo-400 rounded-lg mt-1.5 ${isOtherTool ? '' : 'hidden'}" 
+                              placeholder="Specify digital resource / tool..." 
+                              value="${this.escapeHtml(toolOtherVal)}" 
+                            />
+                          </td>
+                          <td class="p-2">
+                            <select 
+                              class="ict-platform-select w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded-lg font-semibold bg-white focus:border-indigo-600 focus:outline-none cursor-pointer"
+                              onchange="coursePlanApp.onICTPlatformChange(this)"
+                            >
+                              <option value="">-- Select Platform --</option>
+                              ${platformOptions.map(opt => `<option value="${opt}" ${(curPlatform === opt || (!curPlatform && opt === 'JosTEL')) ? 'selected' : ''}>${opt}</option>`).join('')}
+                              <option value="Others" ${isOtherPlatform ? 'selected' : ''}>Others (Specify)</option>
+                            </select>
+                            <input 
+                              type="text" 
+                              class="ict-platform-other w-full text-xs px-2.5 py-1.5 border border-amber-400 rounded-lg mt-1.5 ${isOtherPlatform ? '' : 'hidden'}" 
+                              placeholder="Specify platform..." 
+                              value="${this.escapeHtml(platformOtherVal)}" 
+                            />
+                          </td>
+                          <td class="p-2">
+                            <input type="text" class="ict-purpose w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded-lg" value="${this.escapeHtml(ict.purpose || '')}" placeholder="Purpose of ICT integration..." />
+                          </td>
+                          <td class="p-2 text-center">
+                            <button type="button" onclick="coursePlanApp.deleteICTRow(${idx})" class="p-1 text-slate-400 hover:text-red-600 rounded cursor-pointer">
+                              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      `;
+      }).join('')}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="flex justify-between pt-4 border-t border-slate-100">
+              <button type="button" onclick="coursePlanApp.switchFormTab('part2')" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition cursor-pointer">
+                ← Back to Part-II
+              </button>
+              <button 
+                type="button" 
+                onclick="coursePlanApp.proceedToTab(\'declaration\')" class="w-full sm:w-auto justify-center px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-2 cursor-pointer active:scale-95 shadow-sm"
+              >
+                <span>Continue to IV Declaration & HOD Approval</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= DECLARATION SECTION ================= -->
+        <div id="section-declaration" class="${this.activeFormTab === 'declaration' ? '' : 'hidden'} space-y-6">
+          <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs space-y-6">
+            <div class="border-b-2 border-indigo-100 pb-4 mb-3 flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-indigo-50 via-slate-50 to-indigo-50/40 -mx-6 -mt-6 px-6 py-4 rounded-t-2xl border-t-4 border-t-indigo-600">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-xs shrink-0">
+                  <i data-lucide="shield-check" class="w-4 h-4 text-white"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm sm:text-base font-black text-indigo-950 uppercase tracking-wide flex items-center gap-2">
+                    <span>Part-IV: Declaration &amp; Submissions</span>
+                  </h3>
+                  <p class="text-[11px] text-slate-600 font-medium">Confirm preparation compliance and submit directly to Head of Department</p>
+                </div>
+              </div>
+              <span class="text-[10.5px] bg-rose-50 text-rose-700 font-black px-2.5 py-1 rounded-lg border border-rose-200 flex items-center gap-1 shadow-2xs">
+                <i data-lucide="alert-circle" class="w-3.5 h-3.5 text-rose-600"></i> All Fields Mandatory *
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div class="p-5 border border-slate-200 rounded-2xl space-y-4 bg-white shadow-2xs">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-indigo-700 text-white font-black text-xs shadow-xs uppercase tracking-wider mb-1">
+                  <i data-lucide="user-check" class="w-3.5 h-3.5 text-amber-300"></i>
+                  <span>Faculty Member &amp; Submission Date</span>
+                </div>
+
+                <div>
+                  <label class="block text-[10.5px] text-slate-600 font-bold mb-1">Faculty Member Name</label>
+                  <input 
+                    type="text" 
+                    id="cp-decl-fac-sig" 
+                    value="${this.escapeHtml(plan.faculty_name || decl.faculty_signature || '')}" 
+                    readonly 
+                    class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-bold bg-slate-100 text-slate-800 cursor-not-allowed" 
+                    title="Automatically synchronized with Name of the Faculty Member in Part-I" 
+                  />
+                  <span class="text-[10px] text-indigo-600 font-medium mt-0.5 block">✓ Synced from Part-I General Details</span>
+                </div>
+
+                <!-- Tick Box: Declaration by the Faculty Member (Moved above date) -->
+                <div class="p-3.5 bg-indigo-50/80 border border-indigo-200 rounded-xl space-y-2 text-xs text-slate-700">
+                  <div class="flex items-start gap-2.5">
+                    <input 
+                      type="checkbox" 
+                      id="cp-decl-check" 
+                      ${decl.confirmed ? 'checked' : ''} 
+                      class="mt-0.5 rounded text-indigo-600 focus:ring-0 cursor-pointer w-4 h-4 shrink-0" 
+                    />
+                    <label for="cp-decl-check" class="font-medium cursor-pointer text-xs text-slate-800 leading-snug">
+                      <strong class="text-indigo-950 font-bold">Declaration by the Faculty Member *:</strong> I hereby confirm that the course plan has been prepared based on the approved syllabus, prescribed teaching hours, academic calendar, and institutional assessment regulations.
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Date of Submission (Uneditable / No provision for edit) -->
+                <div>
+                  <label class="block text-[10.5px] text-slate-600 font-bold mb-1">Date of Submission</label>
+                  <input 
+                    type="date" 
+                    id="cp-decl-fac-date" 
+                    value="${decl.submission_date || new Date().toISOString().split('T')[0]}" 
+                    readonly 
+                    class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-mono font-bold bg-slate-100 text-slate-700 cursor-not-allowed" 
+                    title="Date of Submission is generated automatically upon filing and cannot be edited" 
+                  />
+                  <span class="text-[10px] text-slate-500 font-medium mt-0.5 block">Recorded automatically based on academic schedule</span>
+                </div>
+              </div>
+
+              <div class="p-5 border border-slate-200 rounded-2xl space-y-3 bg-slate-50/70 shadow-2xs">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-purple-700 text-white font-black text-xs shadow-xs uppercase tracking-wider mb-1">
+                  <i data-lucide="shield-check" class="w-3.5 h-3.5 text-amber-300"></i>
+                  <span>HOD Review &amp; Approval Workflow</span>
+                </div>
+                <p class="text-[11px] text-slate-600 leading-relaxed">
+                  When you click <strong>Submit to HOD</strong>, this course plan will be transferred to your Head of Department (${this.escapeHtml(this.selectedDept)}) for review and approval.
+                </p>
+                <div class="text-[11px] text-emerald-700 font-bold flex items-center gap-1.5 pt-1">
+                  <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+                  <span>After HOD approves, the course plan is automatically registered into the institutional IQAC Academic Audit records.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bottom Action Controls (End of the Form) -->
+            <div class="flex items-center justify-between pt-5 border-t-2 border-slate-200 flex-wrap gap-3 bg-slate-50/80 p-4 rounded-2xl">
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="coursePlanApp.switchFormTab('part3')" class="px-4 py-2.5 bg-white hover:bg-slate-100 text-slate-700 font-bold rounded-xl text-xs border border-slate-300 shadow-2xs cursor-pointer">
+                  ← Back to Part-III
+                </button>
+                <button 
+                  type="button" 
+                  onclick="coursePlanApp.createNewPlan()" 
+                  class="text-xs px-3.5 py-2.5 bg-white hover:bg-slate-100 text-slate-700 font-bold rounded-xl transition flex items-center gap-1.5 border border-slate-300 shadow-2xs cursor-pointer"
+                  title="Clear form and start a new course plan"
+                >
+                  <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 text-slate-500"></i>
+                  <span>New Form</span>
+                </button>
+              </div>
+
+              <div class="flex items-center gap-3 flex-wrap">
+                <button 
+                  type="button" 
+                  onclick="coursePlanApp.previewCurrentPlan()" 
+                  class="text-xs px-4 py-2.5 bg-white hover:bg-slate-100 text-slate-800 font-bold rounded-xl transition flex items-center gap-2 border border-slate-300 shadow-2xs cursor-pointer"
+                >
+                  <i data-lucide="printer" class="w-4 h-4 text-slate-600"></i>
+                  <span>Print Preview</span>
+                </button>
+                <button 
+                  type="button" 
+                  onclick="coursePlanApp.saveCurrentPlan('Draft')" 
+                  class="text-xs px-4 py-2.5 bg-white hover:bg-slate-100 text-slate-800 font-bold rounded-xl transition flex items-center gap-1.5 border border-slate-300 shadow-2xs cursor-pointer"
+                >
+                  <i data-lucide="save" class="w-4 h-4 text-slate-500"></i>
+                  <span>Save as Draft</span>
+                </button>
+                ${this.systemSettings && !this.systemSettings.submissions_enabled ? `
+                  <button 
+                    type="button" 
+                    disabled 
+                    class="text-xs px-6 py-2.5 bg-rose-100 text-rose-800 border-2 border-rose-200 font-extrabold rounded-xl flex items-center gap-2 cursor-not-allowed opacity-80"
+                    title="Course plan submissions are currently disabled by IQAC Administrator."
+                  >
+                    <i data-lucide="lock" class="w-4 h-4 text-rose-600"></i>
+                    <span>Submissions Closed by Admin</span>
+                  </button>
+                ` : `
+                  <button 
+                    type="button" 
+                    onclick="coursePlanApp.saveCurrentPlan('Submitted')" 
+                    class="text-xs px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl transition flex items-center gap-2 shadow-md shadow-indigo-600/25 cursor-pointer active:scale-95"
+                  >
+                    <i data-lucide="send" class="w-4 h-4"></i>
+                    <span>Submit to HOD</span>
+                  </button>
+                `}
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    `;
+  }
+
+  // ================= 5. PRINT VIEW =================
+  renderPrintHtml() {
+    const plan = this.activePlan || this.createDefaultPlan();
+    const cos = plan.course_outcomes || [];
+    const dtp = plan.detailed_teaching_plan || [];
+    const ucp = plan.unit_completion_plan || [];
+    const acts = plan.learning_activities || [];
+    const assts = plan.assessment_plan || [];
+    const icts = plan.ict_integration || [];
+    const decl = plan.declaration || {};
+
+    const isFromForm = (this.printSource === 'form');
+
+    return `
+      <div class="space-y-6 w-full animate-fadeIn">
+        <!-- Controls (Hidden on print) -->
+        <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3 no-print">
+          <div class="flex items-center gap-2 flex-wrap">
+            ${isFromForm ? `
+              <button 
+                type="button" 
+                onclick="coursePlanApp.backToForm()" 
+                class="text-xs px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
+                title="Return to the Course Plan Declaration tab to continue editing or submit"
+              >
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                <span>← Back to Declaration &amp; Form</span>
+              </button>
+              <button 
+                type="button" 
+                onclick="coursePlanApp.backToDashboard()" 
+                class="text-xs px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition flex items-center gap-1.5 border border-slate-200 cursor-pointer"
+                title="Go to Faculty Dashboard (your draft is automatically saved)"
+              >
+                <i data-lucide="layout-dashboard" class="w-3.5 h-3.5 text-slate-500"></i>
+                <span>Dashboard</span>
+              </button>
+            ` : `
+              <button 
+                type="button" 
+                onclick="coursePlanApp.backToDashboard()" 
+                class="text-xs px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition flex items-center gap-1.5 border border-slate-200 cursor-pointer"
+                title="Back to Dashboard"
+              >
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                <span>Back to Dashboard</span>
+              </button>
+            `}
+          </div>
+
+          <div class="flex items-center gap-2 flex-wrap">
+            ${isFromForm && this.activePlan && this.activePlan.status !== 'Submitted' && this.activePlan.hod_status !== 'Approved' ? (
+              this.systemSettings && !this.systemSettings.submissions_enabled ? `
+                <button 
+                  type="button" 
+                  disabled 
+                  class="text-xs px-4 py-2.5 bg-rose-100 text-rose-800 border border-rose-200 font-extrabold rounded-xl flex items-center gap-1.5 cursor-not-allowed opacity-80"
+                  title="Course plan submissions are currently closed by IQAC Administrator"
+                >
+                  <i data-lucide="lock" class="w-4 h-4 text-rose-600"></i>
+                  <span>Submissions Closed</span>
+                </button>
+              ` : `
+                <button 
+                  type="button" 
+                  onclick="coursePlanApp.saveCurrentPlan('Submitted')" 
+                  class="text-xs px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl transition flex items-center gap-1.5 shadow-md shadow-emerald-600/25 active:scale-95 cursor-pointer"
+                  title="Submit this course plan directly to HOD"
+                >
+                  <i data-lucide="send" class="w-4 h-4"></i>
+                  <span>Submit to HOD</span>
+                </button>
+              `
+            ) : ''}
+            <button 
+              type="button" 
+              onclick="window.print()" 
+              class="text-xs px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition flex items-center gap-2 shadow-md shadow-indigo-600/25 active:scale-95 cursor-pointer"
+            >
+              <i data-lucide="printer" class="w-4 h-4"></i>
+              <span>Print / Save as PDF</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Printable Document (1:1 matching institutional PDF) -->
+        <div id="course-plan-print-doc" class="bg-white p-4 sm:p-12 rounded-2xl border border-slate-300 shadow-sm max-w-5xl mx-auto space-y-6 text-slate-900 font-sans">
+          
+          <div class="text-center space-y-1 border-b-2 border-slate-800 pb-3">
+            <h1 class="text-sm font-extrabold uppercase tracking-wide text-slate-700">Internal Quality Assurance Cell (IQAC)</h1>
+            <h2 class="text-lg font-black tracking-tight text-slate-900">St. Joseph’s College (Autonomous), Tiruchirappalli</h2>
+            <h3 class="text-base font-extrabold text-indigo-900 pt-0.5">
+              COURSE PLAN – ACADEMIC YEAR 2026–2027 (Even Semester)
+            </h3>
+          </div>
+
+          <!-- Executive Course Details Table (Top of Document) -->
+          <div class="border-2 border-slate-300 rounded-xl overflow-hidden shadow-2xs">
+            <div class="bg-indigo-950 text-white font-black text-xs px-3.5 py-2 uppercase tracking-wider flex items-center justify-between">
+              <span>Course & Programme Details</span>
+              <span class="text-[11px] font-mono text-amber-300">${this.escapeHtml(plan.course_code || '—')}</span>
+            </div>
+            <table class="w-full text-xs border-collapse">
+              <tbody>
+                <tr class="border-b border-slate-200 bg-slate-50/70">
+                  <td class="p-2.5 font-bold text-slate-600 w-1/4">Course Code & Title:</td>
+                  <td class="p-2.5 font-black text-indigo-950" colspan="3">
+                    <strong class="font-mono text-sm">${this.escapeHtml(plan.course_code || '—')}</strong> – <span class="text-sm">${this.escapeHtml(plan.course_title || '—')}</span>
+                  </td>
+                </tr>
+                <tr class="border-b border-slate-200">
+                  <td class="p-2.5 font-bold text-slate-600">Faculty Member(s):</td>
+                  <td class="p-2.5 font-bold text-slate-900" colspan="3">
+                    ${(() => {
+        const allFac = this.getAllCourseFacultyList();
+        if (allFac.length > 1) {
+          return allFac.map(f => this.escapeHtml(f)).join(', ') + ' <span class="text-[11px] text-amber-800 font-black bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-full ml-1.5">● Shared Course (' + allFac.length + ' Teachers)</span>';
+        }
+        return this.escapeHtml(plan.faculty_name || '—') + (plan.is_shared_course && plan.shared_faculty_name ? ` & ${this.escapeHtml(plan.shared_faculty_name)} <span class="text-[11px] text-amber-800 font-black bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-full ml-1.5">● Shared Course</span>` : ' <span class="text-[11px] text-emerald-800 font-bold bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full ml-1.5">● Handled Independently</span>');
+      })()}
+                  </td>
+                </tr>
+                <tr class="border-b border-slate-200 bg-slate-50/40">
+                  <td class="p-2.5 font-bold text-slate-600">Department:</td>
+                  <td class="p-2.5 font-semibold text-slate-800">${this.escapeHtml(plan.department_name || '—')}</td>
+                  <td class="p-2.5 font-bold text-slate-600">Programme:</td>
+                  <td class="p-2.5 font-semibold text-slate-800">${this.escapeHtml(plan.programme || '—')}</td>
+                </tr>
+                <tr class="border-b border-slate-200">
+                  <td class="p-2.5 font-bold text-slate-600">Year & Class:</td>
+                  <td class="p-2.5 font-semibold text-slate-800">${this.escapeHtml(plan.year_class || '—')} (Section: ${this.escapeHtml(plan.section || 'N/A')})</td>
+                  <td class="p-2.5 font-bold text-slate-600">Semester:</td>
+                  <td class="p-2.5 font-semibold text-slate-800">Semester ${this.escapeHtml(plan.semester || 'II')}</td>
+                </tr>
+                <tr class="border-b border-slate-200 bg-slate-50/40">
+                  <td class="p-2.5 font-bold text-slate-600">Course Category:</td>
+                  <td class="p-2.5 font-semibold text-slate-800">${this.escapeHtml(plan.course_category || 'Core')}</td>
+                  <td class="p-2.5 font-bold text-slate-600">Teaching Hours:</td>
+                  <td class="p-2.5 font-semibold text-slate-800">${this.escapeHtml(plan.teaching_hours || '—')} Hrs/Week</td>
+                </tr>
+                <tr>
+                  <td class="p-2.5 font-bold text-slate-600">Course Credits:</td>
+                  <td class="p-2.5 font-semibold text-slate-800">${this.escapeHtml(plan.credits || '—')} Credits</td>
+                  <td class="p-2.5 font-bold text-slate-600">Academic Year:</td>
+                  <td class="p-2.5 font-semibold text-slate-800">${this.escapeHtml(plan.academic_year || '2026–2027')} (Even Semester)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Part I -->
+          <div class="space-y-3 pt-2">
+            <h4 class="text-xs font-black uppercase tracking-wider text-white bg-indigo-900 p-2 rounded-lg">Part-I: Course Information & Outcomes</h4>
+
+            <!-- CO Table -->
+            <div class="pt-2 pl-2 space-y-1.5">
+              <div class="font-bold text-xs text-slate-700">B. Course Outcomes (COs)</div>
+              <table class="w-full text-xs border border-slate-300 border-collapse">
+                <thead class="bg-slate-100 font-bold">
+                  <tr>
+                    <th class="border border-slate-300 p-2 w-20 text-center">CO Code</th>
+                    <th class="border border-slate-300 p-2">Course Outcome</th>
+                    <th class="border border-slate-300 p-2 w-32 text-center">K-Levels</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${cos.map(co => `
+                    <tr>
+                      <td class="border border-slate-300 p-2 text-center font-bold font-mono">${co.code}</td>
+                      <td class="border border-slate-300 p-2">${co.outcome || '—'}</td>
+                      <td class="border border-slate-300 p-2 text-center font-semibold">${co.k_level || '—'}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Part II -->
+          <div class="space-y-3 pt-4">
+            <h4 class="text-xs font-black uppercase tracking-wider text-white bg-indigo-900 p-2 rounded-lg">Part-II: Unit-wise Teaching Plan</h4>
+            <div class="text-xs pl-2 space-y-1.5">
+              <div class="font-bold text-slate-700">A. Detailed Teaching Plan</div>
+              <table class="w-full text-xs border border-slate-300 border-collapse">
+                <thead class="bg-slate-100 font-bold text-[11px]">
+                  <tr>
+                    <th class="border border-slate-300 p-1.5">Month/Days</th>
+                    <th class="border border-slate-300 p-1.5">Unit</th>
+                    <th class="border border-slate-300 p-1.5">From (Topic)</th>
+                    <th class="border border-slate-300 p-1.5">To (Topic)</th>
+                    <th class="border border-slate-300 p-1.5 text-center">Hours</th>
+                    <th class="border border-slate-300 p-1.5">Methodology</th>
+                    <th class="border border-slate-300 p-1.5">Resources</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${(dtp || []).filter(r => !r.is_hidden).map((row, idx, activeDtp) => {
+        const isFirstInMonth = (idx === 0 || row.month_days !== activeDtp[idx - 1].month_days);
+        let span = 1;
+        if (isFirstInMonth) {
+          for (let j = idx + 1; j < activeDtp.length; j++) {
+            if (activeDtp[j].month_days === row.month_days) span++;
+            else break;
+          }
+        }
+        return `
+                      <tr>
+                        ${isFirstInMonth ? `
+                          <td rowspan="${span}" class="border border-slate-300 p-1.5 font-bold text-center align-middle whitespace-nowrap bg-slate-50">
+                            ${row.month_days || '—'}
+                          </td>
+                        ` : ''}
+                        <td class="border border-slate-300 p-1.5">${row.unit || '—'}</td>
+                        <td class="border border-slate-300 p-1.5">${row.from_topic || row.topics || '—'}</td>
+                        <td class="border border-slate-300 p-1.5">${row.to_topic || '—'}</td>
+                        <td class="border border-slate-300 p-1.5 text-center font-bold">${row.hours || '—'}</td>
+                        <td class="border border-slate-300 p-1.5">${row.methodology || '—'}</td>
+                        <td class="border border-slate-300 p-1.5">${row.resources || '—'}</td>
+                      </tr>
+                    `;
+      }).join('')}
+                </tbody>
+              </table>
+            </div>
+
+            <div class="text-xs pl-2 pt-2 space-y-1.5">
+              <div class="font-bold text-slate-700">B. Unit Completion Plan</div>
+              <table class="w-full text-xs border border-slate-300 border-collapse">
+                <thead class="bg-slate-100 font-bold">
+                  <tr>
+                    <th class="border border-slate-300 p-2">Unit</th>
+                    <th class="border border-slate-300 p-2 text-center">Planned Hours</th>
+                    <th class="border border-slate-300 p-2 text-center">Actual Hours (As per Syllabus)</th>
+                    <th class="border border-slate-300 p-2">Expected Completion Date</th>
+                    ${plan.is_shared_course && plan.shared_faculty_name ? '<th class="border border-slate-300 p-2">Handled By</th>' : ''}
+                  </tr>
+                </thead>
+                <tbody>
+                  ${ucp.map(u => `
+                    <tr>
+                      <td class="border border-slate-300 p-2 font-bold">${u.unit}</td>
+                      <td class="border border-slate-300 p-2 text-center font-bold">${u.planned_hours || '—'}</td>
+                      <td class="border border-slate-300 p-2 text-center font-bold">${u.actual_hours || '—'}</td>
+                      <td class="border border-slate-300 p-2">${u.target_date || '—'}</td>
+                      ${plan.is_shared_course && plan.shared_faculty_name ? `<td class="border border-slate-300 p-2 font-semibold text-slate-800">${this.escapeHtml(u.handled_by || plan.faculty_name)}</td>` : ''}
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Part III -->
+          <div class="space-y-3 pt-4">
+            <h4 class="text-xs font-black uppercase tracking-wider text-white bg-indigo-900 p-2 rounded-lg">Part-III: Learning Activities and Assessment Plan</h4>
+            <div class="text-xs pl-2 space-y-1.5">
+              <div class="font-bold text-slate-700">A. Learning Activities</div>
+              <table class="w-full text-xs border border-slate-300 border-collapse">
+                <thead class="bg-slate-100 font-bold text-[11px]">
+                  <tr>
+                    <th class="border border-slate-300 p-1.5 w-10 text-center">S.No</th>
+                    <th class="border border-slate-300 p-1.5">Activity</th>
+                    <th class="border border-slate-300 p-1.5">Topic</th>
+                    <th class="border border-slate-300 p-1.5">Outcome</th>
+                    <th class="border border-slate-300 p-1.5 text-center">Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${(plan.learning_activities || []).map((act, i) => `
+                    <tr>
+                      <td class="border border-slate-300 p-1.5 text-center font-bold">${i + 1}</td>
+                      <td class="border border-slate-300 p-1.5 font-bold">${this.escapeHtml(act.activity || '—')}</td>
+                      <td class="border border-slate-300 p-1.5">${this.escapeHtml(act.topic || '—')}</td>
+                      <td class="border border-slate-300 p-1.5">${this.escapeHtml(act.outcome || '—')}</td>
+                      <td class="border border-slate-300 p-1.5 text-center font-mono">${this.formatDateToDDMMYYYY(act.proposed_date) || '—'}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+
+            <div class="text-xs pl-2 pt-2 space-y-1.5">
+              <div class="font-bold text-slate-700">B. Assessment Plan (CIA)</div>
+              <table class="w-full text-xs border border-slate-300 border-collapse">
+                <thead class="bg-slate-100 font-bold text-[11px]">
+                  <tr>
+                    <th class="border border-slate-300 p-1.5 w-10 text-center">S.No</th>
+                    <th class="border border-slate-300 p-1.5">CIA Component</th>
+                    <th class="border border-slate-300 p-1.5 text-center">Marks</th>
+                    <th class="border border-slate-300 p-1.5">Assessment Category / Activity</th>
+                    <th class="border border-slate-300 p-1.5">Unit Coverage</th>
+                    <th class="border border-slate-300 p-1.5 text-center">Date</th>
+                    <th class="border border-slate-300 p-1.5">Expected Outcome</th>
+                    ${plan.is_shared_course && plan.shared_faculty_name ? '<th class="border border-slate-300 p-1.5">Assessed By</th>' : ''}
+                  </tr>
+                </thead>
+                <tbody>
+                  ${this.getFullAssessmentPlan(plan).map((asst, i) => `
+                    <tr>
+                      <td class="border border-slate-300 p-1.5 text-center font-bold">${i + 1}</td>
+                      <td class="border border-slate-300 p-1.5 font-bold">${this.escapeHtml(asst.component || '—')}</td>
+                      <td class="border border-slate-300 p-1.5 text-center font-bold">${this.escapeHtml(asst.marks || '—')}</td>
+                      <td class="border border-slate-300 p-1.5 font-bold">${this.escapeHtml(asst.category || '—')}</td>
+                      <td class="border border-slate-300 p-1.5">${this.escapeHtml(asst.unit_coverage || '—')}</td>
+                      <td class="border border-slate-300 p-1.5 text-center font-mono">${this.escapeHtml(asst.date || '—')}</td>
+                      <td class="border border-slate-300 p-1.5">${this.escapeHtml(asst.outcome || '—')}</td>
+                      ${plan.is_shared_course && plan.shared_faculty_name ? `<td class="border border-slate-300 p-1.5 font-semibold text-slate-800">${this.escapeHtml(asst.assessed_by || plan.faculty_name)}</td>` : ''}
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+
+            <div class="font-bold text-slate-700">C. Digital Resources and ICT Integration</div>
+              <table class="w-full text-xs border border-slate-300 border-collapse">
+                <thead class="bg-slate-100 font-bold">
+                  <tr>
+                    <th class="border border-slate-300 p-1.5 w-10 text-center">S.No</th>
+                    <th class="border border-slate-300 p-1.5">Topic / Unit</th>
+                    <th class="border border-slate-300 p-1.5">Digital Resource / ICT Tool</th>
+                    <th class="border border-slate-300 p-1.5">Platform</th>
+                    <th class="border border-slate-300 p-1.5">Purpose</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${icts.map((ict, i) => `
+                    <tr>
+                      <td class="border border-slate-300 p-1.5 text-center font-bold">${i + 1}</td>
+                      <td class="border border-slate-300 p-1.5">${ict.topic || '—'}</td>
+                      <td class="border border-slate-300 p-1.5 font-bold">${(() => {
+          const t = (ict.tool || '').split(',').map(s => s.trim()).map(s => (s === 'Others' && ict.tool_other) ? `Others (${ict.tool_other})` : s).join(', ');
+          return this.escapeHtml(t || '—');
+        })()}</td>
+                      <td class="border border-slate-300 p-1.5">${(() => {
+          const p = (ict.platform || '').split(',').map(s => s.trim()).map(s => (s === 'Others' && ict.platform_other) ? `Others (${ict.platform_other})` : s).join(', ');
+          return this.escapeHtml(p || '—');
+        })()}</td>
+                      <td class="border border-slate-300 p-1.5">${ict.purpose}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Signatures Footer -->
+          <div class="pt-8 border-t-2 border-slate-800 space-y-8 text-xs">
+            <div class="italic text-[11px] text-slate-700">
+              "I hereby confirm that the course plan has been prepared based on the approved syllabus, prescribed teaching hours, academic calendar, and institutional assessment regulations."
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4">
+              <div class="space-y-6">
+                <div>Faculty Member(s): <strong>${(() => {
+        const allFac = this.getAllCourseFacultyList();
+        if (allFac.length > 1) {
+          return allFac.map(f => this.escapeHtml(f)).join(' & ');
+        }
+        return this.escapeHtml(decl.faculty_signature || plan.faculty_name || '____________________') + (plan.is_shared_course && plan.shared_faculty_name ? ` & ${this.escapeHtml(plan.shared_faculty_name)}` : '');
+      })()}</strong></div>
+                <div>Date: <strong>${decl.submission_date || '____________________'}</strong></div>
+              </div>
+
+              <div class="space-y-6">
+                <div>Reviewed by: <strong>${decl.reviewer_name || plan.hod_name || '____________________'}</strong></div>
+                <div>Status: <strong>${plan.hod_status === 'Approved' ? 'VERIFIED & APPROVED' : 'PENDING'}</strong></div>
+              </div>
+
+              <div class="space-y-6">
+                <div>Head of Department: <strong>${plan.hod_name || '____________________'}</strong></div>
+                <div>Approval Date: <strong>${plan.approved_at || '____________________'}</strong></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    `;
+  }
+
+  // ================= STAGE PROGRESSION & COMPREHENSIVE VALIDATION =================
+  clearValidationHighlights() {
+    document.querySelectorAll('.is-invalid-field').forEach(el => {
+      el.classList.remove('is-invalid-field', 'border-rose-500', 'ring-2', 'ring-rose-200', 'bg-rose-50/40');
+    });
+    const banner = document.getElementById('cp-validation-banner');
+    if (banner) banner.remove();
+  }
+
+  highlightElement(el) {
+    if (!el) return;
+    el.classList.add('is-invalid-field', 'border-rose-500', 'ring-2', 'ring-rose-200', 'bg-rose-50/40');
+    const clearFn = () => {
+      el.classList.remove('is-invalid-field', 'border-rose-500', 'ring-2', 'ring-rose-200', 'bg-rose-50/40');
+      el.removeEventListener('input', clearFn);
+      el.removeEventListener('change', clearFn);
+    };
+    el.addEventListener('input', clearFn, { once: true });
+    el.addEventListener('change', clearFn, { once: true });
+  }
+
+  showValidationFeedback(sectionId, errors, invalidEls) {
+    this.clearValidationHighlights();
+    (invalidEls || []).forEach(el => this.highlightElement(el));
+
+    const container = document.getElementById(`section-${this.activeFormTab}`) || document.getElementById(sectionId);
+    if (container) {
+      let banner = document.getElementById('cp-validation-banner');
+      if (!banner) {
+        banner = document.createElement('div');
+        banner.id = 'cp-validation-banner';
+        container.prepend(banner);
+      }
+      banner.className = 'p-4 bg-rose-50 border-2 border-rose-300 rounded-2xl mb-4 text-rose-900 shadow-md animate-fadeIn flex items-start gap-3';
+      banner.innerHTML = `
+        <div class="w-8 h-8 rounded-xl bg-rose-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+          <i data-lucide="alert-octagon" class="w-4 h-4"></i>
+        </div>
+        <div class="flex-1 text-xs">
+          <div class="font-black text-rose-950 text-sm">Please complete the highlighted mandatory fields:</div>
+          <ul class="list-disc list-inside mt-1.5 space-y-0.5 font-bold text-rose-800">
+            ${errors.slice(0, 8).map(err => `<li>${err}</li>`).join('')}
+            ${errors.length > 8 ? `<li>...and ${errors.length - 8} more field(s) highlighted in red</li>` : ''}
+          </ul>
+        </div>
+        <button type="button" onclick="this.parentElement.remove()" class="text-rose-400 hover:text-rose-700 font-bold text-base px-1">✕</button>
+      `;
+      if (window.lucide) window.lucide.createIcons();
+      banner.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    // Always move the viewport to the top so error message is immediately visible
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  validatePart1(harvest = false) {
+    if (harvest) this.harvestFormInputs();
+    const p = this.activePlan || {};
+    const errors = [];
+    const invalidEls = [];
+
+    const check = (val, id, name) => {
+      if (!val || !String(val).trim()) {
+        errors.push(name);
+        const el = document.getElementById(id);
+        if (el) invalidEls.push(el);
+      }
+    };
+
+    check(p.department_name, 'cp-dept-name', 'Department');
+    check(p.faculty_name, 'cp-faculty-name', 'Name of the Faculty Member');
+    if (p.is_shared_course && (!p.shared_faculty_name || !p.shared_faculty_name.trim())) {
+      errors.push('Collaborating / Co-Faculty Member(s)');
+      const el = document.getElementById('cp-add-shared-faculty-select') || document.getElementById('cp-shared-faculty-name');
+      if (el) invalidEls.push(el);
+    }
+    check(p.semester, 'cp-semester', 'Semester');
+    check(p.programme, 'cp-programme', 'Programme');
+    check(p.year_class, 'cp-year-class', 'Year & Class');
+    check(p.section, 'cp-section', 'Section');
+    check(p.course_code, 'cp-course-code', 'Course Code');
+    check(p.course_title, 'cp-course-title', 'Course Title');
+    check(p.course_category, 'cp-course-category', 'Course Category');
+    check(p.teaching_hours, 'cp-teaching-hours', 'Total Teaching Hours');
+    check(p.credits, 'cp-credits', 'Credits');
+
+    const coRows = document.querySelectorAll('#cp-cos-tbody tr');
+    let emptyCOs = 0;
+    coRows.forEach((row, i) => {
+      if (i < 5) {
+        const outEl = row.querySelector('.co-outcome');
+        const kEl = row.querySelector('.co-klevel');
+        let rowEmpty = false;
+        if (!outEl || !outEl.value.trim()) {
+          if (outEl) invalidEls.push(outEl);
+          rowEmpty = true;
+        }
+        if (!kEl || !kEl.value.trim()) {
+          if (kEl) invalidEls.push(kEl);
+          rowEmpty = true;
+        }
+        if (rowEmpty) emptyCOs++;
+      }
+    });
+    if (emptyCOs > 0) {
+      errors.push(`Course Outcomes (${emptyCOs} outcome statement(s) or K-level(s) incomplete)`);
+    }
+
+    return { valid: errors.length === 0, errors, invalidEls };
+  }
+
+  isPart1Complete() {
+    return this.validatePart1(false).valid;
+  }
+
+  validatePart2(harvest = false) {
+    if (harvest) this.harvestFormInputs();
+    const p = this.activePlan || {};
+    const errors = [];
+    const invalidEls = [];
+
+    // Ensure Part 1 is complete
+    const p1 = this.validatePart1(false);
+    if (!p1.valid) {
+      return { valid: false, errors: ['Please complete all mandatory questions in Part-I first.'], invalidEls: p1.invalidEls };
+    }
+
+    // A. Detailed Teaching Plan
+    const dtpRows = document.querySelectorAll('#cp-dtp-tbody tr');
+    let activeRowsCount = 0;
+    if (dtpRows.length === 0) {
+      errors.push('Detailed Teaching Plan entries');
+    } else {
+      let emptyFromTopic = 0, emptyToTopic = 0, emptyHours = 0, emptyMethods = 0, emptyRes = 0;
+      dtpRows.forEach((row) => {
+        const isHidden = row.querySelector('.dtp-is-hidden')?.value === 'true';
+        if (isHidden) return; // Skip hidden/disabled rows
+
+        activeRowsCount++;
+        const fromEl = row.querySelector('.dtp-from-topic');
+        const toEl = row.querySelector('.dtp-to-topic');
+        const hrEl = row.querySelector('.dtp-hours');
+        const methVal = row.querySelector('.dtp-method-value');
+        const resEl = row.querySelector('.dtp-res-select');
+        const resOther = row.querySelector('.dtp-res-other');
+
+        if (!fromEl || !fromEl.value.trim()) { emptyFromTopic++; if (fromEl) invalidEls.push(fromEl); }
+        if (!toEl || !toEl.value.trim()) { emptyToTopic++; if (toEl) invalidEls.push(toEl); }
+        if (!hrEl || !hrEl.value.trim()) { emptyHours++; if (hrEl) invalidEls.push(hrEl); }
+
+        if (!methVal || !methVal.value.trim()) {
+          emptyMethods++;
+          const box = row.querySelector('.dtp-method-container');
+          if (box) invalidEls.push(box);
+        }
+
+        const resVal = row.querySelector('.dtp-res-value');
+        if (resVal) {
+          if (!resVal.value.trim()) {
+            emptyRes++;
+            const box = row.querySelector('.dtp-res-container');
+            if (box) invalidEls.push(box);
+          }
+        } else if (resEl && resEl.value === 'Others' && (!resOther || !resOther.value.trim())) {
+          emptyRes++; if (resOther) invalidEls.push(resOther);
+        } else if (!resEl || !resEl.value.trim()) {
+          emptyRes++; if (resEl) invalidEls.push(resEl);
+        }
+      });
+
+      if (activeRowsCount === 0) {
+        errors.push('Detailed Teaching Plan: At least one active topic row is required (unhide/enable a row).');
+      }
+      if (emptyFromTopic > 0) errors.push(`Detailed Teaching Plan: 'From (Topic)' missing in ${emptyFromTopic} row(s)`);
+      if (emptyToTopic > 0) errors.push(`Detailed Teaching Plan: 'To (Topic)' missing in ${emptyToTopic} row(s)`);
+      if (emptyHours > 0) errors.push(`Detailed Teaching Plan: Lecture Hour(s) missing in ${emptyHours} row(s)`);
+      if (emptyMethods > 0) errors.push(`Detailed Teaching Plan: Teaching Methodology missing in ${emptyMethods} row(s)`);
+      if (emptyRes > 0) errors.push(`Detailed Teaching Plan: Learning Resource missing in ${emptyRes} row(s)`);
+    }
+
+    // B. Unit Completion Plan
+    const ucpRows = document.querySelectorAll('#cp-ucp-tbody tr:not(:last-child)');
+    let emptyUcpPlanned = 0, emptyUcpActual = 0, emptyUcpDate = 0;
+    ucpRows.forEach((row) => {
+      const plEl = row.querySelector('.ucp-planned');
+      const acEl = row.querySelector('.ucp-actual');
+      const dtEl = row.querySelector('.ucp-date');
+      if (!plEl || !plEl.value.trim()) { emptyUcpPlanned++; if (plEl) invalidEls.push(plEl); }
+      if (!acEl || !acEl.value.trim()) { emptyUcpActual++; if (acEl) invalidEls.push(acEl); }
+      if (!dtEl || !dtEl.value.trim()) { emptyUcpDate++; if (dtEl) invalidEls.push(dtEl); }
+    });
+
+    if (emptyUcpPlanned > 0) errors.push(`Unit Completion Plan: Planned Hours missing in ${emptyUcpPlanned} unit(s)`);
+    if (emptyUcpActual > 0) errors.push(`Unit Completion Plan: Actual Hours missing in ${emptyUcpActual} unit(s)`);
+    if (emptyUcpDate > 0) errors.push(`Unit Completion Plan: Target Date missing in ${emptyUcpDate} unit(s)`);
+
+    return { valid: errors.length === 0, errors, invalidEls };
+  }
+
+  isPart2Complete() {
+    return this.validatePart2(false).valid;
+  }
+
+  validatePart3(harvest = false) {
+    if (harvest) this.harvestFormInputs();
+    const p = this.activePlan || {};
+    const errors = [];
+    const invalidEls = [];
+
+    // Ensure Part 2 is complete
+    const p2 = this.validatePart2(false);
+    if (!p2.valid) {
+      return { valid: false, errors: ['Please complete all mandatory questions in Part-II first.'], invalidEls: p2.invalidEls };
+    }
+
+    // A. Learning Activities
+    const acts = this.activePlan.learning_activities || [];
+    if (acts.length === 0) {
+      errors.push('Learning Activities: At least one learning activity must be added in Section A');
+    } else {
+      let emptyTopic = 0, emptyOutcome = 0, emptyDate = 0;
+      acts.forEach(a => {
+        if (!a.topic || !a.topic.trim()) emptyTopic++;
+        if (!a.outcome || !a.outcome.trim()) emptyOutcome++;
+        if (!a.proposed_date || !a.proposed_date.trim()) emptyDate++;
+      });
+      if (emptyTopic > 0) errors.push(`Learning Activities: Topic/Unit missing in ${emptyTopic} activity entry(ies)`);
+      if (emptyOutcome > 0) errors.push(`Learning Activities: Expected Outcome missing in ${emptyOutcome} activity entry(ies)`);
+      if (emptyDate > 0) errors.push(`Learning Activities: Proposed Date missing in ${emptyDate} activity entry(ies)`);
+    }
+
+    // B. Assessment Plan (Total marks must be 100 and both CIA 2 and Library Referencing entered)
+    const assts = (this.activePlan.learning_activities || []).filter(a => a.is_assessment);
+    const fullPlan = this.getFullAssessmentPlan(this.activePlan);
+    const totalMarks = fullPlan.reduce((sum, a) => sum + (parseFloat(a.marks) || 0), 0);
+    const hasC2 = assts.some(a => a.cia_component && a.cia_component.includes('C2'));
+    const hasLib = assts.some(a => a.cia_component && (a.cia_component.includes('Library') || a.cia_component.includes('Lib')));
+
+    if (assts.length === 0) {
+      errors.push('Assessment Plan: Please convert learning activities into assessment components (both CIA 2 and Library Referencing are mandatory)');
+    } else {
+      if (totalMarks !== 100) {
+        errors.push(`Assessment Plan: Total assessment marks must equal exactly 100 Marks (Currently: ${totalMarks} Marks). Please ensure both CIA 2 and Library Referencing are entered.`);
+      }
+      if (!hasC2 || !hasLib) {
+        const missing = [];
+        if (!hasC2) missing.push('CIA 2 (C2)');
+        if (!hasLib) missing.push('Library Referencing');
+        errors.push(`Assessment Plan: Both CIA 2 and Library Referencing are mandatory to proceed (Missing: ${missing.join(' & ')}).`);
+      }
+    }
+
+    // C. Digital Resources and ICT Integration (Min 1 row is mandatory)
+    const ictRows = document.querySelectorAll('#cp-icts-tbody tr');
+    let completedIctRows = 0;
+    let incompleteRowErrors = [];
+
+    ictRows.forEach((row, idx) => {
+      const topEl = row.querySelector('.ict-topic');
+      const toolEl = row.querySelector('.ict-tool-select') || row.querySelector('.ict-tool-val') || row.querySelector('.ict-tool');
+      const toolOtherEl = row.querySelector('.ict-tool-other');
+      const platEl = row.querySelector('.ict-platform-select, .ict-plat-select') || row.querySelector('.ict-platform-val') || row.querySelector('.ict-platform');
+      const platOtherEl = row.querySelector('.ict-platform-other');
+      const purpEl = row.querySelector('.ict-purpose');
+
+      const topVal = topEl ? topEl.value.trim() : '';
+      const toolVal = (toolEl && toolEl.value === 'Others') ? (toolOtherEl ? toolOtherEl.value.trim() : '') : (toolEl ? toolEl.value.trim() : '');
+      const platVal = (platEl && platEl.value === 'Others') ? (platOtherEl ? platOtherEl.value.trim() : '') : (platEl ? platEl.value.trim() : '');
+      const purpVal = purpEl ? purpEl.value.trim() : '';
+
+      const hasAny = topVal || toolVal || platVal || purpVal;
+      const isComplete = topVal && toolVal && platVal && purpVal;
+
+      if (isComplete) {
+        completedIctRows++;
+      } else if (hasAny) {
+        const missing = [];
+        if (!topVal) { missing.push('Topic/Unit'); if (topEl) invalidEls.push(topEl); }
+        if (!toolVal) {
+          missing.push('Tool');
+          if (toolEl && toolEl.value === 'Others' && toolOtherEl) invalidEls.push(toolOtherEl);
+          else if (toolEl) invalidEls.push(toolEl);
+        }
+        if (!platVal) {
+          missing.push('Platform');
+          if (platEl && platEl.value === 'Others' && platOtherEl) invalidEls.push(platOtherEl);
+          else if (platEl) invalidEls.push(platEl);
+        }
+        if (!purpVal) { missing.push('Purpose'); if (purpEl) invalidEls.push(purpEl); }
+        incompleteRowErrors.push(`Row ${idx + 1}: Missing ${missing.join(', ')}`);
+      }
+    });
+
+    if (completedIctRows === 0 && incompleteRowErrors.length === 0) {
+      errors.push('Digital Resources and ICT Integration: Minimum 1 row is mandatory. Please provide Topic/Unit, Tool, Platform, and Purpose.');
+      const firstRow = ictRows[0];
+      if (firstRow) {
+        const t = firstRow.querySelector('.ict-topic');
+        const tl = firstRow.querySelector('.ict-tool-val, .ict-tool-select, .ict-tool');
+        const p = firstRow.querySelector('.ict-platform-val, .ict-platform-select, .ict-plat-select, .ict-platform');
+        const pr = firstRow.querySelector('.ict-purpose');
+        if (t && !t.value.trim()) invalidEls.push(t);
+        if (tl && !tl.value.trim()) invalidEls.push(tl);
+        if (p && !p.value.trim()) invalidEls.push(p);
+        if (pr && !pr.value.trim()) invalidEls.push(pr);
+      }
+    }
+
+    if (incompleteRowErrors.length > 0) {
+      incompleteRowErrors.forEach(err => errors.push(`Digital Resources / ICT: ${err}`));
+    }
+
+    return { valid: errors.length === 0, errors, invalidEls };
+  }
+
+  isPart3Complete() {
+    return this.validatePart3(false).valid;
+  }
+
+  validatePart4(harvest = false) {
+    if (harvest) this.harvestFormInputs();
+    const p = this.activePlan || {};
+    const errors = [];
+    const invalidEls = [];
+
+    const p3 = this.validatePart3(false);
+    if (!p3.valid) {
+      return { valid: false, errors: ['Please complete all mandatory questions in Part-I, Part-II, and Part-III first.'], invalidEls: p3.invalidEls };
+    }
+
+    const decl = p.declaration || {};
+    const declCheck = document.getElementById('cp-decl-check');
+    const declBox = document.getElementById('cp-decl-box');
+    if ((declCheck && !declCheck.checked) || !decl.confirmed) {
+      errors.push('Declaration Confirmation Checkbox (must be checked)');
+      if (declBox) invalidEls.push(declBox);
+      else if (declCheck) invalidEls.push(declCheck);
+    }
+
+    const sigEl = document.getElementById('cp-decl-fac-sig');
+    if (!decl.faculty_signature || !decl.faculty_signature.trim()) {
+      errors.push('Faculty Digital Signature');
+      if (sigEl) invalidEls.push(sigEl);
+    }
+
+    const dateEl = document.getElementById('cp-decl-fac-date');
+    if (!decl.submission_date || !decl.submission_date.trim()) {
+      errors.push('Submission Date');
+      if (dateEl) invalidEls.push(dateEl);
+    }
+
+    return { valid: errors.length === 0, errors, invalidEls };
+  }
+
+  isPart4Complete() {
+    return this.validatePart4(false).valid;
+  }
+
+  proceedToTab(targetTab) {
+    this.harvestFormInputs();
+    if (targetTab === 'part2') {
+      const v = this.validatePart1();
+      if (!v.valid) {
+        this.showValidationFeedback('section-part1', v.errors, v.invalidEls);
+        return;
+      }
+    } else if (targetTab === 'part3') {
+      const v = this.validatePart2();
+      if (!v.valid) {
+        this.showValidationFeedback('section-part2', v.errors, v.invalidEls);
+        return;
+      }
+    } else if (targetTab === 'declaration') {
+      const v = this.validatePart3();
+      if (!v.valid) {
+        this.showValidationFeedback('section-part3', v.errors, v.invalidEls);
+        return;
+      }
+    }
+    this.clearValidationHighlights();
+    this.switchFormTab(targetTab);
+  }
+
+  // ================= TAB SWITCHING =================
+  switchFormTab(tabKey) {
+    this.harvestFormInputs();
+
+    // Prevent jumping forward if previous sections are not completely filled
+    if (tabKey === 'part2') {
+      const v = this.validatePart1();
+      if (!v.valid) {
+        this.showValidationFeedback('section-part1', v.errors, v.invalidEls);
+        return;
+      }
+    } else if (tabKey === 'part3') {
+      const v = this.validatePart2();
+      if (!v.valid) {
+        this.showValidationFeedback('section-part2', v.errors, v.invalidEls);
+        return;
+      }
+    } else if (tabKey === 'declaration') {
+      const v = this.validatePart3();
+      if (!v.valid) {
+        this.showValidationFeedback('section-part3', v.errors, v.invalidEls);
+        return;
+      }
+    }
+
+    this.clearValidationHighlights();
+    this.activeFormTab = tabKey;
+    ['part1', 'part2', 'part3', 'declaration'].forEach(k => {
+      const el = document.getElementById(`section-${k}`);
+      if (el) {
+        if (k === tabKey) el.classList.remove('hidden');
+        else el.classList.add('hidden');
+      }
+    });
+    this.render();
+    window.scrollTo({ top: 120, behavior: 'smooth' });
+  }
+
+  // ================= DATA LOGIC & ACTIONS =================
+  createNewPlan() {
+    this.startNewCoursePlan();
+  }
+
+  startNewCoursePlan() {
+    if (this.systemSettings && !this.systemSettings.submissions_enabled) {
+      if (!confirm('⚠️ Notice: Course Plan Submissions are currently CLOSED by the IQAC Administrator.\n\nYou can still view or draft course details, but final submission to HOD will remain blocked until submissions are re-opened.\n\nDo you want to proceed to the form anyway?')) {
+        return;
+      }
+    }
+    this.navigateTo('/course-plan/new');
+  }
+
+  async editPlan(id) {
+    this.editCoursePlan(id);
+  }
+
+  async editCoursePlan(id) {
+    if (this.systemSettings && !this.systemSettings.submissions_enabled) {
+      if (!confirm('⚠️ Notice: Course Plan Submissions are currently CLOSED by the IQAC Administrator.\n\nYou can view and update your draft, but final submission to HOD is locked.\n\nDo you want to proceed to the form anyway?')) {
+        return;
+      }
+    }
+    this.navigateTo(`/course-plan/edit?id=${id}`);
+  }
+
+  async previewPlan(id) {
+    this.printSource = 'dashboard';
+    this.navigateTo(`/course-plan/view?id=${id}`);
+  }
+
+  async previewCurrentPlan() {
+    this.harvestFormInputs();
+    if (this.activeFormTab !== 'declaration') {
+      alert('🔒 Print Preview is enabled after reaching Part-IV (Declaration & HOD Approval). Please complete each section and proceed to Part-IV.');
+      return;
+    }
+
+    // Auto-save draft before entering Print Preview so no progress is ever lost
+    await this.silentSaveDraft();
+
+    this.printSource = 'form';
+    this.printReturnTab = 'declaration';
+    this.viewMode = 'print';
+    this.render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  backToForm() {
+    this.viewMode = 'form';
+    this.activeFormTab = this.printReturnTab || 'declaration';
+    this.render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async backToDashboard() {
+    if (this.viewMode === 'form' && this.activePlan) {
+      await this.silentSaveDraft();
+    }
+    if (!this.currentUser) {
+      this.navigateTo('/course-plan/login');
+      return;
+    }
+    if (this.currentUser.role === 'hod') {
+      this.navigateTo('/course-plan/hod');
+    } else if (this.currentUser.role === 'admin') {
+      this.navigateTo('/course-plan/admin');
+    } else {
+      this.navigateTo('/course-plan/dashboard');
+    }
+  }
+
+  async silentSaveDraft() {
+    if (!this.activePlan) return;
+    try {
+      this.harvestFormInputs();
+      if (!this.activePlan.status || this.activePlan.status === 'Draft') {
+        this.activePlan.status = 'Draft';
+      }
+
+      // 1. Immediately persist to localStorage
+      try {
+        localStorage.setItem('CP_ACTIVE_PLAN_DRAFT', JSON.stringify(this.activePlan));
+      } catch (e) {}
+
+      // 2. Persist to server database
+      const res = await fetch('/api/course-plan-bridge?action=save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(this.activePlan)
+      });
+      const json = await res.json();
+      if (json && json.success) {
+        if (json.id && (!this.activePlan.id || this.activePlan.id === 'new')) {
+          this.activePlan.id = json.id;
+        }
+        const idx = this.plans.findIndex(p => String(p.id) === String(this.activePlan.id));
+        if (idx !== -1) {
+          this.plans[idx] = JSON.parse(JSON.stringify(this.activePlan));
+        } else {
+          this.plans.unshift(JSON.parse(JSON.stringify(this.activePlan)));
+        }
+        this.showToast('✓ Progress auto-saved as Draft', 'success');
+      }
+    } catch (err) {
+      console.warn('Auto-save draft warning:', err);
+    }
+  }
+
+  showToast(msg, type = 'success') {
+    let toast = document.getElementById('cp-global-toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'cp-global-toast';
+      document.body.appendChild(toast);
+    }
+    const bgClass = (type === 'error') ? 'bg-rose-700 border-rose-400' : 'bg-indigo-700 border-indigo-400';
+    toast.className = `fixed bottom-6 right-6 z-50 ${bgClass} text-white px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-2.5 border-2 text-xs font-bold animate-fadeIn`;
+    toast.innerHTML = `
+      <i data-lucide="${type === 'error' ? 'alert-circle' : 'check'}" class="w-4 h-4 text-white"></i>
+      <span>${msg}</span>
+      <button type="button" onclick="this.parentElement.remove()" class="text-white/70 hover:text-white font-bold ml-1">✕</button>
+    `;
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
+    }
+    setTimeout(() => {
+      if (toast && toast.parentElement) toast.remove();
+    }, 3500);
+  }
+
+  switchDepartment(deptName) {
+    this.selectedDept = deptName;
+    localStorage.setItem('CP_SELECTED_DEPT', deptName);
+    this.fetchPlans().then(() => this.render());
+  }
+
+  onFormDeptChange(newDept) {
+    this.harvestFormInputs();
+    this.activePlan.department_name = newDept;
+    this.selectedDept = newDept;
+    localStorage.setItem('CP_SELECTED_DEPT', newDept);
+    // Reset faculty selection so user selects from the new department
+    this.activePlan.faculty_name = '';
+    this.activePlan.faculty_email = '';
+    this.render();
+  }
+
+  onFormFacultyChange(facName) {
+    if (!this.activePlan) this.activePlan = this.createDefaultPlan();
+    this.activePlan.faculty_name = facName;
+    if (!this.activePlan.declaration) this.activePlan.declaration = {};
+    this.activePlan.declaration.faculty_signature = facName;
+
+    const deptObj = this.getCurrentDepartmentObj();
+    const facObj = (deptObj.faculty || []).find(f => f.name === facName);
+    const hint = document.getElementById('cp-faculty-email-hint');
+    if (hint && facObj) {
+      hint.textContent = facObj.email ? `Email: ${facObj.email} | Shift: ${facObj.shift}` : '';
+      if (facObj.email) this.activePlan.faculty_email = facObj.email;
+    } else if (hint) {
+      hint.textContent = '';
+    }
+    const declSig = document.getElementById('cp-decl-fac-sig');
+    if (declSig) declSig.value = facName;
+
+    this.updateFacultyWelcomeBanner(facName);
+  }
+
+  updateFacultyWelcomeBanner(facName) {
+    const box = document.getElementById('cp-banner-instructions-box');
+    if (box) box.remove();
+    const welcomeEl = document.getElementById('cp-banner-welcome');
+    if (welcomeEl) welcomeEl.remove();
+    const instEl = document.getElementById('cp-banner-instructions');
+    if (instEl) instEl.remove();
+  }
+
+  onAdminStatusFilterChange(status) {
+    this.adminFilter = status;
+    this.fetchPlans().then(() => this.render());
+  }
+
+  onAdminDeptFilterChange(dept) {
+    this.adminDeptFilter = dept;
+    this.fetchPlans().then(() => this.render());
+  }
+
+  createDefaultPlan() {
+    const isFaculty = this.currentUser && (this.currentUser.role === 'faculty' || this.currentUser.role === 'hod');
+    const curDept = isFaculty ? this.currentUser.department_name : this.selectedDept;
+    const progs = this.getDepartmentProgrammes(curDept);
+    const defaultProg = (progs && progs.length > 0) ? progs[0] : '';
+    const defaultYc = (defaultProg.startsWith('M.') || defaultProg.includes('MCA') || defaultProg.includes('Master')) ? 'I PG' : 'I UG';
+    const p = {
+      id: null,
+      department_name: curDept,
+      faculty_name: isFaculty ? this.currentUser.faculty_name : '',
+      faculty_email: isFaculty ? (this.currentUser.faculty_email || '') : '',
+      programme: defaultProg,
+      year_class: defaultYc,
+      section: 'N/A',
+      semester: 'II',
+      academic_year: '2026 - 2027',
+      course_code: '',
+      course_title: '',
+      course_category: 'Core',
+      teaching_hours: '',
+      credits: '',
+      is_shared_course: false,
+      shared_faculty_name: '',
+      course_outcomes: [
+        { code: 'CO1', outcome: '', k_level: 'K1' },
+        { code: 'CO2', outcome: '', k_level: 'K2' },
+        { code: 'CO3', outcome: '', k_level: 'K3' },
+        { code: 'CO4', outcome: '', k_level: 'K4' },
+        { code: 'CO5', outcome: '', k_level: 'K5' },
+        { code: 'CO6', outcome: '', k_level: 'K6' }
+      ],
+      detailed_teaching_plan: [
+        { month_days: 'November / 10', unit: '', from_topic: '', to_topic: '', hours: '', methodology: '', resources: '' },
+        { month_days: 'November / 10', unit: '', from_topic: '', to_topic: '', hours: '', methodology: '', resources: '' },
+        { month_days: 'December / 19', unit: '', from_topic: '', to_topic: '', hours: '', methodology: '', resources: '' },
+        { month_days: 'December / 19', unit: '', from_topic: '', to_topic: '', hours: '', methodology: '', resources: '' },
+        { month_days: 'January / 13', unit: '', from_topic: '', to_topic: '', hours: '', methodology: '', resources: '' },
+        { month_days: 'January / 13', unit: '', from_topic: '', to_topic: '', hours: '', methodology: '', resources: '' },
+        { month_days: 'February / 22', unit: '', from_topic: '', to_topic: '', hours: '', methodology: '', resources: '' },
+        { month_days: 'February / 22', unit: '', from_topic: '', to_topic: '', hours: '', methodology: '', resources: '' },
+        { month_days: 'March / 12', unit: '', from_topic: '', to_topic: '', hours: '', methodology: '', resources: '' },
+        { month_days: 'March / 12', unit: '', from_topic: '', to_topic: '', hours: '', methodology: '', resources: '' }
+      ],
+      unit_completion_plan: [
+        { unit: 'Unit I', planned_hours: '', actual_hours: '', target_date: '' },
+        { unit: 'Unit II', planned_hours: '', actual_hours: '', target_date: '' },
+        { unit: 'Unit III', planned_hours: '', actual_hours: '', target_date: '' },
+        { unit: 'Unit IV', planned_hours: '', actual_hours: '', target_date: '' },
+        { unit: 'Unit V', planned_hours: '', actual_hours: '', target_date: '' }
+      ],
+      learning_activities: [],
+      assessment_plan: [],
+      ict_integration: [
+        { sno: '1', topic: '', tool: '', platform: 'JosTEL', purpose: '' }
+      ],
+      declaration: {
+        confirmed: false,
+        faculty_signature: '',
+        submission_date: new Date().toISOString().split('T')[0],
+        reviewer_name: '',
+        review_date: '',
+        hod_name: '',
+        approval_date: ''
+      },
+      status: 'Draft',
+      hod_status: 'Draft'
+    };
+    p.assessment_plan = this.getFullAssessmentPlan(p);
+    return p;
+  }
+
+  syncUCPPlannedHoursFromDTP() {
+    const unitTotals = {
+      'Unit I': 0,
+      'Unit II': 0,
+      'Unit III': 0,
+      'Unit IV': 0,
+      'Unit V': 0
+    };
+
+    const dtpRows = document.querySelectorAll('#cp-dtp-tbody tr');
+    dtpRows.forEach(tr => {
+      const isHidden = tr.querySelector('.dtp-is-hidden')?.value === 'true';
+      if (isHidden) return;
+      const unit = tr.querySelector('.dtp-unit')?.value;
+      const hrs = parseFloat(tr.querySelector('.dtp-hours')?.value) || 0;
+      if (unit && unitTotals[unit] !== undefined) {
+        unitTotals[unit] += hrs;
+      }
+    });
+
+    const ucpRows = document.querySelectorAll('#cp-ucp-tbody tr:not(:last-child)');
+    const units = ['Unit I', 'Unit II', 'Unit III', 'Unit IV', 'Unit V'];
+    ucpRows.forEach((tr, i) => {
+      const unitKey = units[i];
+      const inp = tr.querySelector('.ucp-planned');
+      if (inp && unitKey) {
+        const val = unitTotals[unitKey] || 0;
+        inp.value = val > 0 ? val : '';
+      }
+    });
+
+    this.calculateTotalHours();
+  }
+
+  calculateTotalHours() {
+    const plannedInputs = document.querySelectorAll('.ucp-planned');
+    const actualInputs = document.querySelectorAll('.ucp-actual');
+    let totalP = 0;
+    let totalA = 0;
+    plannedInputs.forEach(inp => { totalP += parseFloat(inp.value) || 0; });
+    actualInputs.forEach(inp => { totalA += parseFloat(inp.value) || 0; });
+
+    const elP = document.getElementById('ucp-total-planned');
+    const elA = document.getElementById('ucp-total-actual');
+    if (elP) elP.textContent = `${totalP} Hrs`;
+    if (elA) elA.textContent = `${totalA} Hrs`;
+  }
+
+  // Row additions
+  addCORow() {
+    this.harvestFormInputs();
+    const count = (this.activePlan.course_outcomes || []).length + 1;
+    this.activePlan.course_outcomes.push({ code: `CO${count}`, outcome: '', k_level: 'K' + (count <= 6 ? count : 1) });
+    this.render();
+  }
+
+  deleteCORow(idx) {
+    this.harvestFormInputs();
+    this.activePlan.course_outcomes.splice(idx, 1);
+    this.render();
+  }
+
+  toggleTeachingPlanRow(idx) {
+    this.harvestFormInputs();
+    if (!this.activePlan.detailed_teaching_plan || !this.activePlan.detailed_teaching_plan[idx]) return;
+    this.activePlan.detailed_teaching_plan[idx].is_hidden = !this.activePlan.detailed_teaching_plan[idx].is_hidden;
+    this.render();
+  }
+
+  addTeachingPlanRow() {
+    this.harvestFormInputs();
+    if (!this.activePlan.detailed_teaching_plan) this.activePlan.detailed_teaching_plan = [];
+    this.activePlan.detailed_teaching_plan.push({
+      month_days: 'November / 10', unit: '', from_topic: '', to_topic: '', hours: '', methodology: '', resources: ''
+    });
+    this.render();
+  }
+
+  addTeachingPlanRowForMonth(monthDays, afterIndex) {
+    this.harvestFormInputs();
+    if (!this.activePlan.detailed_teaching_plan) this.activePlan.detailed_teaching_plan = [];
+
+    const newRow = {
+      month_days: monthDays || '',
+      unit: '',
+      from_topic: '',
+      to_topic: '',
+      hours: '',
+      methodology: '',
+      resources: ''
+    };
+
+    if (afterIndex !== undefined && afterIndex !== null && afterIndex >= 0 && afterIndex < this.activePlan.detailed_teaching_plan.length) {
+      this.activePlan.detailed_teaching_plan.splice(afterIndex + 1, 0, newRow);
+    } else {
+      this.activePlan.detailed_teaching_plan.push(newRow);
+    }
+    this.render();
+  }
+
+  deleteTeachingPlanRow(idx) {
+    this.harvestFormInputs();
+    this.activePlan.detailed_teaching_plan.splice(idx, 1);
+    this.render();
+  }
+
+
+  openActivityModal(actIndex = null) {
+    const isEdit = (actIndex !== null && actIndex !== undefined && actIndex >= 0);
+    const existing = isEdit ? (this.activePlan.learning_activities[actIndex] || {}) : null;
+
+    let modal = document.getElementById('activity-entry-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'activity-entry-modal';
+      document.body.appendChild(modal);
+    }
+
+    const isPG = this.isPGPlan(this.activePlan);
+    const courseCode = document.getElementById('cp-course-code')?.value || this.activePlan?.course_code || '';
+    const yearClass = document.getElementById('cp-year-class')?.value || this.activePlan?.year_class || (isPG ? 'PG Course' : 'UG Course');
+
+    // Prepopulate selected activities
+    let selectedActs = [];
+    let customOtherText = '';
+    if (existing && existing.activity) {
+      selectedActs = existing.activity.split(',').map(s => s.trim()).filter(Boolean);
+      const otherItem = selectedActs.find(s => s.startsWith('Other:') || (!CoursePlanApp.LEARNING_ACTIVITIES.includes(s) && s !== 'Other:'));
+      if (otherItem) {
+        customOtherText = otherItem.startsWith('Other:') ? otherItem.replace('Other:', '').trim() : otherItem;
+      }
+    }
+
+    const isAssessment = existing ? !!existing.is_assessment : false;
+    const curCiaComp = existing?.cia_component || (isPG ? 'C2 – K4' : 'C2 – K4');
+    const curCiaMarks = existing?.cia_marks || (isPG ? '6' : '10');
+
+    modal.innerHTML = `
+      <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-2 sm:p-4 animate-fadeIn">
+        <div class="bg-white rounded-2xl sm:rounded-3xl max-w-xl w-full p-4 sm:p-6 shadow-2xl border border-slate-200 animate-scaleIn space-y-4 max-h-[92vh] overflow-y-auto">
+          
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div class="flex items-center gap-2.5">
+              <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold shadow-sm">
+                <i data-lucide="layers" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h3 class="text-sm font-black text-slate-900">${isEdit ? 'Edit Learning Activity' : 'Add Learning Activity'}</h3>
+                <p class="text-[11px] text-slate-500">Part-III: Formative learning tasks & CIA assessment linkage</p>
+              </div>
+            </div>
+            <button type="button" onclick="document.getElementById('activity-entry-modal').remove()" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 font-bold text-sm">✕</button>
+          </div>
+
+          <form onsubmit="event.preventDefault(); coursePlanApp.saveActivityFromModal(${isEdit ? actIndex : 'null'});" class="space-y-4 text-xs">
+            
+            <!-- Learning Activity Multi-Select Autocomplete -->
+            <div class="space-y-1.5">
+              <label class="block font-black text-slate-800">
+                Learning Activity * <span class="font-normal text-slate-500">(Search & select one or more)</span>
+              </label>
+
+              <!-- Selected Activity Badges Container -->
+              <div id="modal-act-badges" class="min-h-[38px] p-2 border border-slate-300 rounded-xl bg-slate-50/50 flex flex-wrap items-center gap-1.5">
+                ${selectedActs.length === 0 ? `
+                  <span class="text-slate-400 text-[11px] italic">No activities selected yet. Pick from list below.</span>
+                ` : `
+                  ${selectedActs.map(act => `
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-100 text-indigo-900 border border-indigo-200 shadow-2xs">
+                      <span>${this.escapeHtml(act)}</span>
+                      <button type="button" onclick="coursePlanApp.removeModalActivityItem('${this.escapeHtml(act)}')" class="text-indigo-400 hover:text-indigo-800 font-black ml-0.5">✕</button>
+                    </span>
+                  `).join('')}
+                `}
+              </div>
+
+              <!-- Search Autocomplete Filter Input -->
+              <div class="relative">
+                <input 
+                  type="text" 
+                  id="modal-act-search" 
+                  placeholder="" 
+                  oninput="coursePlanApp.filterModalActivityList(this.value)" 
+                  class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl focus:border-indigo-600 focus:outline-none bg-white font-medium"
+                />
+              </div>
+
+              <!-- Scrollable Options List -->
+              <div id="modal-act-options-list" class="max-h-44 overflow-y-auto border border-slate-200 rounded-xl p-1.5 space-y-0.5 divide-y divide-slate-100 bg-white">
+                ${CoursePlanApp.LEARNING_ACTIVITIES.map(opt => {
+      const isChecked = opt === 'Other:' ? selectedActs.some(s => s === 'Other:' || s.startsWith('Other:')) : selectedActs.includes(opt);
+      return `
+                    <label class="modal-act-opt-item flex items-center gap-2.5 px-2.5 py-1.5 hover:bg-indigo-50/70 rounded-lg cursor-pointer text-xs font-semibold text-slate-800">
+                      <input 
+                        type="checkbox" 
+                        class="modal-act-checkbox rounded text-indigo-600 focus:ring-0 cursor-pointer" 
+                        value="${opt}" 
+                        ${isChecked ? 'checked' : ''} 
+                        onchange="coursePlanApp.toggleModalActivityCheckbox('${opt}', this.checked)"
+                      />
+                      <span class="act-name-label">${opt}</span>
+                    </label>
+                  `;
+    }).join('')}
+              </div>
+
+              <!-- Custom Other Input -->
+              <div id="modal-act-other-container" class="${selectedActs.some(s => s === 'Other:' || s.startsWith('Other:')) ? '' : 'hidden'} pt-1">
+                <label class="block text-[11px] font-bold text-slate-700 mb-1">Specify Custom Activity *</label>
+                <input 
+                  type="text" 
+                  id="modal-act-other-input" 
+                  placeholder="e.g. Design Sprint / Interactive Simulation" 
+                  value="${this.escapeHtml(customOtherText)}" 
+                  oninput="coursePlanApp.onModalOtherActivityInput(this.value)" 
+                  class="w-full text-xs px-3 py-2 border border-indigo-400 bg-indigo-50/30 rounded-xl font-bold focus:border-indigo-600 focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <!-- Unit / Topic -->
+            <div>
+              <label class="block font-black text-slate-800 mb-1">Related Unit / Topic *</label>
+              <input 
+                type="text" 
+                id="modal-act-topic" 
+                value="${this.escapeHtml(existing?.topic || '')}" 
+                placeholder="e.g. Unit II - Dynamic Programming & Trees" 
+                class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-medium focus:border-indigo-600 focus:outline-none"
+              />
+            </div>
+
+            <!-- Expected Learning Outcome -->
+            <div>
+              <label class="block font-black text-slate-800 mb-1">Expected Learning Outcome *</label>
+              <textarea 
+                id="modal-act-outcome" 
+                rows="2" 
+                placeholder="e.g. Ability to analyze problem constraints, develop recursive logic, and formulate state transitions (CO3, K4)" 
+                class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl leading-relaxed font-medium focus:border-indigo-600 focus:outline-none"
+              >${this.escapeHtml(existing?.outcome || '')}</textarea>
+            </div>
+
+            <!-- Proposed Date (From - To) -->
+            <div>
+              <label class="block font-black text-slate-800 mb-1">Proposed Date (From – To) *</label>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <span class="block text-[10.5px] font-bold text-slate-600 mb-1">From Date *</span>
+                  <input 
+                    type="date" 
+                    id="modal-act-date-from" 
+                    value="${existing?.proposed_date_from || (existing?.proposed_date ? existing.proposed_date.split(' to ')[0] : '') || ''}" 
+                    class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-mono font-bold focus:border-indigo-600 focus:outline-none bg-white"
+                  />
+                </div>
+                <div>
+                  <span class="block text-[10.5px] font-bold text-slate-600 mb-1">To Date *</span>
+                  <input 
+                    type="date" 
+                    id="modal-act-date-to" 
+                    value="${existing?.proposed_date_to || (existing?.proposed_date ? (existing.proposed_date.includes(' to ') ? existing.proposed_date.split(' to ')[1] : existing.proposed_date) : '') || ''}" 
+                    class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-mono font-bold focus:border-indigo-600 focus:outline-none bg-white"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Convert it as assessment Toggle / Checkbox -->
+            <div class="pt-2">
+              <label class="flex items-center gap-3 p-3 bg-gradient-to-r from-indigo-50 to-amber-50/40 border-2 border-indigo-200 rounded-2xl cursor-pointer hover:border-indigo-400 transition shadow-2xs">
+                <input 
+                  type="checkbox" 
+                  id="modal-act-is-assessment" 
+                  ${isAssessment ? 'checked' : ''} 
+                  onchange="coursePlanApp.toggleModalAssessmentSection(this.checked)" 
+                  class="w-4 h-4 text-indigo-600 rounded focus:ring-0 cursor-pointer"
+                />
+                <div class="flex-1">
+                  <div class="font-black text-indigo-950 text-xs flex items-center gap-1.5">
+                    <i data-lucide="award" class="w-4 h-4 text-amber-600"></i>
+                    <span>Convert it as assessment</span>
+                  </div>
+                  <div class="text-[10.5px] text-slate-500 font-medium">If ticked, automatically links to Part III-B Assessment Plan with CIA component & marks</div>
+                </div>
+              </label>
+            </div>
+
+            <!-- CIA Component and Marks Section (shown only when Convert it as assessment is ticked) -->
+            <div id="modal-act-assessment-fields" class="${isAssessment ? '' : 'hidden'} p-4 bg-amber-50/80 border-2 border-amber-300 rounded-2xl space-y-3.5 animate-fadeIn">
+              <div class="flex items-center justify-between border-b border-amber-200 pb-2">
+                <span class="text-xs font-black uppercase text-amber-900 tracking-wider flex items-center gap-1.5">
+                  <i data-lucide="check-circle" class="w-4 h-4 text-amber-700"></i>
+                  <span>CIA Assessment Details</span>
+                </span>
+                <span class="text-xs ${isPG ? 'bg-purple-100 text-purple-900 border border-purple-300' : 'bg-blue-100 text-blue-900 border border-blue-300'} font-black px-2.5 py-1 rounded-full flex items-center gap-1 shadow-2xs">
+                  <i data-lucide="${isPG ? 'graduation-cap' : 'book-open'}" class="w-3.5 h-3.5"></i>
+                  <span>${isPG ? 'Postgraduate (PG) Scale' : 'Undergraduate (UG) Scale'}</span>
+                </span>
+              </div>
+
+              <div class="space-y-3">
+                <!-- CIA Component Radio Buttons -->
+                <div>
+                  <div class="flex items-baseline justify-between mb-1.5">
+                    <label class="block font-black text-amber-950 text-xs">
+                      Select CIA Assessment Component *
+                    </label>
+                  </div>
+                  <p class="text-[10.5px] text-amber-800 mb-2 font-medium">
+                    Select a component for this continuous assessment. Once allocated, a component cannot be selected again:
+                  </p>
+
+                  <div class="space-y-2 bg-white/90 p-3 rounded-xl border border-amber-300">
+                    ${(() => {
+        const ugOptions = [
+          { comp: 'C2 – K4', marks: '10', label: 'C2 – K4 (10 Marks)' },
+          { comp: 'C2 – K5', marks: '10', label: 'C2 – K5 (10 Marks)' },
+          { comp: 'Library Referencing – K3', marks: '5', label: 'Library Referencing – K3 (5 Marks)' }
+        ];
+
+        const pgOptions = [
+          { comp: 'C2 – K4', marks: '6', label: 'C2 – K4 (6 Marks)' },
+          { comp: 'C2 – K5', marks: '6', label: 'C2 – K5 (6 Marks)' },
+          { comp: 'C2 – K6', marks: '8', label: 'C2 – K6 (8 Marks)' },
+          { comp: 'Library Referencing – K3', marks: '5', label: 'Library Referencing – K3 (5 Marks)' }
+        ];
+
+        const options = isPG ? pgOptions : ugOptions;
+
+        // Identify already allocated components in other activities
+        const allocatedComps = (this.activePlan.learning_activities || [])
+          .filter((a, idx) => a && a.is_assessment && idx !== actIndex)
+          .map(a => a.cia_component);
+
+        // Determine default selection (first unallocated option)
+        let selectedComp = existing?.cia_component;
+        if (!selectedComp) {
+          const firstFree = options.find(o => !allocatedComps.includes(o.comp));
+          selectedComp = firstFree ? firstFree.comp : options[0].comp;
+        }
+
+        return options.map((opt) => {
+          const isAllocated = allocatedComps.includes(opt.comp);
+          const isChecked = (selectedComp === opt.comp) && !isAllocated;
+
+          return `
+                          <label class="flex items-center gap-2.5 p-2 rounded-lg ${isAllocated ? 'opacity-40 cursor-not-allowed bg-slate-100 text-slate-400 border border-slate-200' : 'hover:bg-amber-100/70 cursor-pointer border border-transparent has-checked:border-amber-400 has-checked:bg-amber-100/80 transition'}">
+                            <input 
+                              type="radio" 
+                              name="modal_cia_comp_radio" 
+                              value="${opt.comp}" 
+                              data-marks="${opt.marks}" 
+                              ${isChecked ? 'checked' : ''} 
+                              ${isAllocated ? 'disabled' : ''}
+                              onchange="coursePlanApp.onModalCiaRadioChange('${opt.comp}', '${opt.marks}')" 
+                              class="text-amber-600 focus:ring-0 ${isAllocated ? 'cursor-not-allowed' : 'cursor-pointer'}"
+                            />
+                            <div class="flex items-center justify-between flex-1">
+                              <span class="font-bold text-xs ${isAllocated ? 'line-through text-slate-400' : 'text-amber-950'}">${opt.label}</span>
+                              <div class="flex items-center gap-1.5">
+                                ${isAllocated ? '<span class="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-slate-200 text-slate-600">Already Allocated</span>' : ''}
+                                <span class="px-2 py-0.5 rounded text-[10px] font-black ${isAllocated ? 'bg-slate-200 text-slate-500' : 'bg-amber-200 text-amber-900'}">${opt.marks} M</span>
+                              </div>
+                            </div>
+                          </label>
+                        `;
+        }).join('');
+      })()}
+                  </div>
+                  <div class="text-[10px] text-amber-800/80 font-medium mt-1">C1 (15M), Mid Sem (30M) & End Sem (30M) are pre-filled institutional exams.</div>
+                </div>
+
+                <!-- Hidden inputs for marks & component so value is preserved without showing label or text -->
+                <input type="hidden" id="modal-act-cia-marks" value="${existing?.cia_marks || (isPG ? '6' : '10')}" />
+                <input type="hidden" id="modal-act-cia-comp-hidden" value="${existing?.cia_component || (isPG ? 'C2 – K4' : 'C2 – K4')}" />
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
+              <button 
+                type="button" 
+                onclick="document.getElementById('activity-entry-modal').remove()" 
+                class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button 
+                type="submit" 
+                class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl text-xs transition flex items-center gap-1.5 shadow-md shadow-indigo-600/25 cursor-pointer active:scale-95"
+              >
+                <i data-lucide="check" class="w-4 h-4"></i>
+                <span>${isEdit ? 'Update Activity' : 'Save Activity'}</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    `;
+
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
+    }
+  }
+
+  filterModalActivityList(query) {
+    const q = (query || '').toLowerCase().trim();
+    const items = document.querySelectorAll('#modal-act-options-list .modal-act-opt-item');
+    items.forEach(el => {
+      const txt = el.textContent.toLowerCase();
+      if (!q || txt.includes(q)) {
+        el.style.display = 'flex';
+      } else {
+        el.style.display = 'none';
+      }
+    });
+  }
+
+  toggleModalActivityCheckbox(option, isChecked) {
+    let currentActs = this.getModalSelectedActivities();
+    if (option === 'Other:') {
+      const otherContainer = document.getElementById('modal-act-other-container');
+      const otherInput = document.getElementById('modal-act-other-input');
+      if (isChecked) {
+        if (otherContainer) otherContainer.classList.remove('hidden');
+        if (otherInput) otherInput.focus();
+        if (!currentActs.some(s => s === 'Other:' || s.startsWith('Other:'))) {
+          const val = otherInput?.value?.trim() || '';
+          currentActs.push(val ? `Other: ${val}` : 'Other:');
+        }
+      } else {
+        if (otherContainer) otherContainer.classList.add('hidden');
+        currentActs = currentActs.filter(s => s !== 'Other:' && !s.startsWith('Other:'));
+      }
+    } else {
+      if (isChecked) {
+        if (!currentActs.includes(option)) currentActs.push(option);
+      } else {
+        currentActs = currentActs.filter(s => s !== option);
+      }
+    }
+
+    this.renderModalActivityBadges(currentActs);
+  }
+
+  onModalOtherActivityInput(val) {
+    let currentActs = this.getModalSelectedActivities();
+    const trimmed = val.trim();
+    const entry = trimmed ? `Other: ${trimmed}` : 'Other:';
+    const idx = currentActs.findIndex(s => s === 'Other:' || s.startsWith('Other:'));
+    if (idx >= 0) {
+      currentActs[idx] = entry;
+    } else {
+      currentActs.push(entry);
+    }
+    this.renderModalActivityBadges(currentActs);
+  }
+
+  removeModalActivityItem(item) {
+    let currentActs = this.getModalSelectedActivities();
+    if (item === 'Other:' || item.startsWith('Other:')) {
+      currentActs = currentActs.filter(s => s !== 'Other:' && !s.startsWith('Other:'));
+      const chk = document.querySelector('#modal-act-options-list input[value="Other:"]');
+      if (chk) chk.checked = false;
+      const otherContainer = document.getElementById('modal-act-other-container');
+      if (otherContainer) otherContainer.classList.add('hidden');
+    } else {
+      currentActs = currentActs.filter(s => s !== item);
+      const chk = document.querySelector(`#modal-act-options-list input[value="${item}"]`);
+      if (chk) chk.checked = false;
+    }
+    this.renderModalActivityBadges(currentActs);
+  }
+
+  getModalSelectedActivities() {
+    const badges = document.querySelectorAll('#modal-act-badges [data-act-val]');
+    const list = [];
+    badges.forEach(b => {
+      const v = b.getAttribute('data-act-val');
+      if (v) list.push(v);
+    });
+    return list;
+  }
+
+  renderModalActivityBadges(list) {
+    const container = document.getElementById('modal-act-badges');
+    if (!container) return;
+
+    if (list.length === 0) {
+      container.innerHTML = `<span class="text-slate-400 text-[11px] italic">No activities selected yet. Pick from list below.</span>`;
+      return;
+    }
+
+    container.innerHTML = list.map(item => `
+      <span data-act-val="${this.escapeHtml(item)}" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-100 text-indigo-900 border border-indigo-200 shadow-2xs">
+        <span>${this.escapeHtml(item)}</span>
+        <button type="button" onclick="coursePlanApp.removeModalActivityItem('${this.escapeHtml(item)}')" class="text-indigo-400 hover:text-indigo-800 font-black ml-0.5">✕</button>
+      </span>
+    `).join('');
+  }
+
+  toggleModalAssessmentSection(isChecked) {
+    const section = document.getElementById('modal-act-assessment-fields');
+    if (section) {
+      if (isChecked) {
+        section.classList.remove('hidden');
+      } else {
+        section.classList.add('hidden');
+      }
+    }
+  }
+
+  onModalCiaRadioChange(comp, marks) {
+    const marksInput = document.getElementById('modal-act-cia-marks');
+    if (marksInput) marksInput.value = marks;
+    const compInput = document.getElementById('modal-act-cia-comp-hidden');
+    if (compInput) compInput.value = comp;
+  }
+
+  onModalCiaCompChange(comp) {
+    const marksInput = document.getElementById('modal-act-cia-marks');
+    if (!marksInput) return;
+    const isPG = this.isPGPlan(this.activePlan);
+
+    if (comp.includes('C1')) {
+      marksInput.value = '15';
+    } else if (comp.includes('Mid Sem') || comp.includes('End Sem')) {
+      marksInput.value = '30';
+    } else if (comp.includes('Library')) {
+      marksInput.value = '5';
+    } else if (comp.includes('K6')) {
+      marksInput.value = '8';
+    } else if (comp.includes('K4') || comp.includes('K5')) {
+      marksInput.value = isPG ? '6' : '10';
+    } else {
+      marksInput.value = isPG ? '6' : '10';
+    }
+  }
+
+  saveActivityFromModal(actIndex = null) {
+    const isPG = this.isPGPlan(this.activePlan);
+    const acts = this.getModalSelectedActivities();
+    if (acts.length === 0) {
+      alert('Please select at least one Learning Activity.');
+      return;
+    }
+
+    const topic = document.getElementById('modal-act-topic')?.value?.trim() || '';
+    const outcome = document.getElementById('modal-act-outcome')?.value?.trim() || '';
+    const dateFrom = document.getElementById('modal-act-date-from')?.value || '';
+    const dateTo = document.getElementById('modal-act-date-to')?.value || '';
+    const isAssessment = document.getElementById('modal-act-is-assessment')?.checked || false;
+
+    const selectedRadio = document.querySelector('input[name="modal_cia_comp_radio"]:checked');
+    const defaultComp = isPG ? 'C2 – K4' : 'C2 – K4';
+    const defaultMarks = isPG ? '6' : '10';
+    const ciaComp = selectedRadio ? selectedRadio.value : (document.getElementById('modal-act-cia-comp-hidden')?.value || defaultComp);
+    const ciaMarks = selectedRadio ? selectedRadio.getAttribute('data-marks') : (document.getElementById('modal-act-cia-marks')?.value || defaultMarks);
+
+    if (!topic) {
+      alert('Please enter Related Unit / Topic.');
+      document.getElementById('modal-act-topic')?.focus();
+      return;
+    }
+    if (!outcome) {
+      alert('Please enter Expected Learning Outcome.');
+      document.getElementById('modal-act-outcome')?.focus();
+      return;
+    }
+    if (!dateFrom) {
+      alert('Please select Proposed From Date.');
+      document.getElementById('modal-act-date-from')?.focus();
+      return;
+    }
+
+    const formattedDate = (dateFrom && dateTo && dateFrom !== dateTo)
+      ? `${this.formatDateToDDMMYYYY(dateFrom)} to ${this.formatDateToDDMMYYYY(dateTo)}`
+      : this.formatDateToDDMMYYYY(dateFrom);
+
+    if (!this.activePlan.learning_activities) this.activePlan.learning_activities = [];
+
+    const activityObj = {
+      sno: String((actIndex !== null ? actIndex : this.activePlan.learning_activities.length) + 1),
+      activity: acts.join(', '),
+      topic,
+      outcome,
+      proposed_date: formattedDate,
+      proposed_date_from: dateFrom,
+      proposed_date_to: dateTo || dateFrom,
+      is_assessment: isAssessment,
+      cia_component: isAssessment ? ciaComp : '',
+      cia_marks: isAssessment ? ciaMarks : ''
+    };
+
+    if (actIndex !== null && actIndex >= 0 && actIndex < this.activePlan.learning_activities.length) {
+      this.activePlan.learning_activities[actIndex] = activityObj;
+    } else {
+      this.activePlan.learning_activities.push(activityObj);
+    }
+
+    // Automatically synchronize Section B (Assessment Plan)
+    this.syncAssessmentPlanFromActivities();
+
+    const modal = document.getElementById('activity-entry-modal');
+    if (modal) modal.remove();
+
+    this.render();
+  }
+
+  syncAssessmentPlanFromActivities() {
+    if (!this.activePlan) return;
+    this.activePlan.assessment_plan = this.getFullAssessmentPlan(this.activePlan);
+  }
+
+  addActivityRow() {
+    this.openActivityModal();
+  }
+
+  deleteActivityRow(idx) {
+    this.harvestFormInputs();
+    this.activePlan.learning_activities.splice(idx, 1);
+    this.syncAssessmentPlanFromActivities();
+    this.render();
+  }
+
+  addAssessmentRow() {
+    this.harvestFormInputs();
+    const count = (this.activePlan.assessment_plan || []).length + 1;
+    this.activePlan.assessment_plan.push({ sno: String(count), component: '', marks: '', category: '', unit_coverage: '', from_date: '', to_date: '', cos_assessed: '' });
+    this.render();
+  }
+
+  deleteAssessmentRow(idx) {
+    this.harvestFormInputs();
+    this.activePlan.assessment_plan.splice(idx, 1);
+    this.render();
+  }
+
+  addICTRow() {
+    this.harvestFormInputs();
+    const count = (this.activePlan.ict_integration || []).length + 1;
+    this.activePlan.ict_integration.push({ sno: String(count), topic: '', tool: '', platform: 'JosTEL', purpose: '' });
+    this.render();
+  }
+
+  deleteICTRow(idx) {
+    this.harvestFormInputs();
+    this.activePlan.ict_integration.splice(idx, 1);
+    this.render();
+  }
+
+  harvestFormInputs() {
+    if (!this.activePlan) this.activePlan = this.createDefaultPlan();
+
+    if (this.currentUser && this.currentUser.role === 'faculty') {
+      this.activePlan.department_name = this.currentUser.department_name;
+      this.activePlan.faculty_name = this.currentUser.faculty_name;
+      this.activePlan.faculty_email = this.currentUser.faculty_email || '';
+    } else {
+      this.activePlan.department_name = document.getElementById('cp-dept-name')?.value || this.selectedDept;
+      this.activePlan.faculty_name = document.getElementById('cp-faculty-name')?.value || '';
+    }
+    this.activePlan.programme = document.getElementById('cp-programme')?.value || '';
+    this.activePlan.year_class = document.getElementById('cp-year-class')?.value || 'I UG';
+    this.activePlan.section = document.getElementById('cp-section')?.value || 'N/A';
+    const isSharedRadio = document.querySelector('input[name="course_sharing_mode"]:checked');
+    const isShared = isSharedRadio ? (isSharedRadio.value === 'shared') : !!this.activePlan.is_shared_course;
+    const sharedFac = document.getElementById('cp-shared-faculty-name')?.value || this.activePlan.shared_faculty_name || '';
+
+    this.activePlan.is_shared_course = isShared;
+    this.activePlan.shared_faculty_name = isShared ? sharedFac.trim() : '';
+    if (!this.activePlan.general_details) this.activePlan.general_details = {};
+    this.activePlan.general_details.is_shared_course = isShared;
+    this.activePlan.general_details.shared_faculty_name = this.activePlan.shared_faculty_name;
+
+    this.activePlan.semester = document.getElementById('cp-semester')?.value || 'II';
+    this.activePlan.course_code = document.getElementById('cp-course-code')?.value || '';
+    this.activePlan.course_title = document.getElementById('cp-course-title')?.value || '';
+    this.activePlan.course_category = document.getElementById('cp-course-category')?.value || 'Core';
+    this.activePlan.teaching_hours = document.getElementById('cp-teaching-hours')?.value || '';
+    this.activePlan.credits = document.getElementById('cp-credits')?.value || '';
+
+    // COs
+    const coRows = document.querySelectorAll('#cp-cos-tbody tr');
+    const cos = [];
+    coRows.forEach(tr => {
+      cos.push({
+        code: tr.querySelector('.co-code')?.value || '',
+        outcome: tr.querySelector('.co-outcome')?.value || '',
+        k_level: tr.querySelector('.co-klevel')?.value || tr.querySelector('.co-klevel-hidden')?.value || 'K1'
+      });
+    });
+    if (cos.length > 0) this.activePlan.course_outcomes = cos;
+
+    // Course Category fallback to hidden input if disabled
+    this.activePlan.course_category = document.getElementById('cp-course-category')?.value || document.getElementById('cp-course-category-hidden')?.value || 'Core';
+
+    // Detailed Teaching Plan
+    const dtpRows = document.querySelectorAll('#cp-dtp-tbody tr');
+    const dtp = [];
+    dtpRows.forEach(tr => {
+      const fromTopic = tr.querySelector('.dtp-from-topic')?.value || '';
+      const toTopic = tr.querySelector('.dtp-to-topic')?.value || '';
+      const isHidden = tr.querySelector('.dtp-is-hidden')?.value === 'true';
+      dtp.push({
+        month_days: tr.querySelector('.dtp-month')?.value || '',
+        unit: tr.querySelector('.dtp-unit')?.value || '',
+        from_topic: fromTopic,
+        to_topic: toTopic,
+        topics: fromTopic + (toTopic ? ' to ' + toTopic : ''),
+        hours: tr.querySelector('.dtp-hours')?.value || '',
+        methodology: tr.querySelector('.dtp-method-value')?.value || '',
+        resources: tr.querySelector('.dtp-res-value')?.value || (tr.querySelector('.dtp-res-select')?.value === 'Others'
+          ? (tr.querySelector('.dtp-res-other')?.value || 'Others')
+          : (tr.querySelector('.dtp-res-select')?.value || '')),
+        is_hidden: isHidden
+      });
+    });
+    if (dtp.length > 0) this.activePlan.detailed_teaching_plan = dtp;
+
+    // Unit Completion Plan
+    const ucpRows = document.querySelectorAll('#cp-ucp-tbody tr:not(:last-child)');
+    const ucp = [];
+    const units = ['Unit I', 'Unit II', 'Unit III', 'Unit IV', 'Unit V'];
+    ucpRows.forEach((tr, i) => {
+      ucp.push({
+        unit: units[i] || `Unit ${i + 1}`,
+        planned_hours: tr.querySelector('.ucp-planned')?.value || '',
+        actual_hours: tr.querySelector('.ucp-actual')?.value || '',
+        target_date: tr.querySelector('.ucp-date')?.value || '',
+        handled_by: tr.querySelector('.ucp-handled-by')?.value || ''
+      });
+    });
+    if (ucp.length > 0) this.activePlan.unit_completion_plan = ucp;
+
+    // Harvest Assessed By in CIA Assessment Details
+    const asstRows = document.querySelectorAll('#cp-assts-tbody tr:not(:last-child)');
+    if (asstRows.length > 0 && this.activePlan.assessment_plan) {
+      asstRows.forEach((tr, i) => {
+        const assessedByVal = tr.querySelector('.cia-assessed-by')?.value;
+        if (assessedByVal && this.activePlan.assessment_plan[i]) {
+          this.activePlan.assessment_plan[i].assessed_by = assessedByVal;
+        }
+      });
+    }
+
+    // Learning Activities & Assessment Plan (Section B is auto-synced from Section A)
+    this.syncAssessmentPlanFromActivities();
+
+    // ICT Integration
+    const ictRows = document.querySelectorAll('#cp-icts-tbody tr');
+    const icts = [];
+    ictRows.forEach((tr, i) => {
+      const toolSelect = tr.querySelector('.ict-tool-select')?.value || '';
+      const toolOther = tr.querySelector('.ict-tool-other')?.value || '';
+      const finalTool = (toolSelect === 'Others' ? (toolOther || 'Others') : toolSelect);
+
+      const platSelect = tr.querySelector('.ict-platform-select')?.value || '';
+      const platOther = tr.querySelector('.ict-platform-other')?.value || '';
+      const finalPlat = (platSelect === 'Others' ? (platOther || 'Others') : (platSelect || 'JosTEL'));
+
+      icts.push({
+        sno: String(i + 1),
+        topic: tr.querySelector('.ict-topic')?.value || '',
+        tool: finalTool,
+        tool_type: toolSelect,
+        tool_other: toolOther,
+        platform: finalPlat,
+        platform_type: platSelect,
+        platform_other: platOther,
+        purpose: tr.querySelector('.ict-purpose')?.value || ''
+      });
+    });
+    // Keep rows that have at least one field filled, or at least 1 row
+    const filledIcts = icts.filter(r => (r.topic || '').trim() || (r.tool || '').trim() || (r.platform || '').trim() || (r.purpose || '').trim());
+    this.activePlan.ict_integration = (filledIcts.length > 0) ? filledIcts : (icts.slice(0, 1).length > 0 ? icts.slice(0, 1) : [{ sno: '1', topic: '', tool: '', platform: 'JosTEL', purpose: '' }]);
+
+    // Declaration
+    const declCheckEl = document.getElementById('cp-decl-check');
+    this.activePlan.declaration = {
+      confirmed: declCheckEl ? declCheckEl.checked : (this.activePlan.declaration?.confirmed || false),
+      faculty_signature: document.getElementById('cp-decl-fac-sig')?.value || this.activePlan.faculty_name,
+      submission_date: document.getElementById('cp-decl-fac-date')?.value || new Date().toISOString().split('T')[0]
+    };
+  }
+
+  async saveCurrentPlan(status = 'Draft') {
+    this.harvestFormInputs();
+    this.activePlan.status = status;
+
+    if (status === 'Submitted') {
+      if (this.systemSettings && !this.systemSettings.submissions_enabled) {
+        alert('🔒 Course plan submissions are currently CLOSED by the IQAC Administrator.\n\nYou cannot submit this course plan to HOD until submissions are re-opened.');
+        return;
+      }
+      if (this.activeFormTab !== 'declaration') {
+        alert('🔒 Submit to HOD is enabled after completing IV Declaration & HOD Approval. Please proceed to Part-IV to review and submit.');
+        return;
+      }
+      const v = this.validatePart4();
+      if (!v.valid) {
+        this.showValidationFeedback('section-declaration', v.errors, v.invalidEls);
+        return;
+      }
+    } else {
+      if (!this.activePlan.faculty_name && !this.activePlan.course_code) {
+        // Allow saving draft with minimal info, but prompt if completely blank
+        if (!confirm('Faculty name and course details are not yet selected. Save empty draft anyway?')) return;
+      }
+    }
+
+    try {
+      const res = await fetch('/api/course-plan-bridge?action=save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(this.activePlan)
+      });
+      const json = await res.json();
+      if (json.success) {
+        if (status === 'Submitted') {
+          const facName = this.activePlan.faculty_name || 'Professor';
+          const cCode = this.activePlan.course_code || '';
+          const cTitle = this.activePlan.course_title || '';
+          this.showSubmissionSuccessModal(facName, cCode, cTitle);
+        } else {
+          alert('✓ Course plan draft saved successfully!');
+        }
+      } else {
+        alert(json.error || 'Failed to save course plan');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Error saving course plan. Please check server connection.');
+    }
+  }
+
+  showSubmissionSuccessModal(facultyName, courseCode, courseTitle) {
+    const modalId = 'submission-success-modal';
+    let el = document.getElementById(modalId);
+    if (!el) {
+      el = document.createElement('div');
+      el.id = modalId;
+      document.body.appendChild(el);
+    }
+
+    const courseDisplay = courseCode && courseTitle ? `${courseCode} – ${courseTitle}` : (courseCode || courseTitle || 'Course');
+
+    el.innerHTML = `
+      <div class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/75 backdrop-blur-xs animate-fadeIn overflow-y-auto">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-lg p-6 sm:p-8 text-center space-y-6 my-auto animate-scaleIn">
+          
+          <!-- Success Check Icon -->
+          <div class="w-16 h-16 sm:w-20 sm:h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
+            <i data-lucide="check-circle-2" class="w-10 h-10 sm:w-12 sm:h-12"></i>
+          </div>
+
+          <!-- Message Header & Body -->
+          <div class="space-y-3">
+            <span class="inline-block px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-full border border-emerald-200 uppercase tracking-wider">
+              Submission Recorded
+            </span>
+            <h3 class="text-xl sm:text-2xl font-black text-slate-900 leading-snug">
+              Thank you, <span class="text-indigo-600">${facultyName}</span>!
+            </h3>
+            <p class="text-sm sm:text-base text-slate-700 font-medium leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-200">
+              Your course plan for <strong class="text-slate-900">${courseDisplay}</strong> is recorded and submitted to HoD review.
+            </p>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+            <button 
+              type="button" 
+              onclick="coursePlanApp.navigateTo('/course-plan/dashboard')" 
+              class="w-full sm:w-auto px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold rounded-xl text-sm transition shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+            >
+              <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+              <span>Go to My Dashboard</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.submitNextCourse()" 
+              class="w-full sm:w-auto px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-sm transition border border-slate-300 flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+            >
+              <i data-lucide="plus-circle" class="w-4 h-4 text-slate-500"></i>
+              <span>Submit for Next Course</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.closeCurrentTab()" 
+              class="w-full sm:w-auto px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-sm transition border border-slate-300 flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+            >
+              <i data-lucide="x-circle" class="w-4 h-4 text-slate-500"></i>
+              <span>Close Tab</span>
+            </button>
+          </div>
+
+          <!-- Fallback helper note if browser security blocks window.close -->
+          <div id="close-tab-fallback-msg" class="hidden text-xs text-slate-400 font-medium">
+            (If the tab remains open, you can safely close this browser tab manually)
+          </div>
+        </div>
+      </div>
+    `;
+
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
+    }
+  }
+
+  submitNextCourse() {
+    const el = document.getElementById('submission-success-modal');
+    if (el) el.innerHTML = '';
+
+    // Retain department, faculty name and email for quick sequential entry
+    const isFaculty = this.currentUser && (this.currentUser.role === 'faculty' || this.currentUser.role === 'hod');
+    const curDept = isFaculty ? this.currentUser.department_name : (this.activePlan ? this.activePlan.department_name : this.selectedDept);
+    const curFac = isFaculty ? this.currentUser.faculty_name : (this.activePlan ? this.activePlan.faculty_name : '');
+    const curEmail = isFaculty ? (this.currentUser.faculty_email || '') : (this.activePlan ? this.activePlan.faculty_email : '');
+    const curSem = this.activePlan ? this.activePlan.semester : 'II';
+    const curProg = this.activePlan ? this.activePlan.programme : '';
+
+    this.activePlan = this.createDefaultPlan();
+    this.activePlan.department_name = curDept;
+    this.activePlan.faculty_name = curFac;
+    this.activePlan.faculty_email = curEmail;
+    this.activePlan.semester = curSem;
+    this.activePlan.programme = curProg;
+    if (this.activePlan.declaration) {
+      this.activePlan.declaration.faculty_signature = curFac;
+    }
+
+    this.navigateTo('/course-plan/new');
+  }
+
+  closeCurrentTab() {
+    window.close();
+    const fallback = document.getElementById('close-tab-fallback-msg');
+    if (fallback) fallback.classList.remove('hidden');
+    setTimeout(() => {
+      try {
+        window.open('', '_self', '');
+        window.close();
+      } catch (e) { }
+    }, 250);
+  }
+
+  async deletePlan(id) {
+    if (!confirm('Are you sure you want to delete this course plan draft?')) return;
+    try {
+      const res = await fetch('/api/course-plan-bridge?action=delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+      const json = await res.json();
+      if (json.success) {
+        this.fetchPlans().then(() => this.render());
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  // ================= 6. HOD REVIEW MODAL & APPROVAL =================
+  async openHODReviewModal(planId) {
+    if (!planId) {
+      console.warn('openHODReviewModal called with missing planId');
+      return;
+    }
+    document.getElementById('hod-review-modal')?.remove();
+
+    // Find in local plans cache if available (using string-safe comparison)
+    const cachedPlan = (this.plans || []).find(p => String(p.id) === String(planId));
+
+    let fullPlan = cachedPlan || { id: planId };
+    try {
+      const res = await fetch(`/api/course-plan-bridge?action=get&id=${encodeURIComponent(planId)}`);
+      const json = await res.json();
+      if (json && json.success && json.data) {
+        fullPlan = json.data;
+      }
+    } catch (e) {
+      console.warn('Could not fetch full plan from API, using cached:', e);
+    }
+
+    if (!fullPlan || (!fullPlan.id && !cachedPlan)) {
+      alert('Course plan details could not be loaded.');
+      return;
+    }
+
+    // Determine HOD display name safely
+    let defaultHODName = fullPlan.hod_name || '';
+    if (!defaultHODName && this.currentUser) {
+      defaultHODName = (this.currentUser.display_name || this.currentUser.faculty_name || 'Head of the Department')
+        .replace(/^HOD\s*-\s*/i, '')
+        .replace(/^HOD\s+/i, '');
+    }
+
+    const cosCount = Array.isArray(fullPlan.course_outcomes)
+      ? fullPlan.course_outcomes.length
+      : (typeof fullPlan.course_outcomes === 'object' && fullPlan.course_outcomes ? Object.keys(fullPlan.course_outcomes).length : 0);
+
+    const subDate = (fullPlan.declaration && typeof fullPlan.declaration === 'object' && fullPlan.declaration.submission_date)
+      ? fullPlan.declaration.submission_date
+      : (fullPlan.updated_at || fullPlan.created_at || '—');
+
+    const modalHtml = `
+      <div id="hod-review-modal" class="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
+        <div class="bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 w-full max-w-3xl overflow-hidden flex flex-col max-h-[92vh]" onclick="event.stopPropagation()">
+          
+          <div class="p-4 sm:p-6 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+            <div>
+              <div class="text-[10px] uppercase font-bold text-amber-700">HOD Verification &amp; Review</div>
+              <h3 class="text-base font-extrabold text-slate-900">${this.escapeHtml(fullPlan.course_code || '—')}: ${this.escapeHtml(fullPlan.course_title || 'Untitled Course')}</h3>
+              <p class="text-xs text-slate-500">Submitted by <strong>${this.escapeHtml(fullPlan.faculty_name || 'Faculty Member')}</strong> for ${this.escapeHtml(fullPlan.department_name || '')}</p>
+            </div>
+            <button type="button" onclick="document.getElementById('hod-review-modal')?.remove()" class="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-200 cursor-pointer">
+              <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+          </div>
+
+          <div class="p-6 overflow-y-auto space-y-4 text-xs">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 p-3 bg-slate-50 rounded-xl border border-slate-200">
+              <div><span class="font-bold text-slate-600">Programme:</span> ${this.escapeHtml(fullPlan.programme || '—')}</div>
+              <div><span class="font-bold text-slate-600">Year &amp; Class:</span> ${this.escapeHtml(fullPlan.year_class || '—')}</div>
+              <div><span class="font-bold text-slate-600">Teaching Hours:</span> ${this.escapeHtml(fullPlan.teaching_hours || '—')}</div>
+              <div><span class="font-bold text-slate-600">Credits:</span> ${this.escapeHtml(fullPlan.credits || '—')}</div>
+              <div><span class="font-bold text-slate-600">Course Outcomes:</span> ${cosCount} COs mapped</div>
+              <div><span class="font-bold text-slate-600">Submission Date:</span> ${this.escapeHtml(subDate)}</div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Head of the Department Name *</label>
+              <input type="text" id="hod-review-name" value="${this.escapeHtml(defaultHODName)}" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-bold bg-white text-slate-900 focus:ring-2 focus:ring-amber-500" required />
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Reviewer Remarks / Approval Notes</label>
+              <textarea id="hod-review-comments" rows="3" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl bg-white text-slate-900 focus:ring-2 focus:ring-amber-500" placeholder="Course plan reviewed and verified against syllabus standards...">${this.escapeHtml(fullPlan.hod_remarks || fullPlan.hod_comments || '')}</textarea>
+            </div>
+
+            <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-[11px] text-emerald-800 flex items-center gap-2">
+              <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+              <span><strong>Institutional Assurance:</strong> Upon approving, this course plan will be certified with your HOD approval timestamp and forwarded directly to the central IQAC dashboard.</span>
+            </div>
+          </div>
+
+          <div class="p-3.5 sm:p-5 border-t border-slate-200 bg-slate-50 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+            <button 
+              type="button" 
+              onclick="coursePlanApp.previewPlan('${fullPlan.id}')" 
+              class="px-4 py-2 bg-white text-slate-700 font-bold border border-slate-300 rounded-xl text-xs hover:bg-slate-100 flex items-center justify-center gap-1.5 w-full sm:w-auto cursor-pointer"
+            >
+              <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+              <span>View Document Preview</span>
+            </button>
+
+            <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap w-full sm:w-auto">
+              <button 
+                type="button" 
+                onclick="coursePlanApp.submitHODDecision('${fullPlan.id}', 'Revision Needed')" 
+                class="flex-1 sm:flex-initial px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold rounded-xl text-xs transition border border-rose-200 text-center cursor-pointer"
+              >
+                Request Revision
+              </button>
+              <button 
+                type="button" 
+                onclick="coursePlanApp.submitHODDecision('${fullPlan.id}', 'Approved')" 
+                class="flex-1 sm:flex-initial px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/25 cursor-pointer"
+              >
+                <i data-lucide="check-check" class="w-4 h-4"></i>
+                <span>Approve &amp; Certify</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
+    }
+  }
+
+  async submitHODDecision(planId, decision) {
+    const hodName = document.getElementById('hod-review-name')?.value || '';
+    const hodComments = document.getElementById('hod-review-comments')?.value || '';
+    const modalEl = document.getElementById('hod-review-modal');
+
+    // Show loading indicator on buttons
+    const btns = modalEl ? modalEl.querySelectorAll('button') : [];
+    btns.forEach(b => { b.disabled = true; });
+
+    try {
+      const res = await fetch('/api/course-plan-bridge?action=hod_action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: planId, decision, hod_name: hodName, hod_comments: hodComments })
+      });
+      const json = await res.json();
+      if (json.success) {
+        alert(json.message || 'Decision recorded successfully.');
+        modalEl?.remove();
+        await this.fetchPlans();
+        this.render();
+      } else {
+        alert(json.error || 'Failed to submit decision.');
+        btns.forEach(b => { b.disabled = false; });
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Error communicating with server: ' + e.message);
+      btns.forEach(b => { b.disabled = false; });
+    }
+  }
+
+  // ================= 7. LOGIN MODAL (HOD & IQAC ADMIN) =================
+  openLoginModal(defaultTab = 'hod') {
+    const existing = document.getElementById('course-plan-login-modal');
+    if (existing) existing.remove();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const startAsAdmin = defaultTab === 'admin' || urlParams.has('admin');
+
+    const modalHtml = `
+      <div id="course-plan-login-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden animate-scaleIn">
+          
+          <div class="p-6 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold">
+                <i data-lucide="lock" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <h3 id="login-modal-title" class="text-sm font-extrabold text-slate-900">
+                  ${startAsAdmin ? 'IQAC System Administrator' : 'Head of Department (HOD) Login'}
+                </h3>
+                <p id="login-modal-subtitle" class="text-[11px] text-slate-500">
+                  ${startAsAdmin ? 'Manage faculties, courses & departmental audit' : 'Sign in to review and approve departmental course plans'}
+                </p>
+              </div>
+            </div>
+            <button type="button" onclick="document.getElementById('course-plan-login-modal').remove()" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-200 cursor-pointer">
+              <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+          <div class="p-6 space-y-4">
+            <!-- HOD Login Form -->
+            <div id="login-form-hod" class="space-y-3.5 text-xs ${startAsAdmin ? 'hidden' : ''}">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-700 mb-1">Select Department</label>
+                <select id="login-hod-dept" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl bg-white font-bold text-slate-800 focus:outline-none focus:border-indigo-600">
+                  ${this.departments.map(d => `
+                    <option value="${d.name}" ${d.name === this.selectedDept ? 'selected' : ''}>${d.name}</option>
+                  `).join('')}
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-slate-700 mb-1">HOD Password</label>
+                <input type="password" id="login-hod-pass" value="" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-mono focus:outline-none focus:border-indigo-600" placeholder="Enter HOD password" autocomplete="current-password" />
+              </div>
+
+              <button 
+                type="button" 
+                onclick="coursePlanApp.performLogin('hod')" 
+                class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition shadow-sm cursor-pointer active:scale-95"
+              >
+                Sign In as HOD
+              </button>
+            </div>
+
+            <!-- Admin Login Form -->
+            <div id="login-form-admin" class="space-y-3.5 text-xs ${startAsAdmin ? '' : 'hidden'}">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-700 mb-1">Admin Username</label>
+                <input type="text" id="login-admin-user" value="" placeholder="Enter admin username" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-bold font-mono focus:outline-none focus:border-indigo-600" />
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-slate-700 mb-1">Admin Password</label>
+                <input type="password" id="login-admin-pass" value="" placeholder="Enter admin password" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl font-mono focus:outline-none focus:border-indigo-600" autocomplete="current-password" />
+              </div>
+
+              <button 
+                type="button" 
+                onclick="coursePlanApp.performLogin('admin')" 
+                class="w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl text-xs transition shadow-sm cursor-pointer active:scale-95"
+              >
+                Sign In as Administrator
+              </button>
+            </div>
+
+            <div class="pt-3 text-[11px] text-slate-400 border-t border-slate-100 flex items-center justify-between">
+              <button type="button" onclick="document.getElementById('course-plan-login-modal').remove()" class="text-indigo-600 font-bold hover:underline cursor-pointer">
+                ← Return to Faculty Course Plan
+              </button>
+              <button 
+                type="button" 
+                id="login-toggle-role-btn" 
+                onclick="coursePlanApp.toggleAdminLoginForm()" 
+                class="text-slate-400 hover:text-slate-600 text-[10px] font-medium transition cursor-pointer"
+              >
+                ${startAsAdmin ? 'Switch to HOD Login' : 'Administrator Sign-in'}
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    if (window.lucide) lucide.createIcons();
+  }
+
+  toggleAdminLoginForm() {
+    const formHod = document.getElementById('login-form-hod');
+    const formAdmin = document.getElementById('login-form-admin');
+    const title = document.getElementById('login-modal-title');
+    const subtitle = document.getElementById('login-modal-subtitle');
+    const toggleBtn = document.getElementById('login-toggle-role-btn');
+    if (!formHod || !formAdmin) return;
+
+    if (formAdmin.classList.contains('hidden')) {
+      formHod.classList.add('hidden');
+      formAdmin.classList.remove('hidden');
+      if (title) title.textContent = 'IQAC System Administrator';
+      if (subtitle) subtitle.textContent = 'Manage faculties, courses & departmental audit';
+      if (toggleBtn) toggleBtn.textContent = 'Switch to HOD Login';
+    } else {
+      formAdmin.classList.add('hidden');
+      formHod.classList.remove('hidden');
+      if (title) title.textContent = 'Head of Department (HOD) Login';
+      if (subtitle) subtitle.textContent = 'Sign in to review and approve departmental course plans';
+      if (toggleBtn) toggleBtn.textContent = 'Administrator Sign-in';
+    }
+  }
+
+  switchLoginTab(tab) {
+    if (tab === 'admin') {
+      const formHod = document.getElementById('login-form-hod');
+      const formAdmin = document.getElementById('login-form-admin');
+      if (formHod) formHod.classList.add('hidden');
+      if (formAdmin) formAdmin.classList.remove('hidden');
+    } else {
+      const formHod = document.getElementById('login-form-hod');
+      const formAdmin = document.getElementById('login-form-admin');
+      if (formAdmin) formAdmin.classList.add('hidden');
+      if (formHod) formHod.classList.remove('hidden');
+    }
+  }
+
+  async performLogin(role) {
+    let payload = {};
+    if (role === 'hod') {
+      const dept = document.getElementById('login-hod-dept')?.value;
+      const pass = document.getElementById('login-hod-pass')?.value;
+      payload = { role: 'hod', department_name: dept, password: pass };
+    } else {
+      const user = document.getElementById('login-admin-user')?.value;
+      const pass = document.getElementById('login-admin-pass')?.value;
+      payload = { role: 'admin', username: user, password: pass };
+    }
+
+    try {
+      const res = await fetch('/api/course-plan-bridge?action=login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const json = await res.json();
+      if (json.success && json.user) {
+        this.currentUser = json.user;
+        this.viewMode = 'dashboard';
+        if (this.currentUser.role === 'hod' && this.currentUser.department_name) {
+          this.selectedDept = this.currentUser.department_name;
+        }
+        if (this.currentUser.role === 'admin') {
+          window.history.replaceState(null, '', '/course-plan/admin');
+        } else if (this.currentUser.role === 'hod') {
+          window.history.replaceState(null, '', '/course-plan/hod');
+        }
+        document.getElementById('course-plan-login-modal')?.remove();
+        await this.fetchPlans();
+        this.render();
+      } else {
+        alert(json.error || 'Login failed. Please check credentials.');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Network or server error during sign in.');
+    }
+  }
+
+
+  // ================= TL PRACTICES, ASSESSMENT COMPONENTS & E-CONTENT =================
+  getFacultyPlannedCourses() {
+    const plans = (this.plans || []).filter(p => p.course_code && p.course_title);
+    const seen = new Set();
+    const list = [];
+    for (const p of plans) {
+      const code = (p.course_code || '').trim();
+      const title = (p.course_title || '').trim();
+      const key = `${code} - ${title}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        list.push({
+          code: code,
+          title: title,
+          key: key,
+          classSection: p.year_class || p.programme || '',
+          semester: p.semester || ''
+        });
+      }
+    }
+    return list;
+  }
+
+  renderTLCourseSelect(fieldId, targetClassInputId, selectedValue = '') {
+    const courses = this.getFacultyPlannedCourses();
+    let optionsHtml = `<option value="">-- Select Planned Course --</option>`;
+
+    if (courses.length === 0) {
+      optionsHtml += `<option value="" disabled>No planned courses found (Create a Course Plan first)</option>`;
+    } else {
+      courses.forEach(c => {
+        const isSel = (selectedValue && selectedValue.trim().toLowerCase() === c.key.trim().toLowerCase()) ? 'selected' : '';
+        const label = `${c.code} - ${c.title}${c.classSection ? ` (${c.classSection})` : ''}`;
+        optionsHtml += `<option value="${this.escapeHtml(c.key)}" data-class="${this.escapeHtml(c.classSection)}" ${isSel}>${this.escapeHtml(label)}</option>`;
+      });
+    }
+
+    const isCustom = selectedValue && !courses.some(c => c.key.trim().toLowerCase() === selectedValue.trim().toLowerCase());
+    optionsHtml += `<option value="__custom__" ${isCustom ? 'selected' : ''}>➕ Enter another course manually...</option>`;
+
+    return `
+      <div class="space-y-1.5">
+        <select 
+          id="${fieldId}" 
+          onchange="coursePlanApp.onTLCourseSelect('${fieldId}', '${targetClassInputId}', this)" 
+          class="w-full px-3 py-2 text-xs font-semibold bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-800 shadow-2xs cursor-pointer"
+        >
+          ${optionsHtml}
+        </select>
+        <input 
+          type="text" 
+          id="${fieldId}_custom" 
+          value="${isCustom ? this.escapeHtml(selectedValue) : ''}" 
+          placeholder="Type Course Code & Title (e.g. 25USS230203 - Object Oriented Programming)" 
+          class="w-full px-3 py-2 text-xs font-medium bg-amber-50/50 border border-amber-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-amber-500 transition text-slate-800 ${isCustom ? '' : 'hidden'}"
+        />
+      </div>
+    `;
+  }
+
+  onTLCourseSelect(fieldId, targetClassInputId, selectEl) {
+    const val = selectEl.value;
+    const customInput = document.getElementById(`${fieldId}_custom`);
+    if (val === '__custom__') {
+      if (customInput) {
+        customInput.classList.remove('hidden');
+        customInput.focus();
+      }
+    } else {
+      if (customInput) customInput.classList.add('hidden');
+      if (targetClassInputId) {
+        const targetEl = document.getElementById(targetClassInputId);
+        const selectedOption = selectEl.options[selectEl.selectedIndex];
+        const classData = selectedOption ? selectedOption.getAttribute('data-class') : '';
+        if (targetEl && classData) {
+          targetEl.value = classData;
+        }
+      }
+    }
+  }
+
+  renderTLSelectWithOptions(fieldId, optionsList, otherInputId, selectedValue = '') {
+    let hasCustomVal = false;
+    let isStandard = optionsList.some(o => o.toLowerCase().trim() === (selectedValue || '').toLowerCase().trim());
+    if (selectedValue && !isStandard) {
+      hasCustomVal = true;
+    }
+
+    let html = `<option value="">-- Select Option --</option>`;
+    optionsList.forEach(opt => {
+      let isSel = false;
+      if (opt === 'Other') {
+        isSel = hasCustomVal || selectedValue === 'Other';
+      } else {
+        isSel = (selectedValue || '').toLowerCase().trim() === opt.toLowerCase().trim();
+      }
+      html += `<option value="${this.escapeHtml(opt)}" ${isSel ? 'selected' : ''}>${this.escapeHtml(opt)}</option>`;
+    });
+
+    const customText = hasCustomVal ? selectedValue : '';
+
+    return `
+      <div class="space-y-1.5">
+        <select 
+          id="${fieldId}" 
+          onchange="coursePlanApp.onTLSelectChange(this, '${otherInputId}')" 
+          class="w-full px-3 py-2 text-xs font-semibold bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-slate-800 shadow-2xs cursor-pointer"
+        >
+          ${html}
+        </select>
+        <input 
+          type="text" 
+          id="${otherInputId}" 
+          value="${this.escapeHtml(customText)}" 
+          placeholder="Please specify..." 
+          class="w-full px-3 py-2 text-xs font-medium bg-amber-50/50 border border-amber-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-amber-500 transition text-slate-800 ${(hasCustomVal || selectedValue === 'Other') ? '' : 'hidden'}"
+        />
+      </div>
+    `;
+  }
+
+  onTLSelectChange(selectEl, otherInputId) {
+    const otherInput = document.getElementById(otherInputId);
+    if (!otherInput) return;
+    if (selectEl.value === 'Other') {
+      otherInput.classList.remove('hidden');
+      otherInput.focus();
+    } else {
+      otherInput.classList.add('hidden');
+    }
+  }
+
+  async openTLPracticesModal() {
+    const myPlans = this.plans || [];
+    if (!myPlans || myPlans.length === 0) {
+      alert('⚠️ Step 1 Required:\n\nYou must prepare and create at least one Course Plan (Step 1) before entering Teaching-Learning Practices, Assessment Components & E-Content.\n\nPlease click "+ Create New Course Plan" to begin.');
+      return;
+    }
+
+    const user = this.currentUser || {};
+    const facultyName = user.faculty_name || user.display_name || '';
+    const deptName = user.department_name || this.selectedDept || '';
+
+    let existingData = null;
+    try {
+      const res = await fetch(`/api/course-plan-bridge?action=get_tl_practices&faculty_name=${encodeURIComponent(facultyName)}&department_name=${encodeURIComponent(deptName)}`);
+      const json = await res.json();
+      if (json.success && json.data) {
+        existingData = json.data;
+      }
+    } catch (e) {
+      console.warn('Could not fetch existing TL practices:', e);
+    }
+
+    const d = existingData || {};
+    const tl1 = d.tl_practice_1 || {};
+    const tl2 = d.tl_practice_2 || {};
+    const ass1 = d.assessment_practice_1 || {};
+    const ass2 = d.assessment_practice_2 || {};
+    const ec = d.econtent || {};
+
+    document.getElementById('tl-practices-modal')?.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'tl-practices-modal';
+    modal.className = 'fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 animate-fadeIn';
+
+    modal.innerHTML = `
+      <div class="bg-white rounded-3xl max-w-5xl w-full max-h-[94vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden" onclick="event.stopPropagation()">
+        
+        <!-- Header -->
+        <div class="p-5 sm:p-6 bg-gradient-to-r from-indigo-900 via-blue-900 to-indigo-950 text-white flex items-start justify-between gap-4 shrink-0 shadow-md">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2 flex-wrap mb-1">
+              <span class="font-bold text-[10px] sm:text-xs px-2.5 py-0.5 rounded-full bg-amber-400 text-indigo-950 uppercase tracking-wider shadow-xs">
+                IQAC Quality Initiative
+              </span>
+              <span class="text-xs text-indigo-200 font-semibold">
+                ODD Sem 2026 - 2027
+              </span>
+              ${d.id ? `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 flex items-center gap-1"><i data-lucide="check" class="w-3 h-3"></i> Previously Submitted (#${d.id})</span>` : ''}
+            </div>
+            <h2 class="text-lg sm:text-xl font-black tracking-tight text-white flex items-center gap-2">
+              <i data-lucide="sparkles" class="w-5 h-5 text-amber-300"></i>
+              <span>Teaching - Learning Practices, Assessment Components &amp; E - Contents Planned</span>
+            </h2>
+            <p class="text-xs text-indigo-200 max-w-3xl leading-relaxed font-medium">
+              St. Joseph's College (Autonomous), Tiruchirappalli • Internal Quality Assurance Cell (IQAC). Document your planned pedagogical approaches, continuous assessment components, and 4-quadrant e-content.
+            </p>
+          </div>
+
+          <button 
+            type="button" 
+            onclick="coursePlanApp.closeTLPracticesModal()" 
+            class="p-2 text-indigo-200 hover:text-white hover:bg-white/10 rounded-2xl transition cursor-pointer shrink-0"
+            title="Close Form"
+          >
+            <i data-lucide="x" class="w-6 h-6"></i>
+          </button>
+        </div>
+
+        <!-- Submissions Disabled Notice (before start filling) -->
+        ${this.systemSettings && !this.systemSettings.submissions_enabled ? `
+          <div class="mx-4 sm:mx-7 mt-4 p-4 rounded-2xl bg-rose-50 border-2 border-rose-300 text-rose-950 text-xs font-medium flex items-center justify-between flex-wrap gap-2 shadow-2xs">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-rose-200 text-rose-800 flex items-center justify-center font-black shrink-0 shadow-inner">
+                <i data-lucide="lock" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <div class="font-extrabold text-sm text-rose-950 flex items-center gap-2">
+                  <span>Submissions Currently Closed by IQAC Admin</span>
+                  <span class="px-2 py-0.5 rounded-full bg-rose-200 text-rose-900 text-[10px] font-black uppercase">Submissions Locked</span>
+                </div>
+                <div class="text-[11px] text-rose-800 mt-0.5 font-semibold">
+                  Notice before filling: Teaching-Learning Practices submissions are temporarily disabled by the administrator.
+                </div>
+              </div>
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- Status Banner inside modal -->
+        ${existingData && existingData.id ? `
+          <div class="mx-4 sm:mx-7 mt-4 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-950 text-xs font-medium flex items-center justify-between flex-wrap gap-2 shadow-2xs">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-black shrink-0 shadow-xs">
+                <i data-lucide="check" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <div class="font-extrabold text-sm text-emerald-950 flex items-center gap-2">
+                  <span>Status: Submitted &amp; Recorded in IQAC System</span>
+                  <span class="px-2 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-black uppercase">Ref #${existingData.id}</span>
+                </div>
+                <div class="text-[11px] text-emerald-700 mt-0.5">
+                  Last updated: <strong>${existingData.updated_at || existingData.created_at || 'Academic Year 2026-2027'}</strong>. Your entries are loaded below and can be updated anytime.
+                </div>
+              </div>
+            </div>
+            <button type="button" onclick="coursePlanApp.printTLPracticesSummary()" class="px-3 py-1.5 bg-white border border-emerald-300 hover:bg-emerald-100 text-emerald-800 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-2xs">
+              <i data-lucide="printer" class="w-3.5 h-3.5"></i> Print Summary
+            </button>
+          </div>
+        ` : `
+          <div class="mx-4 sm:mx-7 mt-4 p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-950 text-xs font-medium flex items-center gap-3 shadow-2xs">
+            <div class="w-8 h-8 rounded-full bg-amber-500 text-white flex items-center justify-center font-black shrink-0 shadow-xs">
+              <i data-lucide="info" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="font-extrabold text-sm text-amber-950">Status: Not Yet Submitted (Pending)</div>
+              <div class="text-[11px] text-amber-800 mt-0.5">
+                Fill in Sections A (Pedagogy), B (Assessment), and C (E-Content) below, then click "Save &amp; Submit Details" to record your practices.
+              </div>
+            </div>
+          </div>
+        `}
+
+        <!-- Form Body (Scrollable) -->
+        <form id="tl-practices-form" onsubmit="coursePlanApp.saveTLPracticesForm(event)" class="flex-1 overflow-y-auto p-4 sm:p-7 space-y-6 bg-slate-50/70">
+          <input type="hidden" id="tl_id" value="${d.id || ''}" />
+
+          <!-- Card 1: Faculty Information -->
+          <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-2xs space-y-4">
+            <div class="flex items-center gap-2 text-slate-800 font-black text-xs sm:text-sm border-b border-slate-100 pb-3">
+              <i data-lucide="user-check" class="w-4 h-4 text-indigo-600"></i>
+              <span>Faculty &amp; Department Information</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">
+                  Name of the Faculty <span class="text-rose-500">*</span>
+                </label>
+                <input 
+                  type="text" 
+                  id="tl_fac_name" 
+                  value="${this.escapeHtml(d.faculty_name || facultyName)}" 
+                  required 
+                  class="w-full px-3.5 py-2 text-xs font-bold bg-slate-100 border border-slate-300 rounded-xl text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 transition"
+                />
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">
+                  Department <span class="text-rose-500">*</span>
+                </label>
+                <input 
+                  type="text" 
+                  id="tl_dept_name" 
+                  value="${this.escapeHtml(d.department_name || deptName)}" 
+                  required 
+                  class="w-full px-3.5 py-2 text-xs font-bold bg-slate-100 border border-slate-300 rounded-xl text-slate-800 focus:bg-white focus:ring-2 focus:ring-indigo-500 transition"
+                />
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">
+                  Institutional E-mail ID <span class="text-rose-500">*</span>
+                </label>
+                <input 
+                  type="email" 
+                  id="tl_fac_email" 
+                  value="${this.escapeHtml(d.faculty_email || user.faculty_email || user.username || '')}" 
+                  placeholder="e.g. yourname@sjctni.edu" 
+                  required 
+                  class="w-full px-3.5 py-2 text-xs font-semibold bg-white border border-slate-300 rounded-xl text-slate-800 focus:ring-2 focus:ring-indigo-500 transition"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Section A: Teaching - Learning Practices -->
+          <div class="bg-white p-5 sm:p-6 rounded-2xl border border-blue-200/80 shadow-2xs space-y-5">
+            <div class="flex items-center justify-between border-b border-blue-100 pb-3 flex-wrap gap-2">
+              <div class="flex items-center gap-2">
+                <span class="w-6 h-6 rounded-lg bg-blue-600 text-white font-black text-xs flex items-center justify-center">A</span>
+                <h3 class="text-sm font-black text-slate-900">Section A: Teaching - Learning Practices</h3>
+              </div>
+              <span class="text-[11px] font-semibold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200">
+                Course dropdown displays only your planned courses
+              </span>
+            </div>
+
+            <!-- Practice 1 -->
+            <div class="p-4 sm:p-5 rounded-2xl bg-blue-50/40 border border-blue-100 space-y-3">
+              <div class="flex items-center gap-2 font-black text-xs text-blue-900">
+                <i data-lucide="bookmark" class="w-3.5 h-3.5 text-blue-600"></i>
+                <span>Practice – 1</span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Course Code - Course Title <span class="text-rose-500">*</span>
+                  </label>
+                  ${this.renderTLCourseSelect('tl_a1_course', 'tl_a1_class', tl1.course_code_title || '')}
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Class with section <span class="text-rose-500">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    id="tl_a1_class" 
+                    value="${this.escapeHtml(tl1.class_section || '')}" 
+                    placeholder="e.g. I B.Voc Software Development 'A'" 
+                    required 
+                    class="w-full px-3 py-2 text-xs font-semibold bg-white border border-slate-300 rounded-xl text-slate-800 focus:ring-2 focus:ring-indigo-500 transition shadow-2xs"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Teaching Method / Strategy <span class="text-rose-500">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    id="tl_a1_method" 
+                    value="${this.escapeHtml(tl1.teaching_method || '')}" 
+                    placeholder="e.g. Flipped Classroom, Think-Pair-Share, Live coding demos" 
+                    required 
+                    class="w-full px-3 py-2 text-xs font-semibold bg-white border border-slate-300 rounded-xl text-slate-800 focus:ring-2 focus:ring-indigo-500 transition shadow-2xs"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Approach <span class="text-rose-500">*</span>
+                  </label>
+                  ${this.renderTLSelectWithOptions('tl_a1_approach', CoursePlanApp.TL_APPROACHES, 'tl_a1_approach_other', tl1.approach || '')}
+                </div>
+              </div>
+            </div>
+
+            <!-- Practice 2 -->
+            <div class="p-4 sm:p-5 rounded-2xl bg-blue-50/40 border border-blue-100 space-y-3">
+              <div class="flex items-center gap-2 font-black text-xs text-blue-900">
+                <i data-lucide="bookmark" class="w-3.5 h-3.5 text-blue-600"></i>
+                <span>Practice – 2</span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Course Code - Course Title
+                  </label>
+                  ${this.renderTLCourseSelect('tl_a2_course', 'tl_a2_class', tl2.course_code_title || '')}
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Class with section
+                  </label>
+                  <input 
+                    type="text" 
+                    id="tl_a2_class" 
+                    value="${this.escapeHtml(tl2.class_section || '')}" 
+                    placeholder="e.g. II B.Voc Software Development" 
+                    class="w-full px-3 py-2 text-xs font-semibold bg-white border border-slate-300 rounded-xl text-slate-800 focus:ring-2 focus:ring-indigo-500 transition shadow-2xs"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Teaching Method / Strategy
+                  </label>
+                  <input 
+                    type="text" 
+                    id="tl_a2_method" 
+                    value="${this.escapeHtml(tl2.teaching_method || '')}" 
+                    placeholder="e.g. Case-based discussions, Industry problem solving" 
+                    class="w-full px-3 py-2 text-xs font-semibold bg-white border border-slate-300 rounded-xl text-slate-800 focus:ring-2 focus:ring-indigo-500 transition shadow-2xs"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Approach
+                  </label>
+                  ${this.renderTLSelectWithOptions('tl_a2_approach', CoursePlanApp.TL_APPROACHES, 'tl_a2_approach_other', tl2.approach || '')}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Section B: Assessment Components -->
+          <div class="bg-white p-5 sm:p-6 rounded-2xl border border-purple-200/80 shadow-2xs space-y-5">
+            <div class="flex items-center justify-between border-b border-purple-100 pb-3 flex-wrap gap-2">
+              <div class="flex items-center gap-2">
+                <span class="w-6 h-6 rounded-lg bg-purple-600 text-white font-black text-xs flex items-center justify-center">B</span>
+                <h3 class="text-sm font-black text-slate-900">Section B: Assessment Components</h3>
+              </div>
+              <span class="text-[11px] font-semibold text-purple-700 bg-purple-50 px-2.5 py-1 rounded-full border border-purple-200">
+                Formative &amp; Continuous Assessment Components
+              </span>
+            </div>
+
+            <!-- Assessment Practice 1 -->
+            <div class="p-4 sm:p-5 rounded-2xl bg-purple-50/40 border border-purple-100 space-y-3">
+              <div class="flex items-center gap-2 font-black text-xs text-purple-900">
+                <i data-lucide="check-circle" class="w-3.5 h-3.5 text-purple-600"></i>
+                <span>Practice – 1</span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Course Code - Course Title <span class="text-rose-500">*</span>
+                  </label>
+                  ${this.renderTLCourseSelect('tl_b1_course', 'tl_b1_class', ass1.course_code_title || '')}
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Class with section <span class="text-rose-500">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    id="tl_b1_class" 
+                    value="${this.escapeHtml(ass1.class_section || '')}" 
+                    placeholder="e.g. I B.Voc Software Development" 
+                    required 
+                    class="w-full px-3 py-2 text-xs font-semibold bg-white border border-slate-300 rounded-xl text-slate-800 focus:ring-2 focus:ring-indigo-500 transition shadow-2xs"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Component <span class="text-rose-500">*</span>
+                  </label>
+                  ${this.renderTLSelectWithOptions('tl_b1_comp', CoursePlanApp.TL_ASSESSMENT_COMPONENTS, 'tl_b1_comp_other', ass1.component || '')}
+                </div>
+              </div>
+            </div>
+
+            <!-- Assessment Practice 2 -->
+            <div class="p-4 sm:p-5 rounded-2xl bg-purple-50/40 border border-purple-100 space-y-3">
+              <div class="flex items-center gap-2 font-black text-xs text-purple-900">
+                <i data-lucide="check-circle" class="w-3.5 h-3.5 text-purple-600"></i>
+                <span>Practice – 2</span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Course Code - Course Title
+                  </label>
+                  ${this.renderTLCourseSelect('tl_b2_course', 'tl_b2_class', ass2.course_code_title || '')}
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Class
+                  </label>
+                  <input 
+                    type="text" 
+                    id="tl_b2_class" 
+                    value="${this.escapeHtml(ass2.class_section || '')}" 
+                    placeholder="e.g. II B.Voc Software Development" 
+                    class="w-full px-3 py-2 text-xs font-semibold bg-white border border-slate-300 rounded-xl text-slate-800 focus:ring-2 focus:ring-indigo-500 transition shadow-2xs"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Component
+                  </label>
+                  ${this.renderTLSelectWithOptions('tl_b2_comp', CoursePlanApp.TL_ASSESSMENT_COMPONENTS, 'tl_b2_comp_other', ass2.component || '')}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: Section C: E - Content (4 Quadrant Approach) -->
+          <div class="bg-white p-5 sm:p-6 rounded-2xl border border-emerald-200/80 shadow-2xs space-y-4">
+            <div class="flex items-center justify-between border-b border-emerald-100 pb-3 flex-wrap gap-2">
+              <div class="flex items-center gap-2">
+                <span class="w-6 h-6 rounded-lg bg-emerald-600 text-white font-black text-xs flex items-center justify-center">C</span>
+                <h3 class="text-sm font-black text-slate-900">Section C: E - Content (4 Quadrant Approach)</h3>
+              </div>
+              <span class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                Quadrants: e-Tutorial, e-Content/Text, Self-Assessment, Discussion
+              </span>
+            </div>
+
+            <div class="p-4 sm:p-5 rounded-2xl bg-emerald-50/40 border border-emerald-100 space-y-3">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Course Code - Course Title <span class="text-rose-500">*</span>
+                  </label>
+                  ${this.renderTLCourseSelect('tl_c_course', '', ec.course_code_title || '')}
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    Unit <span class="text-rose-500">*</span>
+                  </label>
+                  <select 
+                    id="tl_c_unit" 
+                    class="w-full px-3 py-2 text-xs font-semibold bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 transition text-slate-800 shadow-2xs cursor-pointer"
+                  >
+                    <option value="">-- Select Unit --</option>
+                    ${['I', 'II', 'III', 'IV', 'V'].map(u => `<option value="${u}" ${(ec.unit === u) ? 'selected' : ''}>Unit ${u}</option>`).join('')}
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">
+                    E-Content Topic <span class="text-rose-500">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    id="tl_c_topic" 
+                    value="${this.escapeHtml(ec.topic || '')}" 
+                    placeholder="e.g. Object-Oriented Polymorphism, Virtual Functions & Templates" 
+                    required 
+                    class="w-full px-3 py-2 text-xs font-semibold bg-white border border-slate-300 rounded-xl text-slate-800 focus:ring-2 focus:ring-indigo-500 transition shadow-2xs"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="tl-modal-feedback" class="hidden"></div>
+        </form>
+
+        <!-- Footer -->
+        <div class="p-4 sm:p-5 bg-white border-t border-slate-200 flex flex-wrap items-center justify-between gap-3 shrink-0">
+          <button 
+            type="button" 
+            onclick="coursePlanApp.printTLPracticesSummary()" 
+            class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center gap-1.5 cursor-pointer border border-slate-200"
+            title="Print or preview a clean institutional summary"
+          >
+            <i data-lucide="printer" class="w-4 h-4 text-slate-500"></i>
+            <span>Print Summary</span>
+          </button>
+
+          <div class="flex items-center gap-3">
+            <button 
+              type="button" 
+              onclick="coursePlanApp.closeTLPracticesModal()" 
+              class="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs transition border border-slate-300 cursor-pointer"
+            >
+              Cancel
+            </button>
+            ${this.systemSettings && !this.systemSettings.submissions_enabled ? `
+              <button 
+                type="button" 
+                disabled 
+                class="px-6 py-2.5 bg-rose-100 text-rose-800 border-2 border-rose-200 font-extrabold rounded-xl text-xs sm:text-sm flex items-center gap-2 cursor-not-allowed opacity-80"
+                title="Submissions are currently closed by IQAC Administrator."
+              >
+                <i data-lucide="lock" class="w-4 h-4 text-rose-600"></i>
+                <span>Submissions Closed by Admin</span>
+              </button>
+            ` : `
+              <button 
+                type="submit" 
+                form="tl-practices-form" 
+                id="tl-submit-btn" 
+                class="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-extrabold rounded-xl text-xs sm:text-sm transition shadow-lg shadow-indigo-600/30 flex items-center gap-2 cursor-pointer active:scale-95"
+              >
+                <i data-lucide="send" class="w-4 h-4"></i>
+                <span>Save &amp; Submit Details</span>
+              </button>
+            `}
+          </div>
+        </div>
+
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
+  }
+
+  closeTLPracticesModal() {
+    document.getElementById('tl-practices-modal')?.remove();
+  }
+
+  async saveTLPracticesForm(e) {
+    e.preventDefault();
+    if (this.systemSettings && !this.systemSettings.submissions_enabled) {
+      alert('🔒 TL Practices submissions are currently CLOSED by the IQAC Administrator.');
+      return;
+    }
+    const btn = document.getElementById('tl-submit-btn');
+    const feedback = document.getElementById('tl-modal-feedback');
+
+    const getVal = (id) => (document.getElementById(id)?.value || '').trim();
+    const getCourseVal = (id) => {
+      const selectVal = getVal(id);
+      if (selectVal === '__custom__') {
+        return getVal(`${id}_custom`);
+      }
+      return selectVal;
+    };
+    const getOptionVal = (selectId, otherId) => {
+      const sel = getVal(selectId);
+      if (sel === 'Other') {
+        const otherVal = getVal(otherId);
+        return otherVal ? `Other: ${otherVal}` : 'Other';
+      }
+      return sel;
+    };
+
+    const id = getVal('tl_id');
+    const facName = getVal('tl_fac_name');
+    const deptName = getVal('tl_dept_name');
+    const facEmail = getVal('tl_fac_email');
+
+    const tl1 = {
+      course_code_title: getCourseVal('tl_a1_course'),
+      class_section: getVal('tl_a1_class'),
+      teaching_method: getVal('tl_a1_method'),
+      approach: getOptionVal('tl_a1_approach', 'tl_a1_approach_other')
+    };
+
+    const tl2 = {
+      course_code_title: getCourseVal('tl_a2_course'),
+      class_section: getVal('tl_a2_class'),
+      teaching_method: getVal('tl_a2_method'),
+      approach: getOptionVal('tl_a2_approach', 'tl_a2_approach_other')
+    };
+
+    const ass1 = {
+      course_code_title: getCourseVal('tl_b1_course'),
+      class_section: getVal('tl_b1_class'),
+      component: getOptionVal('tl_b1_comp', 'tl_b1_comp_other')
+    };
+
+    const ass2 = {
+      course_code_title: getCourseVal('tl_b2_course'),
+      class_section: getVal('tl_b2_class'),
+      component: getOptionVal('tl_b2_comp', 'tl_b2_comp_other')
+    };
+
+    const ec = {
+      course_code_title: getCourseVal('tl_c_course'),
+      unit: getVal('tl_c_unit'),
+      topic: getVal('tl_c_topic')
+    };
+
+    if (!tl1.course_code_title || !tl1.class_section || !tl1.teaching_method || !tl1.approach) {
+      alert('Please fill all mandatory fields for Section A (Practice 1).');
+      return;
+    }
+    if (!ass1.course_code_title || !ass1.class_section || !ass1.component) {
+      alert('Please fill all mandatory fields for Section B (Practice 1).');
+      return;
+    }
+    if (!ec.course_code_title || !ec.unit || !ec.topic) {
+      alert('Please fill all mandatory fields for Section C (E-Content).');
+      return;
+    }
+
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Submitting...`;
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    try {
+      const payload = {
+        id: id ? parseInt(id, 10) : null,
+        faculty_name: facName,
+        faculty_email: facEmail,
+        department_name: deptName,
+        academic_year: '2026 - 2027',
+        semester: 'ODD Sem 2026 - 2027',
+        tl_practice_1: tl1,
+        tl_practice_2: tl2,
+        assessment_practice_1: ass1,
+        assessment_practice_2: ass2,
+        econtent: ec,
+        status: 'Submitted'
+      };
+
+      const res = await fetch('/api/course-plan-bridge?action=save_tl_practices', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        if (document.getElementById('tl_id')) {
+          document.getElementById('tl_id').value = data.id || '';
+        }
+        if (feedback) {
+          feedback.className = 'p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-2';
+          feedback.innerHTML = `<i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600 shrink-0"></i> <span>${data.message || 'Saved successfully!'}</span>`;
+          feedback.classList.remove('hidden');
+          if (window.lucide) window.lucide.createIcons();
+        }
+        this.tlPracticesData = {
+          id: data.id || payload.id,
+          status: 'Submitted',
+          updated_at: new Date().toISOString(),
+          ...payload
+        };
+        setTimeout(async () => {
+          this.closeTLPracticesModal();
+          await this.fetchPlans();
+          this.render();
+          alert('Teaching-Learning Practices, Assessment Components & E-Content submitted successfully!');
+        }, 1200);
+      } else {
+        alert(data.error || 'Failed to save submission. Please try again.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('An error occurred while saving: ' + err.message);
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> <span>Save &amp; Submit Details</span>`;
+        if (window.lucide) window.lucide.createIcons();
+      }
+    }
+  }
+
+  printTLPracticesSummary() {
+    const getVal = (id) => (document.getElementById(id)?.value || '').trim();
+    const getCourseVal = (id) => {
+      const selectVal = getVal(id);
+      return (selectVal === '__custom__') ? getVal(`${id}_custom`) : selectVal;
+    };
+    const getOptionVal = (selectId, otherId) => {
+      const sel = getVal(selectId);
+      return (sel === 'Other') ? `Other: ${getVal(otherId)}` : sel;
+    };
+
+    const facName = getVal('tl_fac_name') || (this.currentUser && this.currentUser.faculty_name) || '';
+    const deptName = getVal('tl_dept_name') || (this.currentUser && this.currentUser.department_name) || '';
+    const facEmail = getVal('tl_fac_email') || '';
+
+    const tl1Course = getCourseVal('tl_a1_course');
+    const tl1Class = getVal('tl_a1_class');
+    const tl1Method = getVal('tl_a1_method');
+    const tl1Approach = getOptionVal('tl_a1_approach', 'tl_a1_approach_other');
+
+    const tl2Course = getCourseVal('tl_a2_course');
+    const tl2Class = getVal('tl_a2_class');
+    const tl2Method = getVal('tl_a2_method');
+    const tl2Approach = getOptionVal('tl_a2_approach', 'tl_a2_approach_other');
+
+    const ass1Course = getCourseVal('tl_b1_course');
+    const ass1Class = getVal('tl_b1_class');
+    const ass1Comp = getOptionVal('tl_b1_comp', 'tl_b1_comp_other');
+
+    const ass2Course = getCourseVal('tl_b2_course');
+    const ass2Class = getVal('tl_b2_class');
+    const ass2Comp = getOptionVal('tl_b2_comp', 'tl_b2_comp_other');
+
+    const ecCourse = getCourseVal('tl_c_course');
+    const ecUnit = getVal('tl_c_unit');
+    const ecTopic = getVal('tl_c_topic');
+
+    const printWin = window.open('', '_blank', 'width=900,height=900');
+    if (!printWin) {
+      alert('Please allow popups to print the TL Practices summary.');
+      return;
+    }
+
+    printWin.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>TL Practices & Assessment Components - ${this.escapeHtml(facName)}</title>
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; margin: 30px; color: #1e293b; line-height: 1.5; font-size: 13px; }
+          .header { text-align: center; border-bottom: 2px solid #0f172a; padding-bottom: 12px; margin-bottom: 20px; }
+          .header h1 { margin: 0; font-size: 18px; color: #1e1b4b; text-transform: uppercase; }
+          .header h2 { margin: 4px 0; font-size: 14px; color: #312e81; font-weight: 700; }
+          .header p { margin: 2px 0; font-size: 12px; color: #64748b; }
+          .meta-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; margin-bottom: 20px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+          .meta-item strong { display: block; font-size: 11px; text-transform: uppercase; color: #64748b; }
+          .section-title { background: #312e81; color: white; padding: 6px 12px; font-weight: bold; font-size: 13px; border-radius: 6px; margin: 20px 0 10px 0; }
+          table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+          th, td { border: 1px solid #cbd5e1; padding: 8px 10px; text-align: left; }
+          th { background: #f1f5f9; font-weight: bold; font-size: 12px; color: #334155; }
+          .practice-head { background: #e0e7ff; font-weight: bold; color: #1e1b4b; }
+          .footer { margin-top: 40px; display: flex; justify-content: space-between; font-weight: bold; font-size: 12px; padding-top: 30px; }
+          @media print { body { margin: 15mm; } button { display: none; } }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>St. Joseph's College (Autonomous)</h1>
+          <p>Affiliated to Bharathidasan University • Tiruchirappalli - 620 002</p>
+          <h2>Teaching - Learning Practices, Assessment Components & E-Contents Planned</h2>
+          <p>Academic Year: ODD Sem 2026 - 2027 • IQAC Documentation</p>
+        </div>
+
+        <div class="meta-box">
+          <div class="meta-item"><strong>Faculty Name</strong> ${this.escapeHtml(facName)}</div>
+          <div class="meta-item"><strong>Department</strong> ${this.escapeHtml(deptName)}</div>
+          <div class="meta-item"><strong>Institutional Email</strong> ${this.escapeHtml(facEmail)}</div>
+        </div>
+
+        <div class="section-title">Section A: Teaching - Learning Practices</div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 15%;">Practice</th>
+              <th style="width: 30%;">Course Code &amp; Title</th>
+              <th style="width: 20%;">Class with Section</th>
+              <th style="width: 20%;">Teaching Method / Strategy</th>
+              <th style="width: 15%;">Approach</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="practice-head">Practice 1</td>
+              <td><strong>${this.escapeHtml(tl1Course || '—')}</strong></td>
+              <td>${this.escapeHtml(tl1Class || '—')}</td>
+              <td>${this.escapeHtml(tl1Method || '—')}</td>
+              <td>${this.escapeHtml(tl1Approach || '—')}</td>
+            </tr>
+            <tr>
+              <td class="practice-head">Practice 2</td>
+              <td><strong>${this.escapeHtml(tl2Course || '—')}</strong></td>
+              <td>${this.escapeHtml(tl2Class || '—')}</td>
+              <td>${this.escapeHtml(tl2Method || '—')}</td>
+              <td>${this.escapeHtml(tl2Approach || '—')}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="section-title">Section B: Assessment Components</div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 15%;">Practice</th>
+              <th style="width: 35%;">Course Code &amp; Title</th>
+              <th style="width: 25%;">Class with Section</th>
+              <th style="width: 25%;">Assessment Component</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="practice-head">Practice 1</td>
+              <td><strong>${this.escapeHtml(ass1Course || '—')}</strong></td>
+              <td>${this.escapeHtml(ass1Class || '—')}</td>
+              <td>${this.escapeHtml(ass1Comp || '—')}</td>
+            </tr>
+            <tr>
+              <td class="practice-head">Practice 2</td>
+              <td><strong>${this.escapeHtml(ass2Course || '—')}</strong></td>
+              <td>${this.escapeHtml(ass2Class || '—')}</td>
+              <td>${this.escapeHtml(ass2Comp || '—')}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="section-title">Section C: E-Content (4 Quadrant Approach)</div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 40%;">Course Code &amp; Title</th>
+              <th style="width: 15%;">Unit</th>
+              <th style="width: 45%;">E-Content Topic</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>${this.escapeHtml(ecCourse || '—')}</strong></td>
+              <td>Unit ${this.escapeHtml(ecUnit || '—')}</td>
+              <td>${this.escapeHtml(ecTopic || '—')}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="footer">
+          <div>Faculty Member</div>
+          <div>Head of the Department</div>
+          <div>Director / Coordinator - IQAC</div>
+        </div>
+
+        <script>
+          window.onload = function() { window.print(); };
+        </script>
+      </body>
+      </html>
+    `);
+    printWin.document.close();
+  }
+
+  async logout() {
+    try {
+      localStorage.removeItem('CP_CURRENT_USER');
+    } catch (e) {}
+    try {
+      await fetch('/api/course-plan-bridge?action=logout');
+      this.currentUser = null;
+      this.plans = [];
+      this.navigateTo('/course-plan/login');
+    } catch (e) {
+      this.currentUser = null;
+      this.plans = [];
+      this.navigateTo('/course-plan/login');
+    }
+  }
+}
+
+// Global instance
+window.coursePlanApp = new CoursePlanApp();
+
+
+// Global click handler to close open teaching methodology and learning resources autocomplete dropdowns
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.dtp-method-container')) {
+    document.querySelectorAll('[id^="dtp-method-menu-"]').forEach(m => m.classList.add('hidden'));
+  }
+  if (!e.target.closest('.dtp-res-container')) {
+    document.querySelectorAll('[id^="dtp-res-menu-"]').forEach(m => m.classList.add('hidden'));
+  }
+  if (!e.target.closest('.ict-multi-container')) {
+    document.querySelectorAll('[id^="ict-tool-menu-"], [id^="ict-platform-menu-"]').forEach(m => {
+      m.classList.add('hidden');
+      const tr = m.closest('tr');
+      if (tr) tr.style.zIndex = '';
+    });
+  }
+});

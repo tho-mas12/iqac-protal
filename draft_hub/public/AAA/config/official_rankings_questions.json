@@ -1,0 +1,1983 @@
+{
+  "generatedAt": "2026-11-20T11:40:00Z",
+  "academicYear": "2026-2027",
+  "indiaToday": {
+    "title": "India Today MDRA Best Colleges Survey 2026-2027",
+    "totalQuestions": 133,
+    "questions": [
+      {
+        "id": "it_2",
+        "code": "B6 -1",
+        "particulars": "Total number of PhDs came out from your college",
+        "unit": "Departments / OS",
+        "emailDate": "06.08.2026",
+        "dueDate": "20.08.2026",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_3",
+        "code": "B7",
+        "particulars": "Does your institute have its publication (journal/ magazine)? [1-Yes / 2-No]",
+        "unit": "VJN",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_4",
+        "code": "B7a",
+        "particulars": "Please mention the name of the publication (journal/ magazine)",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_5",
+        "code": "B7b",
+        "particulars": "What is the frequency of the publication (journal/ magazine)? (e.g. Monthly, Bimonthly, Half-yearly, or Annual)",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_6",
+        "code": "B7c",
+        "particulars": "What is the circulation figure of the journal/ magazine/ e-magazine?",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_7",
+        "code": "B8",
+        "particulars": "Does your institute have its Newsletter? [1-Yes / 2-No]",
+        "unit": "IQAC",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_8",
+        "code": "C1",
+        "particulars": "Please provide the following information about the students admitted in B.A. in your College",
+        "unit": "FKLR",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_9",
+        "code": "C2",
+        "particulars": "Please provide the following information about the students admitted in BA in your College",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_10",
+        "code": "C4",
+        "particulars": "Please provide the following information about the students admitted in various courses of B.A. during AY 2025-26 in your College",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_11",
+        "code": "D1",
+        "particulars": "What is the total tuition fee (per student) for the entire duration of B.A. (Excluding hostel & fooding)?",
+        "unit": "FINANCE SECTION-FKLR",
+        "emailDate": "03.08.2026",
+        "dueDate": "12.08.2026",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_12",
+        "code": "D2",
+        "particulars": "What is the total hostel fee for the entire duration of B.A.?",
+        "unit": "AJ",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_13",
+        "code": "D3",
+        "particulars": "How many B.A. students are living in the hostel of your college?",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_14",
+        "code": "D4",
+        "particulars": "Please give details of the scholarships offered by the college/ institute",
+        "unit": "FINANCE SECTION-FKLR",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Template to be sent",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_15",
+        "code": "1",
+        "particulars": "By your Institute  - Jesuit Education Support, Sports, Earn While Learn Scheme",
+        "unit": "FINANCE SECTION-FKLR",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Template to be sent",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_16",
+        "code": "2",
+        "particulars": "By other bodies/ societies/ corporate etc. -Private Bodies",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_17",
+        "code": "D5",
+        "particulars": "Total Scholarship amount (in Rs.) (AY 2024-25)",
+        "unit": "Scholarship Section",
+        "emailDate": "03.08.2026",
+        "dueDate": "12.08.2026",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_18",
+        "code": "D6",
+        "particulars": "Please provide expenses on the following heads in FY 2024-25",
+        "unit": "FINANCE SECTION-FKLR",
+        "emailDate": "03.08.2026",
+        "dueDate": "12.08.2026",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_19",
+        "code": "1",
+        "particulars": "Total expenses (SALARY and REMUNERATION) on faculty/ teaching staffs",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_20",
+        "code": "2",
+        "particulars": "Total expenses (SALARY and REMUNERATION) on non-teaching staffs",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_21",
+        "code": "3",
+        "particulars": "Total expenses on library including books, online database, software & others",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_22",
+        "code": "4",
+        "particulars": "Total expenditure of college in FY 2024-25",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_23",
+        "code": "D7",
+        "particulars": "Please provide revenue on the following heads in FY 2024-25",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_24",
+        "code": "1",
+        "particulars": "Total revenue from government funding",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_25",
+        "code": "2",
+        "particulars": "Total revenue from private/ corporate funding/ sponsorships",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_26",
+        "code": "E1",
+        "particulars": "Total number of applications received for admission into B.A. for AY 2026-27",
+        "unit": "AJ",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_27",
+        "code": "E2",
+        "particulars": "What is the total number of seats available (combined all B.A. Subjects) in your college?",
+        "unit": "FKLR",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_28",
+        "code": "E3",
+        "particulars": "Does the College offer a 4-year UG degree with a research option as per NEP?",
+        "unit": "VJN",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_29",
+        "code": "E4",
+        "particulars": "In which year did you introduce NEP?",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_30",
+        "code": "E5",
+        "particulars": "How many students opted for the multiple entry/exit option last year?",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_31",
+        "code": "IT-31",
+        "particulars": "Faculty Details, NET, SET, PHD",
+        "unit": "FKLR",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_32",
+        "code": "11",
+        "particulars": "Number of applications received in the last 3 years for the post of permanent faculty",
+        "unit": "Fr. Principal",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_33",
+        "code": "13",
+        "particulars": "Number of permanent faculty left your college in the last 3 years (excluding retired faculty)",
+        "unit": "IQAC",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_34",
+        "code": "14",
+        "particulars": "Present number of permanent faculty with more than ten years of teaching experience",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_35",
+        "code": "15",
+        "particulars": "Average teaching experience of your permanent faculty (in years)",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_36",
+        "code": "16",
+        "particulars": "Average annual salary of permanent faculty (In INR)",
+        "unit": "FINANCE SECTION-FKLR",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_37",
+        "code": "17",
+        "particulars": "What is the total number of teaching hours put in by the total permanent faculty in the academic year 2023-24?",
+        "unit": "IQAC",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_38",
+        "code": "18",
+        "particulars": "What was the total number of research hours put in by the total permanent faculty in the academic year 2023-24?",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_39",
+        "code": "19",
+        "particulars": "Total number of national seminars attended by permanent faculty in AY 2023-24",
+        "unit": "AAA",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_40",
+        "code": "20",
+        "particulars": "Total number of international seminars attended by permanent faculty in AY 2023-24",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_41",
+        "code": "21",
+        "particulars": "Total number of workshops & conferences attended by permanent faculty in AY 2023-24",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_42",
+        "code": "22",
+        "particulars": "Total number of research papers presented by faculty at conferences in India & abroad during AY 2023-24",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_43",
+        "code": "23",
+        "particulars": "Number of research contribution to Scopus till date by permanent faculty of your college",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_44",
+        "code": "24",
+        "particulars": "Number of research contribution to Scopus by permanent faculty of your college in the last 2 years",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_45",
+        "code": "25",
+        "particulars": "Do you have a Grievance redressal mechanism for faculty, staff, and students?  [1-Yes / 2-No]",
+        "unit": "IQAC",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_46",
+        "code": "26",
+        "particulars": "Total number of members in faculty advisory board [put \u201cNA\u201d in case your college does not have faculty advisory board]",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_47",
+        "code": "F2",
+        "particulars": "Please provide information on the following statements about FDP (Faculty development program)",
+        "unit": "FDC & IQAC",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_48",
+        "code": "1",
+        "particulars": "Do you conduct FDP (Faculty development program) at your campus? [1-Yes / 2-No]",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_49",
+        "code": "2",
+        "particulars": "Total number of FDP programs conducted in your college in AY 2024-25",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_50",
+        "code": "3",
+        "particulars": "How many faculties participated in any FDP (either in your college or outside) in AY 2024-25?",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_51",
+        "code": "4",
+        "particulars": "Total number of faculty training programs held in AY 2024-25",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_52",
+        "code": "5",
+        "particulars": "Total number of faculty participating in foreign exchange programs in AY 2024-25",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_53",
+        "code": "6",
+        "particulars": "Percentage of faculty of the college sent abroad through a faculty exchange program in AY 2024-25",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_54",
+        "code": "7",
+        "particulars": "Percentage of foreign faculty came to your college through a faculty exchange program in AY 2024-25",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_55",
+        "code": "F3",
+        "particulars": "Total number of books published by existing permanent faculty in the last two years",
+        "unit": "AAA",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_56",
+        "code": "F4",
+        "particulars": "Total number of research publications of existing permanent faculty in the last two years in national journals",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_57",
+        "code": "F4a",
+        "particulars": "Please provide details of research publications of existing permanent faculty in the last two years in national journals",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_58",
+        "code": "F5",
+        "particulars": "Total number of research publications of existing permanent faculty in the last two years in international journals",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_59",
+        "code": "F5a",
+        "particulars": "Please provide details of research publications of existing permanent faculty in the last two years in international journals",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_60",
+        "code": "F6",
+        "particulars": "Please give the number and value of research projects undertaken by the college with various organization in AY 2024-25",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_61",
+        "code": "S.N.",
+        "particulars": "Research Projects",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_62",
+        "code": "1",
+        "particulars": "Number of research projects",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_63",
+        "code": "2",
+        "particulars": "Total value of research projects",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_64",
+        "code": "3",
+        "particulars": "Total value of consulting projects in FY 2024-25",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_65",
+        "code": "F7",
+        "particulars": "Total number of B.A. students passed out since the establishment of your college",
+        "unit": "COE & FKLR",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_66",
+        "code": "F8",
+        "particulars": "Please provide the following information for the last 2 years, year wise",
+        "unit": "ALUMNI OFFICE",
+        "emailDate": "03.08.2026",
+        "dueDate": "12.08.2026",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_67",
+        "code": "IT-67",
+        "particulars": "Does your institute organize annual alumni meet? 1-Yes/ 2-No",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_68",
+        "code": "IT-68",
+        "particulars": "2025-26,2024-25,2023-2024",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_69",
+        "code": "F9",
+        "particulars": "Please explain any new innovative teaching methodology introduced in your college in the last 5 years Brainstorming method Online assignment Online test through Jostel",
+        "unit": "JOSTEL - AJ",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_70",
+        "code": "1",
+        "particulars": "INFRASTRUCTURE Details",
+        "unit": "INFRA - AJF",
+        "emailDate": "13.07.2026",
+        "dueDate": "29.07.2026",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_71",
+        "code": "3",
+        "particulars": "Library Details",
+        "unit": "LIBRARY",
+        "emailDate": "03.08.2026",
+        "dueDate": "12.08.2026",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_72",
+        "code": "24",
+        "particulars": "Does your college have a water recycling unit? [1-Yes / 2-No]",
+        "unit": "IQAC",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_73",
+        "code": "25",
+        "particulars": "Do you have differently-abled friendly campus/ facilities? [1-Yes / 2-No]",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_74",
+        "code": "26",
+        "particulars": "Do you have an anti-ragging cell in the college? [1-Yes / 2-No]",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_75",
+        "code": "27",
+        "particulars": "Do you have an Internal Complaints Committee (ICC) cell in the college? [1-Yes / 2-No]",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_76",
+        "code": "28",
+        "particulars": "Do you have a National Service Scheme (NSS) cell in the college? [1-Yes / 2-No]",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_77",
+        "code": "29",
+        "particulars": "Do you have the National Cadet Corps (NCC) cell in the college? [1-Yes / 2-No]",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_78",
+        "code": "30",
+        "particulars": "Do you have an Internal Quality Assurance Cell (IQAC) in the college? [1-Yes / 2-No]",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_79",
+        "code": "31",
+        "particulars": "Total number of seminars/ Conferences/ Workshops/ Symposia organized by the IQAC in AY 2024-25",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_80",
+        "code": "G3",
+        "particulars": "No. of male students living in College Hostel",
+        "unit": "AJ",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_81",
+        "code": "G4",
+        "particulars": "No. of female students living in the College Hostel",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_82",
+        "code": "G5",
+        "particulars": "How many faculties residing on the College campus?",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_83",
+        "code": "G8",
+        "particulars": "How many trees did your college plant in AY 2024-25?",
+        "unit": "Environment Club",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_84",
+        "code": "1",
+        "particulars": "Total number of seminars conducted by the college in AY 2024-25",
+        "unit": "AAA",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_85",
+        "code": "2",
+        "particulars": "Total number of inter-college competitions attended in AY 2024-25",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_86",
+        "code": "3",
+        "particulars": "Total number of inter-college competitions hosted in AY 2024-25",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_87",
+        "code": "4",
+        "particulars": "Total number of guest speakers came in AY 2024-25",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_88",
+        "code": "5",
+        "particulars": "Total number of student foreign exchange programs in AY 2024-25",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_89",
+        "code": "6",
+        "particulars": "Percentage of student sent abroad through student foreign exchange program in AY 2024-25",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_90",
+        "code": "7",
+        "particulars": "Percentage of Foreign Students came to your college through student foreign exchange program in AY 2024-25",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_91",
+        "code": "8",
+        "particulars": "Number of stress management training program (like Art-of-living, etc.) conducted in AY 2024-25",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_92",
+        "code": "9",
+        "particulars": "Number of workshops/ programs conducted by the college to develop students\u2019 professional ethics in AY 2024-25",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_93",
+        "code": "10",
+        "particulars": "Number of students\u2019 societies in your college",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_94",
+        "code": "11",
+        "particulars": "Number of events/ workshops conducted by students\u2019 societies in AY 2024-25",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_95",
+        "code": "12",
+        "particulars": "Number of fests organized by your college students in AY 2024-25",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_96",
+        "code": "13",
+        "particulars": "Number of B.A. students involved in the research undertaken by the college in the last 1 year?",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_97",
+        "code": "14",
+        "particulars": "Does your college conduct Yoga/ Meditation classes on regular basis? 1-Yes / 2-No",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_98",
+        "code": "H2",
+        "particulars": "Does your institute have any tie-up with any foreign university?  1-Yes / 2-No",
+        "unit": "JVK",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_99",
+        "code": "H2a",
+        "particulars": "If yes, please provide the university details with whom you have signed MoU and details of MoU:",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_100",
+        "code": "H3",
+        "particulars": "How many voluntary or charity programs your institute is associated with?",
+        "unit": "CAMPUS MINISTRY",
+        "emailDate": "Fromat to be sent",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_101",
+        "code": "I1",
+        "particulars": "Total number of students appeared in the final year (3rd year) examination (AY 2024-25)",
+        "unit": "COE",
+        "emailDate": "03.08.2026",
+        "dueDate": "12.08.2026",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_102",
+        "code": "I2",
+        "particulars": "Total number of students passed in the final year (3rd year) examination (AY 2024-25)  [Include only those students who have passed all subjects of B. A Year I, II & III]",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_103",
+        "code": "I3",
+        "particulars": "Percentage of marks obtained by top 5 students accumulating marks of all years (Year I, II & III) examination for the last 3 batches",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_104",
+        "code": "I3a",
+        "particulars": "Provide the final-year subject-wise academic performance of students who passed the B.A. in AY 2024-25. For each subject, indicate the average marks (in %), highest %, and lowest % obtained.",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_105",
+        "code": "I4",
+        "particulars": "Total number of students completed their B.A. within the minimum stipulated timeline",
+        "unit": "AAA & Placement",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_106",
+        "code": "I5",
+        "particulars": "Total number of students who opted for placement after completing their B.A.",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_107",
+        "code": "I5a",
+        "particulars": "Total number of students placed for the batch that passed out",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_108",
+        "code": "I5b",
+        "particulars": "Total percentage of students placed in the batch that passed out",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_109",
+        "code": "I5c",
+        "particulars": "Total number of students who opted for entrepreneurship for the batch that passed out",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_110",
+        "code": "I5d",
+        "particulars": "Total number of international placements for the batch that passed out",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_111",
+        "code": "I6",
+        "particulars": "Total number of students opted for higher studies who completed their B.A.",
+        "unit": "DEPARTMENT -PLACEMENT NIRF DATA",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_112",
+        "code": "I6a",
+        "particulars": "Please mention the number of students selected in various competitive examinations from the last 3 passed out batches:",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_113",
+        "code": "S.N.",
+        "particulars": "Competitive Examination",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_115",
+        "code": "I7",
+        "particulars": "Please mention the number of students admitted into the prestigious institution",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_116",
+        "code": "I9",
+        "particulars": "Please fill in the following details for B.A. student placements for batch passed out in AY 2023-24",
+        "unit": "After Convocation &  AAA",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_117",
+        "code": "S.N.",
+        "particulars": "Statement",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_118",
+        "code": "1",
+        "particulars": "Average salary (Rs lakh/annum)",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_119",
+        "code": "2",
+        "particulars": "Median salary (Rs lakh/annum)",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_120",
+        "code": "3",
+        "particulars": "Maximum salary (Rs lakh/annum)",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_121",
+        "code": "4",
+        "particulars": "Lowest salary (Rs lakh/annum)",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_122",
+        "code": "5",
+        "particulars": "Total Number of Students placed (Number)",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_123",
+        "code": "I10",
+        "particulars": "How many companies visited the campus for placements?",
+        "unit": "PLACEMENT OFFICE",
+        "emailDate": "03.08.2026",
+        "dueDate": "07.08.2026",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_124",
+        "code": "I11",
+        "particulars": "How many companies offered jobs?",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_125",
+        "code": "I12",
+        "particulars": "How many new companies visited the campus for placements?",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_126",
+        "code": "I13",
+        "particulars": "Please provide the details of top colleges/ universities where students of your college joined for pursuing their higher education in 2025",
+        "unit": "DEPARTMENT -PLACEMENT NIRF DATA",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_127",
+        "code": "S.N.",
+        "particulars": "College/ University Name",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_128",
+        "code": "I14",
+        "particulars": "Does your college organize an annual sports tournament?  1-Yes / 2-No",
+        "unit": "PD",
+        "emailDate": "03.08.2026",
+        "dueDate": "12.08.2026",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_129",
+        "code": "I14a",
+        "particulars": "Total number of sportspersons from your college represented at National level (Inter-State tournaments) during the last 3 years",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_130",
+        "code": "I14b",
+        "particulars": "Total number of sportspersons from your college represented at International level (matches, tournaments) during the last 3 years",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_131",
+        "code": "I15",
+        "particulars": "Please provide the top 10 notable alumni who have completed their B.A. from your college in last 10 years",
+        "unit": "DEPARTMENT -PLACEMENT NIRF DATA",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_132",
+        "code": "I16",
+        "particulars": "Please fill in the following details for top 10 DOMESTIC placements for batch passed out in 2024.",
+        "unit": "IQAC Central",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_133",
+        "code": "I17",
+        "particulars": "Does the college allow credits earned through the SWAYAM platform to be incorporated into the final marksheet as per the National Credit Framework?  Yes     No?",
+        "unit": "AAA - Dr. J. Charles",
+        "emailDate": "11.07.2026",
+        "dueDate": "24.07.2026",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      },
+      {
+        "id": "it_134",
+        "code": "J1",
+        "particulars": "Please share the contact details of any 10 final-year B.A. students (select randomly)",
+        "unit": "DEPARTMENT",
+        "emailDate": "06.08.2026",
+        "dueDate": "02.09.2026",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Live SJC ERP"
+      },
+      {
+        "id": "it_135",
+        "code": "J2",
+        "particulars": "Please share the contact details of any 5 permanent faculties who have been in your college for at least last 3 years (select randomly)",
+        "unit": "IQAC",
+        "emailDate": "",
+        "dueDate": "",
+        "status": "Pending Unit Entry",
+        "autoSyncSource": "Unit Desk Upload"
+      }
+    ]
+  },
+  "aishe": {
+    "title": "All India Survey on Higher Education (AISHE) 2025-2026",
+    "totalQuestions": 61,
+    "questions": [
+      {
+        "id": "aishe_3",
+        "sno": "A: Basic Details 1-10",
+        "particulars": "",
+        "unit": "FKLR",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_4",
+        "sno": "11",
+        "particulars": "11. Whether the Institution has the National Cadet Corps (NCC",
+        "unit": "NCC",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_5",
+        "sno": "AISHE-5",
+        "particulars": "Number of Students Enrolled In NCC",
+        "unit": "IQAC Office",
+        "status": "Auto-Federated",
+        "autoSyncSource": "Live SJC ERP Intranet"
+      },
+      {
+        "id": "aishe_6",
+        "sno": "12",
+        "particulars": "Number of Students Enrolled In NSS",
+        "unit": "NSS",
+        "status": "Auto-Federated",
+        "autoSyncSource": "Live SJC ERP Intranet"
+      },
+      {
+        "id": "aishe_7",
+        "sno": "13",
+        "particulars": "Whether the institution has conducted any computer-based tests",
+        "unit": "IQAC",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_8",
+        "sno": "14",
+        "particulars": "How many Students can be accommodated at a time in CBT tests at the institution",
+        "unit": "IQAC",
+        "status": "Auto-Federated",
+        "autoSyncSource": "Live SJC ERP Intranet"
+      },
+      {
+        "id": "aishe_9",
+        "sno": "15",
+        "particulars": "Whether your institution has implemented NEP guidelines.\nArts/Humanities/Social Sciences, Science, Journalism/Mass Communication/Media, IT & Computer Application, Indian and Foreign",
+        "unit": "IQAC",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Live SJC ERP Intranet"
+      },
+      {
+        "id": "aishe_10",
+        "sno": "16",
+        "particulars": "Please select the disciplines in which programme is offered by",
+        "unit": "IQAC Office",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_11",
+        "sno": "17",
+        "particulars": "Whether the college is running only diploma level course(s)",
+        "unit": "IQAC Office",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_12",
+        "sno": "AISHE-12",
+        "particulars": "Institute Head Details",
+        "unit": "FKLR",
+        "status": "Auto-Federated",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_13",
+        "sno": "AISHE-13",
+        "particulars": "Nodal Officer Details",
+        "unit": "FKLR",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_14",
+        "sno": "AISHE-14",
+        "particulars": "C: Address",
+        "unit": "IQAC Office",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_15",
+        "sno": "AISHE-15",
+        "particulars": "Longitude(in degree)",
+        "unit": "AJF",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_16",
+        "sno": "AISHE-16",
+        "particulars": "Latitude(in degree)",
+        "unit": "IQAC Office",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_17",
+        "sno": "AISHE-17",
+        "particulars": "Total Area (in acre)",
+        "unit": "IQAC Office",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_18",
+        "sno": "AISHE-18",
+        "particulars": "Total Constructed Area (in sq.m)",
+        "unit": "IQAC Office",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_19",
+        "sno": "AISHE-19",
+        "particulars": "D: Residential Facility",
+        "unit": "IQAC Office",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_20",
+        "sno": "22",
+        "particulars": "Is Student Hostel Available:",
+        "unit": "IQAC Office",
+        "status": "Auto-Federated",
+        "autoSyncSource": "Live SJC ERP Intranet"
+      },
+      {
+        "id": "aishe_21",
+        "sno": "AISHE-21",
+        "particulars": "No of Hostels",
+        "unit": "AJ",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_22",
+        "sno": "AISHE-22",
+        "particulars": "E: Bank Details",
+        "unit": "Finance Section -FKLR",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_23",
+        "sno": "AISHE-23",
+        "particulars": "2. Department and Programme",
+        "unit": "FKLR",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_24",
+        "sno": "AISHE-24",
+        "particulars": "Programme Details",
+        "unit": "FKLR",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_25",
+        "sno": "AISHE-25",
+        "particulars": "Programme Offered by Institution",
+        "unit": "FKLR",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_26",
+        "sno": "25",
+        "particulars": "Student Enrolment",
+        "unit": "FKLR",
+        "status": "Auto-Federated",
+        "autoSyncSource": "Live SJC ERP Intranet"
+      },
+      {
+        "id": "aishe_27",
+        "sno": "AISHE-27",
+        "particulars": "Enrolment Summary",
+        "unit": "FKLR",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_28",
+        "sno": "AISHE-28",
+        "particulars": "Other Minority Breakup available?",
+        "unit": "FKLR",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_29",
+        "sno": "AISHE-29",
+        "particulars": "Regular Mode - Other Minority Breakup",
+        "unit": "FKLR",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_30",
+        "sno": "AISHE-30",
+        "particulars": "Foreign Students Enrollment:",
+        "unit": "FKLR",
+        "status": "Auto-Federated",
+        "autoSyncSource": "Live SJC ERP Intranet"
+      },
+      {
+        "id": "aishe_31",
+        "sno": "AISHE-31",
+        "particulars": "Examination Result",
+        "unit": "COE",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_32",
+        "sno": "28",
+        "particulars": "Placement Details:",
+        "unit": "Placement Office",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_33",
+        "sno": "AISHE-33",
+        "particulars": "Non-Teaching Information",
+        "unit": "OS - FKLR-Received",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_34",
+        "sno": "AISHE-34",
+        "particulars": "Financial Information",
+        "unit": "Finance Section -FKLR",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_35",
+        "sno": "30",
+        "particulars": "INCOME",
+        "unit": "IQAC Office",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_36",
+        "sno": "31",
+        "particulars": "Expenditure",
+        "unit": "IQAC Office",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_37",
+        "sno": "32",
+        "particulars": "Infrastructure",
+        "unit": "AJF",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_38",
+        "sno": "AISHE-38",
+        "particulars": "Scholarship, Fellowship, Loans & Accreditation",
+        "unit": "Scholarship Section",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_39",
+        "sno": "33",
+        "particulars": "Whether Institution maintain Scholarships Data:",
+        "unit": "IQAC Office",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_40",
+        "sno": "34",
+        "particulars": "Whether Institution maintain Fellowships Data:",
+        "unit": "IQAC Office",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_41",
+        "sno": "35",
+        "particulars": "Whether Institution maintain Loans Data:",
+        "unit": "IQAC",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_42",
+        "sno": "36",
+        "particulars": "Whether Institution Accredited",
+        "unit": "FKLR",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_43",
+        "sno": "AISHE-43",
+        "particulars": "NEP : National Education Policy",
+        "unit": "VJN",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Live SJC ERP Intranet"
+      },
+      {
+        "id": "aishe_44",
+        "sno": "1",
+        "particulars": "National Higher Education Qualifications Framework (NHEQ)",
+        "unit": "IQAC Office",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_45",
+        "sno": "2",
+        "particulars": "Research and Development Cell (RDC)",
+        "unit": "IQAC Office",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_46",
+        "sno": "3",
+        "particulars": "Adoption of UGC Guidelines on Institutional Development Plan (IDP)",
+        "unit": "VJN",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_47",
+        "sno": "4",
+        "particulars": "Industry-Institute Linkage",
+        "unit": "AAA-Dean-SMS",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_48",
+        "sno": "5",
+        "particulars": "Digital Nodal Centers",
+        "unit": "J.Charles-Received",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_49",
+        "sno": "6",
+        "particulars": "ABC",
+        "unit": "COE",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_50",
+        "sno": "7",
+        "particulars": "Multiple Entry and Exit in Academic Programmes",
+        "unit": "VJN",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_51",
+        "sno": "8",
+        "particulars": "Internship/Apprenticeship Embedded Degree Programme",
+        "unit": "IQAC",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_52",
+        "sno": "AISHE-52",
+        "particulars": "Number of students undertaking Internship and number of Placement thereafter",
+        "unit": "Placement Office",
+        "status": "Auto-Federated",
+        "autoSyncSource": "Live SJC ERP Intranet"
+      },
+      {
+        "id": "aishe_53",
+        "sno": "9",
+        "particulars": "Academic and Research Collaboration between Indian and Foreign Higher Education Institution",
+        "unit": "International Programmes",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_54",
+        "sno": "10",
+        "particulars": "Ranking Excellence",
+        "unit": "FKLR",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_55",
+        "sno": "AISHE-55",
+        "particulars": "Whether your institution has participated in NIRF Ranking?",
+        "unit": "FKLR",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_56",
+        "sno": "11",
+        "particulars": "Multidisciplinary",
+        "unit": "VJN",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_57",
+        "sno": "12",
+        "particulars": "Dual Programme\n Whether your institution has collaborated with other institutes for dual programs / joint degrees Program",
+        "unit": "IQAC Office",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_58",
+        "sno": "AISHE-58",
+        "particulars": "Number of Students Enrolment in the Academic Session 2022-23",
+        "unit": "FKLR",
+        "status": "Auto-Federated",
+        "autoSyncSource": "Live SJC ERP Intranet"
+      },
+      {
+        "id": "aishe_59",
+        "sno": "15",
+        "particulars": "Skills offered by Institution in Collaboration with Industry (Regular Mode)",
+        "unit": "YES / NO",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_60",
+        "sno": "I",
+        "particulars": "Whether your Institution offers industry ready skill course in collaboration with industry?",
+        "unit": "AAA",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_61",
+        "sno": "II",
+        "particulars": "Internship Degree Programme offered by Institution (Regular Mode)",
+        "unit": "YES / NO",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_62",
+        "sno": "III",
+        "particulars": "Apprenticeship Embeded Programme offered by Institution (Regular Mode)",
+        "unit": "YES / NO",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      },
+      {
+        "id": "aishe_63",
+        "sno": "AISHE-63",
+        "particulars": "Teaching Staff Details",
+        "unit": "FKLR",
+        "status": "Pending Desk Verification",
+        "autoSyncSource": "Desk Upload"
+      }
+    ]
+  },
+  "nirf": {
+    "title": "National Institutional Ranking Framework (NIRF) 2025-2026",
+    "totalParameters": 5,
+    "parameters": [
+      {
+        "id": "nirf_tlr",
+        "code": "TLR",
+        "name": "Teaching, Learning & Resources",
+        "marks": 100,
+        "weightage": 0.4,
+        "submetrics": [
+          {
+            "code": "SS",
+            "name": "Student Strength (Approved intake vs Enrolled)",
+            "marks": 20,
+            "source": "SJC ERP Intranet (7,574 Students)",
+            "status": "Auto-Synced (100%)"
+          },
+          {
+            "code": "FSR",
+            "name": "Faculty-Student Ratio (Permanent & Full-time)",
+            "marks": 30,
+            "source": "SJC Faculty Registry (396 Faculty)",
+            "status": "Auto-Synced (1:19.1)"
+          },
+          {
+            "code": "FQE",
+            "name": "Faculty with Ph.D. and Experience",
+            "marks": 20,
+            "source": "AAA Attribute II & ERP Ph.D. Roster",
+            "status": "Auto-Synced (235 Ph.D.s)"
+          },
+          {
+            "code": "FRU",
+            "name": "Financial Resources and Utilisation (Capital & Operational)",
+            "marks": 30,
+            "source": "Finance Section Desk (FY 2024-25 Audit)",
+            "status": "Template Ready for Finance"
+          }
+        ]
+      },
+      {
+        "id": "nirf_rp",
+        "code": "RP",
+        "name": "Research and Professional Practice",
+        "marks": 100,
+        "weightage": 0.15,
+        "submetrics": [
+          {
+            "code": "PU",
+            "name": "Combined Metric for Publications (Scopus / WoS)",
+            "marks": 70,
+            "source": "AAA Attribute IX Research Bank",
+            "status": "Auto-Synced (Indexed Papers)"
+          },
+          {
+            "code": "QP",
+            "name": "Quality of Publications (Citations over 3 Years)",
+            "marks": 30,
+            "source": "Scopus / WoS Third Party Verification",
+            "status": "Auto-Synced"
+          }
+        ]
+      },
+      {
+        "id": "nirf_go",
+        "code": "GO",
+        "name": "Graduation Outcomes",
+        "marks": 100,
+        "weightage": 0.25,
+        "submetrics": [
+          {
+            "code": "GPH",
+            "name": "Placement & Higher Studies Percentage",
+            "marks": 40,
+            "source": "Placement Desk & Convocation Roster",
+            "status": "Unit Desk Active (78.4%)"
+          },
+          {
+            "code": "GUE",
+            "name": "University Examinations Passing Rate",
+            "marks": 40,
+            "source": "COE Desk (Office of Controller of Exams)",
+            "status": "Unit Desk Active (92.6%)"
+          },
+          {
+            "code": "GMS",
+            "name": "Median Salary of Graduating Students",
+            "marks": 20,
+            "source": "Placement Cell (\u20b94.2 LPA UG / \u20b95.8 LPA PG)",
+            "status": "Unit Desk Active"
+          }
+        ]
+      },
+      {
+        "id": "nirf_oi",
+        "code": "OI",
+        "name": "Outreach and Inclusivity",
+        "marks": 100,
+        "weightage": 0.1,
+        "submetrics": [
+          {
+            "code": "RD",
+            "name": "Region Diversity (Other States & Countries)",
+            "marks": 30,
+            "source": "SJC ERP Intranet (Foreign & Other State Matrix)",
+            "status": "Auto-Synced (100%)"
+          },
+          {
+            "code": "WD",
+            "name": "Women Diversity (Female Students & Faculty)",
+            "marks": 30,
+            "source": "SJC ERP Intranet (1,789 Women Students)",
+            "status": "Auto-Synced (23.6%)"
+          },
+          {
+            "code": "ESCS",
+            "name": "Economically & Socially Challenged Students (Full Reimbursement)",
+            "marks": 20,
+            "source": "Scholarship Section Desk",
+            "status": "Unit Desk Active"
+          },
+          {
+            "code": "PCS",
+            "name": "Facilities for Physically Challenged Students (Lifts/Ramps/Toilets)",
+            "marks": 20,
+            "source": "Estate Office Desk (>80% Accessible)",
+            "status": "Unit Desk Endorsed"
+          }
+        ]
+      },
+      {
+        "id": "nirf_pr",
+        "code": "PR",
+        "name": "Perception",
+        "marks": 100,
+        "weightage": 0.1,
+        "submetrics": [
+          {
+            "code": "PR",
+            "name": "Peer Perception (Employers & Academic Peers)",
+            "marks": 100,
+            "source": "Academic Peer & Employer Survey",
+            "status": "Survey Dispatched"
+          }
+        ]
+      }
+    ]
+  }
+}

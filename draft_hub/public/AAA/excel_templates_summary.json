@@ -1,0 +1,3923 @@
+{
+  "AAA_February 2027_Attribute III_Template.xlsx": {
+    "sheets": {
+      "3.1": {
+        "max_row": 10,
+        "max_col": 7,
+        "rows": [
+          {
+            "row": 2,
+            "values": [
+              "Attribute III"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "Infrastructure"
+            ]
+          },
+          {
+            "row": 7,
+            "values": [
+              "3.1 Research Facility"
+            ]
+          },
+          {
+            "row": 8,
+            "values": [
+              "S.No.",
+              "Department",
+              "Name of the Lab",
+              "Equipment / Instruments Purchased",
+              "Existing /New Facility)",
+              "Date of Purchase",
+              "Amount (₹)"
+            ]
+          },
+          {
+            "row": 9,
+            "values": [
+              "1",
+              "Department of Computer Science",
+              "Artificial Intelligence & Machine Learning Lab",
+              "GPU Workstation",
+              "New Facility",
+              "15.07.2026",
+              "185000"
+            ]
+          },
+          {
+            "row": 10,
+            "values": [
+              "2",
+              "Department of Physics",
+              "Electronics Research Lab",
+              "Digital Multimeter",
+              "Existing",
+              "18.07.2026",
+              "32550"
+            ]
+          }
+        ]
+      },
+      "3.2": {
+        "max_row": 6,
+        "max_col": 12,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "3.2  Department Library"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No.",
+              "Department",
+              "Type (Books/Jounal)",
+              "Purchased during 2026-2027 (in numbers)",
+              "Total Number in the Department Library",
+              "No. of Visits to the Department Library by Faculty /Day",
+              "No. of Visits to the Department Library by Students/Day",
+              "No. of Books checked out by faculty  in the Academic Year",
+              "No. of Books checked out by students in the Academic Year"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Department of Computer Science",
+              "Books",
+              "125",
+              "3250",
+              "8",
+              "45",
+              "85",
+              "620"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "2",
+              "Department of Computer Science",
+              "Journal",
+              "15",
+              "85",
+              "3",
+              "12",
+              "10",
+              "25"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "AAA_February 2027_Attribute II_Template(AutoRecovered).xlsx": {
+    "sheets": {
+      "2.1": {
+        "max_row": 8,
+        "max_col": 21,
+        "rows": [
+          {
+            "row": 2,
+            "values": [
+              "Attribute II"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "Faculty Resources"
+            ]
+          },
+          {
+            "row": 6,
+            "values": [
+              "2.1 Details of the Faculty members"
+            ]
+          },
+          {
+            "row": 7,
+            "values": [
+              "S.No.",
+              "Shift (I/II)",
+              "Appointment Type (Aided/Coordinator/Secretary)",
+              "Name of the Teaching Staff",
+              "Designation",
+              "Date of Appointment",
+              "Educational Qualification",
+              "Does the staff have a Doctoral Degree Yes/No",
+              "If No, Year of  registration of PhD Degree (Mention NIL if not registered)",
+              "Year of Acquiring  Doctoral Degree",
+              "PhD Guide Mention (Yes/No)",
+              "Year of Recognition as PhD Guide",
+              "Guideship Reference Number",
+              "Total No. of Doctoral Research Scholars Guided"
+            ]
+          },
+          {
+            "row": 8,
+            "values": [
+              "No need to fill this Data for this Academic Year"
+            ]
+          }
+        ]
+      },
+      "2.2": {
+        "max_row": 6,
+        "max_col": 6,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "2.2 New Degrees Awarded"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No.",
+              "Name of the Faculty",
+              "Degree Awarded",
+              "Specialization",
+              "Name & Address of the Awarding Institution",
+              "Month & Year"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Dr. D. Ravindran",
+              "MBA",
+              "Human Resource Management",
+              "Pondicherry University, Pondicherry",
+              "2026-06-01 00:00:00"
+            ]
+          }
+        ]
+      },
+      "2.3": {
+        "max_row": 3,
+        "max_col": 14,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "2.3  Member in various recognized bodies"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S. No.",
+              "Name of the Faculty",
+              "Level (International/National/State/Institutional)",
+              "Nature of Body/Committee (Academic /Co-curricular Administrative Bodies /External Member in Academic or Administrative Audits, Mock Visits)",
+              "Name of the Activity",
+              "Position (Chairperson, Member, University Nominee, External Expert etc.)",
+              "Institution & Address",
+              "No. of Days",
+              "Dates From - To                    (DD.MM.YYYY - DD.MM.YYYY)"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Dr. S. Britto Ramesh Kumar",
+              "National",
+              "Academic Body",
+              "Board of Studies Meeting  – Department of Computer Science",
+              "External Member",
+              "ABC College (Autonomous), Chennai, Tamil Nadu",
+              "2",
+              "15.07.2026 – 16.07.2026"
+            ]
+          }
+        ]
+      },
+      "2.4": {
+        "max_row": 5,
+        "max_col": 17,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "2.4 Contribution to Research Journals"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No.",
+              "Name of the Faculty",
+              "Level (International/National/State)",
+              "Position (Editor, Co-Editor, Member, Reviewer, etc.,)",
+              "Name of the Journal",
+              "Mention if WoS, SCOPUS, etc.,",
+              "URL of the Journal",
+              "Duration in Years",
+              "Date  From – To                                (DD.MM.YYYY - DD.MM.YYYY)"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Dr.A.Angelpreethi",
+              "National",
+              "Editorial Board Member",
+              "Edwin Group of Journals",
+              "Scopus",
+              "https://www.edwinepc.com/",
+              "Life time",
+              "24.04.2025 to Life time"
+            ]
+          }
+        ]
+      },
+      "2.5": {
+        "max_row": 4,
+        "max_col": 11,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "2.5 Member in Professional Bodies"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No.",
+              "Name of the Faculty",
+              "Level (International/National/State)",
+              "Name of the Professional Body",
+              "Institution & Address",
+              "Membership ID/No.",
+              "Duration of Membership in Years",
+              "From - To (DD.MM.YYYY - DD.MM.YYYY)",
+              "Amount provided by the Institution (Rs.)",
+              "Date of Financial Support",
+              "Activity involved in this academic year as a member"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Dr. S. Britto Ramesh Kumar",
+              "National",
+              "Computer Soicety of India (Membership No. 7151250012)",
+              "302, Archana Arcade, Secundrapad-500025",
+              "7151250012",
+              "1",
+              "30.08.2025-30.08.2026",
+              "5000",
+              "05.07.2026",
+              "Participated in CSI Chapter technical seminar conducted on 15.07.2026."
+            ]
+          }
+        ]
+      },
+      "2.6": {
+        "max_row": 4,
+        "max_col": 7,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "2.6 Activity as Resource Person"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S. No.",
+              "Name of the Faculty",
+              "Level (International/National/State/Institutional)",
+              "Title of the Seminar/Conf/WS",
+              "Type of Programme (Sem, Conf, WS, Webinar, FDP, etc.)",
+              "Institution & Address",
+              "Date                    (DD.MM.YYYY)"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Dr. A. Vimal Jerald",
+              "National",
+              "Personal Profile Creation / ICT Tools for SMART Teaching",
+              "FIP",
+              "UGC MMTTC, Madurai Kamaraj University, Madurai",
+              "11.08.2025"
+            ]
+          }
+        ]
+      },
+      "2.7": {
+        "max_row": 4,
+        "max_col": 16,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "2.7 Faculty Development / Training Programmes through Govt. Recognised Bodies"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S. No.",
+              "Name of the Faculty",
+              "Refresher Course/Orientation Programme/Short-Term Course/Faculty Development Programme/others",
+              "Mention ONLINE/OFFLINE",
+              "Title of the Programme",
+              "Name and Address of the University",
+              "Duration in Days",
+              "Date  From – To                                (DD.MM.YYYY - DD.MM.YYYY)"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Dr. George Gabriel Richard Roy",
+              "Orientation Programme",
+              "Online",
+              "NEP 2020 Orientation & Sensitization Programme",
+              "UGC-Malaviya Mission Teacher Training Centre (UGC-MMTTC), Bharathidasan University, Tiruchirappalli, Tamil Nadu",
+              "8",
+              "02.12.2025 - 10.12.2025"
+            ]
+          }
+        ]
+      },
+      "2.8": {
+        "max_row": 5,
+        "max_col": 8,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "2.8  Participation in Academic and Professional Development Programmes (Other than 2.7)"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S. No.",
+              "Name of the Faculty",
+              "Level (International/National/State/Institutional)",
+              "Type of Programme  (Seminar, Conference,FDP, Workshop, Webinar, etc.)",
+              "Name of the Programme",
+              "Name and Place of the Institution",
+              "Duration in Days",
+              "Date  From – To                                (DD.MM.YYYY - DD.MM.YYYY)"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Dr.A.Aloysius",
+              "National",
+              "FDP",
+              "Artificial Intelleigence ‘s Impact on Tranforming Software,Robotics,Electrical Electronics and Mechanical Fields(Series-3)",
+              "Dhaanish Ahmad College of Engineering, Chennai.",
+              "6",
+              "21.07.2025 - 26.07.2025"
+            ]
+          }
+        ]
+      },
+      "2.9": {
+        "max_row": 5,
+        "max_col": 10,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "2.9 Industrial Training / Social Sector Projects / Fellowships Attended"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No.",
+              "Name of the Faculty",
+              "Level (International/National/State)",
+              "Type (Industrial Training / Social Sector Projects / Fellowships)",
+              "Sponsored by Management/Others (mention the details)",
+              "Amount Received  (in ₹)",
+              "Name of the Scheme under which the Training was Offered",
+              "Name and Address of the Industry",
+              "Duration in Days",
+              "Date  From – To                                (DD.MM.YYYY - DD.MM.YYYY)"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Dr. A. Vimal Jerald",
+              "National",
+              "Industrial Training",
+              "Management",
+              "10000",
+              "Faculty Industrial Training Programme",
+              "ABC Technologies Pvt. Ltd., Chennai, Tamil Nadu",
+              "5",
+              "03.06.2026 – 07.06.2026"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "2",
+              "Dr. M. Rajesh",
+              "International",
+              "Fellowship",
+              "Others",
+              "75000",
+              "International Faculty Fellowship Programme",
+              "University of Melbourne, Australia",
+              "14",
+              "01.07.2026 – 14.07.2026"
+            ]
+          },
+          {
+            "row": 5,
+            "values": [
+              "3",
+              "Dr. R. Kumar",
+              "National",
+              "Social Sector Project",
+              "Others",
+              "5000",
+              "Community Development Programme",
+              "XYZ Foundation, Tiruchirappalli, Tamil Nadu",
+              "7",
+              "15.06.2026 – 21.06.2026"
+            ]
+          }
+        ]
+      },
+      "2.10": {
+        "max_row": 4,
+        "max_col": 6,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "2.10  NET / SET / JRF / Others Qualified in the current Academic Year"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S. No.",
+              "Name of the Staff",
+              "Examination Registration Number",
+              "NET/SET/JRF/Others",
+              "SUBJECT",
+              "Date of Passing             (DD.MM.YYYY)"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Ms. I. Reshma Monica",
+              "TN14001039",
+              "UGC NET",
+              "Computer Science",
+              "21.07.2025"
+            ]
+          }
+        ]
+      },
+      "2.11": {
+        "max_row": 4,
+        "max_col": 6,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "2.11 Awards Received"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S. No.",
+              "Name of the Staff",
+              "Level (International/National/State/Institutional)",
+              "Name of the Award",
+              "Date                        (DD.MM.YYYY)",
+              "Awarding Agency and Contact Details"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Dr. A. Vimal Jerald",
+              "National",
+              "Best Faculty in Computer Science",
+              "15.06.2026",
+              "ABC Educational Foundation, Chennai, Tamil Nadu – awards@abcfoundation.org"
+            ]
+          }
+        ]
+      },
+      "2.12": {
+        "max_row": 3,
+        "max_col": 11,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "2.12 Faculty Registering  / Completing MOOC"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No.",
+              "Name of the Staff",
+              "Platform offering MOOC (SWAYAM/NPTEL, Recognized Platforms by the Departments (Coursera, EdX, Udemy, etc.), SWAYAM PLUS",
+              "Title of the MOOC",
+              "Cycle (incase the platform is SWAYAM / NPTEL)",
+              "Duration of Course",
+              "Number of Credits",
+              "FDP (YES/NO)",
+              "Date of Examination  (DD.MM.YYYY)",
+              "Registered / Completed",
+              "Result"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Dr. K. Maheswaran",
+              "SWAYAM",
+              "Introduction to Programming in C",
+              "2026-07-01 00:00:00",
+              "8 weeks",
+              "2",
+              "Yes",
+              "21.09.2025",
+              "Completed",
+              "Pass"
+            ]
+          }
+        ]
+      },
+      "2.13": {
+        "max_row": 6,
+        "max_col": 9,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "2.13 Faculty Going Abroad for Academic Visits"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No.",
+              "Name of the Staff",
+              "Name of the Country Visited",
+              "Purpose / Nature of the Visit",
+              "Name of the Fellowship, if any",
+              "Awarding Agency / Host Institution with Complete Address",
+              "Whether the visit based on MoU",
+              "No. of Days",
+              "Date FROM - TO                 DD.MM.YYYY - DD.MM.YYYY"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Dr George Gabriel Richard Roy",
+              "Singapore",
+              "Academic Visit and Research Interaction",
+              "International Faculty Fellowship Programme",
+              "National University of Singapore, Singapore – international@nus.edu.sg",
+              "Yes",
+              "7",
+              "10.06.2026 – 16.06.2026"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "AAA_February 2027_Attribute IV_Template.xlsx": {
+    "sheets": {
+      "4.1": {
+        "max_row": 14,
+        "max_col": 13,
+        "rows": [
+          {
+            "row": 2,
+            "values": [
+              "Attribute IV"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "Financial Resources & Management"
+            ]
+          },
+          {
+            "row": 6,
+            "values": [
+              "4.1 Alumni Meeting"
+            ]
+          },
+          {
+            "row": 7,
+            "values": [
+              "S. No.",
+              "Programme",
+              "Batch",
+              "No. of Alumni Participated",
+              "Date",
+              "Details of Notable Alumni Participated with Designation and Official Address \n(Mention the details of each Alumni in separate rows)",
+              "Contribution by the Alumni"
+            ]
+          },
+          {
+            "row": 8,
+            "values": [
+              "Financial Contribution (₹), if any",
+              "Purpose of the Financial Contribution",
+              "Support for other Contributions (Placement,Internship Opportunities,Knowledge sharing,etc)"
+            ]
+          },
+          {
+            "row": 9,
+            "values": [
+              "1",
+              "MCA",
+              "2012–2015",
+              "35",
+              "20.07.2026",
+              "Dr. Arun Kumar, Senior Manager, ABC Technologies Pvt. Ltd., Chennai, Tamil Nadu",
+              "50000",
+              "Computer Lab Equipment",
+              "Facilitated internship opportunities for students"
+            ]
+          },
+          {
+            "row": 10,
+            "values": [
+              "Mr. Joseph, HR Manager, XYZ Solutions Ltd., Bengaluru, Karnataka",
+              "25000",
+              "Library Development",
+              "Placement support"
+            ]
+          },
+          {
+            "row": 11,
+            "values": [
+              "Mr. Rahul Raj, Project Manager, Global Systems Pvt. Ltd., Coimbatore, Tamil Nadu",
+              "Knowledge sharing and career guidance"
+            ]
+          }
+        ]
+      },
+      "4.2": {
+        "max_row": 18,
+        "max_col": 8,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "4.2 Scholarship/ Freeship / Financial Assistance Received by the Students from the College/Alumni/External Agencies"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S. No.",
+              "Reg. No",
+              "Name of the Student",
+              "College /Alumni /External Agencies",
+              "Name of the Agency with complete address",
+              "Mention Name of the Scholarship",
+              "Amount Received in Rupees (₹)"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "26UCS101",
+              "Arun Kumar",
+              "College",
+              "St. Joseph's College (Autonomous), Tiruchirappalli - 620002",
+              "Jesuit Education Scholarship",
+              "5000"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "2",
+              "26UCS305",
+              "David Paul",
+              "External Agencies",
+              "ABC Foundation, 25 Anna Salai, Chennai – 600002, Tamil Nadu",
+              "ABC Foundation Scholarship",
+              "25000"
+            ]
+          }
+        ]
+      },
+      "4.3": {
+        "max_row": 5,
+        "max_col": 15,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "4.3 Funds Received (Grants received from the External Funding Agencies to conduct Courses/Conferences, etc.)"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S. No.",
+              "Title of the Programme",
+              "Date of the Event (FROM-TO)",
+              "Nature of the Programme (Workshop/Seminar/Conference/Courses,etc)",
+              "Name of the Funding Agency",
+              "Purpose",
+              "Date of Grant",
+              "Amount (₹)"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "National Workshop on Emerging Trends in Artificial Intelligence",
+              "15.07.2026 – 16.07.2026",
+              "Workshop",
+              "University Grants Commission (UGC), New Delhi",
+              "Conduct of the Workshop",
+              "05.07.2026",
+              "75000"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "2",
+              "International Conference on Sustainable Development and Innovation",
+              "10.08.2026 – 12.08.2026",
+              "Conference",
+              "Indian Council of Social Science Research (ICSSR), New Delhi",
+              "Conduct of the Conference",
+              "25.07.2026",
+              "150000"
+            ]
+          },
+          {
+            "row": 5,
+            "values": [
+              "3",
+              "Faculty Development Programme on Data Science",
+              "20.06.2026 – 24.06.2026",
+              "Course",
+              "Tamil Nadu State Council for Higher Education, Chennai",
+              "Faculty Training",
+              "10.06.2026",
+              "50000"
+            ]
+          }
+        ]
+      },
+      "4.4": {
+        "max_row": 4,
+        "max_col": 7,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "4.4  Endowments Established (this academic year)"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S. No.",
+              "Name of the Endowment",
+              "Purpose of the Endowment",
+              "Instituted By (Alumni/Others).If Alumni, mention the Batch and Programme",
+              "Instituted By (with complete address)",
+              "Date of Institution DD.MM.YYYY",
+              "Amount (₹)"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Dr. A. Joseph Memorial Endowment",
+              "To provide financial assistance to meritorious students",
+              "Alumni - 2023 -2026 - BSc Computer Science",
+              "Mr. A. Joseph, 25 Gandhi Road, Chennai – 600034, Tamil Nadu",
+              "15.07.2026",
+              "100000"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "2",
+              "Dr. B. Thomas Research Endowment",
+              "To support student research projects and research-related activities",
+              "Others",
+              "Dr. B. Thomas, 18 College Road, Coimbatore – 641018, Tamil Nadu",
+              "05.08.2026",
+              "200000"
+            ]
+          }
+        ]
+      },
+      "4.5": {
+        "max_row": 4,
+        "max_col": 7,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "4.5 Details of Endowment Lectures/Workshops conducted (Instituted in the Current or Previous Academic years)"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No.",
+              "Name of the Endowment Lecture /Workshop",
+              "Title of the Talk/Workshop",
+              "Resource Person’s Name, Designation, Affiliation and Complete Address",
+              "Date",
+              "Beneficiaries",
+              "No. of Beneficiaries"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Dr. A. Joseph Memorial Endowment",
+              "Emerging Trends in Artificial Intelligence and its Applications",
+              "Dr. R. Kumar, Professor, Department of Computer Science, ABC University, 25 University Road, Chennai – 600025, Tamil Nadu",
+              "15.07.2026",
+              "UG & PG Students of Computer Science",
+              "125"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "2",
+              "Alumni Excellence Endowment",
+              "Career Opportunities and Industry Readiness",
+              "Mr. Arun Joseph, Senior Manager, XYZ Technologies Pvt. Ltd., 45 MG Road, Bengaluru – 560001, Karnataka",
+              "25.07.2026",
+              "Final-Year UG Students",
+              "180"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "AAA_February 2027_Attribute IX_Template.xlsx": {
+    "sheets": {
+      "9.1": {
+        "max_row": 8,
+        "max_col": 9,
+        "rows": [
+          {
+            "row": 2,
+            "values": [
+              "Attribute IX"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "Research and Innovation Outcomes"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "9.1 Ph.D. Conferred"
+            ]
+          },
+          {
+            "row": 5,
+            "values": [
+              "S.No.",
+              "Name of the Guide",
+              "Name of the Scholar",
+              "University Ref. No.",
+              "Title of the Thesis",
+              "Date of Viva-Voce",
+              "Name and Place of the University"
+            ]
+          },
+          {
+            "row": 6,
+            "values": [
+              "1",
+              "Dr A. Rose Venis",
+              "Raja R",
+              "32598/Ph.D.K2/Chemistry/Part Time/ October 2015",
+              "Application of Advanced Oxidation Process",
+              "06.10.2025",
+              "Bharathidasan University,               Tiruchirappalli"
+            ]
+          }
+        ]
+      },
+      "9.2": {
+        "max_row": 3,
+        "max_col": 7,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "9.2  PhD Thesis Submitted"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S. No.",
+              "Name of the Guide",
+              "Name of the Scholar",
+              "University Ref. No.",
+              "Title of the Thesis",
+              "Date of Submission",
+              "Name and Place of the University"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Dr. R. Kannan",
+              "Ms. Priya Joseph",
+              "PhD/2026/CS/0125",
+              "Artificial Intelligence-Based Learning Analytics for Higher Education",
+              "15.07.2026",
+              "Bharathidasan University, Tiruchirappalli, Tamil Nadu"
+            ]
+          }
+        ]
+      },
+      "9.3": {
+        "max_row": 3,
+        "max_col": 5,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "9.3 New Guides"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No.",
+              "Name of the Faculty",
+              "Guideship Reference Number",
+              "Date of Guideship Granted (Communication Date)",
+              "Name and Place of the University"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Dr. A. Vimal Jerald",
+              "BU/PhD/GUIDE/2026/0125",
+              "15.07.2026",
+              "Bharathidasan University, Tiruchirappalli, Tamil Nadu"
+            ]
+          }
+        ]
+      },
+      "9.4": {
+        "max_row": 5,
+        "max_col": 12,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "9.4 PhD Enrolment (New & Existing Scholars)"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "S.No.",
+              "Name of the Guide",
+              "Name of the Co-Guide (if available)",
+              "Name of the Scholar",
+              "Gender",
+              "JRF/SRF",
+              "Type FT/PT",
+              "College Register No",
+              "University Reference number and date",
+              "Title of the Thesis/Broad Area",
+              "Name & Place of the University",
+              "New/Active / Completed / Discontinued"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "1",
+              "Dr. R. Lenin",
+              "Priya Joseph",
+              "Female",
+              "No Fellowship",
+              "PT",
+              "24PHD115",
+              "BU/PhD/2024/0187, 20.08.2024",
+              "Sustainable Business Models for Social Enterprises",
+              "Bharathidasan University, Tiruchirappalli, Tamil Nadu",
+              "Active"
+            ]
+          },
+          {
+            "row": 5,
+            "values": [
+              "2",
+              "Dr. A. Aloysius",
+              "Rahul Raj",
+              "Male",
+              "SRF",
+              "FT",
+              "26PHD203",
+              "BU/PhD/2026/0215, 05.08.2026",
+              "Digital Transformation in Higher Education",
+              "Bharathidasan University, Tiruchirappalli, Tamil Nadu",
+              "New"
+            ]
+          }
+        ]
+      },
+      "9.5": {
+        "max_row": 4,
+        "max_col": 7,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "9.5 Consultancy"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S. No.",
+              "Name of the Faculty",
+              "Name of Consultancy Project",
+              "Client Organisation / Agency",
+              "Date FROM - TO",
+              "Revenue Generated (₹)",
+              "No. of Beneficiaries/Trainees"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Dr. A. Vimal Jerald",
+              "Development of an AI-Based Student Performance Analytics System",
+              "ABC Technologies Pvt. Ltd., Chennai – 600025, Tamil Nadu",
+              "15.07.2026 – 30.09.2026",
+              "75000",
+              "25"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "2",
+              "Dr. R. Lenin",
+              "Financial Literacy and Investment Awareness Programme",
+              "XYZ Finance Ltd., Coimbatore – 641018, Tamil Nadu",
+              "20.07.2026 – 25.07.2026",
+              "40000",
+              "60"
+            ]
+          }
+        ]
+      },
+      "9.6": {
+        "max_row": 5,
+        "max_col": 7,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "9.6  Corporate Training"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No.",
+              "Name of the Faculty / Corporate Trainer",
+              "Title of Training Programme",
+              "Agency Seeking Training with Complete Address & Contact Details",
+              "Date FROM – TO (DD.MM.YYYY – DD.MM.YYYY)",
+              "Revenue Generated (₹)",
+              "No. of Trainees"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Dr. A. Vimal Jerald",
+              "Corporate Training on Artificial Intelligence and Machine Learning",
+              "ABC Technologies Pvt. Ltd., Chennai – 600025, Tamil Nadu. Contact: HR Manager, +91-XXXXXXXXXX",
+              "15.07.2026 – 17.07.2026",
+              "60000",
+              "35"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "2",
+              "Dr. R. Lenin",
+              "Training on Financial Analytics and Business Intelligence",
+              "XYZ Finance Ltd., Coimbatore – 641018, Tamil Nadu. Contact: Training Coordinator, +91-XXXXXXXXXX",
+              "22.07.2026 – 24.07.2026",
+              "45000",
+              "40"
+            ]
+          },
+          {
+            "row": 5,
+            "values": [
+              "3",
+              "Dr. S. Thulasi Bharathi",
+              "Corporate Training on Digital Marketing Strategies",
+              "PQR Solutions Pvt. Ltd., Bengaluru – 560001, Karnataka. Contact: Learning & Development Manager, +91-XXXXXXXXXX",
+              "05.08.2026 – 06.08.2026",
+              "35000",
+              "25"
+            ]
+          }
+        ]
+      },
+      "9.7": {
+        "max_row": 5,
+        "max_col": 9,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "9.7 Externally funded Research Projects"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No.",
+              "Name of the PI (CI, if applicable)",
+              "Name of the Funding Agency",
+              "Title of the Research Project",
+              "Type (Government/Non-Government)",
+              "For Non-Government,mention the source as IN /CH/BO",
+              "Duration of the Project",
+              "Funds Received (₹)",
+              "Date of Award"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Dr. A. Vimal Jerald (Dr. R. Lenin, CI)",
+              "University Grants Commission (UGC)",
+              "AI-Based Learning Analytics for Early Identification of At-Risk Students",
+              "Government",
+              "-",
+              "24 Months",
+              "1200000",
+              "15.07.2026"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "2",
+              "Dr. S. Thulasi Bharathi",
+              "Science and Engineering Research Board (SERB)",
+              "Development of Sustainable Digital Learning Resources for Higher Education",
+              "Government",
+              "-",
+              "36 Months",
+              "1800000",
+              "25.07.2026"
+            ]
+          },
+          {
+            "row": 5,
+            "values": [
+              "3",
+              "Dr. V. Suganthi (Dr. Dennis Edward Fernando, CI)",
+              "ABC Technologies Pvt. Ltd., Chennai",
+              "IoT-Based Environmental Monitoring and Data Analytics",
+              "Non-Government",
+              "IN",
+              "18 Months",
+              "750000",
+              "05.08.2026"
+            ]
+          }
+        ]
+      },
+      "9.8": {
+        "max_row": 5,
+        "max_col": 13,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "9.8  Papers Published in the Journals"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No",
+              "Name of Author(s) Mention all the names as it appears in the publication, highlighting the name of the faculty of your department in BOLD letters",
+              "Published in (SCOPUS/WEB OF SCIENCE/OTHERS)",
+              "Title of the Paper",
+              "Name of the Journal",
+              "National / International",
+              "ISSN/ ISBN No.",
+              "Impact Factor",
+              "h-index",
+              "No. of Citations (Excluding Self Citation)",
+              "Vol ,Number,Page",
+              "Month &Year",
+              "Link for the paper"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Dr. A. Vimal Jerald, R. Kumar, S. Joseph",
+              "SCOPUS",
+              "Artificial Intelligence-Based Learning Analytics in Higher Education",
+              "International Journal of Educational Technology",
+              "International",
+              "2345-6789",
+              "3.2",
+              "18",
+              "12",
+              "Vol. 15, No. 2, pp. 125–138",
+              "2026-07-01 00:00:00",
+              "https://doi.org/10.xxxx/xxxxx"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "2",
+              "Dr. R. Lenin, P. Raj, M. Kumar",
+              "Web of Science",
+              "Sustainable Business Models for Social Enterprises",
+              "Journal of Sustainable Business Research",
+              "International",
+              "2456-7890",
+              "2.8",
+              "15",
+              "8",
+              "Vol. 10, No. 3, pp. 45–58",
+              "2026-08-01 00:00:00",
+              "https://doi.org/10.xxxx/xxxxx"
+            ]
+          },
+          {
+            "row": 5,
+            "values": [
+              "3",
+              "Dr. S. Thulasi Bharathi, A. Joseph",
+              "Others – UGC CARE",
+              "Digital Learning Practices and Student Engagement",
+              "Indian Journal of Higher Education Studies",
+              "National",
+              "2234-5678",
+              "—",
+              "—",
+              "3",
+              "Vol. 8, No. 1, pp. 20–31",
+              "2026-06-01 00:00:00",
+              "Journal URL"
+            ]
+          }
+        ]
+      },
+      "9.9": {
+        "max_row": 5,
+        "max_col": 11,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "9.9 Papers Presented in Conferences"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No.",
+              "Name of the Staff",
+              "Title of the Paper",
+              "Name of the Institution / Organising Body",
+              "Name of the Conference",
+              "National / International",
+              "Title of the Proceedings, if Published",
+              "Title of the Book of Abstracts, if Published",
+              "Volume, Issue & Page",
+              "Month & Year",
+              "ISSN / ISBN No."
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Dr. A. Vimal Jerald",
+              "Artificial Intelligence in Higher Education: Emerging Trends",
+              "National Institute of Technology, Tiruchirappalli – 620015",
+              "National Conference on Emerging Technologies in Education",
+              "National",
+              "Proceedings of the National Conference on Emerging Technologies",
+              "Book of Abstracts – NCTE 2026",
+              "Vol. 1, pp. 45–52",
+              "2026-07-01 00:00:00",
+              "978-81-XXXX-XXXX-X"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "2",
+              "Dr. R. Lenin",
+              "Sustainable Business Practices in the Digital Era",
+              "Bharathidasan University, Tiruchirappalli – 620024",
+              "International Conference on Sustainable Business and Innovation",
+              "International",
+              "Proceedings of the International Conference on Sustainable Business",
+              "—",
+              "pp. 112–119",
+              "2026-08-01 00:00:00",
+              "978-81-XXXX-XXXX-X"
+            ]
+          },
+          {
+            "row": 5,
+            "values": [
+              "3",
+              "Dr. S. Thulasi Bharathi",
+              "Digital Learning and Student Engagement",
+              "St. Joseph’s College (Autonomous), Tiruchirappalli – 620002",
+              "National Seminar on Digital Transformation in Higher Education",
+              "National",
+              "—",
+              "Abstract Book – NSDTHE 2026",
+              "p. 28",
+              "2026-08-01 00:00:00",
+              "978-81-XXXX-XXXX-X"
+            ]
+          }
+        ]
+      },
+      "9.10": {
+        "max_row": 6,
+        "max_col": 8,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "9.10 Books Published /Books Edited / Chapter Contribution"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No.",
+              "Name of the Author (s)",
+              "Published / Edited / Chapter Contributed",
+              "Title of the Book",
+              "If chapter contributed, provide the Title of the Chapter",
+              "Month and Year of Publication",
+              "ISBN No.",
+              "Name & Place  of the Publisher"
+            ]
+          }
+        ]
+      },
+      "9.11": {
+        "max_row": 13,
+        "max_col": 9,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "9.11 Patents/Copyright/ Trade Mark/ Design Registration/Geographical Indication/ Open Educational Resources"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No.",
+              "Name of the Faculty",
+              "Type of IPR / Output",
+              "Status (Applied / Granted / Published / Registered)",
+              "Title / Details of the IPR / Publication",
+              "Country",
+              "Date of Application / Grant / Publication / Registration",
+              "Application No. / IPR No. / Certificate No.",
+              "Registered in the name of \"SJC\" (Yes/No)"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Dr. A. Vimal Jerald",
+              "Patent",
+              "Granted",
+              "AI-Based Smart Attendance and Student Monitoring System",
+              "India",
+              "15.07.2026",
+              "IN202641012345",
+              "Yes"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "2",
+              "Dr. R. Lenin",
+              "Copyright",
+              "Registered",
+              "Digital Learning Resource Management System",
+              "India",
+              "22.07.2026",
+              "L-12345/2026",
+              "No"
+            ]
+          },
+          {
+            "row": 5,
+            "values": [
+              "3",
+              "Dr. S. Thulasi Bharathi",
+              "Design Registration",
+              "Registered",
+              "Eco-Friendly Modular Educational Product Design",
+              "India",
+              "05.08.2026",
+              "345678-001",
+              "No"
+            ]
+          },
+          {
+            "row": 6,
+            "values": [
+              "4",
+              "Dr. V. Suganthi",
+              "Trademark",
+              "Applied",
+              "EduTech Analytics",
+              "India",
+              "10.08.2026",
+              "TM2026123456",
+              "Yes"
+            ]
+          },
+          {
+            "row": 7,
+            "values": [
+              "5",
+              "Dr. Dennis Edward Fernando",
+              "Patent",
+              "Applied",
+              "IoT-Based Environmental Monitoring Device",
+              "USA",
+              "01.08.2026",
+              "US2026XXXXXX",
+              "No"
+            ]
+          },
+          {
+            "row": 10,
+            "values": [
+              "OERs"
+            ]
+          }
+        ]
+      },
+      "9.12": {
+        "max_row": 7,
+        "max_col": 12,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "9.12 Collaboration with national/international institutions of higher ranking /industries with focus"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "Details of Collaboration",
+              "Details of  Collaboration Activities"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "S.No.",
+              "Institution/Industry",
+              "Name of the Collaborating Agency with Contact Details",
+              "Purpose of Collaboration ( Interdisciplinary Research/Inter-University National/International Faculty /Community-based Research/Technology Transfer /Any other research collborations)",
+              "Name of the Faculty",
+              "Year of Collaboration",
+              "Duration of Collaboration",
+              "Nature of the Activity",
+              "Date of Activity",
+              "No. of Beneficiaries from the Department",
+              "No. of Beneficiaries from the collaborating Institution/Industry",
+              "Outcome"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "1",
+              "Institution",
+              "National Institute of Technology, Tiruchirappalli – 620015, Tamil Nadu",
+              "Interdisciplinary Research",
+              "Dr. A. Vimal Jerald",
+              "2026",
+              "2 Years",
+              "Joint Research Project on AI and Data Analytics",
+              "15.07.2026 – 30.09.2026",
+              "12",
+              "8",
+              "Joint research work initiated and research paper preparation undertaken"
+            ]
+          },
+          {
+            "row": 5,
+            "values": [
+              "2",
+              "Industry",
+              "ABC Technologies Pvt. Ltd., Chennai – 600025, Tamil Nadu",
+              "Technology Transfer",
+              "Dr. R. Lenin",
+              "2026",
+              "3 Years",
+              "Development of Industry-Oriented Software Solution",
+              "20.07.2026 – 25.08.2026",
+              "25",
+              "15",
+              "Prototype developed and technical knowledge transferred"
+            ]
+          },
+          {
+            "row": 6,
+            "values": [
+              "3",
+              "Institution",
+              "University of Oxford, Oxford, United Kingdom",
+              "International Faculty / Research Collaboration",
+              "Dr. S. Thulasi Bharathi",
+              "2026",
+              "1 Year",
+              "Joint Research and Faculty Knowledge Exchange",
+              "05.08.2026 – 06.08.2026",
+              "10",
+              "6",
+              "Research collaboration established and knowledge shared"
+            ]
+          },
+          {
+            "row": 7,
+            "values": [
+              "4",
+              "Industry",
+              "XYZ Industries Ltd., Coimbatore – 641018, Tamil Nadu",
+              "Industry-Academia Research Collaboration",
+              "Dr. V. Suganthi",
+              "2026",
+              "2 Years",
+              "Industry-sponsored Research and Student Interaction",
+              "10.08.2026",
+              "40",
+              "20",
+              "Industry problem identified for collaborative research"
+            ]
+          }
+        ]
+      },
+      "9.13": {
+        "max_row": 11,
+        "max_col": 10,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "9.13 Incubation and Start-up through Technology Business Incubator (TBI)",
+              "Name of the TBI / Incubation Centre in SJC: St. Joseph's Start-up Center (JSC)"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No.",
+              "Name of the Incubated Start-up / Venture",
+              "Nature / Type of Start-up",
+              "Mentor Category (Alumni/Entrepreneur/Faculty/Researchers/Industry professionals/Local Community Personal)",
+              "Name of the Mentor with Designation and complete details",
+              "Reg. No. of the  Student Mentee",
+              "Name of the Student Mentee",
+              "Date From – To",
+              "Duration",
+              "Status / Outcome"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "FrontierWox Tech Pvt Ltd",
+              "Software / Digital Services",
+              "Alumni",
+              "Mr. Ajay James, CEO, FrontierWox Tech Pvt Ltd, 63 B/5,Gokul Nagar, Vallioor, Tirunelveli - 627117",
+              "26UCS101",
+              "Arun Kumar",
+              "15.07.2026 – 30.09.2026",
+              "77 Days",
+              "Prototype Developed"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "26UCS573",
+              "Samuel G",
+              "15.07.2026 – 30.09.2026",
+              "77 Days",
+              "Prototype Developed"
+            ]
+          },
+          {
+            "row": 5,
+            "values": [
+              "26UCS711",
+              "Thomas A",
+              "15.07.2026 – 30.09.2026",
+              "77 Days",
+              "Prototype Developed"
+            ]
+          },
+          {
+            "row": 6,
+            "values": [
+              "2",
+              "GreenTech Innovations",
+              "Clean Technology / IoT",
+              "Faculty Mentor",
+              "Dr. R. Lenin",
+              "26UEC115",
+              "Priya Joseph",
+              "20.07.2026 – 20.10.2026",
+              "93 Days",
+              "Business Model Developed"
+            ]
+          },
+          {
+            "row": 7,
+            "values": [
+              "26UMA102",
+              "Sam P",
+              "20.07.2026 – 20.10.2026",
+              "93 Days",
+              "Business Model Developed"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "AAA_February 2027_Attribute I_Template.xlsx": {
+    "sheets": {
+      "PART-A": {
+        "max_row": 26,
+        "max_col": 12,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "PART A - PROFILE OF THE DEPARTMENT"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "(Presenting Data on all the questions in Part A is mandatory)"
+            ]
+          },
+          {
+            "row": 5,
+            "values": [
+              "Department",
+              "Shift"
+            ]
+          },
+          {
+            "row": 6,
+            "values": [
+              "Programmes Offered",
+              "UG"
+            ]
+          },
+          {
+            "row": 7,
+            "values": [
+              "PG"
+            ]
+          },
+          {
+            "row": 8,
+            "values": [
+              "PhD"
+            ]
+          },
+          {
+            "row": 9,
+            "values": [
+              "Name of the Head/Coordinator"
+            ]
+          },
+          {
+            "row": 10,
+            "values": [
+              "Faculty Details",
+              "Male",
+              "Female"
+            ]
+          }
+        ]
+      },
+      "1.1": {
+        "max_row": 9,
+        "max_col": 13,
+        "rows": [
+          {
+            "row": 2,
+            "values": [
+              "Part B"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "Attribute I"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "Curriculum Design"
+            ]
+          },
+          {
+            "row": 6,
+            "values": [
+              "1.1      Courses offered by the Department during the year 2026-27",
+              "Mention Yes if applicable"
+            ]
+          },
+          {
+            "row": 7,
+            "values": [
+              "S.No.",
+              "Programme Name (Commerce CA, History, etc.,)",
+              "PG / UG (MSc, BA, BSc, BCom, etc.,)",
+              "Course Code",
+              "Title of the Course",
+              "Mention YES if it is introduced in the new syllabus",
+              "Percentage (%) of the revision",
+              "Skill / Practical  Hands on Training",
+              "IKS Based",
+              "Aligned with NSQF / NHEQF",
+              "Field Work/Field Visit/Industrial Visit",
+              "Internship",
+              "Project"
+            ]
+          },
+          {
+            "row": 8,
+            "values": [
+              "Mention all the Courses offered by the Department during the year 2026-2027"
+            ]
+          },
+          {
+            "row": 9,
+            "values": [
+              "No need to fill this Data for this Academic Year"
+            ]
+          }
+        ]
+      },
+      "1.2": {
+        "max_row": 13,
+        "max_col": 17,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "1.2 (a) Value-Added Courses / Certificate Course Conducted by SJC"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No.",
+              "Nature of the Course \n(VAC / CC)",
+              "Collaborating  institutions/Agency, Name and Address of the Agency offering the Course",
+              "Course Code",
+              "Title of the Course",
+              "Credits Assigned (For Certificate Course)",
+              "Name of the Course Coordinator",
+              "Mode                      (Online /Offline/  Blended)",
+              "Course conducted based on IKS (Mention YES/NO)",
+              "Focus (Mention SKILL, KNOWLEDGE, BOTH)",
+              "Multidisciplinary                  (Mention YES/NO)",
+              "Duration of the Course             (in hrs)",
+              "Dates on which the Course was conducted               From - To (DD.MM.YYYY)",
+              "Industry Collaboration (Mention YES/NO)"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "VAC",
+              "Not Applicable",
+              "VAC-CS01",
+              "Digital Literacy and Productivity Tools",
+              "Dr. A. Vimal Jerald",
+              "Blended",
+              "No",
+              "Skill",
+              "Yes",
+              "30",
+              "01.07.2026 – 15.07.2026",
+              "No"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "2",
+              "CC",
+              "Not Applicable",
+              "CC-AI01",
+              "Artificial Intelligence and Generative AI",
+              "2",
+              "Dr. R. Lenin",
+              "Offline",
+              "No",
+              "Both",
+              "Yes",
+              "40",
+              "15.07.2026 – 30.07.2026",
+              "Yes"
+            ]
+          },
+          {
+            "row": 5,
+            "values": [
+              "3",
+              "CC",
+              "ABC Technologies Pvt. Ltd., 25 Anna Salai, Chennai – 600002, Tamil Nadu",
+              "CC-FS01",
+              "Full Stack Web Development",
+              "3",
+              "Mr. G. Novin Senetra Roy",
+              "Blended",
+              "No",
+              "Skill",
+              "Yes",
+              "60",
+              "01.08.2026 – 20.08.2026",
+              "Yes"
+            ]
+          },
+          {
+            "row": 6,
+            "values": [
+              "4",
+              "VAC",
+              "Not Applicable",
+              "VAC-IKS01",
+              "Indian Knowledge Systems and Sustainable Living",
+              "Dr. S. Thulasi Bharathi",
+              "Offline",
+              "Yes",
+              "Knowledge",
+              "Yes",
+              "20",
+              "05.08.2026 – 12.08.2026",
+              "No"
+            ]
+          },
+          {
+            "row": 10,
+            "values": [
+              "1.2 (b) Students Attending Certificate Courses Offered by Other Agencies/Industries  (Do not include MOOC)"
+            ]
+          },
+          {
+            "row": 11,
+            "values": [
+              "S.No.",
+              "Register Number",
+              "Name of the Student",
+              "Title of the Certificate Course",
+              "Name and Address of the Agency offering the Course",
+              "Mode (Online /Offline/Blended)",
+              "Dates on which the Course was conducted FROM-TO",
+              "Credits from Recognized Body / Agency, if any"
+            ]
+          }
+        ]
+      },
+      "1.3": {
+        "max_row": 4,
+        "max_col": 12,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "1.3 Activities conducted with reference to IKS"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No",
+              "Title of the Programme",
+              "Nature of the Programme (Mention Workshop, Seminar, Field Visit, Industry Visit, Guest Lectures, etc.,)",
+              "Academic/Course Relevance",
+              "Date",
+              "Name and Address of Place Visited (In case of FV/IV)",
+              "Name, Designation of the  Resource Person",
+              "No. of Student Benefitted",
+              "No. of Faculty Benefitted"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Traditional Knowledge Systems in Sustainable Agriculture",
+              "Seminar",
+              "25PCA1CC01-Industrial IoT",
+              "22.09.2025",
+              "NIL",
+              "Dr. R. Anitha, Associate Professor of Botany, ABC College, Tiruchirappalli",
+              "25",
+              "5"
+            ]
+          }
+        ]
+      },
+      "1.4": {
+        "max_row": 3,
+        "max_col": 11,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "1.4  Industrial Visit, Educational Visit,Field Visit,Field Work, etc (Don't include if mentioned in 1.3)"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No.",
+              "Nature \n(Industrial Visit/ Educational Visit / Field Visit/Field Work)",
+              "Details of Industry / Institution/Places Visited",
+              "Academic/Course Relevance",
+              "Name of the Staff Accompanying the Students",
+              "Date From – To DD.MM.YYYY",
+              "Duration (Days)",
+              "Part of the                            MoU/Linkage",
+              "Learning Outcome",
+              "Target Group",
+              "Students  Benefitted"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Industrial Visit",
+              "Systech Hardware & Networking Academy Pvt. Ltd., Tiruchirappalli, Tamil Nadu",
+              "25UCS4CC05-Internship",
+              "Dr. J. Antony John Prabu & Dr. K. Subash",
+              "30.08.2025",
+              "0.5",
+              "MoU",
+              "Enhanced Industry Awareness\nPractical Learning Impact\nCareer Motivation",
+              "III  BSc Computer Science 'A'",
+              "60"
+            ]
+          }
+        ]
+      },
+      "1.5": {
+        "max_row": 11,
+        "max_col": 12,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "1.5 Internship"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No.",
+              "Name of the Student",
+              "Reg. No.",
+              "Title of the Internship",
+              "Name and Address of the Organization",
+              "Nature of the Place of  Internship (Educational Institution/Industry/Company,etc.)",
+              "Duration (No. of Days)",
+              "Dates FROM-TO DD.MM.YYYY - DD.MM.YYYY",
+              "Name of the Staff in charge",
+              "SDG Goal with Title",
+              "Part of the                            MoU/Linkage",
+              "Was the Internship based on IKS ? Mention Yes/No for each student"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "(2024 UG Batch)"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "1",
+              "Kishore Ignatius R",
+              "24UCS604",
+              "Data Analytics",
+              "We Touch Technologies Pvt. Ltd., No. 45, IT Park, Coimbatore",
+              "Industry",
+              "30",
+              "02.05.2026 - 03.06.2026",
+              "Ms. I. Reshma Monica",
+              "GOAL 8: Decent Work and Economic Growth",
+              "MoU",
+              "No"
+            ]
+          },
+          {
+            "row": 7,
+            "values": [
+              "(2025 PG Batch)"
+            ]
+          }
+        ]
+      },
+      "1.6": {
+        "max_row": 8,
+        "max_col": 12,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "1.6 Project"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No.",
+              "Name of the Student",
+              "Reg. No.",
+              "Title of the Project",
+              "Name and Address of the Organization",
+              "Nature of the Place of Project (Industry/Company/Institution)",
+              "Duration (No. of Days)",
+              "Dates FROM-TO DD.MM.YYYY - DD.MM.YYYY",
+              "Name of the Staff in charge",
+              "SDG Goal with Title",
+              "Part of the                            MoU/Linkage",
+              "Was the Project based on IKS ? Mention Yes/No for each student"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "(2024 UG Batch)"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "1",
+              "Santhosh S",
+              "24UCS101",
+              "Web Application Development",
+              "Tech Solutions Pvt. Ltd., No. 45, IT Park, Coimbatore",
+              "Industry",
+              "30",
+              "01.12.2025-30.12.2025",
+              "Dr. V. Jude Nirmal",
+              "GOAL 8: Decent Work and Economic Growth",
+              "Linkage",
+              "NO"
+            ]
+          },
+          {
+            "row": 5,
+            "values": [
+              "(2025 PG Batch)"
+            ]
+          }
+        ]
+      },
+      "1.7": {
+        "max_row": 5,
+        "max_col": 9,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "1.7 Apprenticeship"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No.",
+              "Name of the Student",
+              "Reg. No.",
+              "Title of the Apprenticeship",
+              "Name and Address of the Organization",
+              "Duration (No of Days)",
+              "Date From - To",
+              "Status (Completed/Ongoing)",
+              "Stipend (if applicable)"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Thomas A",
+              "25UCS101",
+              "Full Stack Development",
+              "Tech Solutions Pvt. Ltd., No. 45, IT Park, Coimbatore",
+              "180",
+              "01.01.2025-30.06.2025",
+              "Ongoing",
+              "Rs. 4000"
+            ]
+          }
+        ]
+      },
+      "1.8": {
+        "max_row": 16,
+        "max_col": 86,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "1.8 INTERNSHIP / PROJECT ACTIVITY OUTSIDE THE CURRICULUM"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "Sl. No",
+              "Class",
+              "Reg. No. of the Student",
+              "Name of the Student",
+              "Internship / Project",
+              "Name and Address of the Agency providing Internship/Project",
+              "Duration in Days",
+              "Dates From - To",
+              "Skills Acquired",
+              "Stipend, if any (₹)"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "III B.Com.",
+              "24UCO115",
+              "Priya Joseph",
+              "Project – Financial Data Analysis",
+              "XYZ Financial Services, 45 MG Road, Bengaluru – 560001, Karnataka",
+              "20",
+              "10.06.2026 – 29.06.2026",
+              "Excel, Data Analysis, Financial Reporting",
+              "-"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "2",
+              "II B.A. English",
+              "25UEN208",
+              "David Paul",
+              "Internship – Content Writing",
+              "Creative Media Solutions, 18 College Road, Tiruchirappalli – 620002, Tamil Nadu",
+              "15",
+              "15.07.2026 – 29.07.2026",
+              "Content Writing, Editing, Communication",
+              "3000"
+            ]
+          }
+        ]
+      },
+      "1.9": {
+        "max_row": 4,
+        "max_col": 12,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "1.8 Students Registering / Completing  MOOC",
+              "1.9 Students Registering / Completing MOOC"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S. No.",
+              "Class",
+              "Reg. No. of the Student",
+              "Name of the Student",
+              "Title of the MOOC",
+              "Platform offering MOOC (SWAYAM/NPTEL, Recognized Platforms by the Departments (Coursera, EdX, Udemy, etc.), SWAYAM PLUS",
+              "Cycle (incase the platform is SWAYAM / NPTEL)",
+              "Duration of the Course (in Weeks for SWAYAM/NPTEL, in Hrs for others)",
+              "Date of Examination",
+              "No. of Credits",
+              "Registered / Completed"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "I BSc Computer Science",
+              "26UCS101",
+              "Raju S",
+              "Relational Database Management",
+              "SWAYAM",
+              "2026-07-01 00:00:00",
+              "8",
+              "28.09.2026",
+              "2",
+              "Registered"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "2",
+              "I MCA",
+              "26PCA101",
+              "Abishek A",
+              "C++ & Data Structures",
+              "Coursera",
+              "NIL",
+              "30",
+              "NIL",
+              "NIL",
+              "Completed"
+            ]
+          }
+        ]
+      },
+      "1.10": {
+        "max_row": 4,
+        "max_col": 6,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "1.10 Parent Teacher Meet Conducted"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "Date",
+              "Class",
+              "No. of Students for whom PT was organised",
+              "No. of Parents Attending",
+              "No. of Feedback Received",
+              "Action Taken based on feedback received"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "15.07.2026",
+              "II B.Sc. Computer Science",
+              "45",
+              "38",
+              "32",
+              "Individual counselling and academic follow-up initiated for students requiring support"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "22.07.2026",
+              "I B.Com.",
+              "52",
+              "45",
+              "40",
+              "Attendance and academic performance concerns communicated to parents and monitored"
+            ]
+          }
+        ]
+      },
+      "1.11": {
+        "max_row": 8,
+        "max_col": 9,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "1.11 Feedback Collected from Stakeholders"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No",
+              "Type of Stakeholder (Teachers/Alumni/Employers/Industry/Entrepreneurs/Students)",
+              "Date of Feedback Collected",
+              "No. of Feedback Received",
+              "Mode of Feedback",
+              "Action Taken"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Teachers",
+              "15.07.2026",
+              "85",
+              "Online",
+              "Faculty suggestions regarding curriculum delivery were reviewed and necessary improvements initiated"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "2",
+              "Alumni",
+              "20.07.2026",
+              "120",
+              "Online",
+              "Suggestions regarding employability and skill development were considered for curriculum enrichment"
+            ]
+          },
+          {
+            "row": 5,
+            "values": [
+              "3",
+              "Employers/Industry",
+              "25.07.2026",
+              "35",
+              "Online / Offline",
+              "Industry suggestions were incorporated into skill-oriented training and curriculum review"
+            ]
+          },
+          {
+            "row": 6,
+            "values": [
+              "4",
+              "Entrepreneurs",
+              "30.07.2026",
+              "20",
+              "Online",
+              "Suggestions regarding entrepreneurship and start-up skills were considered for student development activities"
+            ]
+          },
+          {
+            "row": 7,
+            "values": [
+              "5",
+              "Students",
+              "05.08.2026",
+              "450",
+              "Online",
+              "Feedback on teaching-learning, infrastructure and student support services was analysed and corrective measures initiated"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "AAA_February 2027_Attribute VIII_Template.xlsx": {
+    "sheets": {
+      "8.1": {
+        "max_row": 11,
+        "max_col": 9,
+        "rows": [
+          {
+            "row": 2,
+            "values": [
+              "Attribute VIII"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "Student Outcomes"
+            ]
+          },
+          {
+            "row": 6,
+            "values": [
+              "8.1  Competitive Examinations Appeared or Qualified"
+            ]
+          },
+          {
+            "row": 7,
+            "values": [
+              "S. No.",
+              "Register Number",
+              "Name of the Student",
+              "Type of Competitive Exam (NET/ SET/ GATE /CAT /UPSC/TNPSC/JAM/Others)",
+              "Exam Registration Number",
+              "Date of Exam  (DD.MM.YYYY)",
+              "Result / Status",
+              "Score / Rank / Qualification Details"
+            ]
+          },
+          {
+            "row": 8,
+            "values": [
+              "1",
+              "26UCS101",
+              "Arun Kumar",
+              "GATE",
+              "GATE2026CS12345",
+              "15.02.2026",
+              "Qualified",
+              "AIR 1250"
+            ]
+          },
+          {
+            "row": 9,
+            "values": [
+              "2",
+              "26UCS115",
+              "Priya Joseph",
+              "UGC-NET",
+              "NET2026COM45678",
+              "10.06.2026",
+              "Qualified",
+              "NET Qualified"
+            ]
+          },
+          {
+            "row": 10,
+            "values": [
+              "3",
+              "26UBA203",
+              "Rahul Raj",
+              "TNPSC Group II",
+              "TNPSC2026XXXX",
+              "20.06.2026",
+              "Appeared",
+              "Awaiting Result"
+            ]
+          },
+          {
+            "row": 11,
+            "values": [
+              "4",
+              "26UEN118",
+              "Sneha Mary",
+              "JAM",
+              "JAM2026EN56789",
+              "14.02.2026",
+              "Qualified",
+              "AIR 850"
+            ]
+          }
+        ]
+      },
+      "8.2": {
+        "max_row": 5,
+        "max_col": 11,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "8.2 – Students’ Participation and Awards in External Cultural, Sports and Extra-Curricular Events"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No.",
+              "Level (International / National / State / University / Regional)",
+              "Nature (culturals/sports events/any other, specify )",
+              "Name of the Activity",
+              "Register Number",
+              "Name of the Student",
+              "Name & Address of the Organising Institution",
+              "Participation Status (Participated/Position Secured)",
+              "Name of the Award / Position",
+              "Date of Receipt of Award",
+              "Awarding Agency and Contact Details"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "National",
+              "Sports",
+              "Inter-Collegiate Athletics – 100m",
+              "26UBA101",
+              "Arun Kumar",
+              "ABC College, Chennai – 600025, Tamil Nadu",
+              "Participated",
+              "—",
+              "—",
+              "ABC College, Chennai – 600025, Tamil Nadu"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "2",
+              "State",
+              "Sports",
+              "State-Level Badminton Championship",
+              "26UBC115",
+              "Priya Joseph",
+              "XYZ College, Coimbatore – 641018, Tamil Nadu",
+              "Position Secured",
+              "Second Prize",
+              "20.07.2026",
+              "Tamil Nadu Inter-Collegiate Sports Association, Chennai – 600002, Tamil Nadu"
+            ]
+          },
+          {
+            "row": 5,
+            "values": [
+              "4",
+              "Regional",
+              "Cultural",
+              "Cultural Dance Competition",
+              "26UEN118",
+              "Sneha Mary",
+              "ABC Arts and Science College, Madurai – 625002, Tamil Nadu",
+              "Position Secured",
+              "Best Performance Award",
+              "05.08.2026",
+              "ABC Arts and Science College, Madurai – 625002, Tamil Nadu"
+            ]
+          }
+        ]
+      },
+      "8.3": {
+        "max_row": 5,
+        "max_col": 10,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "8.3 – Students’ Participation and Awards in External Academic and Co-Curricular Events"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No.",
+              "Nature (Conference/Technical Festivals / Competitions / Hackathons / Workshops)",
+              "Programme",
+              "Staff In-charge",
+              "Reg. No. of the Student",
+              "Name of the Student",
+              "DATE From – To",
+              "Name & Address of the  Institution",
+              "Position Secured  (IF ANY)",
+              "Outcome"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Conference",
+              "International Student Conference on Sustainable Development",
+              "Dr. S. Thulasi Bharathi",
+              "26UBA118",
+              "Sneha Mary",
+              "05.08.2026 – 06.08.2026",
+              "University of Madras, Chennai – 600005, Tamil Nadu",
+              "Best Paper Award",
+              "Presented research findings and received recognition for the quality of the paper"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "2",
+              "Technical Festival",
+              "Inter-Departmental Poster Presentation",
+              "Dr. V. Swabna",
+              "26UPH125",
+              "David Paul",
+              "10.08.2026 – 10.08.2026",
+              "Department of Electronics, St. Joseph's College (Autonomous), Tiruchirappalli – 620002, Tamil Nadu",
+              "Second Prize",
+              "Improved scientific communication and presentation skills"
+            ]
+          },
+          {
+            "row": 5,
+            "values": [
+              "3",
+              "Workshop",
+              "Hands-on Workshop on Data Analytics",
+              "Dr. Dennis Edward Fernando",
+              "26UCS203",
+              "Rahul Raj",
+              "01.08.2026 – 03.08.2026",
+              "XYZ Institute of Technology, Coimbatore – 641018, Tamil Nadu",
+              "Not Applicable",
+              "Acquired practical skills in data analysis and visualization"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "AAA_February 2027_Attribute VII_Template.xlsx": {
+    "sheets": {
+      "7.1": {
+        "max_row": 10,
+        "max_col": 11,
+        "rows": [
+          {
+            "row": 2,
+            "values": [
+              "Attribute VII"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "Management Support"
+            ]
+          },
+          {
+            "row": 6,
+            "values": [
+              "7.1  Funds Received (Grants received from the Management to conduct Courses/Conferences, etc.)"
+            ]
+          },
+          {
+            "row": 7,
+            "values": [
+              "S.No.",
+              "Title of the Course/Conference",
+              "Name of the Funding Agency",
+              "Purpose",
+              "Amount (₹)",
+              "No of Days",
+              "Period FROM - TO"
+            ]
+          },
+          {
+            "row": 8,
+            "values": [
+              "1",
+              "Faculty Development Programme on Emerging Trends in Artificial Intelligence",
+              "Management, St. Joseph’s College (Autonomous), Tiruchirappalli",
+              "To conduct Faculty Development Programme and provide training to faculty members",
+              "50000",
+              "3",
+              "15.07.2026 – 17.07.2026"
+            ]
+          },
+          {
+            "row": 9,
+            "values": [
+              "2",
+              "National Conference on Sustainable Development",
+              "Management, St. Joseph’s College (Autonomous), Tiruchirappalli",
+              "To organize a National Conference and facilitate academic interaction",
+              "75000",
+              "2",
+              "05.08.2026 – 06.08.2026"
+            ]
+          },
+          {
+            "row": 10,
+            "values": [
+              "3",
+              "Workshop on Data Analytics and Visualization",
+              "Management, St. Joseph’s College (Autonomous), Tiruchirappalli",
+              "To provide hands-on training to students and faculty",
+              "30000",
+              "2",
+              "10.08.2026 – 11.08.2026"
+            ]
+          }
+        ]
+      },
+      "7.2": {
+        "max_row": 5,
+        "max_col": 10,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "7.2  Seed Money (Received from Management for Patent/Copyright,etc.)"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No.",
+              "Name of the Staff",
+              "Amount in Rupees (₹)",
+              "Date",
+              "Type of Intellectual Property (Patent / Copyright / Design, etc.)",
+              "Title of Patent / Copyright / Design",
+              "Purpose / Intended Use of Seed Money",
+              "Status"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Dr. A. Vimal Jerald",
+              "25000",
+              "15.07.2026",
+              "Patent – Product",
+              "AI-Based Smart Attendance System",
+              "Patent drafting, documentation and filing expenses",
+              "Filed"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "2",
+              "Dr. R. Lenin",
+              "15000",
+              "20.07.2026",
+              "Copyright",
+              "Digital Learning Resource Management System",
+              "Copyright registration and documentation",
+              "Registered"
+            ]
+          },
+          {
+            "row": 5,
+            "values": [
+              "3",
+              "Dr. S. Thulasi Bharathi",
+              "20000",
+              "01.08.2026",
+              "Design",
+              "Eco-Friendly Educational Product Design",
+              "Design registration and documentation",
+              "Under Process"
+            ]
+          }
+        ]
+      },
+      "7.3": {
+        "max_row": 4,
+        "max_col": 11,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "7.3  Seed Money (Received from Management for Research Project)"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No.",
+              "Name of the Staff",
+              "Amount Received from Management (₹)",
+              "Duration of the Project",
+              "Date of Grant",
+              "Title of the Research Project"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Dr. S. Thulasi Bharathi",
+              "40000",
+              "12 Months",
+              "01.08.2026",
+              "Digital Learning Practices and Student Academic Engagement"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "2",
+              "Dr. V. Suganthi",
+              "60000",
+              "24 Months",
+              "05.08.2026",
+              "Development of a Low-Cost IoT-Based Environmental Monitoring System"
+            ]
+          }
+        ]
+      },
+      "7.4": {
+        "max_row": 5,
+        "max_col": 13,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "7.4 Financial Support Received (Financial Support from Management for attending Conference, Seminar, etc.)"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No.",
+              "Name of the Staff",
+              "Amount Received from Management (₹)",
+              "Date of Financial Support",
+              "Purpose",
+              "Name & Address of the organizing Institution",
+              "Name of the Conference / Seminar / Programme",
+              "Date of Event FROM–TO"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Dr. A. Vimal Jerald",
+              "10000",
+              "15.07.2026",
+              "To attend National Conference on Artificial Intelligence",
+              "ABC University, Chennai – 600025, Tamil Nadu",
+              "National Conference on Artificial Intelligence and Emerging Technologies",
+              "18.07.2026 – 19.07.2026"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "2",
+              "Dr. R. Lenin",
+              "7500",
+              "20.07.2026",
+              "To attend Faculty Development Programme",
+              "XYZ College, Coimbatore – 641018, Tamil Nadu",
+              "FDP on Research Methodology and Academic Writing",
+              "25.07.2026 – 29.07.2026"
+            ]
+          },
+          {
+            "row": 5,
+            "values": [
+              "3",
+              "Dr. S. Thulasi Bharathi",
+              "15000",
+              "01.08.2026",
+              "To attend International Conference and present research paper",
+              "University of Madras, Chennai – 600005, Tamil Nadu",
+              "International Conference on Sustainable Development",
+              "05.08.2026 – 06.08.2026"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "AAA_February 2027_Attribute VI_Template.xlsx": {
+    "sheets": {
+      "6.1": {
+        "max_row": 12,
+        "max_col": 11,
+        "rows": [
+          {
+            "row": 2,
+            "values": [
+              "Attribute VI"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "Extended Curricular Engagements"
+            ]
+          },
+          {
+            "row": 6,
+            "values": [
+              "6.1 Departmental Academic and Student Support & Development Activities (other than club activities)"
+            ]
+          },
+          {
+            "row": 8,
+            "values": [
+              "S.No.",
+              "Type of Programme (FDP,Sem, Conf, WS, Webinar,Guest Lectures,Vocational / Placement Trainings,  etc.)",
+              "Level (International/National/State)",
+              "Title of the Programme",
+              "Resource Person’s Name, Designation, Affiliation and Complete Address",
+              "Mode (Online /Offline/Blended)",
+              "Date From – To",
+              "Beneficiaries",
+              "No. of Beneficiaries",
+              "Whether conducted part of MoU Activity (Yes/No)",
+              "Hands on (Yes/No)"
+            ]
+          },
+          {
+            "row": 9,
+            "values": [
+              "1",
+              "Workshop",
+              "National",
+              "Hands-on Training on Generative AI Tools",
+              "Dr. R. Kumar, Professor, Department of Computer Science, ABC University, 25 University Road, Chennai – 600025, Tamil Nadu",
+              "Offline",
+              "15.07.2026 – 16.07.2026",
+              "UG & PG Students",
+              "120",
+              "No",
+              "Yes"
+            ]
+          },
+          {
+            "row": 10,
+            "values": [
+              "2",
+              "Seminar",
+              "State",
+              "Emerging Trends in Data Science and Artificial Intelligence",
+              "Dr. Priya Thomas, Associate Professor, Department of Data Science, XYZ University, 45 University Road, Coimbatore – 641018, Tamil Nadu",
+              "Online",
+              "25.07.2026 – 25.07.2026",
+              "UG Students",
+              "180",
+              "Yes",
+              "No"
+            ]
+          },
+          {
+            "row": 11,
+            "values": [
+              "3",
+              "International Conference",
+              "International",
+              "Innovations in Sustainable Technology",
+              "Dr. John Mathew, Professor, Department of Computer Science, University of Melbourne, Parkville VIC 3010, Australia",
+              "Offline",
+              "05.08.2026 – 07.08.2026",
+              "Faculty & Research Scholars",
+              "75",
+              "No",
+              "No"
+            ]
+          },
+          {
+            "row": 12,
+            "values": [
+              "4",
+              "Webinar",
+              "National",
+              "Industry 5.0 and Future Employability Skills",
+              "Ms. Anitha Raj, Senior Manager, ABC Technologies Pvt. Ltd., 18 Anna Salai, Chennai – 600002, Tamil Nadu",
+              "Blended",
+              "10.08.2026 – 10.08.2026",
+              "Final-Year UG Students",
+              "210",
+              "Yes",
+              "No"
+            ]
+          }
+        ]
+      },
+      "6.2": {
+        "max_row": 4,
+        "max_col": 9,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "6.2 Guidance for Competitive Examinations"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S. No.",
+              "Name of the Programme",
+              "Name of the Examination (NET, SET, CA, TNPSC, UPSC, JAM, etc.)",
+              "Name of the Faculty Organising the Activity",
+              "Resource Person’s Name, Designation, Affiliation and Complete Address",
+              "Date (DD.MM.YYYY)",
+              "No. of Beneficiaries",
+              "No. of Students passing the Exams",
+              "Name of the External Agency if any"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "NET/SET Coaching Programme",
+              "UGC-NET",
+              "Dr. A. Vimal Jerald",
+              "Dr. R. Kumar, Assistant Professor, Department of Computer Science, ABC University, Chennai – 600025, Tamil Nadu",
+              "15.07.2026",
+              "60",
+              "8",
+              "ABC Academy, Chennai"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "2",
+              "Competitive Examination Guidance Programme",
+              "TNPSC Group I & II",
+              "Dr. R. Lenin",
+              "Mr. S. Rajesh, Civil Services Trainer, Bright Career Academy, 25 Anna Salai, Chennai – 600002, Tamil Nadu",
+              "20.07.2026",
+              "85",
+              "12",
+              "Bright Career Academy, Chennai"
+            ]
+          }
+        ]
+      },
+      "6.3": {
+        "max_row": 7,
+        "max_col": 8,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "6.3 Students Pursuing other Degree / Programmes (Offline/ODL/Online/Blended)"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No.",
+              "Register Number",
+              "Name of the Student",
+              "Mode  (Offline/ODL/Online/Blended)",
+              "Programme Pursuing",
+              "Name & Address of the  Institution",
+              "Duration of the Programme",
+              "Year of Completion"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "26UCS101",
+              "Arun Kumar",
+              "Online",
+              "B.A. Psychology",
+              "ABC University, 25 University Road, Chennai – 600025, Tamil Nadu",
+              "3 Years",
+              "2028"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "2",
+              "26UCO115",
+              "Priya Joseph",
+              "ODL",
+              "B.Com.",
+              "Tamil Nadu Open University, 577 Anna Salai, Chennai – 600015, Tamil Nadu",
+              "3 Years",
+              "2029"
+            ]
+          },
+          {
+            "row": 5,
+            "values": [
+              "3",
+              "26UBA203",
+              "Rahul Raj",
+              "Offline",
+              "Diploma in Digital Marketing",
+              "XYZ Institute of Management, 18 MG Road, Coimbatore – 641018, Tamil Nadu",
+              "1 Year",
+              "2027"
+            ]
+          }
+        ]
+      },
+      "6.4": {
+        "max_row": 8,
+        "max_col": 10,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "6.4  Activities of various Clubs of the Department"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No.",
+              "Nature of Club (Technical/Cultural/Domain/Others)",
+              "Name of the Club",
+              "Nature of Activity",
+              "Industry / External Partner Involved",
+              "Nature of Collaboration / Role of Industry",
+              "Date",
+              "No. of Participants from Other Institutions / Departments",
+              "Name of Institutions / Departments Participated",
+              "No. of Participants from Parent Department"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Technical",
+              "Coding Club",
+              "Workshop on Generative AI",
+              "ABC Technologies Pvt. Ltd., 25 Anna Salai, Chennai – 600002, Tamil Nadu",
+              "Industry Expert Training and Mentoring",
+              "15.07.2026",
+              "20",
+              "1.) Holy Cross College (Autonomous), Tiruchirappalli 2.) Jamal Mohammed College (Autonomous)",
+              "45"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "2",
+              "Cultural",
+              "Cultural Club",
+              "Traditional Arts and Cultural Heritage Workshop",
+              "Tamil Nadu Folk Arts Academy, 15 Cultural Centre Road, Chennai – 600005, Tamil Nadu",
+              "Expert Demonstration and Cultural Training",
+              "20.07.2026",
+              "30",
+              "1.)Bishop Heber College (Autonomous), Tiruchirappalli 2.) Indira Gandhi College, Tiruchirappalli",
+              "50"
+            ]
+          },
+          {
+            "row": 5,
+            "values": [
+              "3",
+              "Wellness",
+              "Wellness Club",
+              "Mental Health and Wellness Awareness Programme",
+              "MindCare Wellness Centre, 25 College Road, Tiruchirappalli – 620002, Tamil Nadu",
+              "Expert Session and Wellness Awareness Training",
+              "25.07.2026",
+              "25",
+              "Department of Commerce, SJC",
+              "80"
+            ]
+          },
+          {
+            "row": 6,
+            "values": [
+              "4",
+              "Sports",
+              "Sports Club",
+              "Sports Fitness and Performance Enhancement Camp",
+              "Elite Sports Academy, 40 Stadium Road, Tiruchirappalli – 620001, Tamil Nadu",
+              "Sports Training, Fitness Assessment and Coaching",
+              "01.08.2026",
+              "35",
+              "Department of Physical Education, English, Tamil, SJC",
+              "100"
+            ]
+          },
+          {
+            "row": 7,
+            "values": [
+              "5",
+              "Gender Equity",
+              "Gender Equity Club",
+              "Gender Sensitisation and Inclusive Leadership Programme",
+              "Centre for Gender Studies, 10 University Road, Chennai – 600025, Tamil Nadu",
+              "Expert Training and Gender Sensitisation",
+              "08.08.2026",
+              "30",
+              "Department of Social Work and Department of English, SJC",
+              "75"
+            ]
+          },
+          {
+            "row": 8,
+            "values": [
+              "6",
+              "Domain",
+              "Finance Club",
+              "Financial Literacy Programme",
+              "XYZ Financial Services Ltd., 18 MG Road, Chennai – 600001, Tamil Nadu",
+              "Expert Session and Industry Interaction",
+              "12.08.2026",
+              "15",
+              "Department of Commerce, SJC",
+              "40"
+            ]
+          }
+        ]
+      },
+      "6.5": {
+        "max_row": 5,
+        "max_col": 8,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "6.5 Establishment of Student Chapters of Professional Bodies"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S.No",
+              "Reg. Number of the Student",
+              "Name of the Student",
+              "Details of the Professional Body",
+              "Name of the Student Chapter",
+              "Date of Establishment",
+              "Establishment Fee (if any)",
+              "Financial Support from the Management (in Rupees)"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "26UCS101",
+              "Arun Kumar",
+              "Computer Society of India (CSI), Chennai Chapter, Chennai – 600018, Tamil Nadu",
+              "CSI Student Chapter – SJC",
+              "15.07.2026",
+              "2000",
+              "2000"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "2",
+              "26UCS115",
+              "Priya Joseph",
+              "Indian Society for Technical Education (ISTE), New Delhi – 110016",
+              "ISTE Student Chapter – SJC",
+              "20.07.2026",
+              "1500",
+              "1500"
+            ]
+          },
+          {
+            "row": 5,
+            "values": [
+              "3",
+              "26UCO203",
+              "Rahul Raj",
+              "Indian Commerce Association (ICA), New Delhi – 110001",
+              "ICA Student Chapter – SJC",
+              "25.07.2026",
+              "1000",
+              "Nil"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "AAA_February 2027_Attribute V_Template.xlsx": {
+    "sheets": {
+      "5.1": {
+        "max_row": 10,
+        "max_col": 10,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "Attribute V"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "Learning and Teaching"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "5.1 Teaching Methodology Employed by the Faculty"
+            ]
+          },
+          {
+            "row": 6,
+            "values": [
+              "S.No.",
+              "Programme",
+              "Class",
+              "Name of the Faculty Member",
+              "Course Code",
+              "Course Title",
+              "Date",
+              "Pedagogical approach adopted",
+              "Platform (OFFLINE/JosTEL/if others, mention the name platform)",
+              "Semester (ODD/Even)"
+            ]
+          },
+          {
+            "row": 7,
+            "values": [
+              "1",
+              "B.Sc. Computer Science",
+              "III B.Sc. CS",
+              "Dr. A. Vimal Jerald",
+              "23UCSCC501",
+              "Artificial Intelligence",
+              "15.07.2026",
+              "Flipped Classroom and Problem-Based Learning",
+              "JosTEL",
+              "ODD"
+            ]
+          }
+        ]
+      },
+      "5.2": {
+        "max_row": 8,
+        "max_col": 28,
+        "rows": [
+          {
+            "row": 2,
+            "values": [
+              "5.2 Assessment Practices Employed by the Faculty"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "S.No.",
+              "Programme",
+              "Class",
+              "Name of the Faculty Member",
+              "Course Code",
+              "Course Title",
+              "Date",
+              "Assessment Component",
+              "If part of CIA, Mention the Component and Level",
+              "Platform (OFFLINE/JosTEL/if others, mention the name platform)",
+              "Semester (ODD/Even)"
+            ]
+          },
+          {
+            "row": 5,
+            "values": [
+              "1",
+              "B.Sc. Computer Science",
+              "III B.Sc. CS",
+              "Dr. A. Vimal Jerald",
+              "UCSC501",
+              "Artificial Intelligence",
+              "15.07.2026",
+              "Quiz / Formative Assessment",
+              "C2- K4",
+              "JosTEL",
+              "ODD"
+            ]
+          },
+          {
+            "row": 6,
+            "values": [
+              "2",
+              "B.Com.",
+              "II B.Com.",
+              "Dr. R. Lenin",
+              "UCOC302",
+              "Financial Accounting",
+              "18.07.2026",
+              "Case Study",
+              "Library - K3",
+              "JosTEL",
+              "ODD"
+            ]
+          },
+          {
+            "row": 7,
+            "values": [
+              "3",
+              "B.A. English",
+              "I B.A. English",
+              "Dr. I. Carol",
+              "UAEN101",
+              "Communicative English",
+              "20.07.2026",
+              "Assignment",
+              "-",
+              "OFFLINE",
+              "EVEN"
+            ]
+          },
+          {
+            "row": 8,
+            "values": [
+              "4",
+              "B.Sc. Physics",
+              "II B.Sc. Physics",
+              "Dr. V. Swabna",
+              "UPHC204",
+              "Quantum Physics",
+              "22.07.2026",
+              "Online Quiz",
+              "-",
+              "Wayground",
+              "EVEN"
+            ]
+          }
+        ]
+      },
+      "5.3": {
+        "max_row": 15,
+        "max_col": 9,
+        "rows": [
+          {
+            "row": 3,
+            "values": [
+              "5.3 Remedial Coaching Conducted"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "S.No.",
+              "Teaching Methodology",
+              "Mention YES/NO",
+              "No. of Staff Using the TL Methodology"
+            ]
+          },
+          {
+            "row": 5,
+            "values": [
+              "1.",
+              "Inclusive Remedial Teaching",
+              "Yes",
+              "8"
+            ]
+          },
+          {
+            "row": 6,
+            "values": [
+              "2",
+              "Peer assisted Remedial Teaching",
+              "Yes",
+              "5"
+            ]
+          },
+          {
+            "row": 7,
+            "values": [
+              "3",
+              "Multi Sensory Remedial Teaching",
+              "No"
+            ]
+          },
+          {
+            "row": 8,
+            "values": [
+              "4",
+              "Skill Based Remedial Teaching",
+              "Yes",
+              "6"
+            ]
+          },
+          {
+            "row": 9,
+            "values": [
+              "5",
+              "Individualized Teacher Interventions",
+              "Yes",
+              "4"
+            ]
+          },
+          {
+            "row": 10,
+            "values": [
+              "6",
+              "Language Barrier Remedial",
+              "Yes",
+              "3"
+            ]
+          }
+        ]
+      },
+      "5.4": {
+        "max_row": 4,
+        "max_col": 8,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "5.4  Support to Fast Learners"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "S. No.",
+              "Name of the Programme",
+              "Name of the Faculty Member in-charge",
+              "Name of the Club involved, if any",
+              "Details of Resource Person",
+              "Date FROM - TO                 DD.MM.YYYY",
+              "No. of Beneficiaries",
+              "Strategy adopted by the Department to identify the fast learners"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "1",
+              "Advanced Problem-Solving and Competitive Programming",
+              "Dr. Dennis Edward Fernando",
+              "Programming Club",
+              "Mr. Arun Joseph, Senior Software Engineer, ABC Technologies Pvt. Ltd., 45 MG Road, Bengaluru – 560001, Karnataka",
+              "01.08.2026 – 05.08.2026",
+              "35",
+              "Identified through class performance, programming aptitude, coding activities and performance in departmental assessments"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "2",
+              "Student Research and Innovation Mentoring Programme",
+              "Dr. V. Jude Nirmal",
+              "Innovation Club",
+              "Dr. S. Rajesh, Research Scientist, National Research Institute, Chennai – 600020, Tamil Nadu",
+              "10.08.2026 – 14.08.2026",
+              "20",
+              "Identified based on academic merit, innovation/project performance, participation in research activities and faculty recommendation"
+            ]
+          }
+        ]
+      },
+      "5.5": {
+        "max_row": 7,
+        "max_col": 12,
+        "rows": [
+          {
+            "row": 1,
+            "values": [
+              "5.5 Industry-Academia Collaboration: MoUs / Linkages"
+            ]
+          },
+          {
+            "row": 2,
+            "values": [
+              "Details of MoU/Linkage",
+              "Details of Activities related to MoU/Linkages"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "S. No.",
+              "Nature (I/N)",
+              "Type (MoU/Linkage)",
+              "Name and Address of the Organisation with which MoU/Linkage is Established",
+              "Type of the Organisation  (Institution/ Industry/ Corporate House, etc.,)",
+              "Date of Establishment of MoU/Linkage",
+              "Duration in Years",
+              "Nature of Activity (Student Exchange/Faculty Exchange/Networking and Sharing of Resources/Mentorship Programmes/Research Colloboration/Industry/Community Collaboration/Internship/Placement/Apprenticeship/Others etc.)",
+              "Date of Activity",
+              "Number of Students  participating in Activities related to MoU/Linkage",
+              "Number of Faculty participating in Activities related to MoU/Linkage",
+              "Outcome"
+            ]
+          },
+          {
+            "row": 4,
+            "values": [
+              "1",
+              "N",
+              "MoU",
+              "ABC Technologies Pvt. Ltd., 25 Anna Salai, Chennai – 600002, Tamil Nadu",
+              "Industry",
+              "15.07.2026",
+              "3",
+              "Internship",
+              "20.07.2026",
+              "25",
+              "2",
+              "Internship opportunities and placement support"
+            ]
+          },
+          {
+            "row": 5,
+            "values": [
+              "1",
+              "N",
+              "MoU",
+              "ABC Technologies Pvt. Ltd., 25 Anna Salai, Chennai – 600002, Tamil Nadu",
+              "Industry",
+              "15.07.2026",
+              "3",
+              "Placement",
+              "10.09.2026",
+              "30",
+              "2",
+              "opportunities and placement support"
+            ]
+          },
+          {
+            "row": 6,
+            "values": [
+              "2",
+              "I",
+              "MoU",
+              "University of Melbourne, Melbourne, Australia",
+              "Institution",
+              "01.08.2026",
+              "5",
+              "Faculty Exchange / Research Collaboration",
+              "05.08.2026",
+              "10",
+              "3",
+              "Faculty interaction and collaborative research"
+            ]
+          },
+          {
+            "row": 7,
+            "values": [
+              "3",
+              "N",
+              "Linkage",
+              "XYZ Industries Ltd., Coimbatore – 641018, Tamil Nadu",
+              "Corporate House",
+              "10.06.2026",
+              "2",
+              "Industry Visit / Skill Development",
+              "25.07.2026",
+              "45",
+              "2",
+              "Enhanced industry exposure and practical skills"
+            ]
+          }
+        ]
+      },
+      "5.6": {
+        "max_row": 8,
+        "max_col": 8,
+        "rows": [
+          {
+            "row": 3,
+            "values": [
+              "5.6 E-contents (Four Quadrant) created by the Faculty"
+            ]
+          },
+          {
+            "row": 5,
+            "values": [
+              "S.No.",
+              "Programme",
+              "Class",
+              "Name of the Faculty Member",
+              "Course Code",
+              "Course Title",
+              "Youtube Link",
+              "Semester (ODD/Even)"
+            ]
+          },
+          {
+            "row": 6,
+            "values": [
+              "1",
+              "B.Sc. Computer Science",
+              "III B.Sc. CS",
+              "Dr. A. Vimal Jerald",
+              "23UCSCC501",
+              "Artificial Intelligence",
+              "http://youtu/s5PRxCKSZK0?si=561USSSaAn0OmIIz",
+              "ODD"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "AAA_February 2027_Attribute X_Template.xlsx": {
+    "sheets": {
+      "Attribute X": {
+        "max_row": 10,
+        "max_col": 11,
+        "rows": [
+          {
+            "row": 2,
+            "values": [
+              "Attribute X"
+            ]
+          },
+          {
+            "row": 3,
+            "values": [
+              "Sustainability (Green initiatives) – Outcomes"
+            ]
+          },
+          {
+            "row": 6,
+            "values": [
+              "1)     Collaboration with Industries, NGO and chapters of recognized bodies as part of their CSR activities: Extension/Outreach Programmes conducted by the department"
+            ]
+          },
+          {
+            "row": 7,
+            "values": [
+              "S.No.",
+              "Name and Nature of the Activity",
+              "Type (Government/NGO/Industry/Recognized Body)",
+              "Collaborating Agency",
+              "Whether Part of CSR Activities of the Industry (YES/NO)",
+              "Name of the Scheme / CSR Initiative, if any",
+              "Sustainability Goal / SDG",
+              "Place of Activity – Full Address",
+              "No. of Students Participating",
+              "Details of Beneficiaries",
+              "Date FROM–TO"
+            ]
+          },
+          {
+            "row": 8,
+            "values": [
+              "1",
+              "Tree Plantation and Environmental Awareness Programme",
+              "Industry",
+              "ABC Industries Pvt. Ltd.",
+              "YES",
+              "Green Campus Initiative",
+              "SDG 13 – Climate Action; SDG 15 – Life on Land",
+              "Government Higher Secondary School, Tiruchirappalli – 6200XX",
+              "35",
+              "150 School Students and 10 Teachers",
+              "15.07.2026"
+            ]
+          },
+          {
+            "row": 9,
+            "values": [
+              "2",
+              "Plastic Waste Collection and Awareness Campaign",
+              "NGO",
+              "XYZ Foundation",
+              "NO",
+              "—",
+              "SDG 12 – Responsible Consumption and Production; SDG 14 – Life Below Water",
+              "[Full Address], Tiruchirappalli – 6200XX",
+              "50",
+              "300 Local Residents",
+              "22.07.2026"
+            ]
+          },
+          {
+            "row": 10,
+            "values": [
+              "3",
+              "E-Waste Collection and Awareness Programme",
+              "Industry",
+              "ABC Technologies Pvt. Ltd.",
+              "YES",
+              "E-Waste Management Drive",
+              "SDG 12 – Responsible Consumption and Production",
+              "St. Joseph’s College (Autonomous), Tiruchirappalli – 620002",
+              "75",
+              "500 Students and Staff",
+              "05.08.2026"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

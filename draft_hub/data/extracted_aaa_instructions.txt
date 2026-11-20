@@ -1,0 +1,839 @@
+--- PAGE 1 ---
+Internal Quality Assurance Cell 
+St. Joseph’s College (Autonomous), Tiruchirappalli - 620002 
+Common Instructions 
+1. Submit the Attribute wise Data Templates (in excel) and the corresponding evidence only as soft copies.  
+2. One entry–one evidence principle – Every entry in the data template should be traceable to at least one 
+supporting document. 
+3. Submit the evidence in Scanned, Clear & Legible and Colour PDF documents (only in Portrait form).   
+4. The rows marked with red colour in the data templates are SAMPLE records for your reference. Delete those 
+records while entering your departmental data. 
+5. Font for entering data in the templates: Cambria with 12 pts 
+6. On submitting the Event reports, provide one consolidated report comprising: 
+▪ Invitation/Brochure 
+▪ Report of the event signed by HoD/Coordinator (First Page in the Department Letter Head) 
+▪ The Report should spell out the Objectives and Outcomes of the Programme 
+▪ Participants Attendance; for online activities, screenshots of the sessions and participants name 
+list must be attached. 
+▪ Geo-tagged Photographs in colour (with caption) 
+▪ Feedback  
+▪ Participant Certificates (in colour), if any.  
+7. On submitting the Meeting Minutes, provide:  
+• Agenda 
+• Proceedings and Discussions 
+• Photographs (Geo Tagged in colour with caption) 
+• Attendance 
+8. Scrupulously follow the below points while entering data in the templates: 
+a. Academic-year relevance – Only activities/evidence falling within the specified academic year should 
+be reported unless the metric specifically asks for a previous-year or multi-year data. 
+b. Enter name of the Faculty with salutations such as Dr, Mr and Ms (Don’t use Mrs. / Prof. or the short 
+name of the Faculty members)   Eg. Dr. D. Ravindran 
+--- PAGE 2 ---
+c. Data in the templates and Evidence for your metrics involving faculty should be seniority order. 
+d. Student Name should be entered as: Swathi J (Name followed by Space followed by Initial) 
+e. Kindly follow the following format for entering Dates: 08.12.2025. For the total number of days, type the 
+number as 1 or 5 (Not to be typed as One day or five days) 
+f. Dates From-To should be mentioned as 22.07.2025 - 29.07.2025 (Avoid typing 22 to 29.07.2022) 
+g. For Duration of course in Hours: Kindly mention 15 (Avoid typing 15 hours or 15 hrs) 
+h. For the Amount column, kindly mention only the amount in numerics (e.g., 10000), without using ₹ / 
+Rs., commas, or other symbols 
+i. Don’t merge rows. Enter each data separately. 
+j. Data entered in one metric (category) must not be repeated in another metric. 
+k. Data of faculty handling 2 departments must be entered only in their parent department. 
+l. Only one entry must be made for each programme (Don’t make multiple entries for various resource 
+persons). 
+m. Provide the complete address of the Resource Person/Agency/Institution mentioning pin code. (Eg: 
+620002) 
+n. Don’t type Trichy, instead type as Tiruchirappalli 
+o. Name and Address of Organization should be given correctly in complete form. For e-g:  
+i. For outside activities, FrontierWox Tech Private Limited, 12 B/ 5, Gokul Nagar, Vallioor, Tirunelveli 
+– 620002  
+ii. If the activity is held in SJC, type Department/Unit Name and address 
+Department of Commerce, St. Joseph’s College (Autonomous), Tiruchirappalli 
+IQAC, St. Joseph’s College (Autonomous), Tiruchirappalli 
+p. Check Data Template Columns are filled correctly – If data is absent for a column type ‘Nil’. 
+9. Kindly present the data in the Department Meeting. Make necessary corrections based on the suggestions 
+from the Department meeting and submit the following to O/o. IQAC: 
+• Data templates 
+• Evidence 
+• presentation document 
+• Brochure of activities  
+--- PAGE 3 ---
+• Minutes of the meeting (signed by the members present)  
+ 
+ 
+Note:  
+1. You can download the folder structure for evidence from 
+https://drive.google.com/drive/folders/19USGzYqm5pC00nXFWchi4aa-V-OgV1S6?usp=drive_link 
+2. Document Naming Convention: AttributeNo_MetricNo_Sno 
+ 
+ 
+ 
+ 
+ 
+
+--- PAGE 4 ---
+Instructions 
+Attributes Metrics Supportive Documents (Soft Copy) Instructions 
+Curriculum Design 
+ 
+1.1 - Courses offered by the Department during the 
+academic year 
+ 
+1. Approved Syllabus 
+2. Minutes of the BoS 
+ 
+1. Reconcile data with the approved 
+syllabus, not merely departmental draft 
+2. Clearly distinguish new courses, existing 
+courses and revised courses 
+3. Percentage revision should be calculated 
+using a defined formula 
+4. New Courses and Percentage of Revision 
+should match in your BoS minutes 
+document 
+1.2 - Value-Added Courses / Certificate Course 
+Conducted in SJC Report of the Event 
+• Value Added Courses - Courses with 30 or 
+more contact hours conducted after class 
+hours. Mention credits as NIL 
+• Certificate Courses Conducted - Courses 
+with 45 or more contact hours conducted 
+after class hours. Mention the number of 
+credits also. 
+• Ensure the report has the following 
+components: 
+• Course brochure  
+• Approval/permission  
+• Course details with 
+outcome/objectives 
+• Timetable  
+• Attendance  
+• Assessment/evaluation record  
+• Certificate sample 
+• Resource-person details  
+• Feedback analysis 
+--- PAGE 5 ---
+ 
+ 
+1.2 (b) Students Attending Certificate Courses 
+Offered by Other Agencies/Industries  
+Certificate issued by the 
+Agency/Industry or official 
+completion certificate 
+• Include only certificate courses offered 
+by external agencies, industries, 
+professional bodies, training 
+organisations, etc. 
+• Do not include MOOCs such as 
+SWAYAM/NPTEL/Coursera/edX under 
+this metric. 
+• The course should be outside the regular 
+curriculum. 
+E-g: Industry Certification Programmes 
+Tally/Accounting Certification 
+AWS/Google Certification 
+Industry Specific Technical Certification 
+1.3 - Activities conducted with reference to IKS  
+ 
+Report of the event 
+ 
+1. Include activities related to IKS only 
+2. If the activity is related to Field Work 
+/Industrial Visit / Field Visit based on 
+IKS, mention the Name and Address of 
+Place Visited correctly 
+3. Mention Course Code and Course Title in 
+the “Academic/Course Relevance” column 
+if the activity is conducted based on the 
+IKS topics integrated into the curriculum 
+--- PAGE 6 ---
+Attributes Metrics Supportive Documents Instructions 
+Curriculum Design 
+ 
+1.4 - Industrial Visit, Educational Visit, 
+Field Visit, Field Work, etc  
+Report of the Event (Student 
+Reflection) 
+1. Don’t repeat the activities mentioned in 1.3 
+2. Mention  Course Code and Course Title  in the 
+“ Academic/Course Relevance” column if the visit is related to a 
+course 
+3. Get Prior approval from the organization before going for the 
+visit 
+4. The number of students given in the attendance should match 
+with beneficiaries in the data template 
+5. Mention the target group as the classes involved in the activity 
+separated by comma (,) 
+6. Specific Learning Outcomes should be mentioned in separate 
+line with one or two statements 
+7. Ensure the report has the following components 
+• Invitation Letter,  
+• Acceptance Letter from the Organization, Report of the 
+Event 
+• Attendance 
+• Geo Tagged Photographs 
+• Certificates provided by the organization 
+1.5 - Internship 
+ 
+ 
+Soft copy of the following 
+combined in a single pdf 
+with register number as file 
+name. Eg: 24UCS101  
+The pdf should contain a.) 
+Title page of the Internship 
+Report b.) Certificate Page of 
+the Internship Report c.) SDG 
+Certificate  d.) Declaration by 
+the Student e.) Certificate 
+provided by the college f.) 
+Certificate signed by the 
+For every student, there should be a separate pdf . NEATL Y scanned in 
+COLOUR. 
+ 
+--- PAGE 7 ---
+official-in-charge (from Place 
+of Internship)  
+1.6 - Project  
+ 
+ 
+ 
+Soft copy of the following 
+combined in a single pdf 
+with register number as file 
+name. Eg: 24UCS101  
+The pdf should contain a.) 
+Title page of the Project 
+report, b.) Certificate Page of 
+the Project Report c.)  
+Certificate signed by the 
+person-in-charge in the 
+company d.) SDG Certificate 
+as a single file for each 
+student e.) Declaration by 
+the Student 
+For every student, there should be a separate pdf . NEATL Y scanned in 
+COLOUR. 
+ 
+1.7 - Apprenticeship 
+1. Offer Letter from the 
+Company 
+2. Completion Certificate 
+from the Company 
+ 
+Internship - Short-term work experience to explore and learn before  
+Apprenticeship - Long-term, paid training to become a qualified 
+professional. 
+ 
+1.8 - Internship / Project Activity 
+Outside the Curriculum 
+1. Offer Letter from the 
+Company 
+2. Completion Certificate 
+from the Company 
+ 
+ 
+1.9- Students Registering / 
+Completing MOOC 
+ 
+ 
+Completed: MOOC Certificate 
+Registered: 
+Registration/Course 
+Enrolment proof 
+ 
+For every student, there should be a separate pdf. NEATL Y scanned in 
+COLOUR. 
+Students enrolled in July 2026 and November 2026 cycle should be 
+taken into account 
+ 
+--- PAGE 8 ---
+ 
+1.10 - Parent Teacher Meet Conducted Report of the activity 
+• If Department conducts PT meeting for different classes on the 
+same date, a single consolidated report should be submitted 
+• The report should comprise the Feedback Analysis of each 
+class and the corresponding action taken, sign from parents 
+and other necessary components of a report 
+1.11 - Feedback Collected from 
+Stakeholders 
+Feedback Report for each 
+stakeholder  
+• Type of Stakeholder 
+(Teachers/Alumni/Employers/Industry/Entrepreneurs/Students) 
+• The report should comprise  
+• Feedback Questionnaire 
+• Count of responses 
+• Feedback Analysis of each stakeholder  
+• Corresponding action taken 
+Separate report for EACH stakeholder 
+--- PAGE 9 ---
+Attributes Metrics Supportive Documents Instructions 
+Faculty Resources 
+2.1 -  Details of the Faculty members 
+Appointment order, PhD 
+Certificate, NET/SET , Guideship 
+Certificate 
+ 
+2.2 - New Degrees Awarded Degree Certificate/ Provisional Certificate  
+2.3 - Members in various recognized bodies 
+ 1. Communication of appointment 
+as Member  
+2. Attendance certificate/  
+Certificate of Appreciation  
+(mandatory)  
+Data to be provided on various categories of 
+Members like: 
+1. Academic Bodies 
+2. Co-curricular Administrative Bodies 
+3.  External Member in Academic Audit 
+4. External Member in Administrative Audit 
+5. Mock Visits 
+6. Inspecting Committee Member 
+ 
+2.4 - Contribution to Research Journals 
+1.Reviewer Certificate /  
+Appreciation Letter 
+2.Nomination letter of Editorship 
+ 
+In case of Article Reviewer, submit 
+mail communications for 
+invitation and acceptance. In 
+addition to the above 
+ 
+1.Position can be  
+• Reviewer  
+• Editorial Board Member  
+• Associate Editor  
+• Editor  
+• Guest Editor 
+2.Don’t include lifetime member of a 
+professional body here 
+3.Life Member of a Journal/Academic Society is 
+permitted if the framework explicitly permits it 
+2.5 - Member in Professional Bodies 
+1. Membership Certificate 
+2. Receipt of Payment for 
+Membership 
+Ensure the period is active while providing the 
+data 
+2.6 - Activity as Resource Person 
+ 
+1. Invitation Letter  
+2. Attendance certificate/  
+Certificate of Appreciation  
+(mandatory) 
+ 
+--- PAGE 10 ---
+Attendance certificate/ Certificate 
+of Appreciation  
+2.7 - Faculty Development / Training Programmes 
+through Govt. Recognised Bodies  
+Certificate of Participation 
+ 
+Include data only on programmes attended in 
+MMTTC, AICTE, ARPIT, UGC, IIC, and other 
+National Level approved bodies 
+Type of Programmes can be  
+• Refresher Courses 
+• Orientation Programmes 
+• Induction Programmes 
+• Short-Term Courses 
+• Sensitisation Programmes (like NEP) 
+• FDPs 
+• MDPs 
+2.8 - Participation in Academic and Professional 
+Development Programmes (Other than 2.7) 
+Certificate of Participation 
+ 
+Type of Programmes can be: 
+• Conferences  
+• Workshops  
+• Seminars  
+• Faculty Development Programmes (FDPs)  
+• Short-Term Courses  
+• Training Programmes  
+• Refresher / Orientation Programmes  
+• Other academic/professional 
+development programmes 
+ 
+2.9 - Industrial Training / Social Sector Projects / 
+Fellowships Attended 
+1. Certificate of Completion 
+2. Sponsorship Evidence 
+3. Invitation Letter, if any 
+Data to be provided in 3 major heads: 
+• Industrial Training Attended 
+• Involved in Social Sector Projects 
+• Involved in Fellowships  
+2.10 - NET / SET / JRF Qualified in the current 
+Academic Year Certificate of Completion  Ensure the qualification falls in the current academic year 
+2.11 - Awards Received   Award Certificate  • Include Awards received only through recognized agencies. 
+--- PAGE 11 ---
+ 
+• Categorize the level of awards correctly 
+based on the authenticity of the 
+Certificate  
+2.12 - Faculty Registering / Completing MOOC 
+1. Completed: MOOC Certificate 
+Registered: Registration/Course 
+Enrolment proof 
+2. FDP Certificate 
+• For every faculty, there should be a 
+separate pdf. NEATL Y scanned in 
+COLOUR. 
+• If a faculty applies for MOOC as FDP , 
+include the certificate in addition to the 
+completion certificate 
+• Faculty enrolled in July 2026 and 
+November 2026 cycle should be taken 
+into account 
+ 
+--- PAGE 12 ---
+Attributes Metrics Supportive Documents Instructions 
+Faculty 
+Resources 
+2.13 - Faculty Going Abroad for Academic Visits 
+1. Letter of Invitation from the 
+Host Institution 
+2. Letter of Appreciation 
+ 
+ 
+Purpose/Nature of Visit to be specified 
+clearly 
+ 
+If the visit is based on fellowship, provide 
+the respective evidence 
+ 
+Infrastructure 
+ 
+3.1 - Research Facility  
+ 
+1. Purchase Bills (if purchased 
+in the last 3 years)  
+2. Photos of Equipment 
+ 
+For Existing Research Facility - Mention 
+Equipment / Instrument worth above Rs. 
+25,000 
+3.2 - Department Library 
+1. Bills related to purchase of 
+Books/ Journals in this 
+academic year  
+2. Attendance register 
+ 
+ 
+Financial Resources & 
+Management 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+4.1 - Alumni Meeting  
+ 
+Report of the Event 
+ 
+The report  should comprise the following: 
+• Notice/invitation 
+• Attendance 
+• Agenda 
+• Minutes 
+• Alumni contribution if any 
+• Suggestions 
+• Action taken 
+• Outcomes 
+4.2 - Scholarship/ Freeship / Financial 
+Assistance Received by the Students from the 
+College/Alumni/External Agencies 
+If it’s from Alumni or external 
+agencies, copy of Award 
+Letter/ Bank statement 
+reflecting the payment 
+Student-wise beneficiary list 
+ 
+ 
+--- PAGE 13 ---
+ 
+4.3 - Funds Received (Grants received from the 
+External Funding Agencies to conduct 
+Courses/Conferences, etc.) 
+Copy of the Award Letter 
+  
+4.4 - Endowments Established (this academic 
+year) 
+Formal Communication from 
+the person who institutes the 
+endowment 
+Do not include informal donations as 
+endowments 
+ 4.5 - Details of Endowment Lecture  Separate reports for each activity  
+--- PAGE 14 ---
+Attributes Metrics Supportive Documents Instructions 
+ 5.1 - Teaching Methodology Employed by the Faculty 
+Filled in template by including the 
+necessary supportive evidence 
+Refer Department meeting notice 18.07.2026 -  
+Annexure 9(a), 9(b) & 9(c) 
+ 
+Report teaching methodologies actually 
+implemented during the academic year. 
+Provide evidence of implementation rather than 
+merely filling the template. 
+Mention student learning outcome/impact 
+wherever available 
+Assessment Practices 
+Include innovative or learner-centred 
+assessment practices implemented during the 
+academic year. 
+Clearly indicate how the assessment supports 
+course outcomes. 
+ 
+5.2 Assessment Practices Employed by the Faculty 
+Learning and Teaching 
+5.3 - Remedial Coaching Conducted 
+ Report of Remedial Coaching 
+The report should comprise: 
+• Identification criteria 
+• Student list  
+• Attendance 
+• Schedule 
+• Topics covered 
+• Pre-test/post-test 
+• Improvement analysis 
+• Faculty involved 
+5.4 - Support to Fast Learners Reports for each activity 
+Clearly define the criteria used to identify 
+fast/advanced learners.  
+Possible activity for fast learners: 
+Specify eligible activities: 
+--- PAGE 15 ---
+• Advanced projects  
+• Research projects  
+• Competitive examination mentoring  
+• Advanced certifications  
+• Student publications  
+• Innovation  
+• Hackathons  
+• Peer teaching  
+• Industry projects 
+ 
+5.5 - Industry-Academia Collaboration: MoUs / 
+Linkages 
+1.Scanned copy of the New MoUs / 
+Linkages  
+2.Reports of the Activities 
+conducted (Existing & New) 
+ 
+Ensure the existing MoU validity 
+An MoU alone should not be considered an 
+implemented activity. 
+Mention activities conducted under the 
+MoU/linkage. 
+Do not count the same MoU repeatedly for 
+different activities unless separate activities 
+were actually conducted. 
+6.1 -Departmental Academic and Student Support & 
+Development Activities (other than club activities)  Separate reports for each activity 
+• Faculty Development Programmes (FDPs) 
+• Seminars 
+• Conferences 
+• Guest Lectures 
+• Workshops 
+• Hands-on Training Programmes 
+• Vocational Training 
+• Placement Training 
+• Technical Festivals 
+• Technical Competitions 
+• Hackathons 
+• Soft Skills Development Programmes 
+• Language and Communication Skills 
+Programmes 
+• Yoga and Meditation Programmes 
+--- PAGE 16 ---
+ 
+• Counselling Programmes 
+• Physical Fitness Programmes 
+• Health and Hygiene Awareness 
+Programmes 
+• Self-Employment Training 
+• Entrepreneurial Skills Development 
+• Personality Development Programmes 
+• Gender Equity Programmes 
+• Cultural Harmony Programmes 
+• Constitutional Awareness / Constitutional 
+Obligations Programmes 
+• Career Guidance and Employability 
+Programmes 
+• Life Skills Development Programmes 
+• Awareness / Sensitisation Programmes 
+• Industry–Academia Interaction 
+Programmes 
+• Community-Oriented / Social 
+Responsibility Activities 
+• Other Departmental Enrichment 
+Activities 
+6.2 - Guidance for Competitive Examinations  Separate reports for each activity 
+The report should include attendance and details 
+of the guidance provided. 
+Where applicable, include mock tests, study 
+materials, practice sessions or other preparatory 
+activities. 
+--- PAGE 17 ---
+ 
+Attributes Metrics Supportive Documents Instructions 
+Extended Curricular Engagements 6.3 - Students Pursuing other Degree / Programmes 
+(Offline/ODL/Online/Blended) 
+Copies of Certificate/ Identity Card 
+ 
+Include students pursuing an additional degree, 
+diploma (minimum ONE year) during the 
+reporting academic year. 
+6.4 - Activities of various Clubs of the Department Separate reports for each activity 
+• Activities pertaining to all the clubs of the 
+departments should be included here. 
+• Include only activities conducted under 
+an officially constituted/recognised 
+Departmental Club. 
+• Do not include activities already reported 
+under 6.1 or another specific metric. 
+• The report should include attendance, 
+photographs and details of the activity. 
+• Mention the objective and outcome of 
+the activity wherever applicable. 
+6.5 Establishment of Student Chapters of 
+Professional Bodies 
+1. Membership Certificate 
+2. Receipt of Payment for 
+Membership 
+Include only formally established/recognised 
+Student Chapters of professional bodies. 
+--- PAGE 18 ---
+Attributes Metrics Supportive Documents Instructions 
+Management Support 
+ 
+7.1 - Funds Received (Grants received from the 
+Management to conduct Courses/Conferences, etc.) 
+Copy of the sanction order 
+  
+7.2 - Seed Money (Received from Management for 
+Patent/Copyright, etc.) Copy of the sanction order  
+7.3 - Seed Money (Received from Management for 
+Research Project) Copy of the sanction order  
+7.4 - Financial Support Received (Financial Support 
+from Management for attending Conference, Seminar, 
+etc.) 
+Copy of the sanction order  
+   
+Student Outcomes 
+ 
+8.1 - Competitive Examinations Appeared or 
+Qualified 
+Appeared – Hall Ticket 
+Qualified – Hall Ticket cum 
+Eligibility Certificate 
+Validate the examination and year. 
+8.2 – Students’ Participation and Awards in External 
+Cultural, Sports and Extra-Curricular Events 
+Mandatory: 
+Award Certificate 
+Participation Certificate 
+Additional: photographs, 
+newspaper clippings 
+Extra-curricular 
+• Sports  
+• Cultural programmes  
+• Dance  
+• Music  
+• Drama  
+• Fine arts  
+• Photography  
+• Social/cultural activities 
+ 
+8.3 – Students’ Participation and Awards in External 
+Academic and Co-Curricular Events 
+Mandatory: 
+Award Certificate 
+Participation Certificate 
+Additional: photographs, 
+newspaper clippings  
+Academic / Technical 
+• Hackathon  
+• Technical festival  
+• Paper presentation  
+• Coding competition  
+• Project competition  
+• Technical workshop  
+--- PAGE 19 ---
+ 
+Co-curricular 
+• Debate  
+• Quiz  
+• Elocution  
+• Essay writing  
+• Youth Parliament  
+• Public speaking  
+• Business/management competition  
+ 
+--- PAGE 20 ---
+Attributes Metrics Supportive Documents Instructions 
+Research and Innovation Outcomes 
+ 
+9.1 - Ph.D. Conferred  
+ 
+1.Title Page of the Thesis 
+2.Provisional Certificate and PhD 
+Degree Certificate (if available). 
+ 
+Include PhDs formally awarded during the 
+reporting period. 
+Submit thesis title page and provisional/degree 
+certificate as  a single document. 
+ 
+9.2 - PhD Thesis Submitted 
+ 
+1.Thesis submission form  
+2.Wrapper of the thesis 
+Include theses formally submitted during the 
+reporting period. 
+ 
+ 
+ 
+ 
+ 
+9.3 - New Guides Guideship  Letter  
+9.4 PhD Enrolment (New & Existing Scholars) 
+1.University communication for Ph 
+D scholar registration for new 
+scholars 
+ 
+9.5 - Consultancy   
+1.Letter / Request from the 
+Consulting Agency 
+2. Acceptance 
+letter/Communication from the 
+faculty/department 
+3. Consultancy agreement/work 
+order 
+4.Payment Receipt 
+5. Brief report on the Consultancy 
+work carried out. 
+ 
+ 
+9.6 - Corporate Training   1. Training Request Letter from the Company/Agency  
+--- PAGE 21 ---
+ 
+ 
+2. Acceptance letter from the 
+faculty/department 
+3. Training agreement/work order 
+4.Payment Receipt 
+5. Brief report on the training 
+carried out 
+ 
+9.7 - Externally funded Research Projects  
+1.Project proposal to the external 
+agency 
+2.Sanction order from the 
+externally funded agency  
+For Non-Government projects – the source may 
+be IN-Industry, CH-Corporate House, BO-
+National /International Bodies 
+--- PAGE 22 ---
+Attributes Metrics Supportive Documents Instructions 
+Research and Innovation Outcomes 
+ 
+9.8 - Papers Published in the Journals 
+Copy of the full paper with journal 
+names mentioned in the paper 
+ 
+• Include papers formally published during 
+the reporting period. 
+• Verify indexing status from an 
+appropriate official source. 
+• Do not count the same paper more than 
+once. 
+9.9 - Papers Presented in Conferences  
+ 
+1.Copy of the cover page 
+2.content page 
+3.full paper 
+4.certificate for paper presentation 
+Distinguish paper presentation from mere 
+conference participation. 
+Don’t include a paper which is published in the 
+Journal (if mentioned in 9.8) 
+9.10 - Books Published /Books Edited / Chapter 
+Contribution 
+1.Copy of the book wrapper 
+ 2. content page highlighting the 
+author details.  
+3.Submit a hard copy of the 
+published book to IQAC 
+Publication without ISBN cannot be considered 
+9.11 - Patents/Copyright/ Trademark/ Design 
+Registration/Geographical Indication/ Open 
+Educational Resources 
+Copy of necessary documents. 
+ 
+Clearly indicate the status: 
+Filed/Published/Registered/Granted/Created, 
+as applicable. 
+Submit relevant official documentation. 
+OER should be supported by evidence of 
+creation/publication. 
+9.12 - Collaboration with national/international 
+institutions of higher ranking /industries with focus 
+1.Official Communication / Email 
+between Institutions 
+2.MoU / Collaboration Agreement 
+/ Linkage Agreement 
+3.Activity Report 
+ 
+ 
+ 
+Purpose / Focus of Collaboration 
+Possible entries: 
+• Interdisciplinary Research  
+• Inter-University Research  
+• National Faculty Collaboration  
+• International Faculty Collaboration  
+• Community-Based Research  
+• Technology Transfer  
+• Joint Research  
+• Knowledge Sharing  
+--- PAGE 23 ---
+ 
+• Industry-Academia Collaboration  
+• Any Other Research Collaboration 
+ 
+9.13 Incubation and Start-up through Technology 
+Business Incubator 
+1.Incubation Agreement / Letter of 
+Incubation 
+2.Start-up Registration / 
+Incorporation Certificate 
+3.Beneficiary / Mentee Register 
+4.Photographs / Activity Reports 
+Mentor Category  
+• Alumni 
+• Entrepreneur 
+• Faculty 
+• Researchers 
+• Industry professionals 
+• Local Community Personal 
+Sustainability 
+(Green 
+initiatives) -
+Outcomes 
+ 
+10.1     Collaboration with Industries, NGO and 
+chapters of recognized bodies as part of their CSR 
+activities: Extension/Outreach Programmes 
+conducted by the department 
+Activity report  
