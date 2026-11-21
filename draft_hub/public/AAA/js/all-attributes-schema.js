@@ -1,7 +1,5 @@
 // IQAC AAA 2026-2027 - Master Schema for PART-A and Attributes 1 to 10
-// Official St. Joseph's College (Autonomous), Tiruchirappalli
-// Clean Production Schema (Zero Dummy Records)
-
+// Official St. Joseph's College Autonomous NAAC / AAA Master Data Structure
 window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
   {
     "id": "part_a",
@@ -94,7 +92,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           ],
           "rows": [
             {
-              "programme": 0,
+              "programme": "Undergraduate (UG)",
               "male": 0,
               "female": 0,
               "otherGender": 0,
@@ -102,7 +100,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
               "otherCountries": 0
             },
             {
-              "programme": 0,
+              "programme": "Postgraduate (PG)",
               "male": 0,
               "female": 0,
               "otherGender": 0,
@@ -110,7 +108,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
               "otherCountries": 0
             },
             {
-              "programme": 0,
+              "programme": "Ph.D. / Research",
               "male": 0,
               "female": 0,
               "otherGender": 0,
@@ -727,6 +725,11 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
             "width": "w-48"
           },
           {
+            "key": "titleOfInternshipProject",
+            "label": "Title of Internship / Project",
+            "width": "w-56"
+          },
+          {
             "key": "agencyDetails",
             "label": "Name and Address of the Agency providing Internship/Project",
             "width": "w-64"
@@ -913,7 +916,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
       {
         "key": "2_2_1",
         "sheetName": "2.1",
-        "title": "Attribute II",
+        "title": "2.1 Details of Teaching Faculty Members",
         "badge": "Attribute 2 - 2.1",
         "instruction": "Faculty Resources",
         "type": "table",
@@ -1672,14 +1675,44 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
       {
         "key": "3_3_1",
         "sheetName": "3.1",
-        "title": "Attribute III",
+        "title": "3.1 Research Facility",
         "badge": "Attribute 3 - 3.1",
         "instruction": "Infrastructure",
         "type": "table",
         "columns": [
           {
-            "key": "attribute_iii",
-            "label": "Attribute III",
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "department",
+            "label": "Department",
+            "width": "w-48"
+          },
+          {
+            "key": "name_of_the_lab",
+            "label": "Name of the Lab",
+            "width": "w-52"
+          },
+          {
+            "key": "equipment_instruments_purchased",
+            "label": "Equipment / Instruments Purchased",
+            "width": "w-64"
+          },
+          {
+            "key": "existing_new_facility",
+            "label": "Existing / New Facility",
+            "width": "w-36"
+          },
+          {
+            "key": "date_of_purchase",
+            "label": "Date of Purchase",
+            "width": "w-36"
+          },
+          {
+            "key": "amount_inr",
+            "label": "Amount (₹)",
             "width": "w-32"
           }
         ],
@@ -1755,7 +1788,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
       {
         "key": "4_4_1",
         "sheetName": "4.1",
-        "title": "Attribute IV",
+        "title": "4.1 Alumni Meeting",
         "badge": "Attribute 4 - 4.1",
         "instruction": "Financial Resources & Management",
         "type": "table",
@@ -1768,32 +1801,42 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           {
             "key": "programme",
             "label": "Programme",
-            "width": "w-32"
+            "width": "w-36"
           },
           {
             "key": "batch",
             "label": "Batch",
-            "width": "w-32"
+            "width": "w-28"
           },
           {
             "key": "no_of_alumni_participated",
             "label": "No. of Alumni Participated",
-            "width": "w-52"
+            "width": "w-28"
           },
           {
             "key": "date",
             "label": "Date",
-            "width": "w-32"
+            "width": "w-36"
           },
           {
             "key": "details_of_notable_alumni_part",
-            "label": "Details of Notable Alumni Participated with Designation and Official Address \n(Mention the details of each Alumni in separate rows)",
+            "label": "Details of Notable Alumni Participated with Designation and Official Address",
+            "width": "w-64"
+          },
+          {
+            "key": "financial_contribution_inr",
+            "label": "Financial Contribution (₹), if any",
+            "width": "w-36"
+          },
+          {
+            "key": "purpose_of_financial_contribution",
+            "label": "Purpose of the Financial Contribution",
             "width": "w-52"
           },
           {
-            "key": "contribution_by_the_alumni",
-            "label": "Contribution by the Alumni",
-            "width": "w-52"
+            "key": "support_for_other_contributions",
+            "label": "Support for other Contributions (Placement, Internship Opportunities, Knowledge sharing, etc)",
+            "width": "w-64"
           }
         ],
         "rows": []
@@ -2001,7 +2044,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
       {
         "key": "5_5_1",
         "sheetName": "5.1",
-        "title": "Attribute V",
+        "title": "5.1 Pedagogical Approaches & Innovative Teaching Practices Adopted",
         "badge": "Attribute 5 - 5.1",
         "instruction": "Learning and Teaching",
         "type": "table",
@@ -2131,30 +2174,130 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
         "title": "5.3 Remedial Coaching Conducted",
         "badge": "Attribute 5 - 5.3",
         "instruction": "",
-        "type": "table",
-        "columns": [
+        "type": "multi_table",
+        "sections": [
           {
-            "key": "s_no",
-            "label": "S.No.",
-            "width": "w-16"
+            "id": "teaching_methodologies",
+            "title": "Teaching Methodologies Adopted",
+            "columns": [
+              {
+                "key": "s_no",
+                "label": "S.No.",
+                "width": "w-16"
+              },
+              {
+                "key": "teaching_methodology",
+                "label": "Teaching Methodology",
+                "width": "w-64"
+              },
+              {
+                "key": "mention_yes_no",
+                "label": "Mention YES/NO",
+                "width": "w-32"
+              },
+              {
+                "key": "no_of_staff_using_the_tl_metho",
+                "label": "No. of Staff Using the TL Methodology",
+                "width": "w-36"
+              }
+            ],
+            "defaultRows": [
+              {
+                "s_no": "1",
+                "teaching_methodology": "Inclusive Remedial Teaching",
+                "mention_yes_no": "YES",
+                "no_of_staff_using_the_tl_metho": ""
+              },
+              {
+                "s_no": "2",
+                "teaching_methodology": "Peer assisted Remedial Teaching",
+                "mention_yes_no": "YES",
+                "no_of_staff_using_the_tl_metho": ""
+              },
+              {
+                "s_no": "3",
+                "teaching_methodology": "Multi Sensory Remedial Teaching",
+                "mention_yes_no": "NO",
+                "no_of_staff_using_the_tl_metho": ""
+              },
+              {
+                "s_no": "4",
+                "teaching_methodology": "Skill Based Remedial Teaching",
+                "mention_yes_no": "YES",
+                "no_of_staff_using_the_tl_metho": ""
+              },
+              {
+                "s_no": "5",
+                "teaching_methodology": "Individualized Teacher Interventions",
+                "mention_yes_no": "YES",
+                "no_of_staff_using_the_tl_metho": ""
+              },
+              {
+                "s_no": "6",
+                "teaching_methodology": "Language Barrier Remedial",
+                "mention_yes_no": "YES",
+                "no_of_staff_using_the_tl_metho": ""
+              },
+              {
+                "s_no": "7",
+                "teaching_methodology": "Any other please specify",
+                "mention_yes_no": "NO",
+                "no_of_staff_using_the_tl_metho": ""
+              }
+            ]
           },
           {
-            "key": "teaching_methodology",
-            "label": "Teaching Methodology",
-            "width": "w-52"
-          },
-          {
-            "key": "mention_yes_no",
-            "label": "Mention YES/NO",
-            "width": "w-32"
-          },
-          {
-            "key": "no_of_staff_using_the_tl_metho",
-            "label": "No. of Staff Using the TL Methodology",
-            "width": "w-52"
+            "id": "remedial_classes",
+            "title": "Details of Remedial Coaching Conducted",
+            "columns": [
+              {
+                "key": "s_no",
+                "label": "S.No.",
+                "width": "w-16"
+              },
+              {
+                "key": "class",
+                "label": "Class",
+                "width": "w-32"
+              },
+              {
+                "key": "course_title",
+                "label": "Title of the Course",
+                "width": "w-52"
+              },
+              {
+                "key": "course_code",
+                "label": "Course Code",
+                "width": "w-32"
+              },
+              {
+                "key": "methodologies_used",
+                "label": "Remedial Methodologies Used (refer the above table)",
+                "width": "w-56"
+              },
+              {
+                "key": "duration_hours",
+                "label": "Duration in hours",
+                "width": "w-28"
+              },
+              {
+                "key": "dates_from_to",
+                "label": "Dates FROM -TO",
+                "width": "w-44"
+              },
+              {
+                "key": "faculty_names",
+                "label": "Name(s) of Faculty handling classes",
+                "width": "w-52"
+              },
+              {
+                "key": "students_benefitted",
+                "label": "No. of students benefitted",
+                "width": "w-32"
+              }
+            ]
           }
-        ],
-        "rows": []
+        ]
       },
       {
         "key": "5_5_4",
@@ -2349,8 +2492,58 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
         "type": "table",
         "columns": [
           {
-            "key": "column_1",
-            "label": "Column 1",
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "type_of_programme",
+            "label": "Type of Programme (FDP, Sem, Conf, WS, Webinar, Guest Lectures, Vocational / Placement Trainings, etc.)",
+            "width": "w-64"
+          },
+          {
+            "key": "level",
+            "label": "Level (International / National / State / Regional / Other)",
+            "width": "w-44"
+          },
+          {
+            "key": "title_of_the_programme",
+            "label": "Title of the Programme",
+            "width": "w-56"
+          },
+          {
+            "key": "resource_person_details",
+            "label": "Resource Person’s Name, Designation, Affiliation and Complete Address",
+            "width": "w-64"
+          },
+          {
+            "key": "mode",
+            "label": "Mode (Online / Offline / Blended / Other)",
+            "width": "w-36"
+          },
+          {
+            "key": "date_from_to",
+            "label": "Date From – To",
+            "width": "w-44"
+          },
+          {
+            "key": "beneficiaries",
+            "label": "Beneficiaries",
+            "width": "w-40"
+          },
+          {
+            "key": "no_of_beneficiaries",
+            "label": "No. of Beneficiaries",
+            "width": "w-32"
+          },
+          {
+            "key": "whether_part_of_mou",
+            "label": "Whether conducted part of MoU Activity (Yes/No)",
+            "width": "w-36"
+          },
+          {
+            "key": "hands_on",
+            "label": "Hands on (Yes/No)",
             "width": "w-32"
           }
         ],
@@ -2589,7 +2782,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
       {
         "key": "7_7_1",
         "sheetName": "7.1",
-        "title": "Attribute VII",
+        "title": "7.1 Financial Support & Grants Received from Management for Academic Activities",
         "badge": "Attribute 7 - 7.1",
         "instruction": "Management Support",
         "type": "table",
@@ -2789,7 +2982,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
       {
         "key": "8_8_1",
         "sheetName": "8.1",
-        "title": "Attribute VIII",
+        "title": "8.1 Students Qualifying in State / National / International Competitive Examinations",
         "badge": "Attribute 8 - 8.1",
         "instruction": "Student Outcomes",
         "type": "table",
@@ -2978,7 +3171,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
       {
         "key": "9_9_1",
         "sheetName": "9.1",
-        "title": "Attribute IX",
+        "title": "9.1 Ph.D. Degrees Awarded during the Academic Year",
         "badge": "Attribute 9 - 9.1",
         "instruction": "Research and Innovation Outcomes",
         "type": "table",
@@ -3149,17 +3342,22 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           {
             "key": "college_register_no",
             "label": "College Register No",
+            "width": "w-40"
+          },
+          {
+            "key": "university_reference_number",
+            "label": "University Reference number",
             "width": "w-52"
           },
           {
-            "key": "university_reference_number_an",
-            "label": "University Reference number and date",
-            "width": "w-52"
+            "key": "date_of_ref_number",
+            "label": "Date of Ref Number",
+            "width": "w-36"
           },
           {
             "key": "title_of_the_thesis_broad_area",
             "label": "Title of the Thesis/Broad Area",
-            "width": "w-52"
+            "width": "w-56"
           },
           {
             "key": "name_place_of_the_university",
@@ -3169,7 +3367,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           {
             "key": "new_active_completed_discontin",
             "label": "New/Active / Completed / Discontinued",
-            "width": "w-52"
+            "width": "w-44"
           }
         ],
         "rows": []
@@ -3521,55 +3719,96 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
         "title": "9.11 Patents/Copyright/ Trade Mark/ Design Registration/Geographical Indication/ Open Educational Resources",
         "badge": "Attribute 9 - 9.11",
         "instruction": "",
-        "type": "table",
-        "columns": [
+        "type": "multi_table",
+        "sections": [
           {
-            "key": "s_no",
-            "label": "S.No.",
-            "width": "w-16"
+            "id": "ipr_details",
+            "title": "Patents / Copyright / Trade Mark / Design Registration / Geographical Indication",
+            "columns": [
+              {
+                "key": "s_no",
+                "label": "S.No.",
+                "width": "w-16"
+              },
+              {
+                "key": "name_of_the_faculty",
+                "label": "Name of the Faculty",
+                "width": "w-52"
+              },
+              {
+                "key": "type_of_ipr_output",
+                "label": "Type of IPR / Output",
+                "width": "w-52"
+              },
+              {
+                "key": "status_applied_granted_publish",
+                "label": "Status (Applied / Granted / Published / Registered)",
+                "width": "w-52"
+              },
+              {
+                "key": "title_details_of_the_ipr_publi",
+                "label": "Title / Details of the IPR / Publication",
+                "width": "w-64"
+              },
+              {
+                "key": "country",
+                "label": "Country",
+                "width": "w-32"
+              },
+              {
+                "key": "date_of_application_grant_publ",
+                "label": "Date of Application / Grant / Publication / Registration",
+                "width": "w-48"
+              },
+              {
+                "key": "application_no_ipr_no_certific",
+                "label": "Application No. / IPR No. / Certificate No.",
+                "width": "w-52"
+              },
+              {
+                "key": "registered_in_the_name_of_sjc_",
+                "label": "Registered in the name of \"SJC\" (Yes/No)",
+                "width": "w-40"
+              }
+            ]
           },
           {
-            "key": "name_of_the_faculty",
-            "label": "Name of the Faculty",
-            "width": "w-52"
-          },
-          {
-            "key": "type_of_ipr_output",
-            "label": "Type of IPR / Output",
-            "width": "w-52"
-          },
-          {
-            "key": "status_applied_granted_publish",
-            "label": "Status (Applied / Granted / Published / Registered)",
-            "width": "w-52"
-          },
-          {
-            "key": "title_details_of_the_ipr_publi",
-            "label": "Title / Details of the IPR / Publication",
-            "width": "w-52"
-          },
-          {
-            "key": "country",
-            "label": "Country",
-            "width": "w-32"
-          },
-          {
-            "key": "date_of_application_grant_publ",
-            "label": "Date of Application / Grant / Publication / Registration",
-            "width": "w-52"
-          },
-          {
-            "key": "application_no_ipr_no_certific",
-            "label": "Application No. / IPR No. / Certificate No.",
-            "width": "w-52"
-          },
-          {
-            "key": "registered_in_the_name_of_sjc_",
-            "label": "Registered in the name of \"SJC\" (Yes/No)",
-            "width": "w-52"
+            "id": "oer_details",
+            "title": "Open Educational Resources (OERs)",
+            "columns": [
+              {
+                "key": "s_no",
+                "label": "S.No.",
+                "width": "w-16"
+              },
+              {
+                "key": "faculty_name",
+                "label": "Name of the Faculty",
+                "width": "w-52"
+              },
+              {
+                "key": "title_of_oer",
+                "label": "Title of OER",
+                "width": "w-56"
+              },
+              {
+                "key": "resource_link",
+                "label": "Resource Link",
+                "width": "w-56"
+              },
+              {
+                "key": "details_of_oer",
+                "label": "Details of OER",
+                "width": "w-64"
+              },
+              {
+                "key": "date_of_publication",
+                "label": "Date of Publication",
+                "width": "w-36"
+              }
+            ]
           }
-        ],
-        "rows": []
+        ]
       },
       {
         "key": "9_9_12",
@@ -3596,7 +3835,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "purpose_of_collaboration_inter",
-            "label": "Purpose of Collaboration ( Interdisciplinary Research/Inter-University National/International Faculty /Community-based Research/Technology Transfer /Any other research collborations)",
+            "label": "Purpose of Collaboration",
             "width": "w-52"
           },
           {
@@ -3645,38 +3884,64 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
       {
         "key": "9_9_13",
         "sheetName": "9.13",
-        "title": "9. 9.13",
+        "title": "9.13 Incubation and Start-up through Technology Business Incubator (TBI)",
         "badge": "Attribute 9 - 9.13",
         "instruction": "",
         "type": "table",
         "columns": [
           {
-            "key": "9_13_incubation_and_start_up_t",
-            "label": "9.13 Incubation and Start-up through Technology Business Incubator (TBI)",
-            "width": "w-52"
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
           },
           {
-            "key": "field_2",
-            "label": "Field 2",
+            "key": "name_of_incubated_startup",
+            "label": "Name of the Incubated Start-up / Venture",
+            "width": "w-56"
+          },
+          {
+            "key": "nature_type_of_startup",
+            "label": "Nature / Type of Start-up",
+            "width": "w-44"
+          },
+          {
+            "key": "mentor_category",
+            "label": "Mentor Category (Alumni/Entrepreneur/Faculty/Researchers/Industry professionals/Local Community Personal)",
+            "width": "w-64"
+          },
+          {
+            "key": "name_of_mentor_with_details",
+            "label": "Name of the Mentor with Designation and complete details",
+            "width": "w-64"
+          },
+          {
+            "key": "reg_no_of_mentee",
+            "label": "Reg. No. of the Student Mentee",
+            "width": "w-36"
+          },
+          {
+            "key": "name_of_student_mentee",
+            "label": "Name of the Student Mentee",
+            "width": "w-44"
+          },
+          {
+            "key": "date_from_to",
+            "label": "Date From – To",
+            "width": "w-44"
+          },
+          {
+            "key": "duration",
+            "label": "Duration",
             "width": "w-32"
           },
           {
-            "key": "field_3",
-            "label": "Field 3",
-            "width": "w-32"
-          },
-          {
-            "key": "field_4",
-            "label": "Field 4",
-            "width": "w-32"
-          },
-          {
-            "key": "name_of_the_tbi_incubation_cen",
-            "label": "Name of the TBI / Incubation Centre in SJC: St. Joseph's Start-up Center (JSC)",
-            "width": "w-52"
+            "key": "status_outcome",
+            "label": "Status / Outcome",
+            "width": "w-44"
           }
         ],
-        "rows": []
+        "rows": [],
+        "subtitle": "Name of the TBI / Incubation Centre in SJC: St. Joseph's Start-up Center (JSC)"
       }
     ]
   },
@@ -3691,9 +3956,9 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
     "sheets": [
       {
         "key": "10_attribute_x",
-        "sheetName": "Attribute X",
-        "title": "Attribute X",
-        "badge": "Attribute 10 - Attribute X",
+        "sheetName": "10.1",
+        "title": "10.1 Institutional Values, Green Initiatives, CSR & Outreach Projects",
+        "badge": "Attribute 10 - 10.1",
         "instruction": "Sustainability (Green initiatives) – Outcomes",
         "type": "table",
         "columns": [

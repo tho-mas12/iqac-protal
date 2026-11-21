@@ -9,7 +9,7 @@
 // EDIT THESE 4 VALUES TO MATCH YOUR CPANEL MYSQL CREDENTIALS
 // ==============================================================
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'iqac_aaa_db');      // e.g. 'cpaneluser_iqac_aaa'
+define('DB_NAME', 'iqac_aaa');         // Target Database on phpMyAdmin (URL: db=iqac_aaa)
 define('DB_USER', 'root');             // e.g. 'cpaneluser_dbuser'
 define('DB_PASS', '');                 // e.g. 'YourStrongPassword123'
 define('DB_CHARSET', 'utf8mb4');

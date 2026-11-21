@@ -44,26 +44,58 @@ try {
             $moocPct = '0%';
 
             if ($data) {
-                $scopus = $data['attributeIX']['papersPublished']['scopus'] ?? 0;
-                $wos = $data['attributeIX']['papersPublished']['wos'] ?? 0;
-                $pubs = (int)$scopus + (int)$wos;
+                $formData = $data['attributeFormData'] ?? $data;
+
+                // 1. Publications (Attribute 9 - 9.1 Scopus / Web of Science / UGC Care)
+                $papersRows = $formData['att9']['9_9_1'] ?? $formData['att9']['9.1'] ?? $data['attributeIX']['papersPublished'] ?? [];
+                if (is_array($papersRows)) {
+                    if (isset($papersRows['scopus']) || isset($papersRows['wos'])) {
+                        $pubs = (int)($papersRows['scopus'] ?? 0) + (int)($papersRows['wos'] ?? 0);
+                    } else {
+                        $pubs = count(array_filter($papersRows, function($r) {
+                            return !empty($r['title_of_paper']) || !empty($r['name_of_the_journal']);
+                        }));
+                    }
+                }
                 $totalPubs += $pubs;
 
-                $ext = 0;
-                if (!empty($data['attributeIV_VII']['externalFunds'])) {
-                    foreach ($data['attributeIV_VII']['externalFunds'] as $f) {
-                        $ext += (float)($f['amount'] ?? 0);
+                // 2. Grants / External Funds (Attribute 7 - 7.1, 7.2 or Attribute 4/7)
+                $fundRows = $formData['att7']['7_7_1'] ?? $formData['att7']['7_7_2'] ?? $data['attributeIV_VII']['externalFunds'] ?? [];
+                if (is_array($fundRows)) {
+                    foreach ($fundRows as $f) {
+                        $ext += (float)($f['amount'] ?? $f['financial_contribution'] ?? $f['grant_amount'] ?? 0);
                     }
                 }
                 $grants = $ext;
                 $totalGrants += $grants;
 
-                $patents = (int)($data['attributeIX']['patents']['granted'] ?? 0);
+                // 3. Patents & IPR (Attribute 9 - 9.11)
+                $iprSection = $formData['att9']['9_9_11']['ipr_details'] ?? $formData['att9']['9_9_11'] ?? [];
+                if (is_array($iprSection)) {
+                    $patents = count(array_filter($iprSection, function($r) {
+                        return !empty($r['title_of_invention_technology']) || !empty($r['application_patent_number']);
+                    }));
+                } else {
+                    $patents = (int)($data['attributeIX']['patents']['granted'] ?? 0);
+                }
                 $totalPatents += $patents;
 
-                $vacCc = count($data['attributeI']['vac'] ?? []) + count($data['attributeI']['cc'] ?? []);
+                // 4. Value-Added & Certificate Courses (Attribute 1 - 1.2)
+                $vacRows = $formData['att1']['1.2']['vac'] ?? $formData['att1']['1.2'] ?? [];
+                if (is_array($vacRows)) {
+                    if (isset($formData['att1']['1.2']['vac']) || isset($formData['att1']['1.2']['cc'])) {
+                        $vacCc = count($formData['att1']['1.2']['vac'] ?? []) + count($formData['att1']['1.2']['cc'] ?? []);
+                    } else {
+                        $vacCc = count(array_filter($vacRows, function($r) {
+                            return !empty($r['course_title']) || !empty($r['course_code']);
+                        }));
+                    }
+                } else {
+                    $vacCc = count($data['attributeI']['vac'] ?? []) + count($data['attributeI']['cc'] ?? []);
+                }
                 $totalVacCc += $vacCc;
 
+                // 5. MOOCs
                 $ugComp = (int)($data['attributeI']['moocs']['ug']['cycle1_completed'] ?? 0) + (int)($data['attributeI']['moocs']['ug']['cycle2_completed'] ?? 0);
                 $ugReg = (int)($data['attributeI']['moocs']['ug']['cycle1_registered'] ?? 0) + (int)($data['attributeI']['moocs']['ug']['cycle2_registered'] ?? 0);
                 $moocPct = $ugReg > 0 ? round(($ugComp / $ugReg) * 100, 1) . '%' : 'N/A';

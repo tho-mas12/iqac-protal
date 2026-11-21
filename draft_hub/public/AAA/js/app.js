@@ -92,16 +92,41 @@ class App {
       topDept.textContent = window.dataStore?.activeDepartment || 'Department';
     }
     const topBadge = document.getElementById('top-dept-display-name');
+    const topIcon = document.getElementById('top-dept-icon');
     if (topBadge) {
       const authUser = window.authManager?.getUser();
-      const name = (authUser && authUser.role === 'department') 
-        ? (authUser.department_name || authUser.display_name || window.dataStore?.activeDepartment || 'Department')
-        : (window.dataStore?.activeDepartment || 'IQAC Admin');
-      topBadge.textContent = name;
+      const isAdmin = authUser && authUser.role === 'admin';
+      if (isAdmin) {
+        topBadge.textContent = 'IQAC Admin';
+        if (topIcon) topIcon.setAttribute('data-lucide', 'shield-check');
+      } else {
+        const name = authUser?.department_name || authUser?.display_name || window.dataStore?.activeDepartment || 'Department';
+        topBadge.textContent = name;
+        if (topIcon) topIcon.setAttribute('data-lucide', 'building-2');
+      }
+      if (window.lucide) lucide.createIcons();
     }
     const sidebarDl = document.getElementById('sidebar-deadline-text');
     if (sidebarDl && window.dataStore) {
       sidebarDl.textContent = window.dataStore.formatDeadlineForDisplay();
+    }
+    const topDl = document.getElementById('topbar-deadline-text');
+    if (topDl && window.dataStore) {
+      topDl.textContent = window.dataStore.formatDeadlineForDisplay();
+    }
+    const topDlWidget = document.getElementById('topbar-deadline-widget');
+    if (topDlWidget && window.dataStore) {
+      const isAdmin = window.authManager && window.authManager.isAdmin();
+      if (isAdmin) {
+        topDlWidget.classList.add('hidden');
+      } else {
+        topDlWidget.classList.remove('hidden');
+        if (window.dataStore.isDeadlinePassed()) {
+          topDlWidget.className = 'flex items-center gap-1.5 px-3 py-1 bg-rose-50 border border-rose-300 rounded-xl text-xs font-bold text-rose-900 shadow-2xs animate-pulse';
+        } else {
+          topDlWidget.className = 'flex items-center gap-1.5 px-3 py-1 bg-amber-50 border border-amber-200/90 rounded-xl text-xs font-bold text-amber-900 shadow-2xs';
+        }
+      }
     }
 
     // Update active view
@@ -130,6 +155,12 @@ class App {
   }
 
   switchView(viewName) {
+    const isAdmin = window.authManager && window.authManager.isAdmin();
+    // Restrict department users strictly to Attribute Forms and Department Info
+    if (!isAdmin && viewName !== 'form' && viewName !== 'dept-profile') {
+      viewName = 'form';
+    }
+
     this.currentView = viewName;
 
     // Hide all view containers
@@ -155,7 +186,44 @@ class App {
           btn.classList.add('text-slate-700', 'hover:text-[#26648E]', 'hover:bg-white', 'bg-white/80', 'border', 'border-slate-200', 'shadow-2xs', 'font-semibold');
         }
       }
+
+      // Update Top Navbar Buttons
+      const topBtn = document.getElementById(`topnav-btn-${v}`);
+      if (topBtn) {
+        if (!isAdmin) {
+          // Department login: strictly hide all topnav buttons (forms are direct and dept info is top-right icon)
+          if (v === 'admin' || v === 'dept-data' || v === 'filter' || v === 'dashboard' || v === 'form') {
+            topBtn.className = 'hidden';
+          }
+        } else if (isAdmin && v === 'dept-profile') {
+          topBtn.className = 'hidden';
+        } else {
+          if (v === viewName) {
+            topBtn.className = 'px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-2 transition cursor-pointer bg-[#26648E] text-white shadow-xs';
+          } else {
+            topBtn.className = 'px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition cursor-pointer text-slate-700 hover:text-[#26648E] hover:bg-white/80';
+          }
+        }
+      }
     });
+
+    // Update Top Right Department Account Button Active State
+    const deptAccountBtn = document.getElementById('top-dept-account-btn');
+    if (deptAccountBtn) {
+      if (viewName === 'dept-profile') {
+        deptAccountBtn.className = 'flex items-center gap-2 px-3 py-1.5 bg-[#26648E] text-white border border-[#26648E] rounded-xl transition cursor-pointer shadow-md shadow-[#26648E]/25 group';
+        const subLbl = document.getElementById('top-dept-sub-label');
+        if (subLbl) subLbl.className = 'block text-[9px] font-bold text-blue-200 uppercase tracking-wider';
+        const nameLbl = document.getElementById('top-dept-display-name');
+        if (nameLbl) nameLbl.className = 'block text-xs font-black text-white tracking-tight max-w-[140px] truncate leading-tight';
+      } else {
+        deptAccountBtn.className = 'flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-[#26648E]/10 via-[#4F8FC0]/10 to-[#FFE3B3]/25 hover:from-[#26648E]/20 hover:to-[#FFE3B3]/40 border border-[#4F8FC0]/35 rounded-xl transition cursor-pointer shadow-2xs group';
+        const subLbl = document.getElementById('top-dept-sub-label');
+        if (subLbl) subLbl.className = 'block text-[9px] font-bold text-slate-500 uppercase tracking-wider';
+        const nameLbl = document.getElementById('top-dept-display-name');
+        if (nameLbl) nameLbl.className = 'block text-xs font-black text-[#26648E] tracking-tight max-w-[140px] truncate leading-tight';
+      }
+    }
 
     // Render active view
     if (viewName === 'dept-data' && window.adminDashboard) {
@@ -164,21 +232,73 @@ class App {
     this.onDataUpdated(window.dataStore.data);
   }
 
+  toggleDeptProfile() {
+    if (this.currentView === 'dept-profile') {
+      this.switchView('form');
+    } else {
+      this.switchView('dept-profile');
+    }
+  }
+
   refreshYearSelectors() {
     if (!window.dataStore) return;
     const activeYear = window.dataStore.getActiveYear();
     const years = window.dataStore.getAcademicYearsList();
+    const isAdmin = window.authManager && window.authManager.isAdmin();
 
-    const optionsHtml = years.map(y => `
-      <option value="${y}" ${y === activeYear ? 'selected' : ''}>${y}</option>
-    `).join('') + '<option value="__NEW__">+ Add New Year...</option><option value="__DELETE__">🗑️ Delete Active Year...</option>';
+    const topContainer = document.getElementById('topbar-year-container');
+    if (topContainer) {
+      if (isAdmin) {
+        topContainer.innerHTML = `
+          <div class="flex items-center gap-1.5 bg-[#FFE3B3] px-2.5 py-1 rounded-xl border border-[#fedba0] shadow-2xs">
+            <i data-lucide="calendar" class="w-3.5 h-3.5 text-[#26648E]"></i>
+            <span class="text-xs font-black text-[#26648E]">Year:</span>
+            <select 
+              id="topbar-active-year-select"
+              onchange="app.onGlobalYearChange(this.value)"
+              class="text-xs font-black text-[#26648E] bg-transparent outline-none cursor-pointer"
+              title="Switch Active Academic Year"
+            >
+              ${years.map(y => `<option value="${y}" ${y === activeYear ? 'selected' : ''}>${y}</option>`).join('')}
+              <option value="__NEW__">+ Add New Year...</option>
+              <option value="__DELETE__">🗑️ Delete Active Year...</option>
+            </select>
+            <button 
+              type="button" 
+              onclick="app.deleteActiveYear()" 
+              class="p-0.5 text-slate-400 hover:text-rose-600 rounded transition cursor-pointer"
+              title="Delete Active Academic Year and erase all its data"
+            >
+              <i data-lucide="trash-2" class="w-3 h-3 text-rose-500"></i>
+            </button>
+          </div>
+        `;
+      } else {
+        topContainer.innerHTML = `
+          <div class="flex items-center gap-1.5 bg-[#FFE3B3] px-2.5 py-1 rounded-xl border border-[#fedba0] shadow-2xs select-none">
+            <i data-lucide="calendar" class="w-3.5 h-3.5 text-[#26648E]"></i>
+            <span class="text-xs font-black text-[#26648E]">Active Year: ${activeYear}</span>
+          </div>
+        `;
+      }
+      if (window.lucide) lucide.createIcons({ root: topContainer });
+    }
 
-    // Only inside the Attribute Forms page
-    const formSel = document.getElementById('form-active-year-selector');
-    if (formSel) formSel.innerHTML = optionsHtml;
+    // Inside Department Data page if open
+    const deptDataSel = document.getElementById('dept-data-active-year-selector');
+    if (deptDataSel) {
+      deptDataSel.innerHTML = years.map(y => `
+        <option value="${y}" ${y === activeYear ? 'selected' : ''}>${y}</option>
+      `).join('') + '<option value="__NEW__">+ Add New Year...</option><option value="__DELETE__">🗑️ Delete Active Year...</option>';
+    }
   }
 
   async onGlobalYearChange(val) {
+    if (window.authManager && !window.authManager.isAdmin()) {
+      window.showToast('Access Restricted: Only IQAC Administrators can change academic years.', 'error', 3500, 'Access Denied');
+      this.refreshYearSelectors();
+      return;
+    }
     if (val === '__NEW__') {
       const newYear = await window.showPromptDialog(
         'Enter New Academic Year in format YYYY - YYYY (e.g. 2027 - 2028):',

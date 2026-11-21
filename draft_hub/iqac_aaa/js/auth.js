@@ -230,12 +230,27 @@ class AuthManager {
         }
       }
 
-      // Top right corner Department Name Badge
-      if (topDeptDisplayName) {
-        const deptName = isDept
-          ? (this.user.department_name || this.user.display_name || window.dataStore?.activeDepartment || 'Department')
-          : (window.dataStore?.activeDepartment || 'IQAC Central Admin');
-        topDeptDisplayName.textContent = deptName;
+      // Deadline widget in top bar: removed in admin page login, shown only for department login
+      const topbarDeadline = document.getElementById('topbar-deadline-widget');
+      if (topbarDeadline) {
+        topbarDeadline.classList.toggle('hidden', isAdmin);
+      }
+
+      // Department Info Account Icon in top right: removed in admin page login, shown only for department login
+      const topDeptAccountBtn = document.getElementById('top-dept-account-btn');
+      if (topDeptAccountBtn) {
+        if (isAdmin) {
+          topDeptAccountBtn.classList.add('hidden');
+        } else {
+          topDeptAccountBtn.classList.remove('hidden');
+          const deptName = this.user.department_name || this.user.display_name || window.dataStore?.activeDepartment || 'Department';
+          if (topDeptDisplayName) topDeptDisplayName.textContent = deptName;
+          const subLbl = document.getElementById('top-dept-sub-label');
+          if (subLbl) subLbl.textContent = 'Dept Info';
+          const topIcon = document.getElementById('top-dept-icon');
+          if (topIcon) topIcon.setAttribute('data-lucide', 'user');
+        }
+        if (window.lucide) lucide.createIcons();
       }
 
       if (deptSwitcher) {
@@ -244,6 +259,33 @@ class AuthManager {
         } else {
           deptSwitcher.classList.add('hidden');
         }
+      }
+
+      // Department layout: Left sidebar is removed, navbar is on top
+      const sidebar = document.getElementById('app-sidebar');
+      const sidebarToggleBtn = document.getElementById('sidebar-toggle-btn');
+      if (sidebar) {
+        sidebar.classList.add('hidden');
+      }
+      if (sidebarToggleBtn) {
+        sidebarToggleBtn.classList.add('hidden');
+      }
+
+      // Top Navbar links visibility based on role
+      const topAdminBtn = document.getElementById('topnav-btn-admin');
+      const topDeptDataBtn = document.getElementById('topnav-btn-dept-data');
+      const topFormBtn = document.getElementById('topnav-btn-form');
+      const topFilterBtn = document.getElementById('topnav-btn-filter');
+      const topDashBtn = document.getElementById('topnav-btn-dashboard');
+
+      if (topAdminBtn) topAdminBtn.classList.toggle('hidden', !isAdmin);
+      if (topDeptDataBtn) topDeptDataBtn.classList.toggle('hidden', !isAdmin);
+      if (topFormBtn) topFormBtn.classList.toggle('hidden', !isAdmin);
+      if (topFilterBtn) topFilterBtn.classList.toggle('hidden', !isAdmin);
+      if (topDashBtn) topDashBtn.classList.toggle('hidden', !isAdmin);
+
+      if (window.app && typeof window.app.refreshYearSelectors === 'function') {
+        window.app.refreshYearSelectors();
       }
     }
   }

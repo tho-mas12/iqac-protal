@@ -258,9 +258,21 @@ class FormBuilder {
     const lbl = (label || '').trim().toLowerCase();
     const k = (key || '').toLowerCase();
 
-    // 0. SDG Goal Dropdown (All 17 UN Sustainable Development Goals)
-    if (k === 'sdggoal' || lbl.includes('sdg goal') || lbl.includes('sdg') || lbl.includes('sustainable development')) {
-      return [
+    // EXCLUSION: Purpose of Collaboration (Sheet 9.12) must be a standard text input box, NOT a dropdown!
+    if (lbl.includes('purpose of collaboration') || k.includes('purpose_of_collaboration') || lbl === 'purpose of collaboration') {
+      return null;
+    }
+
+    let opts = null;
+
+    // 0. Part of the MoU/Linkage (Sheet 1.4, 1.5, 1.6)
+    if (k === 'moulinkage' || lbl.includes('mou/linkage') || lbl.includes('mou / linkage') || (lbl.includes('part of the') && (lbl.includes('mou') || lbl.includes('linkage')))) {
+      opts = ['', 'MoU', 'Linkage', 'None'];
+    }
+
+    // 1. SDG Goal Dropdown (All 17 UN Sustainable Development Goals)
+    else if (k === 'sdggoal' || lbl.includes('sdg goal') || lbl.includes('sdg') || lbl.includes('sustainable development')) {
+      opts = [
         '',
         'Goal 1: No Poverty',
         'Goal 2: Zero Hunger',
@@ -282,98 +294,117 @@ class FormBuilder {
       ];
     }
 
-    // 1. VAC / CC
-    if (lbl.includes('vac / cc') || lbl.includes('vac/cc') || lbl.includes('(vac / cc)')) {
-      return ['', 'VAC', 'CC'];
+    // 2. VAC / CC
+    else if (lbl.includes('vac / cc') || lbl.includes('vac/cc') || lbl.includes('(vac / cc)')) {
+      opts = ['', 'VAC', 'CC'];
     }
 
-    // 2. Mode (Online / Offline / Blended)
-    if (lbl.includes('online') && lbl.includes('offline')) {
-      if (lbl.includes('blended')) {
-        return ['', 'Online', 'Offline', 'Blended'];
+    // 3. Existing / New Facility (Sheet 3.1)
+    else if (lbl.includes('existing / new facility') || lbl.includes('existing/new facility') || k === 'existing_new_facility') {
+      opts = ['', 'Existing Facility', 'New Facility'];
+    }
+
+    // 4. Mentor Category (Sheet 9.13)
+    else if (lbl.includes('mentor category') || k === 'mentor_category') {
+      opts = ['', 'Alumni', 'Entrepreneur', 'Faculty Mentor', 'Researcher', 'Industry Professional', 'Local Community Personal'];
+    }
+
+    // 5. Type of Programme (Sheet 6.1)
+    else if (lbl.includes('type of programme') || lbl.includes('type of program') || k === 'type_of_programme') {
+      opts = ['', 'FDP', 'Seminar', 'Conference', 'Workshop', 'Webinar', 'Guest Lecture', 'Vocational Training', 'Placement Training'];
+    }
+
+    // 6. Mode (Online / Offline / Blended)
+    else if (lbl.includes('mode') || (lbl.includes('online') && lbl.includes('offline'))) {
+      opts = ['', 'Offline', 'Online', 'Blended'];
+    }
+
+    // 7. YES / NO (excluding MoU/Linkage)
+    else if (lbl.includes('yes/no') || lbl.includes('yes / no') || lbl.includes('mention yes/no') || lbl.includes('iks based') || lbl.includes('multidisciplinary') || lbl.includes('industry collab') || lbl.includes('mention yes if') || lbl.includes('whether part of csr') || lbl.includes('is csr') || lbl.includes('hands on')) {
+      opts = ['', 'YES', 'NO'];
+    }
+
+    // 8. Focus: SKILL, KNOWLEDGE, BOTH
+    else if (lbl.includes('skill, knowledge, both') || (lbl.includes('skill') && lbl.includes('knowledge') && lbl.includes('both'))) {
+      opts = ['', 'SKILL', 'KNOWLEDGE', 'BOTH'];
+    }
+
+    // 9. Status: Completed / Ongoing
+    else if (lbl.includes('completed/ongoing') || lbl.includes('completed / ongoing')) {
+      opts = ['', 'Completed', 'Ongoing'];
+    }
+
+    // 10. Registered / Completed
+    else if (lbl.includes('registered / completed') || lbl.includes('registered/completed')) {
+      opts = ['', 'Registered', 'Completed'];
+    }
+
+    // 11. Level (International/National/State/Institutional/Regional/University)
+    else if (lbl === 'level' || (lbl.includes('international') && lbl.includes('national')) || k === 'level') {
+      opts = ['', 'International', 'National', 'State', 'Regional', 'University', 'Institutional'];
+    }
+
+    // 12. Shift (I/II)
+    else if (lbl.includes('shift (i/ii)') || k === 'shift') {
+      opts = ['', 'Shift I', 'Shift II'];
+    }
+
+    // 13. Government / Non-Government
+    else if (lbl.includes('government/non-government') || lbl.includes('government / non-government')) {
+      opts = ['', 'Government', 'Non-Government'];
+    }
+
+    // 14. Books / Journal
+    else if (lbl.includes('books/jounal') || lbl.includes('books/journal') || lbl.includes('books / journal')) {
+      opts = ['', 'Books', 'Journal'];
+    }
+
+    // 15. Gender
+    else if (k === 'gender' || lbl === 'gender') {
+      opts = ['', 'Male', 'Female'];
+    }
+
+    // 16. Status (Applied / Granted / Published / Registered)
+    else if (lbl.includes('applied / granted') || lbl.includes('status (applied')) {
+      opts = ['', 'Applied', 'Granted', 'Published', 'Registered'];
+    }
+
+    // 17. PG / UG
+    else if (lbl.includes('pg / ug') || lbl.includes('pg/ug')) {
+      opts = ['', 'UG', 'PG', 'PhD'];
+    }
+
+    // 18. Appointment Type (Aided/Coordinator/Secretary)
+    else if (lbl.includes('aided/coordinator/secretary') || lbl.includes('appointment type')) {
+      opts = ['', 'Aided', 'Coordinator', 'Secretary', 'Professor of Practice', 'Hourly Basis'];
+    }
+
+    // 19. Stakeholder Type
+    else if (lbl.includes('type of stakeholder') || lbl.includes('teachers/alumni/employers')) {
+      opts = ['', 'Teachers', 'Alumni', 'Employers', 'Industry', 'Entrepreneurs', 'Students'];
+    }
+
+    // 20. Nature of Place
+    else if (lbl.includes('nature of the place') || lbl.includes('industry/company/institution')) {
+      opts = ['', 'Industry', 'Company', 'Institution', 'Educational Institution', 'Government Organization', 'NGO'];
+    }
+
+    // 21. Competitive Exams
+    else if (lbl.includes('competitive exam') || lbl.includes('net/ set/ gate')) {
+      opts = ['', 'NET', 'SET', 'GATE', 'CAT', 'UPSC', 'TNPSC', 'JAM', 'Others'];
+    }
+
+    // 22. Internship / Project (Sheet 1.8) - Only the activity type dropdown, NOT the title column
+    else if (!lbl.includes('title') && (k === 'activitytype' || lbl === 'internship / project' || lbl === 'internship/project' || (lbl.includes('internship') && lbl.includes('project') && !lbl.includes('title') && !lbl.includes('name and address')))) {
+      opts = ['', 'Internship', 'Project', 'Both Internship & Project'];
+    }
+
+    if (opts && Array.isArray(opts)) {
+      // Ensure 'Other' is always available as the dynamic custom-input option
+      if (!opts.some(o => o && o.toLowerCase() === 'other')) {
+        opts.push('Other');
       }
-      return ['', 'Online', 'Offline'];
-    }
-
-    // 3. YES / NO
-    if (lbl.includes('yes/no') || lbl.includes('yes / no') || lbl.includes('mention yes/no') || lbl.includes('iks based') || lbl.includes('multidisciplinary') || lbl.includes('industry collab') || (lbl.includes('part of the') && lbl.includes('mou'))) {
-      return ['', 'YES', 'NO'];
-    }
-    if (lbl.includes('mention yes if')) {
-      return ['', 'YES', 'NO'];
-    }
-    if (lbl.includes('whether part of csr') || lbl.includes('is csr')) {
-      return ['', 'YES', 'NO'];
-    }
-
-    // 4. Focus: SKILL, KNOWLEDGE, BOTH
-    if (lbl.includes('skill, knowledge, both') || (lbl.includes('skill') && lbl.includes('knowledge') && lbl.includes('both'))) {
-      return ['', 'SKILL', 'KNOWLEDGE', 'BOTH'];
-    }
-
-    // 5. Status: Completed / Ongoing
-    if (lbl.includes('completed/ongoing') || lbl.includes('completed / ongoing')) {
-      return ['', 'Completed', 'Ongoing'];
-    }
-
-    // 6. Registered / Completed
-    if (lbl.includes('registered / completed') || lbl.includes('registered/completed')) {
-      return ['', 'Registered', 'Completed'];
-    }
-
-    // 7. Level (International/National/State/Institutional/Regional/University)
-    if (lbl.includes('international') && lbl.includes('national')) {
-      return ['', 'International', 'National', 'State', 'Regional', 'University', 'Institutional'];
-    }
-
-    // 8. Shift (I/II)
-    if (lbl.includes('shift (i/ii)') || k === 'shift') {
-      return ['', 'Shift I', 'Shift II'];
-    }
-
-    // 9. Government / Non-Government
-    if (lbl.includes('government/non-government') || lbl.includes('government / non-government')) {
-      return ['', 'Government', 'Non-Government'];
-    }
-
-    // 10. Books / Journal
-    if (lbl.includes('books/jounal') || lbl.includes('books/journal') || lbl.includes('books / journal')) {
-      return ['', 'Books', 'Journal'];
-    }
-
-    // 11. Gender
-    if (k === 'gender' || lbl === 'gender') {
-      return ['', 'Male', 'Female', 'Other'];
-    }
-
-    // 12. Status (Applied / Granted / Published / Registered)
-    if (lbl.includes('applied / granted') || lbl.includes('status (applied')) {
-      return ['', 'Applied', 'Granted', 'Published', 'Registered'];
-    }
-
-    // 13. PG / UG
-    if (lbl.includes('pg / ug') || lbl.includes('pg/ug')) {
-      return ['', 'UG', 'PG', 'PhD'];
-    }
-
-    // 14. Appointment Type (Aided/Coordinator/Secretary)
-    if (lbl.includes('aided/coordinator/secretary') || lbl.includes('appointment type')) {
-      return ['', 'Aided', 'Coordinator', 'Secretary', 'Professor of Practice', 'Hourly Basis'];
-    }
-
-    // 15. Stakeholder Type
-    if (lbl.includes('type of stakeholder') || lbl.includes('teachers/alumni/employers')) {
-      return ['', 'Teachers', 'Alumni', 'Employers', 'Industry', 'Entrepreneurs', 'Students'];
-    }
-
-    // 16. Nature of Place
-    if (lbl.includes('nature of the place') || lbl.includes('industry/company/institution')) {
-      return ['', 'Industry', 'Company', 'Institution', 'Educational Institution', 'Government Organization', 'NGO'];
-    }
-
-    // 17. Competitive Exams
-    if (lbl.includes('competitive exam') || lbl.includes('net/ set/ gate')) {
-      return ['', 'NET', 'SET', 'GATE', 'CAT', 'UPSC', 'TNPSC', 'JAM', 'Others'];
+      return opts;
     }
 
     return null;
@@ -381,6 +412,7 @@ class FormBuilder {
 
   // ================= DATA MUTATION HELPERS =================
   updateProfileField(fieldPath, value) {
+    if (this.isSubmissionLocked()) return;
     const cardData = this.getCardData('part_a');
     if (!cardData['PART-A']) cardData['PART-A'] = {};
     if (!cardData['PART-A'].profile) cardData['PART-A'].profile = {};
@@ -396,6 +428,7 @@ class FormBuilder {
   }
 
   updateFacultyDetail(idx, field, value) {
+    if (this.isSubmissionLocked()) return;
     const cardData = this.getCardData('part_a');
     if (!cardData['PART-A']?.facultyDetails) return;
     if (cardData['PART-A'].facultyDetails[idx]) {
@@ -408,6 +441,7 @@ class FormBuilder {
   }
 
   updateStudentDetail(idx, field, value) {
+    if (this.isSubmissionLocked()) return;
     const cardData = this.getCardData('part_a');
     if (!cardData['PART-A']?.studentDetails) return;
     if (cardData['PART-A'].studentDetails[idx]) {
@@ -420,6 +454,7 @@ class FormBuilder {
   }
 
   updateTableCell(sheetKey, rowIdx, colKey, value) {
+    if (this.isSubmissionLocked()) return;
     const card = this.getActiveCard();
     if (!card) return;
     const cardData = this.getCardData(card.id);
@@ -674,59 +709,12 @@ class FormBuilder {
     this.academicYear = window.dataStore ? window.dataStore.getActiveYear() : '2026 - 2027';
     this.isCardsUnlocked = true;
 
+    const submissionStatus = window.dataStore?.getDepartmentSubmissionStatus(deptName) || { status: 'draft', is_locked: false };
+    const isSubmitted = submissionStatus.status === 'submitted' || Boolean(submissionStatus.is_locked);
+
     this.container.innerHTML = `
-      <div class="w-full space-y-6 animate-fadeIn">
+      <div class="w-full space-y-8 animate-fadeIn">
         
-        <!-- Clean Arctic Frost Header Banner -->
-        <div class="bg-white/85 backdrop-blur-md rounded-2xl p-6 border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div class="flex items-center gap-2 mb-1.5 flex-wrap">
-              <div class="flex items-center gap-1.5 bg-[#FFE3B3] px-3 py-1 rounded-xl border border-[#fedba0] shadow-2xs">
-                <i data-lucide="calendar" class="w-3.5 h-3.5 text-[#26648E]"></i>
-                <span class="text-xs font-black text-[#26648E]">Active Year:</span>
-                <select 
-                  id="form-active-year-selector" 
-                  onchange="app.onGlobalYearChange(this.value)" 
-                  class="text-xs font-black text-[#26648E] bg-transparent outline-none cursor-pointer"
-                  title="Switch Active Academic Year"
-                >
-                  ${(window.dataStore ? window.dataStore.getAcademicYearsList() : ['2026 - 2027']).map(y => `
-                    <option value="${y}" ${y === this.academicYear ? 'selected' : ''}>${y}</option>
-                  `).join('')}
-                  <option value="__NEW__">+ Add New Year...</option>
-                  <option value="__DELETE__">🗑️ Delete Active Year...</option>
-                </select>
-                <button 
-                  type="button" 
-                  onclick="app.deleteActiveYear()" 
-                  class="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition border border-transparent hover:border-rose-200 cursor-pointer"
-                  title="Delete Active Academic Year and erase all its data"
-                >
-                  <i data-lucide="trash-2" class="w-3.5 h-3.5 text-rose-500"></i>
-                </button>
-              </div>
-            </div>
-
-            <h1 class="text-2xl md:text-3xl font-black tracking-tight text-slate-900">
-              Annual Academic Audit (AAA) ${this.academicYear}
-            </h1>
-          </div>
-
-          <div class="flex items-center gap-2.5">
-            <button 
-              type="button" 
-              onclick="formBuilder.exportAllAttributesConsolidated()" 
-              class="px-5 py-2.5 bg-gradient-to-r from-[#26648E] to-[#1e40af] hover:from-[#1b4b6d] hover:to-[#1e3a8a] text-white font-bold rounded-xl text-xs transition-all shadow-md shadow-[#26648E]/25 hover:shadow-lg flex items-center gap-2 cursor-pointer"
-              title="Download consolidated audit report for all attributes in Excel"
-            >
-              <i data-lucide="download" class="w-4 h-4 text-[#53D2DC]"></i>
-              <span>Download Complete Audit (All Attributes)</span>
-            </button>
-          </div>
-        </div>
-
-        ${this.renderDeadlineNoticeBanner()}
-
         <!-- Full-Page Wide Cards Grid (Simple, Clean, Micro-Animated) -->
         <div id="cards-grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full">
           ${cards.map(card => {
@@ -796,11 +784,54 @@ class FormBuilder {
             `;
           }).join('')}
         </div>
+
+        <!-- Download Complete Audit & Final Submit to IQAC at Last of All Cards -->
+        <div class="pt-6 pb-8 border-t border-slate-200/80 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div class="text-xs text-slate-500 font-semibold flex items-center gap-2">
+            <i data-lucide="shield-check" class="w-4 h-4 text-[#26648E]"></i>
+            <span>Department Audit Modules (Part A and Attributes 1 to 10)</span>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3">
+            <button 
+              type="button" 
+              onclick="formBuilder.exportAllAttributesToExcel()" 
+              class="px-5 py-3 bg-gradient-to-r from-[#26648E] via-[#1e40af] to-[#2563eb] hover:from-[#1b4b6d] hover:to-[#1d4ed8] text-white font-black rounded-2xl text-xs transition-all shadow-md shadow-[#26648E]/25 hover:shadow-lg flex items-center gap-2 cursor-pointer"
+              title="Download complete audit workbook for Part A and all attributes in sequential order"
+            >
+              <i data-lucide="download" class="w-4 h-4 text-[#53D2DC]"></i>
+              <span>Download Complete Audit (All Attributes)</span>
+            </button>
+
+            ${isSubmitted ? `
+              <button 
+                type="button" 
+                onclick="formBuilder.openFinalSubmitToIQACModal()" 
+                class="px-5 py-3 bg-gradient-to-r from-emerald-700 to-teal-800 hover:from-emerald-800 hover:to-teal-900 text-white font-black rounded-2xl text-xs transition-all shadow-md flex items-center gap-2 cursor-pointer"
+                title="Audit report already submitted to IQAC"
+              >
+                <i data-lucide="check-check" class="w-4 h-4 text-emerald-300"></i>
+                <span>Submitted to IQAC (Completed)</span>
+              </button>
+            ` : `
+              <button 
+                type="button" 
+                onclick="formBuilder.openFinalSubmitToIQACModal()" 
+                class="submit-iqac-blink px-6 py-3 text-white font-black rounded-2xl text-xs transition-all shadow-lg hover:shadow-xl flex items-center gap-2.5 cursor-pointer border-2 border-emerald-400"
+                title="Confirm and submit all attribute records to IQAC"
+              >
+                <i data-lucide="send" class="w-4 h-4 text-emerald-100"></i>
+                <span class="tracking-wide">Fully Completed and Submit to IQAC</span>
+              </button>
+            `}
+          </div>
+        </div>
+
       </div>
     `;
   }
 
-  // ================= 2. ACTIVE ATTRIBUTE SHEETS VIEW (FULL WIDE) =================
+  // ================= 2. ACTIVE ATTRIBUTE SHEETS VIEW (SIMPLE & CLEAN) =================
   renderActiveAttributeSheetsView(data) {
     const card = this.getActiveCard();
     if (!card) return;
@@ -810,83 +841,40 @@ class FormBuilder {
     const cardData = this.getCardData(card.id);
     const isAdmin = this.isAdmin();
     const deptName = window.dataStore?.activeDepartment || 'Department';
-    const { finishedCount, totalSheets, percentage } = this.getCompletionStats(card);
+    const { finishedCount, totalSheets } = this.getCompletionStats(card);
 
     this.container.innerHTML = `
-      <div class="space-y-6 w-full animate-fadeIn">
+      <div class="space-y-4 w-full animate-fadeIn">
         
-        <!-- Top Sticky Header for Active Card -->
-        <div class="bg-gradient-to-r from-[#26648E] via-[#33729e] to-[#4F8FC0] rounded-2xl p-5 text-white shadow-md border border-white/20 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <!-- Clean Streamlined Header (No Nested Boxes) -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-slate-200">
           <div class="flex items-center gap-3">
             <button 
               type="button" 
               onclick="formBuilder.backToCards()" 
-              class="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition border border-white/20 shrink-0" 
+              class="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-[#26648E] border border-slate-300 font-bold text-xs flex items-center gap-1.5 transition shadow-2xs cursor-pointer shrink-0" 
               title="Return to Attribute Cards Gallery"
             >
               <i data-lucide="arrow-left" class="w-4 h-4"></i>
+              <span>All Attributes</span>
             </button>
             <div>
-              <div class="flex items-center gap-2 mb-1">
-                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#FFE3B3] text-[#26648E]">
+              <div class="flex items-center gap-2 mb-0.5">
+                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-[#FFE3B3] text-[#26648E]">
                   ${card.cardCode}
                 </span>
-                <span class="text-xs text-blue-200 font-semibold">${finishedCount}/${totalSheets} Sheets Completed</span>
+                <span class="text-xs text-slate-500 font-bold">${finishedCount} of ${totalSheets} Sheets Finished</span>
               </div>
-              <h2 class="text-xl font-black tracking-tight text-white">
+              <h2 class="text-xl font-black tracking-tight text-slate-900">
                 ${card.cardTitle}
               </h2>
             </div>
           </div>
-
-          <div class="flex items-center gap-2">
-            <span class="card-save-indicator text-xs px-2.5 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full font-medium flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Auto-saved
-            </span>
-          </div>
         </div>
 
-        ${this.renderDeadlineNoticeBanner()}
-
-        <!-- Role Access Control Banner -->
-        ${isAdmin ? `
-          <div class="bg-gradient-to-r from-purple-50 to-indigo-50 border-b border-purple-200 px-6 py-2.5 flex flex-wrap items-center justify-between gap-3 rounded-xl border">
-            <div class="flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-purple-600 animate-ping"></span>
-              <span class="text-xs font-bold text-purple-900">IQAC Admin Mode:</span>
-              <span class="text-xs text-purple-700">Toggle question editing to customize question text, subtitles, and column headers.</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <button type="button" onclick="formBuilder.toggleAdminEditQuestionsMode()" class="text-xs px-3 py-1 rounded-lg font-bold flex items-center gap-1.5 transition ${this.adminEditQuestionsMode ? 'bg-purple-600 text-white shadow-sm' : 'bg-purple-100 hover:bg-purple-200 text-purple-800 border border-purple-300'}">
-                <i data-lucide="${this.adminEditQuestionsMode ? 'check' : 'edit-3'}" class="w-3.5 h-3.5"></i>
-                <span>${this.adminEditQuestionsMode ? 'Done Editing Questions' : 'Edit Questions / Column Headers'}</span>
-              </button>
-              ${this.adminEditQuestionsMode ? `
-                <button type="button" onclick="formBuilder.saveQuestionSchema()" class="text-xs px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition flex items-center gap-1">
-                  <i data-lucide="check-square" class="w-3.5 h-3.5"></i> Save Template
-                </button>
-                <button type="button" onclick="formBuilder.resetQuestionSchemaToDefault()" class="text-xs px-3 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-300 font-bold rounded-lg transition flex items-center gap-1">
-                  <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Reset to Excel
-                </button>
-              ` : ''}
-            </div>
-          </div>
-        ` : `
-          <div class="bg-blue-50 border border-blue-200 px-6 py-2.5 rounded-xl flex items-center justify-between text-xs text-blue-900">
-            <div class="flex items-center gap-2">
-              <i data-lucide="lock" class="w-4 h-4 text-blue-600"></i>
-              <span class="font-bold">Department Data Entry Mode (${deptName}):</span>
-              <span class="text-blue-700">Questions are locked. Fill data into the fields below and click <strong>Review & Save All Records</strong> at the bottom.</span>
-            </div>
-            <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-bold text-[10px] border border-blue-200">
-              Read-Only Questions
-            </span>
-          </div>
-        `}
-
-        <!-- Horizontal Sheets Navigation Tabs -->
+        <!-- Horizontal Sheets Navigation Tabs (Clean Pill Style, No Nested Box) -->
         ${sheets.length > 1 ? `
-          <div class="px-4 py-2 bg-slate-100/90 border border-slate-200 rounded-xl overflow-x-auto flex items-center gap-1.5 text-xs font-semibold scrollbar-thin w-full">
+          <div class="flex items-center gap-1.5 overflow-x-auto py-1 scrollbar-none w-full">
             ${sheets.map(s => {
               const isActive = s.key === this.activeSheetKey;
               const sData = cardData[s.key];
@@ -900,10 +888,10 @@ class FormBuilder {
                 <button 
                   type="button" 
                   onclick="formBuilder.switchSheet('${s.key}')" 
-                  class="px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 whitespace-nowrap transition ${
+                  class="px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 whitespace-nowrap transition cursor-pointer text-xs ${
                     isActive 
-                      ? 'bg-[#26648E] text-white font-black shadow-sm border border-[#26648E]' 
-                      : 'bg-white hover:bg-slate-200 text-slate-700 border border-slate-200 font-semibold'
+                      ? 'bg-[#26648E] text-white font-black shadow-xs' 
+                      : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 font-semibold'
                   }"
                 >
                   <i data-lucide="${s.type === 'profile' ? 'user-check' : 'table'}" class="w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-blue-600'}"></i>
@@ -919,56 +907,51 @@ class FormBuilder {
           </div>
         ` : ''}
 
-        <!-- Active Sheet Content (Full Wide) -->
-        <div class="p-6 bg-white rounded-2xl border border-slate-200 space-y-6 w-full shadow-2xs">
+        <!-- Active Sheet Content (Clean Table View Without Stacked Nested Wrapper Boxes) -->
+        <div class="w-full">
           ${activeSheet ? this.renderActiveSheetContent(activeSheet, cardData[activeSheet.key], isAdmin) : '<div class="text-slate-500">No sheet selected.</div>'}
         </div>
 
-        <!-- Footer Bar with Dedicated Review & Save Button and Prev/Next Navigation -->
-        <div class="bg-white rounded-2xl border border-slate-200 px-6 py-4 flex flex-wrap items-center justify-between gap-4 w-full shadow-2xs">
+        <!-- Bottom Action Bar (Review & Save All Down Here) -->
+        <div class="pt-6 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-2">
+            ${sheets.length > 1 ? `
+              <button type="button" onclick="formBuilder.navigateSheet(-1)" class="px-3.5 py-2 bg-white hover:bg-slate-100 text-slate-700 font-bold border border-slate-300 rounded-xl transition flex items-center gap-1.5 shadow-2xs text-xs cursor-pointer">
+                <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Prev Sheet
+              </button>
+              <span class="text-xs text-slate-500 font-medium px-2">
+                ${activeSheet?.sheetName || ''} (${sheets.findIndex(s => s.key === activeSheet?.key) + 1} of ${sheets.length})
+              </span>
+              <button type="button" onclick="formBuilder.navigateSheet(1)" class="px-3.5 py-2 bg-[#26648E] hover:bg-[#1b4b6d] text-white font-bold rounded-xl transition flex items-center gap-1.5 shadow-2xs text-xs cursor-pointer">
+                Next Sheet <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              </button>
+            ` : ''}
+          </div>
+
+          <!-- Prominent Review & Save All Records Down Button -->
           <div class="flex items-center gap-3">
             <button 
               type="button" 
-              onclick="formBuilder.backToCards()" 
-              class="text-xs px-4 py-2.5 bg-white hover:bg-slate-100 text-slate-700 font-bold border border-slate-300 rounded-xl transition flex items-center gap-1.5 shadow-xs cursor-pointer"
+              onclick="formBuilder.openReviewAndSaveModal('${card.id}')" 
+              class="px-6 py-2.5 bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-600 hover:to-amber-800 text-white font-black rounded-xl text-xs transition shadow-md shadow-amber-500/25 flex items-center gap-2 cursor-pointer"
+              title="Review full attribute print sheet and save all records"
             >
-              <i data-lucide="arrow-left" class="w-4 h-4"></i>
-              <span>Return to All Cards</span>
-            </button>
-
-            <!-- Primary Save Button at the End of the Attribute -->
-            <button 
-              type="button" 
-              onclick="formBuilder.reviewAndSaveAllCurrentAttribute()" 
-              class="text-xs px-5 py-2.5 bg-[#26648E] hover:bg-[#1b4b6d] text-white font-black rounded-xl transition flex items-center gap-2 shadow-md shadow-[#26648E]/25 ring-2 ring-[#53D2DC]/50 cursor-pointer"
-              title="Review and save all records in this attribute"
-            >
-              <i data-lucide="check-check" class="w-4 h-4 text-[#53D2DC]"></i>
+              <i data-lucide="file-check" class="w-4 h-4"></i>
               <span>Review & Save All Records</span>
             </button>
-          </div>
-
-          ${sheets.length > 1 ? `
-            <div class="flex items-center gap-2">
-              <button type="button" onclick="formBuilder.navigateSheet(-1)" class="text-xs px-3.5 py-2 bg-white hover:bg-slate-100 text-slate-700 font-bold border border-slate-300 rounded-xl transition flex items-center gap-1">
-                <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Prev Sheet
-              </button>
-              <span class="text-xs text-slate-500 font-medium">
-                ${activeSheet?.sheetName || ''} (${sheets.findIndex(s => s.key === activeSheet?.key) + 1} of ${sheets.length})
-              </span>
-              <button type="button" onclick="formBuilder.navigateSheet(1)" class="text-xs px-3.5 py-2 bg-[#26648E] hover:bg-[#1b4b6d] text-white font-bold rounded-xl transition flex items-center gap-1">
-                Next Sheet <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
-              </button>
-            </div>
-          ` : '<div></div>'}
           </div>
         </div>
 
       </div>
     `;
+
+    if (window.lucide) {
+      lucide.createIcons({ root: this.container });
+    }
   }
 
-  navigateSheet(direction) {
+
+    navigateSheet(direction) {
     const card = this.getActiveCard();
     if (!card || !card.sheets || card.sheets.length <= 1) return;
     const currIdx = card.sheets.findIndex(s => s.key === this.activeSheetKey);
@@ -996,7 +979,7 @@ class FormBuilder {
   }
 
   // Helper to render cell input or dropdown with NO placeholder
-  renderCellControl(val, onchangeCode, colLabel, colKey, isSno = false, sheetKey = '', rowIdx = 0) {
+  renderCellControl(val, onchangeCode, colLabel, colKey, isSno = false, sheetKey = '', rowIdx = 0, targetId = null) {
     const isLocked = this.isSubmissionLocked();
 
     if (isSno) {
@@ -1010,22 +993,53 @@ class FormBuilder {
       `;
     }
 
-    // 1. Dropdown Column
+    // 1. Dropdown Column (with dynamic "Other" custom text input option)
     const options = this.getDropdownOptions(colLabel, colKey);
     if (options && Array.isArray(options)) {
-      const currentVal = String(val !== undefined ? val : '').trim().toUpperCase();
+      const rawVal = val !== undefined && val !== null ? String(val).trim() : '';
+      const upperVal = rawVal.toUpperCase();
+      
+      // Check if value matches any predefined option (other than 'OTHER')
+      const matchedOption = options.find(opt => opt && opt.toUpperCase() !== 'OTHER' && opt.toUpperCase() === upperVal);
+      const isOtherSelected = upperVal === 'OTHER' || (rawVal !== '' && !matchedOption);
+      const customText = isOtherSelected && upperVal !== 'OTHER' ? rawVal : (upperVal === 'OTHER' ? '' : '');
+
       return `
-        <select 
-          onchange="${onchangeCode}" 
-          ${isLocked ? 'disabled' : ''}
-          class="w-full text-xs px-2 py-1.5 border border-slate-300 rounded hover:border-slate-400 focus:border-blue-500 focus:bg-white focus:outline-none transition bg-white font-semibold text-slate-800 ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}"
-        >
-          ${options.map(opt => `
-            <option value="${opt}" ${currentVal === opt.toUpperCase() ? 'selected' : ''}>
-              ${opt === '' ? '-- Select --' : opt}
-            </option>
-          `).join('')}
-        </select>
+        <div class="dropdown-other-container flex flex-col gap-1 w-full" 
+             data-sheet="${sheetKey}" 
+             data-row="${rowIdx}" 
+             data-col="${colKey}" 
+             data-target="${targetId || ''}">
+          <select 
+            onchange="formBuilder.handleDropdownChange(this)"
+            ${isLocked ? 'disabled' : ''}
+            class="dropdown-select-el w-full text-xs px-2 py-1.5 border border-slate-300 rounded hover:border-slate-400 focus:border-blue-500 focus:bg-white focus:outline-none transition bg-white font-semibold text-slate-800 ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}"
+          >
+            ${options.map(opt => {
+              let isSelected = false;
+              if (opt === '' && rawVal === '') isSelected = true;
+              else if (matchedOption && opt.toUpperCase() === matchedOption.toUpperCase()) isSelected = true;
+              else if (isOtherSelected && opt.toUpperCase() === 'OTHER') isSelected = true;
+              return `
+                <option value="${opt}" ${isSelected ? 'selected' : ''}>
+                  ${opt === '' ? '-- Select --' : opt}
+                </option>
+              `;
+            }).join('')}
+          </select>
+
+          <div class="custom-other-wrap ${isOtherSelected ? '' : 'hidden'} mt-1">
+            <input 
+              type="text" 
+              placeholder="Specify other..." 
+              value="${this.escapeHtml(customText || (upperVal === 'OTHER' ? 'Other' : ''))}" 
+              ${isLocked ? 'disabled' : ''}
+              oninput="formBuilder.handleCustomOtherInput(this)"
+              onchange="formBuilder.handleCustomOtherInput(this)"
+              class="custom-other-input w-full text-xs px-2 py-1 border border-indigo-300 bg-indigo-50/40 rounded focus:border-indigo-500 focus:bg-white focus:outline-none text-slate-800 font-medium ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}"
+            />
+          </div>
+        </div>
       `;
     }
 
@@ -1033,15 +1047,15 @@ class FormBuilder {
     if (this.isDateRangeColumn(colLabel, colKey)) {
       const [fromDate, toDate] = this.parseDateRange(val);
       return `
-        <div class="flex flex-col gap-1 w-full min-w-[200px]">
+        <div class="date-range-control flex flex-col gap-1 w-full min-w-[200px]" data-sheet="${sheetKey}" data-row="${rowIdx}" data-col="${colKey}" data-target="${targetId || ''}">
           <div class="flex items-center gap-1.5 bg-slate-50 p-1 rounded border border-slate-200">
             <span class="text-[10px] font-bold text-slate-500 w-10 shrink-0">From:</span>
             <input 
               type="date" 
               value="${fromDate}" 
               ${isLocked ? 'disabled' : ''}
-              onchange="formBuilder.updateDateRangeCell('${sheetKey}', ${rowIdx}, '${colKey}', this.value, '${toDate}', 'from')"
-              class="w-full text-xs px-1.5 py-1 border border-slate-300 rounded font-mono bg-white focus:border-blue-500 focus:outline-none ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}"
+              onchange="formBuilder.handleDateRangeChange(this, 'from')"
+              class="date-from-input w-full text-xs px-1.5 py-1 border border-slate-300 rounded font-mono bg-white focus:border-blue-500 focus:outline-none ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}"
             />
           </div>
           <div class="flex items-center gap-1.5 bg-slate-50 p-1 rounded border border-slate-200">
@@ -1050,8 +1064,8 @@ class FormBuilder {
               type="date" 
               value="${toDate}" 
               ${isLocked ? 'disabled' : ''}
-              onchange="formBuilder.updateDateRangeCell('${sheetKey}', ${rowIdx}, '${colKey}', '${fromDate}', this.value, 'to')"
-              class="w-full text-xs px-1.5 py-1 border border-slate-300 rounded font-mono bg-white focus:border-blue-500 focus:outline-none ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}"
+              onchange="formBuilder.handleDateRangeChange(this, 'to')"
+              class="date-to-input w-full text-xs px-1.5 py-1 border border-slate-300 rounded font-mono bg-white focus:border-blue-500 focus:outline-none ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}"
             />
           </div>
         </div>
@@ -1105,9 +1119,11 @@ class FormBuilder {
 
   // ================= 1. SHEET: PART-A (PROFILE) =================
   renderProfileSheet(sheet, sheetData, isEditQuestions) {
+    const isLocked = this.isSubmissionLocked();
     const prof = sheetData?.profile || sheet.profileQuestions || {};
     const facRows = sheetData?.facultyDetails || sheet.facultyDetails?.rows || [];
     const stuRows = sheetData?.studentDetails || sheet.studentDetails?.rows || [];
+    const defaultLevels = ['Undergraduate (UG)', 'Postgraduate (PG)', 'Ph.D. / Research'];
 
     return `
       <div class="space-y-6 w-full">
@@ -1127,6 +1143,12 @@ class FormBuilder {
                   MANDATORY PROFILE
                 </span>
                 <span class="text-xs text-slate-400">Academic Year: ${this.academicYear}</span>
+                ${isLocked ? `
+                  <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-rose-100 text-rose-900 border border-rose-300 flex items-center gap-1">
+                    <i data-lucide="lock" class="w-3 h-3 text-rose-700"></i>
+                    <span>Read-Only (Locked)</span>
+                  </span>
+                ` : ''}
               </div>
               <h3 class="text-xl font-bold text-slate-900">${sheet.title}</h3>
               <p class="text-xs text-rose-600 font-semibold mt-0.5">${sheet.subtitle || ''}</p>
@@ -1145,11 +1167,11 @@ class FormBuilder {
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="block text-xs font-semibold text-slate-600 mb-1">Department</label>
-              <input type="text" value="${prof.department || ''}" onchange="formBuilder.updateProfileField('department', this.value)" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-white font-medium" />
+              <input type="text" ${isLocked ? 'disabled' : ''} value="${prof.department || ''}" onchange="formBuilder.updateProfileField('department', this.value)" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-white font-medium ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}" />
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-600 mb-1">Shift</label>
-              <select onchange="formBuilder.updateProfileField('shift', this.value)" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-white font-semibold">
+              <select ${isLocked ? 'disabled' : ''} onchange="formBuilder.updateProfileField('shift', this.value)" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-white font-semibold ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}">
                 <option value="Shift I" ${prof.shift === 'Shift I' ? 'selected' : ''}>Shift I</option>
                 <option value="Shift II" ${prof.shift === 'Shift II' ? 'selected' : ''}>Shift II</option>
                 <option value="Shift I & Shift II" ${prof.shift === 'Shift I & Shift II' || !prof.shift ? 'selected' : ''}>Shift I & Shift II (Both)</option>
@@ -1160,21 +1182,21 @@ class FormBuilder {
               <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
                 <div>
                   <span class="text-[10px] text-slate-500 font-medium">UG Programmes:</span>
-                  <input type="text" value="${prof.programmes?.ug || ''}" onchange="formBuilder.updateProfileField('programmes.ug', this.value)" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-white" />
+                  <input type="text" ${isLocked ? 'disabled' : ''} value="${prof.programmes?.ug || ''}" onchange="formBuilder.updateProfileField('programmes.ug', this.value)" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-white ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}" />
                 </div>
                 <div>
                   <span class="text-[10px] text-slate-500 font-medium">PG Programmes:</span>
-                  <input type="text" value="${prof.programmes?.pg || ''}" onchange="formBuilder.updateProfileField('programmes.pg', this.value)" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-white" />
+                  <input type="text" ${isLocked ? 'disabled' : ''} value="${prof.programmes?.pg || ''}" onchange="formBuilder.updateProfileField('programmes.pg', this.value)" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-white ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}" />
                 </div>
                 <div>
                   <span class="text-[10px] text-slate-500 font-medium">PhD Programmes:</span>
-                  <input type="text" value="${prof.programmes?.phd || ''}" onchange="formBuilder.updateProfileField('programmes.phd', this.value)" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-white" />
+                  <input type="text" ${isLocked ? 'disabled' : ''} value="${prof.programmes?.phd || ''}" onchange="formBuilder.updateProfileField('programmes.phd', this.value)" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-white ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}" />
                 </div>
               </div>
             </div>
             <div class="md:col-span-2">
               <label class="block text-xs font-semibold text-slate-600 mb-1">Name of the Head / Coordinator</label>
-              <input type="text" value="${prof.hodName || ''}" onchange="formBuilder.updateProfileField('hodName', this.value)" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-white font-medium" />
+              <input type="text" ${isLocked ? 'disabled' : ''} value="${prof.hodName || ''}" onchange="formBuilder.updateProfileField('hodName', this.value)" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-white font-medium ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}" />
             </div>
           </div>
         </div>
@@ -1203,10 +1225,10 @@ class FormBuilder {
                     <tr class="hover:bg-slate-50/80">
                       <td class="p-2.5 font-medium text-slate-800">${fr.label}</td>
                       <td class="p-2 text-center">
-                        <input type="number" min="0" value="${m}" onchange="formBuilder.updateFacultyDetail(${idx}, 'male', this.value)" class="w-20 text-center text-xs p-1.5 border border-slate-300 rounded font-semibold text-blue-700" />
+                        <input type="number" min="0" ${isLocked ? 'disabled' : ''} value="${m}" onchange="formBuilder.updateFacultyDetail(${idx}, 'male', this.value)" class="w-20 text-center text-xs p-1.5 border border-slate-300 rounded font-semibold text-blue-700 ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}" />
                       </td>
                       <td class="p-2 text-center">
-                        <input type="number" min="0" value="${f}" onchange="formBuilder.updateFacultyDetail(${idx}, 'female', this.value)" class="w-20 text-center text-xs p-1.5 border border-slate-300 rounded font-semibold text-purple-700" />
+                        <input type="number" min="0" ${isLocked ? 'disabled' : ''} value="${f}" onchange="formBuilder.updateFacultyDetail(${idx}, 'female', this.value)" class="w-20 text-center text-xs p-1.5 border border-slate-300 rounded font-semibold text-purple-700 ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}" />
                       </td>
                       <td id="fac-total-${idx}" class="p-2.5 text-center font-bold text-slate-900 bg-slate-50">
                         ${m + f}
@@ -1245,23 +1267,29 @@ class FormBuilder {
                   const og = Number(sr.otherGender) || 0;
                   const os = Number(sr.otherStates) || 0;
                   const oc = Number(sr.otherCountries) || 0;
+                  const defaultLevels = ['Undergraduate (UG)', 'Postgraduate (PG)', 'Ph.D. / Research'];
+                  let levelName = (sr && sr.programme && sr.programme !== 0 && sr.programme !== '0') ? String(sr.programme).trim() : '';
+                  if (!levelName) {
+                    levelName = defaultLevels[idx] || `Level ${idx + 1}`;
+                    if (sr) sr.programme = levelName;
+                  }
                   return `
                     <tr class="hover:bg-slate-50/80">
-                      <td class="p-2.5 font-bold text-slate-800">${sr.programme}</td>
+                      <td class="p-2.5 font-bold text-slate-800">${levelName}</td>
                       <td class="p-2 text-center">
-                        <input type="number" min="0" value="${m}" onchange="formBuilder.updateStudentDetail(${idx}, 'male', this.value)" class="w-20 text-center text-xs p-1.5 border border-slate-300 rounded font-semibold text-blue-700" />
+                        <input type="number" min="0" ${isLocked ? 'disabled' : ''} value="${m}" onchange="formBuilder.updateStudentDetail(${idx}, 'male', this.value)" class="w-20 text-center text-xs p-1.5 border border-slate-300 rounded font-semibold text-blue-700 ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}" />
                       </td>
                       <td class="p-2 text-center">
-                        <input type="number" min="0" value="${f}" onchange="formBuilder.updateStudentDetail(${idx}, 'female', this.value)" class="w-20 text-center text-xs p-1.5 border border-slate-300 rounded font-semibold text-purple-700" />
+                        <input type="number" min="0" ${isLocked ? 'disabled' : ''} value="${f}" onchange="formBuilder.updateStudentDetail(${idx}, 'female', this.value)" class="w-20 text-center text-xs p-1.5 border border-slate-300 rounded font-semibold text-purple-700 ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}" />
                       </td>
                       <td class="p-2 text-center">
-                        <input type="number" min="0" value="${og}" onchange="formBuilder.updateStudentDetail(${idx}, 'otherGender', this.value)" class="w-20 text-center text-xs p-1.5 border border-slate-300 rounded" />
+                        <input type="number" min="0" ${isLocked ? 'disabled' : ''} value="${og}" onchange="formBuilder.updateStudentDetail(${idx}, 'otherGender', this.value)" class="w-20 text-center text-xs p-1.5 border border-slate-300 rounded ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}" />
                       </td>
                       <td class="p-2 text-center">
-                        <input type="number" min="0" value="${os}" onchange="formBuilder.updateStudentDetail(${idx}, 'otherStates', this.value)" class="w-20 text-center text-xs p-1.5 border border-slate-300 rounded" />
+                        <input type="number" min="0" ${isLocked ? 'disabled' : ''} value="${os}" onchange="formBuilder.updateStudentDetail(${idx}, 'otherStates', this.value)" class="w-20 text-center text-xs p-1.5 border border-slate-300 rounded ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}" />
                       </td>
                       <td class="p-2 text-center">
-                        <input type="number" min="0" value="${oc}" onchange="formBuilder.updateStudentDetail(${idx}, 'otherCountries', this.value)" class="w-20 text-center text-xs p-1.5 border border-slate-300 rounded" />
+                        <input type="number" min="0" ${isLocked ? 'disabled' : ''} value="${oc}" onchange="formBuilder.updateStudentDetail(${idx}, 'otherCountries', this.value)" class="w-20 text-center text-xs p-1.5 border border-slate-300 rounded ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}" />
                       </td>
                       <td id="stu-total-${idx}" class="p-2.5 text-center font-bold text-slate-900 bg-slate-50">
                         ${m + f + og}
@@ -1300,13 +1328,12 @@ class FormBuilder {
               </div>
             ` : `
               <div class="flex items-center gap-2 mb-1">
-                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-slate-200 text-slate-800">
-                  ${sheet.badge || sheet.key}
+                <span class="px-2.5 py-0.5 rounded-lg text-xs font-black bg-[#26648E]/10 text-[#26648E] border border-[#26648E]/20">
+                  Sheet ${sheet.sheetName || sheet.key}
                 </span>
-                ${sheet.note ? `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300">${sheet.note}</span>` : ''}
+                ${sheet.note ? `<span class="px-2.5 py-0.5 rounded-lg text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300">${sheet.note}</span>` : ''}
               </div>
-              <h3 class="text-lg font-bold text-slate-900">${sheet.title}</h3>
-              ${sheet.instruction ? `<p class="text-xs text-slate-500 mt-0.5">${sheet.instruction}</p>` : ''}
+              <h3 class="text-base sm:text-lg font-bold text-slate-900 leading-snug">${sheet.title}</h3>
             `}
           </div>
 
@@ -1320,7 +1347,7 @@ class FormBuilder {
             <button type="button" onclick="formBuilder.addTableRow('${sheet.key}')" class="text-xs px-3.5 py-1.5 bg-[#4F8FC0] hover:bg-[#3a7ca9] text-white font-bold rounded-lg transition flex items-center gap-1.5 shadow-sm cursor-pointer">
               <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Data Row
             </button>
-            <button type="button" onclick="formBuilder.openBulkImportModal('${sheet.key}')" class="text-xs px-3.5 py-1.5 bg-gradient-to-r from-[#26648E] to-[#1e40af] hover:from-[#1b4b6d] hover:to-[#1e3a8a] text-white font-bold rounded-lg transition-all flex items-center gap-1.5 shadow-sm shadow-[#26648E]/20 hover:shadow-md cursor-pointer" title="Bulk Import data via Excel/CSV file upload or template insertion">
+            <button type="button" onclick="formBuilder.openBulkImportModal('${sheet.key}', null)" class="text-xs px-3.5 py-1.5 bg-gradient-to-r from-[#26648E] to-[#1e40af] hover:from-[#1b4b6d] hover:to-[#1e3a8a] text-white font-bold rounded-lg transition-all flex items-center gap-1.5 shadow-sm shadow-[#26648E]/20 hover:shadow-md cursor-pointer" title="Bulk Import data via Excel/CSV template file">
               <i data-lucide="file-up" class="w-3.5 h-3.5 text-[#53D2DC]"></i>
               <span>Bulk Import</span>
             </button>
@@ -1401,11 +1428,12 @@ class FormBuilder {
               </div>
             ` : `
               <div class="flex items-center gap-2 mb-1">
-                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-slate-200 text-slate-800">
-                  ${sheet.badge || sheet.key}
+                <span class="px-2.5 py-0.5 rounded-lg text-xs font-black bg-[#26648E]/10 text-[#26648E] border border-[#26648E]/20">
+                  Sheet ${sheet.sheetName || sheet.key}
                 </span>
+                ${sheet.note ? `<span class="px-2.5 py-0.5 rounded-lg text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300">${sheet.note}</span>` : ''}
               </div>
-              <h3 class="text-xl font-bold text-slate-900">${sheet.title}</h3>
+              <h3 class="text-base sm:text-lg font-bold text-slate-900 leading-snug">${sheet.title}</h3>
             `}
           </div>
 
@@ -1432,7 +1460,7 @@ class FormBuilder {
                   <button type="button" onclick="formBuilder.addMultiTableRow('${sheet.key}', '${sec.id}')" class="text-xs px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition flex items-center gap-1.5 shadow-sm cursor-pointer">
                     <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Row
                   </button>
-                  <button type="button" onclick="formBuilder.openBulkImportModal('${sheet.key}', '${sec.id}')" class="text-xs px-3 py-1.5 bg-gradient-to-r from-[#26648E] to-[#1e40af] hover:from-[#1b4b6d] hover:to-[#1e3a8a] text-white font-bold rounded-lg transition-all flex items-center gap-1.5 shadow-xs cursor-pointer" title="Bulk Import data for this section">
+                  <button type="button" onclick="formBuilder.openBulkImportModal('${sheet.key}', '${sec.id}')" class="text-xs px-3 py-1.5 bg-gradient-to-r from-[#26648E] to-[#1e40af] hover:from-[#1b4b6d] hover:to-[#1e3a8a] text-white font-bold rounded-lg transition-all flex items-center gap-1.5 shadow-xs cursor-pointer" title="Bulk Import data via template file">
                     <i data-lucide="file-up" class="w-3.5 h-3.5 text-[#53D2DC]"></i>
                     <span>Bulk Import</span>
                   </button>
@@ -1472,7 +1500,7 @@ class FormBuilder {
                           const onchangeCode = `formBuilder.updateMultiTableCell('${sheet.key}', '${sec.id}', ${rIdx}, '${col.key}', this.value)`;
                           return `
                             <td class="p-1.5 ${col.width || 'w-44'}">
-                              ${this.renderCellControl(row[col.key], onchangeCode, col.label, col.key, isSno, sheet.key, rIdx)}
+                              ${this.renderCellControl(row[col.key], onchangeCode, col.label, col.key, isSno, sheet.key, rIdx, sec.id)}
                             </td>
                           `;
                         }).join('')}
@@ -1513,11 +1541,12 @@ class FormBuilder {
               </div>
             ` : `
               <div class="flex items-center gap-2 mb-1">
-                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-slate-200 text-slate-800">
-                  ${sheet.badge || sheet.key}
+                <span class="px-2.5 py-0.5 rounded-lg text-xs font-black bg-[#26648E]/10 text-[#26648E] border border-[#26648E]/20">
+                  Sheet ${sheet.sheetName || sheet.key}
                 </span>
+                ${sheet.note ? `<span class="px-2.5 py-0.5 rounded-lg text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300">${sheet.note}</span>` : ''}
               </div>
-              <h3 class="text-xl font-bold text-slate-900">${sheet.title}</h3>
+              <h3 class="text-base sm:text-lg font-bold text-slate-900 leading-snug">${sheet.title}</h3>
             `}
           </div>
 
@@ -1544,7 +1573,7 @@ class FormBuilder {
                 <button type="button" onclick="formBuilder.addBatchTableRow('${sheet.key}', '${bat.id}')" class="text-xs px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition flex items-center gap-1.5 shadow-sm cursor-pointer">
                   <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Student
                 </button>
-                <button type="button" onclick="formBuilder.openBulkImportModal('${sheet.key}', '${bat.id}')" class="text-xs px-3 py-1.5 bg-gradient-to-r from-[#26648E] to-[#1e40af] hover:from-[#1b4b6d] hover:to-[#1e3a8a] text-white font-bold rounded-lg transition-all flex items-center gap-1.5 shadow-xs cursor-pointer" title="Bulk Import data for this batch">
+                <button type="button" onclick="formBuilder.openBulkImportModal('${sheet.key}', '${bat.id}')" class="text-xs px-3 py-1.5 bg-gradient-to-r from-[#26648E] to-[#1e40af] hover:from-[#1b4b6d] hover:to-[#1e3a8a] text-white font-bold rounded-lg transition-all flex items-center gap-1.5 shadow-xs cursor-pointer" title="Bulk Import data via template file">
                   <i data-lucide="file-up" class="w-3.5 h-3.5 text-[#53D2DC]"></i>
                   <span>Bulk Import</span>
                 </button>
@@ -1583,7 +1612,7 @@ class FormBuilder {
                           const onchangeCode = `formBuilder.updateBatchTableCell('${sheet.key}', '${bat.id}', ${rIdx}, '${col.key}', this.value)`;
                           return `
                             <td class="p-1.5 ${col.width || 'w-44'}">
-                              ${this.renderCellControl(row[col.key], onchangeCode, col.label, col.key, isSno, sheet.key, rIdx)}
+                              ${this.renderCellControl(row[col.key], onchangeCode, col.label, col.key, isSno, sheet.key, rIdx, bat.id)}
                             </td>
                           `;
                         }).join('')}
@@ -1611,10 +1640,18 @@ class FormBuilder {
   // ================= SUBMISSION LOCK & DEADLINE CHECK =================
   isSubmissionLocked() {
     if (this.isAdmin()) return false;
+    const activeDept = window.dataStore?.activeDepartment;
+    if (activeDept && window.dataStore && typeof window.dataStore.getDepartmentSubmissionStatus === 'function') {
+      const statusObj = window.dataStore.getDepartmentSubmissionStatus(activeDept);
+      // If admin explicitly unlocked this department to edit, allow editing
+      if (statusObj.status === 'unlocked_for_edit' || (statusObj.is_locked === false && statusObj.unlocked_at)) {
+        return false;
+      }
+      if (statusObj.is_locked) return true;
+    }
     if (window.dataStore && typeof window.dataStore.isDeadlinePassed === 'function') {
       if (window.dataStore.isDeadlinePassed()) return true;
     }
-    const activeDept = window.dataStore?.activeDepartment;
     if (activeDept && window.dataStore && typeof window.dataStore.isDepartmentLocked === 'function') {
       if (window.dataStore.isDepartmentLocked(activeDept)) return true;
     }
@@ -1693,15 +1730,19 @@ class FormBuilder {
 
   formatDateForInput(val) {
     if (!val || typeof val !== 'string') return '';
-    const s = val.trim();
+    let s = val.trim().replace(/^(from|to)[\s:]+/i, '').trim();
     if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
-    const m1 = s.match(/^(\d{1,2})[\.\/-](\d{1,2})[\.\/-](\d{4})$/);
+    const m1 = s.match(/^(\d{1,2})[\.\/-](\d{1,2})[\.\/-](\d{2,4})$/);
     if (m1) {
-      return `${m1[3]}-${m1[2].padStart(2, '0')}-${m1[1].padStart(2, '0')}`;
+      let yr = m1[3];
+      if (yr.length === 2) yr = '20' + yr;
+      return `${yr}-${m1[2].padStart(2, '0')}-${m1[1].padStart(2, '0')}`;
     }
-    const m2 = s.match(/^(\d{4})[\.\/-](\d{1,2})[\.\/-](\d{1,2})$/);
+    const m2 = s.match(/^(\d{2,4})[\.\/-](\d{1,2})[\.\/-](\d{1,2})$/);
     if (m2) {
-      return `${m2[1]}-${m2[2].padStart(2, '0')}-${m2[3].padStart(2, '0')}`;
+      let yr = m2[1];
+      if (yr.length === 2) yr = '20' + yr;
+      return `${yr}-${m2[2].padStart(2, '0')}-${m2[3].padStart(2, '0')}`;
     }
     return '';
   }
@@ -1709,15 +1750,70 @@ class FormBuilder {
   parseDateRange(val) {
     if (!val || typeof val !== 'string') return ['', ''];
     const cleaned = val.trim();
-    if (cleaned.includes(' to ')) {
-      const parts = cleaned.split(' to ').map(s => s.trim());
+
+    // 1. Regex search for all date-like tokens (dd.mm.yyyy, dd/mm/yyyy, dd-mm-yyyy, or yyyy-mm-dd)
+    const dateRegex = /\b(\d{1,4}[\.\/-]\d{1,2}[\.\/-]\d{2,4})\b/g;
+    const matches = [];
+    let m;
+    while ((m = dateRegex.exec(cleaned)) !== null) {
+      matches.push(m[1]);
+    }
+
+    if (matches.length >= 2) {
+      return [this.formatDateForInput(matches[0]), this.formatDateForInput(matches[1])];
+    } else if (matches.length === 1) {
+      return [this.formatDateForInput(matches[0]), ''];
+    }
+
+    // 2. Delimiter-based fallback (handles en-dash, em-dash, 'to', '-', '/')
+    const normalized = cleaned
+      .replace(/[\u2013\u2014]/g, ' - ')
+      .replace(/\s+to\s+/gi, ' - ')
+      .replace(/\s*-\s*/g, ' - ');
+
+    if (normalized.includes(' - ')) {
+      const parts = normalized.split(' - ').map(s => s.trim());
       return [this.formatDateForInput(parts[0]), this.formatDateForInput(parts[1])];
     }
-    if (cleaned.includes(' - ')) {
-      const parts = cleaned.split(' - ').map(s => s.trim());
-      return [this.formatDateForInput(parts[0]), this.formatDateForInput(parts[1])];
-    }
+
     return [this.formatDateForInput(cleaned), ''];
+  }
+
+  handleDateRangeChange(inputEl, changedField) {
+    if (this.isSubmissionLocked()) {
+      window.showToast('Submissions are locked. Cannot edit data.', 'warning', 4000, 'Deadline Locked');
+      return;
+    }
+    const container = inputEl.closest('.date-range-control');
+    if (!container) return;
+    const sheetKey = container.getAttribute('data-sheet');
+    const rowIdx = parseInt(container.getAttribute('data-row'), 10);
+    const colKey = container.getAttribute('data-col');
+    const targetId = container.getAttribute('data-target');
+
+    const fromVal = (container.querySelector('.date-from-input')?.value || '').trim();
+    const toVal = (container.querySelector('.date-to-input')?.value || '').trim();
+
+    let combined = '';
+    if (fromVal && toVal) {
+      combined = `${fromVal} to ${toVal}`;
+    } else if (fromVal) {
+      combined = fromVal;
+    } else if (toVal) {
+      combined = toVal;
+    }
+
+    if (targetId) {
+      const card = this.getActiveCard();
+      const sheet = (card?.sheets || []).find(s => s.key === sheetKey);
+      if (sheet && sheet.type === 'batch_table') {
+        this.updateBatchTableCell(sheetKey, targetId, rowIdx, colKey, combined);
+      } else {
+        this.updateMultiTableCell(sheetKey, targetId, rowIdx, colKey, combined);
+      }
+    } else {
+      this.updateTableCell(sheetKey, rowIdx, colKey, combined);
+    }
   }
 
   updateDateRangeCell(sheetKey, rowIdx, colKey, val1, val2, changedField) {
@@ -1734,6 +1830,82 @@ class FormBuilder {
     this.updateTableCell(sheetKey, rowIdx, colKey, combined);
   }
 
+  // ================= DYNAMIC DROPDOWN & "OTHER" INPUT HANDLERS =================
+  escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  handleDropdownChange(selectEl) {
+    if (this.isSubmissionLocked()) {
+      window.showToast('Submissions are locked. Cannot edit data.', 'warning', 4000, 'Deadline Locked');
+      return;
+    }
+    const container = selectEl.closest('.dropdown-other-container');
+    if (!container) return;
+    const sheetKey = container.getAttribute('data-sheet');
+    const rowIdx = parseInt(container.getAttribute('data-row'), 10);
+    const colKey = container.getAttribute('data-col');
+    const targetId = container.getAttribute('data-target');
+
+    const selectedVal = selectEl.value;
+    const wrap = container.querySelector('.custom-other-wrap');
+    const input = container.querySelector('.custom-other-input');
+
+    if (selectedVal && selectedVal.toLowerCase() === 'other') {
+      if (wrap) wrap.classList.remove('hidden');
+      if (input) {
+        input.focus();
+        const currentTyped = (input.value || '').trim();
+        const finalVal = currentTyped || 'Other';
+        this.saveDropdownCellValue(sheetKey, rowIdx, colKey, finalVal, targetId);
+      }
+    } else {
+      if (wrap) wrap.classList.add('hidden');
+      if (input) input.value = '';
+      this.saveDropdownCellValue(sheetKey, rowIdx, colKey, selectedVal, targetId);
+    }
+  }
+
+  handleCustomOtherInput(inputEl) {
+    if (this.isSubmissionLocked()) return;
+    const container = inputEl.closest('.dropdown-other-container');
+    if (!container) return;
+    const sheetKey = container.getAttribute('data-sheet');
+    const rowIdx = parseInt(container.getAttribute('data-row'), 10);
+    const colKey = container.getAttribute('data-col');
+    const targetId = container.getAttribute('data-target');
+
+    const typedVal = inputEl.value;
+    this.saveDropdownCellValue(sheetKey, rowIdx, colKey, typedVal, targetId);
+  }
+
+  saveDropdownCellValue(sheetKey, rowIdx, colKey, value, targetId) {
+    const card = this.getActiveCard();
+    const sheet = (card?.sheets || []).find(s => s.key === sheetKey) || this.getActiveSheet();
+    const cleanTargetId = (targetId && targetId !== 'null' && targetId !== 'undefined' && targetId !== '') ? targetId : null;
+
+    if (sheet && sheet.type === 'batch_table' && cleanTargetId) {
+      this.updateBatchTableCell(sheetKey, cleanTargetId, rowIdx, colKey, value);
+    } else if (sheet && sheet.type === 'multi_table' && cleanTargetId) {
+      this.updateMultiTableCell(sheetKey, cleanTargetId, rowIdx, colKey, value);
+    } else if (cleanTargetId) {
+      this.updateMultiTableCell(sheetKey, cleanTargetId, rowIdx, colKey, value);
+    } else {
+      this.updateTableCell(sheetKey, rowIdx, colKey, value);
+    }
+  }
+
+
+  // Open Review & Save All Modal
+  openReviewAndSaveModal(cardId) {
+    this.openReviewPrintPreviewModal(cardId);
+  }
 
   // Consolidated single save for entire attribute card
   reviewAndSaveAllCurrentAttribute() {
@@ -1744,12 +1916,17 @@ class FormBuilder {
 
   // Full-page PDF/Print-Style Audit Review Sheet Modal
   openReviewPrintPreviewModal(cardId) {
+    if (document.activeElement && typeof document.activeElement.blur === 'function') {
+      document.activeElement.blur();
+    }
+
     const schema = this.getMasterSchema();
-    const card = schema.find(c => c.id === cardId);
+    const targetId = cardId || this.activeCardId;
+    const card = schema.find(c => c.id === targetId) || this.getActiveCard();
     if (!card) return;
 
     const deptName = window.dataStore?.activeDepartment || 'Department';
-    const cardData = this.getCardData(card.id);
+    const cardData = this.getCardData(card.id) || {};
     const sheets = card.sheets || [];
 
     // Remove existing if any
@@ -1762,6 +1939,9 @@ class FormBuilder {
     const modal = document.createElement('div');
     modal.id = 'review-save-preview-modal';
     modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-4 overflow-y-auto animate-fadeIn';
+    modal.onclick = (e) => {
+      if (e.target === modal) this.closeReviewModal();
+    };
 
     modal.innerHTML = `
       <div class="bg-white rounded-3xl shadow-2xl border border-slate-300 max-w-5xl w-full my-6 overflow-hidden flex flex-col max-h-[92vh]">
@@ -1895,34 +2075,81 @@ class FormBuilder {
           </div>
 
           <!-- Faculty Cadres Table -->
-          <div class="overflow-x-auto rounded-xl border border-slate-200">
-            <table class="w-full text-left text-xs border-collapse">
-              <thead class="bg-slate-100 font-bold text-slate-700 border-b">
-                <tr>
-                  <th class="p-2">Cadre Designation</th>
-                  <th class="p-2 text-right">Male</th>
-                  <th class="p-2 text-right">Female</th>
-                  <th class="p-2 text-right">Total</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-100">
-                ${facRows.map(r => `
+          <div class="space-y-1">
+            <h5 class="text-xs font-black text-slate-700 uppercase tracking-wider">Faculty Details</h5>
+            <div class="overflow-x-auto rounded-xl border border-slate-200">
+              <table class="w-full text-left text-xs border-collapse">
+                <thead class="bg-slate-100 font-bold text-slate-700 border-b">
                   <tr>
-                    <td class="p-2 font-medium">${r.cadre || '-'}</td>
-                    <td class="p-2 text-right font-mono">${r.male ?? 0}</td>
-                    <td class="p-2 text-right font-mono">${r.female ?? 0}</td>
-                    <td class="p-2 text-right font-mono font-bold">${(Number(r.male)||0) + (Number(r.female)||0)}</td>
+                    <th class="p-2">Faculty Category / Cadre</th>
+                    <th class="p-2 text-right">Male</th>
+                    <th class="p-2 text-right">Female</th>
+                    <th class="p-2 text-right">Total</th>
                   </tr>
-                `).join('')}
-              </tbody>
-            </table>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                  ${facRows.map(r => `
+                    <tr>
+                      <td class="p-2 font-medium">${r.label || r.cadre || '-'}</td>
+                      <td class="p-2 text-right font-mono">${r.male ?? 0}</td>
+                      <td class="p-2 text-right font-mono">${r.female ?? 0}</td>
+                      <td class="p-2 text-right font-mono font-bold">${(Number(r.male)||0) + (Number(r.female)||0)}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
           </div>
+
+          ${stuRows.length > 0 ? `
+            <!-- Student Details Table -->
+            <div class="space-y-1 mt-3">
+              <h5 class="text-xs font-black text-slate-700 uppercase tracking-wider">Student Details</h5>
+              <div class="overflow-x-auto rounded-xl border border-slate-200">
+                <table class="w-full text-left text-xs border-collapse">
+                  <thead class="bg-slate-100 font-bold text-slate-700 border-b">
+                    <tr>
+                      <th class="p-2">Programme Level</th>
+                      <th class="p-2 text-right">Male</th>
+                      <th class="p-2 text-right">Female</th>
+                      <th class="p-2 text-right">Other Gender</th>
+                      <th class="p-2 text-right">Other States</th>
+                      <th class="p-2 text-right">Other Countries</th>
+                      <th class="p-2 text-right">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100">
+                    ${stuRows.map((r, idx) => {
+                      const defaultLevels = ['Undergraduate (UG)', 'Postgraduate (PG)', 'Ph.D. / Research'];
+                      const lvl = (r.programme && r.programme !== 0 && r.programme !== '0') ? r.programme : (defaultLevels[idx] || 'Level ' + (idx + 1));
+                      return `
+                      <tr>
+                        <td class="p-2 font-medium">${lvl}</td>
+                        <td class="p-2 text-right font-mono">${r.male ?? 0}</td>
+                        <td class="p-2 text-right font-mono">${r.female ?? 0}</td>
+                        <td class="p-2 text-right font-mono">${r.otherGender ?? 0}</td>
+                        <td class="p-2 text-right font-mono">${r.otherStates ?? 0}</td>
+                        <td class="p-2 text-right font-mono">${r.otherCountries ?? 0}</td>
+                        <td class="p-2 text-right font-mono font-bold">${(Number(r.male)||0) + (Number(r.female)||0) + (Number(r.otherGender)||0)}</td>
+                      </tr>
+                    `;
+                    }).join('')}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ` : ''}
         </div>
       `;
     }
 
     if (sheet.type === 'table') {
-      const rows = Array.isArray(sheetData) ? sheetData : [];
+      let rows = [];
+      if (Array.isArray(sheetData)) {
+        rows = sheetData;
+      } else if (sheetData && typeof sheetData === 'object') {
+        rows = Object.values(sheetData).flat().filter(r => r && typeof r === 'object');
+      }
       const columns = sheet.columns || [];
 
       if (!rows || rows.length === 0) {
@@ -1958,6 +2185,33 @@ class FormBuilder {
         return `
           <div class="space-y-2 mt-3">
             <h5 class="text-xs font-black text-slate-700 uppercase tracking-wider">${sec.title}</h5>
+            ${(!rows || rows.length === 0) ? '<div class="p-2.5 bg-slate-50 rounded text-slate-400 italic text-center">No rows recorded</div>' : `
+              <div class="overflow-x-auto rounded-xl border border-slate-200">
+                <table class="w-full text-left text-xs border-collapse">
+                  <thead class="bg-slate-100 font-bold text-slate-700 border-b">
+                    <tr>${columns.map(c => `<th class="p-2 whitespace-nowrap">${c.label}</th>`).join('')}</tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100">
+                    ${rows.map(r => `
+                      <tr>${columns.map(c => `<td class="p-2 font-medium">${r[c.key] !== undefined && r[c.key] !== '' ? r[c.key] : '-'}</td>`).join('')}</tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              </div>
+            `}
+          </div>
+        `;
+      }).join('');
+    }
+
+    if (sheet.type === 'batch_table') {
+      const batches = sheet.batches || [];
+      const columns = sheet.columns || [];
+      return batches.map(bat => {
+        const rows = (sheetData && Array.isArray(sheetData[bat.id])) ? sheetData[bat.id] : [];
+        return `
+          <div class="space-y-2 mt-3">
+            <h5 class="text-xs font-black text-slate-700 uppercase tracking-wider">${bat.batchName || bat.id}</h5>
             ${(!rows || rows.length === 0) ? '<div class="p-2.5 bg-slate-50 rounded text-slate-400 italic text-center">No rows recorded</div>' : `
               <div class="overflow-x-auto rounded-xl border border-slate-200">
                 <table class="w-full text-left text-xs border-collapse">
@@ -2017,6 +2271,239 @@ class FormBuilder {
     }
   }
 
+  exportAllAttributesConsolidated() {
+    this.exportAllAttributesToExcel();
+  }
+
+  // ================= OFFICIAL IQAC SUBMISSION MODAL & LOGIC =================
+
+  // Open Final Submit to IQAC Modal
+  openFinalSubmitToIQACModal() {
+    if (document.activeElement && typeof document.activeElement.blur === 'function') {
+      document.activeElement.blur();
+    }
+
+    const deptName = window.dataStore?.activeDepartment || 'Department';
+    const activeYear = window.dataStore ? window.dataStore.getActiveYear() : '2026 - 2027';
+    const statusObj = window.dataStore?.getDepartmentSubmissionStatus(deptName) || { status: 'draft', is_locked: false };
+    const isSubmitted = statusObj.status === 'submitted' || Boolean(statusObj.is_locked);
+
+    // Remove existing modal if any
+    const existing = document.getElementById('final-iqac-submit-modal');
+    if (existing) {
+      if (typeof existing.remove === 'function') existing.remove();
+      else if (existing.parentNode) existing.parentNode.removeChild(existing);
+    }
+
+    const modal = document.createElement('div');
+    modal.id = 'final-iqac-submit-modal';
+    modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-4 overflow-y-auto animate-fadeIn';
+
+    modal.innerHTML = `
+      <div class="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-8">
+        <!-- Header Banner with Radiant Emerald / Teal Gradient -->
+        <div class="bg-gradient-to-r from-emerald-800 via-teal-800 to-emerald-900 px-6 py-5 text-white flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-emerald-500/30 border border-emerald-400/40 flex items-center justify-center text-emerald-200 shadow-inner">
+              <i data-lucide="${isSubmitted ? 'shield-check' : 'send'}" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h3 class="text-base font-black tracking-tight text-white">
+                ${isSubmitted ? 'Annual Academic Audit Submitted' : 'Fully Completed and Submit to IQAC'}
+              </h3>
+              <p class="text-[11px] text-emerald-200/80 font-medium">
+                ${deptName} • Academic Year ${activeYear}
+              </p>
+            </div>
+          </div>
+          <button 
+            type="button" 
+            onclick="formBuilder.closeFinalSubmitModal()" 
+            class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all cursor-pointer"
+            title="Close"
+          >
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Body Content -->
+        <div class="p-6 sm:p-7 space-y-5">
+          ${isSubmitted ? `
+            <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-start gap-3">
+              <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600 shrink-0 mt-0.5"></i>
+              <div class="space-y-1">
+                <p class="text-xs font-bold text-emerald-900">Audit Status: Officially Submitted to IQAC</p>
+                <p class="text-xs text-emerald-800">
+                  Your department's complete audit records for ${activeYear} have been submitted and locked for IQAC committee evaluation.
+                  ${statusObj.submitted_at ? `<br><span class="text-[11px] text-emerald-700/80">Submitted on: ${new Date(statusObj.submitted_at).toLocaleString()}</span>` : ''}
+                </p>
+              </div>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              If your department needs to make essential corrections or update documentation, please contact the IQAC Administrator to unlock the submission.
+            </p>
+          ` : `
+            <!-- Completion Status Box -->
+            <div class="p-4 rounded-2xl bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200/80 flex items-start gap-3.5">
+              <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                <i data-lucide="check-check" class="w-4 h-4"></i>
+              </div>
+              <div class="space-y-1">
+                <p class="text-xs font-black text-emerald-950">All Audit Records Ready for Submission</p>
+                <p class="text-xs text-emerald-800 leading-relaxed">
+                  You are submitting the finalized <strong>Annual Academic Audit (AAA)</strong> for the Department of <strong>${deptName}</strong> covering <strong>PART-A Profile and Attributes 1 through 10</strong>.
+                </p>
+              </div>
+            </div>
+
+            <!-- Audit Overview Modules Checklist -->
+            <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-3.5 text-xs text-slate-700 space-y-2">
+              <div class="font-bold text-slate-800 flex items-center gap-2">
+                <i data-lucide="file-check-2" class="w-4 h-4 text-emerald-600"></i>
+                <span>Audit Modules Verification</span>
+              </div>
+              <p class="text-[11px] text-slate-600 leading-relaxed">
+                By submitting, all entered data, tabular entries, faculty accomplishments, student activities, and uploaded details will be delivered to the IQAC portal and locked for review.
+              </p>
+            </div>
+
+            <!-- Mandatory Checkbox Gate -->
+            <div class="p-4 bg-emerald-50/60 border-2 border-emerald-300 rounded-2xl flex items-start gap-3 transition-all hover:bg-emerald-50">
+              <input 
+                type="checkbox" 
+                id="final-iqac-submit-checkbox" 
+                onchange="formBuilder.onFinalSubmitCheckboxChange(this.checked)"
+                class="mt-1 w-5 h-5 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500 cursor-pointer shrink-0"
+              />
+              <label for="final-iqac-submit-checkbox" class="text-xs font-bold text-slate-800 leading-relaxed cursor-pointer select-none">
+                I confirm that all data across Part A and Attributes 1 to 10 are completely entered, verified, and no other corrections are required. Submit officially to IQAC.
+              </label>
+            </div>
+          `}
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="px-6 py-4 bg-slate-50 border-t border-slate-200/80 flex items-center justify-end gap-3">
+          <button 
+            type="button" 
+            onclick="formBuilder.closeFinalSubmitModal()" 
+            class="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 font-bold text-xs transition-all cursor-pointer"
+          >
+            Close
+          </button>
+
+          ${!isSubmitted ? `
+            <button 
+              type="button" 
+              id="final-iqac-submit-action-btn"
+              onclick="formBuilder.confirmFinalSubmissionToIQAC()" 
+              disabled
+              class="px-6 py-2.5 rounded-xl bg-emerald-600 text-white font-black text-xs transition-all flex items-center gap-2 opacity-50 cursor-not-allowed pointer-events-none shadow-sm"
+            >
+              <i data-lucide="send" class="w-3.5 h-3.5"></i>
+              <span>Submit to IQAC</span>
+            </button>
+          ` : `
+            <button 
+              type="button" 
+              onclick="formBuilder.exportAllAttributesToExcel(); formBuilder.closeFinalSubmitModal();" 
+              class="px-5 py-2.5 rounded-xl bg-[#26648E] hover:bg-[#1e40af] text-white font-bold text-xs transition-all flex items-center gap-2 cursor-pointer shadow-sm"
+            >
+              <i data-lucide="download" class="w-3.5 h-3.5"></i>
+              <span>Download Audit Copy</span>
+            </button>
+          `}
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
+    }
+  }
+
+  // Toggle Submit button state based on confirmation checkbox
+  onFinalSubmitCheckboxChange(checked) {
+    const btn = document.getElementById('final-iqac-submit-action-btn');
+    if (!btn) return;
+    if (checked) {
+      btn.removeAttribute('disabled');
+      btn.classList.remove('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+      btn.classList.add('hover:bg-emerald-700', 'shadow-md', 'cursor-pointer');
+    } else {
+      btn.setAttribute('disabled', 'true');
+      btn.classList.add('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+      btn.classList.remove('hover:bg-emerald-700', 'shadow-md', 'cursor-pointer');
+    }
+  }
+
+  // Close Final Submit Modal
+  closeFinalSubmitModal() {
+    const modal = document.getElementById('final-iqac-submit-modal');
+    if (modal) {
+      if (typeof modal.remove === 'function') modal.remove();
+      else if (modal.parentNode) modal.parentNode.removeChild(modal);
+    }
+  }
+
+  // Confirm Final Submission to IQAC
+  confirmFinalSubmissionToIQAC() {
+    const deptName = window.dataStore?.activeDepartment || 'Department';
+
+    // Save current active attribute data
+    if (this.currentFormData) {
+      window.dataStore?.saveAttributeFormData(this.currentFormData);
+    }
+    if (window.dataStore?.saveCurrentData) {
+      window.dataStore.saveCurrentData();
+    }
+
+    // Set submission status in dataStore
+    if (window.dataStore?.setDepartmentSubmissionStatus) {
+      window.dataStore.setDepartmentSubmissionStatus(deptName, {
+        status: 'submitted',
+        is_locked: true,
+        submitted_at: new Date().toISOString()
+      });
+    }
+
+    // Sync UsersDB
+    try {
+      if (window.dataStore?.getUsersDB && window.dataStore?.saveUsersDB) {
+        const db = window.dataStore.getUsersDB();
+        const dept = (db.departments || []).find(d => 
+          (d.name || '').toLowerCase() === deptName.toLowerCase() || 
+          (d.code || '').toLowerCase() === deptName.toLowerCase()
+        );
+        if (dept) {
+          dept.status = 'submitted';
+          dept.is_locked = true;
+          window.dataStore.saveUsersDB(db);
+        }
+      }
+    } catch (e) {}
+
+    if (window.dataStore?.data) {
+      window.dataStore.data.status = 'submitted';
+    }
+
+    this.closeFinalSubmitModal();
+
+    if (window.showToast) {
+      window.showToast(`Annual Academic Audit for ${deptName} has been officially submitted to IQAC. All data is locked for review.`, 'success', 4000, 'Submitted to IQAC');
+    } else if (window.auditNotification && typeof window.auditNotification.showToast === 'function') {
+      window.auditNotification.showToast({
+        type: 'success',
+        title: 'Submitted to IQAC',
+        message: `Annual Academic Audit for ${deptName} has been officially submitted to IQAC.`
+      });
+    }
+
+    // Re-render gallery view to update status
+    this.renderCardsGalleryView(window.dataStore?.data);
+  }
+
 
 
   // ================= BULK IMPORT & TEMPLATE MANAGEMENT =================
@@ -2062,6 +2549,15 @@ class FormBuilder {
       if (opts && Array.isArray(opts) && opts.length > 1) {
         return '"' + opts.filter(Boolean).slice(0, 3).join('/') + '"';
       }
+      if (this.isDateRangeColumn(col.label, col.key)) {
+        return '"01.06.2026 - 30.06.2026"';
+      }
+      if (this.isDateColumn(col.label, col.key)) {
+        return '"01.06.2026"';
+      }
+      if (this.isNumericColumn(col.label, col.key)) {
+        return '"10"';
+      }
       return '"Sample ' + (col.label || col.key).replace(/[^a-zA-Z0-9 ]/g, '').trim() + '"';
     }).join(',');
 
@@ -2081,7 +2577,7 @@ class FormBuilder {
     window.showToast(`Question Template for ${sheet.sheetName || sheet.key} downloaded successfully!`, 'success', 4000, 'Template Ready');
   }
 
-  // Open the Bulk Import Modal (with File Upload & Insert Data in Template options)
+  // Open the Bulk Import Modal (Clean 1-Step Template File Upload)
   openBulkImportModal(sheetKey, targetId = null) {
     const card = this.getActiveCard();
     const sheet = (card?.sheets || []).find(s => s.key === sheetKey) || this.getActiveSheet();
@@ -2094,161 +2590,90 @@ class FormBuilder {
     this._pendingBulkRows = [];
     this._currentBulkSheetKey = sheetKey;
     this._currentBulkTargetId = targetId;
+    this._currentBulkCols = cols;
 
     const modal = document.createElement('div');
     modal.id = 'bulk-import-modal';
-    modal.className = 'fixed inset-0 z-[10000] flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4 animate-fadeIn overflow-y-auto';
+    modal.className = 'fixed inset-0 z-[10000] flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-3 sm:p-5 animate-fadeIn overflow-y-auto';
+    modal.onclick = (e) => {
+      if (e.target === modal) this.closeBulkImportModal();
+    };
 
     modal.innerHTML = `
-      <div class="bg-white/95 backdrop-blur-xl rounded-3xl border border-slate-200 shadow-2xl max-w-3xl w-full overflow-hidden my-8 flex flex-col max-h-[92vh]">
+      <div class="bg-white/95 backdrop-blur-xl rounded-3xl border border-slate-200 shadow-2xl max-w-4xl w-full overflow-hidden my-6 flex flex-col max-h-[94vh]">
         
         <!-- Header -->
-        <div class="bg-gradient-to-r from-[#26648E] via-[#33729e] to-[#4F8FC0] text-white p-5 flex items-center justify-between gap-4 shrink-0 shadow-xs">
+        <div class="bg-gradient-to-r from-[#107c41] via-[#1b5e20] to-[#26648E] text-white p-5 flex items-center justify-between gap-4 shrink-0 shadow-xs">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-2xl bg-white/15 border border-white/20 flex items-center justify-center shrink-0 shadow-2xs">
-              <i data-lucide="file-up" class="w-5 h-5 text-[#53D2DC]"></i>
+            <div class="w-10 h-10 rounded-2xl bg-white/20 border border-white/30 flex items-center justify-center shrink-0 shadow-2xs font-black text-sm">
+              <i data-lucide="file-spreadsheet" class="w-5 h-5 text-emerald-200"></i>
             </div>
             <div>
               <div class="flex items-center gap-2 mb-0.5">
                 <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#FFE3B3] text-[#26648E]">
                   ${card.cardCode} • ${sheet.sheetName || sheet.key}
                 </span>
-                <span class="text-xs text-blue-100 font-semibold">${cols.length} Columns</span>
+                <span class="text-xs text-emerald-100 font-semibold">${cols.length} Columns</span>
               </div>
-              <h3 class="text-lg font-black tracking-tight text-white">
-                Bulk Import Records
+              <h3 class="text-lg font-black tracking-tight text-white flex items-center gap-2">
+                <span>Bulk Import Records</span>
               </h3>
             </div>
           </div>
 
-          <button 
-            type="button" 
-            onclick="formBuilder.closeBulkImportModal()" 
-            class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition cursor-pointer"
-            title="Close modal"
-          >
-            <i data-lucide="x" class="w-4 h-4"></i>
-          </button>
-        </div>
-
-        <!-- Question Template Bar with Direct Download Button -->
-        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
           <div class="flex items-center gap-2">
-            <i data-lucide="info" class="w-4 h-4 text-blue-600 shrink-0"></i>
-            <p class="text-xs text-blue-900 font-medium">
-              Download the official question template matching this sheet's exact column headers:
-            </p>
-          </div>
-          <button 
-            type="button" 
-            onclick="formBuilder.downloadQuestionTemplate('${sheetKey}', '${targetId || ''}')" 
-            class="px-4 py-2 bg-white hover:bg-blue-100 text-[#1e40af] border border-blue-300 font-bold rounded-xl text-xs flex items-center gap-2 shadow-xs transition shrink-0 cursor-pointer"
-            title="Download formatted CSV file with this sheet's question headers"
-          >
-            <i data-lucide="download" class="w-3.5 h-3.5 text-blue-600"></i>
-            <span>Download Question Template (.csv)</span>
-          </button>
-        </div>
-
-        <!-- 2 Main Import Options (Tabs) -->
-        <div class="px-6 pt-4 border-b border-slate-200 bg-slate-50/70 flex items-center gap-4 text-xs font-bold shrink-0">
-          <button 
-            type="button" 
-            id="tab-btn-file-upload" 
-            onclick="formBuilder.switchBulkImportTab('file')"
-            class="pb-3 border-b-2 border-[#26648E] text-[#26648E] flex items-center gap-2 transition cursor-pointer"
-          >
-            <i data-lucide="upload-cloud" class="w-4 h-4"></i>
-            <span>Option 1: File Upload (.xlsx, .csv, .json)</span>
-          </button>
-          
-          <button 
-            type="button" 
-            id="tab-btn-insert-template" 
-            onclick="formBuilder.switchBulkImportTab('paste')"
-            class="pb-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 transition cursor-pointer"
-          >
-            <i data-lucide="clipboard-paste" class="w-4 h-4"></i>
-            <span>Option 2: Insert Data in Template (Copy-Paste)</span>
-          </button>
-        </div>
-
-        <!-- Tab Content Body (Scrollable) -->
-        <div class="p-6 space-y-5 overflow-y-auto flex-1">
-          
-          <!-- TAB 1: File Upload -->
-          <div id="bulk-tab-file-panel" class="space-y-4">
-            <div 
-              class="dropzone-area rounded-2xl p-8 text-center cursor-pointer transition flex flex-col items-center justify-center space-y-3"
-              onclick="document.getElementById('bulk-import-file-input').click()"
-              ondragover="event.preventDefault(); this.classList.add('dragover');"
-              ondragleave="this.classList.remove('dragover');"
-              ondrop="event.preventDefault(); this.classList.remove('dragover'); formBuilder.handleBulkFileDrop(event, '${sheetKey}', '${targetId || ''}');"
-            >
-              <div class="w-14 h-14 rounded-2xl bg-blue-100 text-[#1e40af] flex items-center justify-center shadow-xs">
-                <i data-lucide="upload-cloud" class="w-7 h-7"></i>
-              </div>
-              <div class="space-y-1">
-                <p class="text-sm font-bold text-slate-800">
-                  Click to select file or drag & drop here
-                </p>
-                <p class="text-xs text-slate-500 font-medium">
-                  Supported: Excel (.xlsx, .xls), CSV (.csv, .tsv), or JSON (.json)
-                </p>
-              </div>
-              <input 
-                type="file" 
-                id="bulk-import-file-input" 
-                class="hidden" 
-                accept=".csv, .tsv, .txt, .json, .xlsx, .xls"
-                onchange="formBuilder.handleBulkFileSelected(event, '${sheetKey}', '${targetId || ''}')"
-              />
-            </div>
-            
-            <div id="bulk-file-status" class="hidden p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-center justify-between">
-              <span id="bulk-file-status-text" class="font-bold"></span>
-              <button type="button" onclick="document.getElementById('bulk-import-file-input').value=''; document.getElementById('bulk-file-status').classList.add('hidden'); formBuilder._pendingBulkRows=[];" class="text-xs text-rose-600 hover:underline">Remove</button>
-            </div>
-          </div>
-
-          <!-- TAB 2: Insert Data in Template (Quick Paste) -->
-          <div id="bulk-tab-paste-panel" class="hidden space-y-4">
-            <div>
-              <div class="flex items-center justify-between mb-1.5">
-                <label class="block text-xs font-bold text-slate-700">
-                  Paste Rows Copied from Excel / Google Sheets:
-                </label>
-                <span class="text-[11px] text-slate-400 font-medium">Tab-separated or comma-separated</span>
-              </div>
-
-              <!-- Columns pills guide -->
-              <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 mb-2">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Expected Column Order:</span>
-                <div class="flex flex-wrap gap-1.5">
-                  ${cols.map((c, i) => `
-                    <span class="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-700 font-bold text-[10px] shadow-2xs">
-                      ${i + 1}. ${c.label}
-                    </span>
-                  `).join('')}
-                </div>
-              </div>
-
-              <textarea 
-                id="bulk-import-paste-textarea" 
-                rows="6" 
-                class="w-full text-xs font-mono p-3 border border-slate-300 rounded-xl bg-white focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100" 
-                placeholder="Select rows in Excel, press Ctrl+C, then paste here..."
-              ></textarea>
-            </div>
-
             <button 
               type="button" 
-              onclick="formBuilder.previewPastedBulkData('${sheetKey}', '${targetId || ''}')" 
-              class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl text-xs flex items-center gap-2 border border-slate-300 transition cursor-pointer"
+              onclick="formBuilder.downloadQuestionTemplate('${sheetKey}', '${targetId || ''}')" 
+              class="px-3.5 py-1.5 bg-white/15 hover:bg-white/25 text-white border border-white/25 font-bold rounded-xl text-xs flex items-center gap-1.5 transition cursor-pointer shadow-2xs"
+              title="Download offline template CSV"
             >
-              <i data-lucide="eye" class="w-3.5 h-3.5 text-[#26648E]"></i>
-              <span>Parse & Preview Data</span>
+              <i data-lucide="download" class="w-3.5 h-3.5 text-emerald-200"></i>
+              <span class="hidden sm:inline">Download Question Template (.csv)</span>
             </button>
+            <button 
+              type="button" 
+              onclick="formBuilder.closeBulkImportModal()" 
+              class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition cursor-pointer"
+              title="Close modal"
+            >
+              <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Body: Clean File Upload Area -->
+        <div class="p-6 space-y-5 overflow-y-auto flex-1">
+          <div 
+            class="dropzone-area rounded-2xl p-8 text-center cursor-pointer transition flex flex-col items-center justify-center space-y-3 border-2 border-dashed border-slate-300 hover:border-[#26648E] bg-slate-50/60 hover:bg-blue-50/40"
+            onclick="document.getElementById('bulk-import-file-input').click()"
+            ondragover="event.preventDefault(); this.classList.add('dragover');"
+            ondragleave="this.classList.remove('dragover');"
+            ondrop="event.preventDefault(); this.classList.remove('dragover'); formBuilder.handleBulkFileDrop(event, '${sheetKey}', '${targetId || ''}');"
+          >
+            <div class="w-14 h-14 rounded-2xl bg-blue-100 text-[#1e40af] flex items-center justify-center shadow-xs">
+              <i data-lucide="upload-cloud" class="w-7 h-7"></i>
+            </div>
+            <div class="space-y-1">
+              <p class="text-sm font-bold text-slate-800">
+                Click to select template file or drag & drop here
+              </p>
+              <p class="text-xs text-slate-500 font-medium">
+                Supported: CSV (.csv), Excel (.xlsx, .xls), or Tab-separated (.tsv, .txt)
+              </p>
+            </div>
+            <input 
+              type="file" 
+              id="bulk-import-file-input" 
+              class="hidden" 
+              accept=".csv, .tsv, .txt, .json, .xlsx, .xls"
+              onchange="formBuilder.handleBulkFileSelected(event, '${sheetKey}', '${targetId || ''}')"
+            />
+          </div>
+          
+          <div id="bulk-file-status" class="hidden p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-center justify-between">
+            <span id="bulk-file-status-text" class="font-bold"></span>
+            <button type="button" onclick="document.getElementById('bulk-import-file-input').value=''; document.getElementById('bulk-file-status').classList.add('hidden'); document.getElementById('bulk-import-preview-container').classList.add('hidden'); formBuilder._pendingBulkRows=[];" class="text-xs text-rose-600 hover:underline">Remove</button>
           </div>
 
           <!-- Live Parsed Rows Preview Table -->
@@ -2265,43 +2690,45 @@ class FormBuilder {
                 <!-- Injected dynamically -->
               </table>
             </div>
+
+            <!-- Import Action Controls -->
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
+              <div class="flex items-center gap-4 text-xs font-semibold text-slate-700">
+                <span class="text-slate-500 font-bold">Import Mode:</span>
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="radio" name="bulk-file-import-mode" value="append" checked class="text-blue-600 focus:ring-0 cursor-pointer" />
+                  <span>Append to existing rows</span>
+                </label>
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="radio" name="bulk-file-import-mode" value="replace" class="text-blue-600 focus:ring-0 cursor-pointer" />
+                  <span>Replace existing rows</span>
+                </label>
+              </div>
+
+              <button 
+                type="button" 
+                id="bulk-import-file-execute-btn"
+                onclick="formBuilder.executeBulkFileImport('${sheetKey}', '${targetId || ''}')" 
+                disabled
+                class="px-6 py-2.5 bg-gradient-to-r from-[#26648E] to-[#1e40af] hover:from-[#1b4b6d] hover:to-[#1e3a8a] text-white font-black rounded-xl text-xs transition shadow-md shadow-[#26648E]/25 flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <i data-lucide="check" class="w-4 h-4 text-[#53D2DC]"></i>
+                <span>Import Uploaded Records</span>
+              </button>
+            </div>
           </div>
 
         </div>
 
-        <!-- Footer Actions -->
-        <div class="bg-slate-50 p-5 border-t border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
-          <div class="flex items-center gap-4 text-xs font-semibold text-slate-700">
-            <span class="text-slate-500 font-bold">Import Mode:</span>
-            <label class="flex items-center gap-1.5 cursor-pointer">
-              <input type="radio" name="bulk-import-mode" value="append" checked class="text-blue-600 focus:ring-0 cursor-pointer" />
-              <span>Append to existing rows</span>
-            </label>
-            <label class="flex items-center gap-1.5 cursor-pointer">
-              <input type="radio" name="bulk-import-mode" value="replace" class="text-blue-600 focus:ring-0 cursor-pointer" />
-              <span>Replace existing rows</span>
-            </label>
-          </div>
-
-          <div class="flex items-center gap-2 justify-end">
-            <button 
-              type="button" 
-              onclick="formBuilder.closeBulkImportModal()" 
-              class="px-4 py-2 bg-white hover:bg-slate-100 text-slate-700 font-bold rounded-xl text-xs border border-slate-300 transition cursor-pointer"
-            >
-              Cancel
-            </button>
-            <button 
-              type="button" 
-              id="bulk-import-execute-btn"
-              onclick="formBuilder.executeBulkImport('${sheetKey}', '${targetId || ''}')" 
-              disabled
-              class="px-5 py-2.5 bg-gradient-to-r from-[#26648E] to-[#1e40af] hover:from-[#1b4b6d] hover:to-[#1e3a8a] text-white font-black rounded-xl text-xs transition shadow-md shadow-[#26648E]/25 flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              <i data-lucide="check" class="w-4 h-4 text-[#53D2DC]"></i>
-              <span id="bulk-import-btn-label">Import Records into Sheet</span>
-            </button>
-          </div>
+        <!-- Footer -->
+        <div class="bg-slate-100/80 px-6 py-3 border-t border-slate-200 flex items-center justify-end">
+          <button 
+            type="button" 
+            onclick="formBuilder.closeBulkImportModal()" 
+            class="px-4 py-2 bg-white hover:bg-slate-100 text-slate-700 font-bold rounded-xl text-xs border border-slate-300 transition cursor-pointer"
+          >
+            Close
+          </button>
         </div>
 
       </div>
@@ -2311,196 +2738,457 @@ class FormBuilder {
     if (window.lucide) lucide.createIcons({ root: modal });
   }
 
-  closeBulkImportModal() {
-    const modal = document.getElementById('bulk-import-modal');
-    if (modal) {
-      modal.classList.add('opacity-0');
-      setTimeout(() => modal.remove(), 200);
-    }
-  }
-
-  switchBulkImportTab(tab) {
-    const fileTab = document.getElementById('tab-btn-file-upload');
-    const pasteTab = document.getElementById('tab-btn-insert-template');
-    const filePanel = document.getElementById('bulk-tab-file-panel');
-    const pastePanel = document.getElementById('bulk-tab-paste-panel');
-
-    if (tab === 'file') {
-      fileTab.className = 'pb-3 border-b-2 border-[#26648E] text-[#26648E] flex items-center gap-2 transition cursor-pointer font-bold';
-      pasteTab.className = 'pb-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 transition cursor-pointer font-semibold';
-      filePanel.classList.remove('hidden');
-      pastePanel.classList.add('hidden');
-    } else {
-      pasteTab.className = 'pb-3 border-b-2 border-[#26648E] text-[#26648E] flex items-center gap-2 transition cursor-pointer font-bold';
-      fileTab.className = 'pb-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 transition cursor-pointer font-semibold';
-      pastePanel.classList.remove('hidden');
-      filePanel.classList.add('hidden');
-    }
-    if (window.lucide) lucide.createIcons();
-  }
-
-  handleBulkFileDrop(event, sheetKey, targetId) {
-    const files = event.dataTransfer.files;
-    if (files.length > 0) {
-      this.processBulkFile(files[0], sheetKey, targetId);
-    }
-  }
-
-  handleBulkFileSelected(event, sheetKey, targetId) {
-    const file = event.target.files[0];
-    if (file) {
-      this.processBulkFile(file, sheetKey, targetId);
-    }
-  }
-
-  processBulkFile(file, sheetKey, targetId) {
-    const targetCols = this.getColumnsForImport(sheetKey, targetId);
-    const reader = new FileReader();
-
-    reader.onload = (e) => {
-      const content = e.target.result;
-      let rows = [];
-
-      try {
-        if (file.name.endsWith('.json')) {
-          const parsed = JSON.parse(content);
-          rows = Array.isArray(parsed) ? parsed : (parsed.rows || []);
-        } else {
-          rows = this.parseDelimitedText(content, targetCols);
-        }
-      } catch (err) {
-        window.showToast('Could not parse file: ' + err.message, 'error', 4000, 'Parse Error');
-        return;
-      }
-
-      this._pendingBulkRows = rows;
-      this.renderBulkImportPreview(rows, targetCols, file.name);
-    };
-
-    reader.readAsText(file);
-  }
-
-  previewPastedBulkData(sheetKey, targetId) {
-    const textarea = document.getElementById('bulk-import-paste-textarea');
-    if (!textarea) return;
-    const text = textarea.value.trim();
-    if (!text) {
-      window.showToast('Please paste data rows into the box first.', 'warning', 3000, 'Paste Required');
+  // Live input handler when user pastes entire Excel table into the raw paste area
+  onExcelBulkPasteInput(text) {
+    if (!text || !text.trim()) {
+      const cols = this._currentBulkCols || [];
+      this.renderInitialExcelGridRows(cols, 3);
       return;
     }
-
-    const targetCols = this.getColumnsForImport(sheetKey, targetId);
-    const rows = this.parseDelimitedText(text, targetCols);
-    this._pendingBulkRows = rows;
-    this.renderBulkImportPreview(rows, targetCols, 'Pasted Data');
+    this.fillExcelGridFromText(text, 0, null);
   }
 
-  // Universal parser for CSV, TSV (Excel clipboard), and Comma text
-  parseDelimitedText(text, targetCols) {
-    const rawLines = text.trim().split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-    if (rawLines.length === 0) return [];
+  // ================= INTERACTIVE EXCEL GRID HELPERS =================
 
-    const firstLine = rawLines[0];
-    const delim = firstLine.includes('\t') ? '\t' : ',';
-
-    let startIdx = 0;
-    const firstTokens = firstLine.split(delim).map(t => t.trim().replace(/^["']|["']$/g, ''));
-    
-    // Check if first line matches any column headers
-    const isHeaderRow = firstTokens.some(tok => 
-      targetCols.some(col => 
-        col.label.toLowerCase().includes(tok.toLowerCase()) || 
-        col.key.toLowerCase() === tok.toLowerCase()
-      )
-    );
-    if (isHeaderRow) {
-      startIdx = 1;
+  renderInitialExcelGridRows(cols, rowCount = 3) {
+    const tbody = document.getElementById('bulk-excel-grid-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    for (let r = 0; r < rowCount; r++) {
+      this.appendExcelRowToDOM(r, cols);
     }
+    this.updateExcelGridCounter();
+    if (window.lucide) lucide.createIcons({ root: tbody });
+  }
 
-    const parsedRows = [];
-    for (let i = startIdx; i < rawLines.length; i++) {
-      const tokens = rawLines[i].split(delim).map(t => t.trim().replace(/^["']|["']$/g, ''));
-      if (tokens.every(t => t === '')) continue;
+  appendExcelRowToDOM(rIdx, cols, rowData = null) {
+    const tbody = document.getElementById('bulk-excel-grid-tbody');
+    if (!tbody) return;
 
-      const row = {};
-      targetCols.forEach((col, cIdx) => {
-        if (col.key === 'sno' || col.key === 's_no' || col.key === 'sl_no') {
-          row[col.key] = String(parsedRows.length + 1);
-        } else {
-          row[col.key] = tokens[cIdx] !== undefined ? tokens[cIdx] : '';
+    const tr = document.createElement('tr');
+    tr.id = `excel-grid-row-${rIdx}`;
+    tr.className = 'hover:bg-emerald-50/30 transition border-b border-slate-200';
+
+    // 1. S.No Row Header
+    let rowHtml = `
+      <td class="w-12 px-2 py-1.5 text-center bg-slate-100 border-r border-slate-300 font-mono font-bold text-slate-600 text-xs select-none">
+        ${rIdx + 1}
+      </td>
+    `;
+
+    // 2. Data Cells (Direct Excel Spreadsheet Cells)
+    cols.forEach((col, cIdx) => {
+      const isSno = col.key === 'sno' || col.key === 's_no' || col.key === 'sl_no';
+      const cellVal = rowData ? (rowData[col.key] || '') : '';
+      const opts = this.getDropdownOptions(col.label, col.key);
+
+      if (isSno) {
+        rowHtml += `
+          <td class="px-2 py-1 border-r border-slate-200 bg-slate-50 text-center font-bold text-slate-500">
+            <input 
+              type="text" 
+              value="${cellVal || (rIdx + 1)}" 
+              readonly 
+              data-row="${rIdx}" 
+              data-col="${col.key}" 
+              class="w-full text-center bg-transparent border-0 outline-none text-slate-500 text-xs font-bold"
+            />
+          </td>
+        `;
+      } else if (opts && Array.isArray(opts) && opts.length > 0) {
+        rowHtml += `
+          <td class="px-1 py-0.5 border-r border-slate-200">
+            <select 
+              data-row="${rIdx}" 
+              data-col="${col.key}" 
+              onchange="formBuilder.updateExcelGridCounter()"
+              class="excel-cell-input w-full px-2 py-1 text-xs text-slate-800 bg-white border border-slate-300 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-500 rounded outline-none transition font-semibold"
+            >
+              ${opts.map(o => `
+                <option value="${o}" ${String(cellVal).trim().toLowerCase() === String(o).trim().toLowerCase() ? 'selected' : ''}>
+                  ${o === '' ? '-- Select --' : o}
+                </option>
+              `).join('')}
+            </select>
+          </td>
+        `;
+      } else if (this.isNumericColumn(col.label, col.key)) {
+        rowHtml += `
+          <td class="px-1 py-0.5 border-r border-slate-200">
+            <input 
+              type="text" 
+              inputmode="numeric" 
+              pattern="[0-9.]*" 
+              value="${cellVal}" 
+              data-row="${rIdx}" 
+              data-col="${col.key}" 
+              onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode === 46"
+              oninput="this.value = this.value.replace(/[^0-9.]/g, ''); formBuilder.updateExcelGridCounter()"
+              onkeydown="formBuilder.handleExcelCellKeyDown(event, ${rIdx}, '${col.key}')"
+              class="excel-cell-input w-full px-2 py-1 text-xs text-right font-mono text-slate-800 bg-transparent hover:bg-white focus:bg-white border border-transparent hover:border-slate-300 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-500 rounded outline-none transition" 
+            />
+          </td>
+        `;
+      } else if (this.isDateRangeColumn(col.label, col.key)) {
+        rowHtml += `
+          <td class="px-1 py-0.5 border-r border-slate-200">
+            <input 
+              type="text" 
+              value="${cellVal}" 
+              data-row="${rIdx}" 
+              data-col="${col.key}" 
+              oninput="formBuilder.updateExcelGridCounter()"
+              onkeydown="formBuilder.handleExcelCellKeyDown(event, ${rIdx}, '${col.key}')"
+              class="excel-cell-input w-full px-2 py-1 text-xs text-slate-800 bg-transparent hover:bg-white focus:bg-white border border-transparent hover:border-slate-300 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-500 rounded outline-none transition font-medium" 
+              placeholder="DD.MM.YYYY - DD.MM.YYYY"
+            />
+          </td>
+        `;
+      } else {
+        rowHtml += `
+          <td class="px-1 py-0.5 border-r border-slate-200">
+            <input 
+              type="text" 
+              value="${cellVal}" 
+              data-row="${rIdx}" 
+              data-col="${col.key}" 
+              oninput="this.value = this.value ? (this.value.charAt(0).toUpperCase() + this.value.slice(1)) : ''; formBuilder.updateExcelGridCounter()"
+              onkeydown="formBuilder.handleExcelCellKeyDown(event, ${rIdx}, '${col.key}')"
+              class="excel-cell-input w-full px-2 py-1 text-xs text-slate-800 bg-transparent hover:bg-white focus:bg-white border border-transparent hover:border-slate-300 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-500 rounded outline-none transition font-medium" 
+            />
+          </td>
+        `;
+      }
+    });
+
+    // 3. Delete Row Button
+    rowHtml += `
+      <td class="w-10 px-1 py-1 text-center">
+        <button 
+          type="button" 
+          onclick="formBuilder.deleteExcelGridRow(${rIdx})" 
+          class="p-1 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded transition cursor-pointer" 
+          title="Delete row"
+        >
+          <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+        </button>
+      </td>
+    `;
+
+    tr.innerHTML = rowHtml;
+    tbody.appendChild(tr);
+  }
+
+  addExcelGridRow() {
+    const cols = this._currentBulkCols || [];
+    const tbody = document.getElementById('bulk-excel-grid-tbody');
+    if (!tbody) return;
+    const currentRows = tbody.querySelectorAll('tr').length;
+    this.appendExcelRowToDOM(currentRows, cols);
+    this.updateExcelGridCounter();
+    if (window.lucide) lucide.createIcons({ root: tbody });
+
+    const firstInput = tbody.querySelector(`tr:last-child input:not([readonly])`);
+    if (firstInput) firstInput.focus();
+  }
+
+  addExcelGridRows(count = 5) {
+    const cols = this._currentBulkCols || [];
+    const tbody = document.getElementById('bulk-excel-grid-tbody');
+    if (!tbody) return;
+    for (let i = 0; i < count; i++) {
+      const currentRows = tbody.querySelectorAll('tr').length;
+      this.appendExcelRowToDOM(currentRows, cols);
+    }
+    this.updateExcelGridCounter();
+    if (window.lucide) lucide.createIcons({ root: tbody });
+  }
+
+  deleteExcelGridRow(rIdx) {
+    const tbody = document.getElementById('bulk-excel-grid-tbody');
+    if (!tbody) return;
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    if (rows.length <= 1) {
+      this.clearExcelGrid();
+      return;
+    }
+    if (rows[rIdx]) rows[rIdx].remove();
+
+    // Re-index remaining rows
+    const remaining = tbody.querySelectorAll('tr');
+    remaining.forEach((tr, newIdx) => {
+      tr.id = `excel-grid-row-${newIdx}`;
+      const headerCell = tr.querySelector('td:first-child');
+      if (headerCell) headerCell.textContent = String(newIdx + 1);
+
+      tr.querySelectorAll('input').forEach(inp => {
+        inp.setAttribute('data-row', String(newIdx));
+        const colKey = inp.getAttribute('data-col');
+        if (colKey === 'sno' || colKey === 's_no' || colKey === 'sl_no') {
+          inp.value = String(newIdx + 1);
         }
       });
-      parsedRows.push(row);
-    }
-    return parsedRows;
+
+      const delBtn = tr.querySelector('button');
+      if (delBtn) delBtn.setAttribute('onclick', `formBuilder.deleteExcelGridRow(${newIdx})`);
+    });
+
+    this.updateExcelGridCounter();
   }
 
-  renderBulkImportPreview(rows, targetCols, sourceName = '') {
-    const previewContainer = document.getElementById('bulk-import-preview-container');
-    const previewTable = document.getElementById('bulk-import-preview-table');
-    const countBadge = document.getElementById('bulk-preview-count-badge');
-    const executeBtn = document.getElementById('bulk-import-execute-btn');
-    const statusBox = document.getElementById('bulk-file-status');
-    const statusText = document.getElementById('bulk-file-status-text');
+  clearExcelGrid() {
+    const cols = this._currentBulkCols || [];
+    const pasteBox = document.getElementById('excel-bulk-paste-input');
+    if (pasteBox) pasteBox.value = '';
+    this.renderInitialExcelGridRows(cols, 3);
+    window.showToast('Excel grid reset.', 'info', 2000, 'Grid Cleared');
+  }
 
-    if (!rows || rows.length === 0) {
-      window.showToast('No valid data rows found in input.', 'warning', 3500, 'No Records');
-      if (executeBtn) executeBtn.disabled = true;
-      if (previewContainer) previewContainer.classList.add('hidden');
+  updateExcelGridCounter() {
+    const tbody = document.getElementById('bulk-excel-grid-tbody');
+    if (!tbody) return;
+    const trs = tbody.querySelectorAll('tr');
+    let filledCount = 0;
+
+    trs.forEach(tr => {
+      const inputs = tr.querySelectorAll('[data-col]:not([readonly])');
+      const isFilled = Array.from(inputs).some(inp => {
+        const isSno = inp.getAttribute('data-col') === 'sno' || inp.getAttribute('data-col') === 's_no' || inp.getAttribute('data-col') === 'sl_no';
+        return !isSno && (inp.value || '').trim() !== '';
+      });
+      if (isFilled) filledCount++;
+    });
+
+    const badge = document.getElementById('excel-grid-count-badge');
+    if (badge) {
+      badge.textContent = `${filledCount} Records Ready`;
+      if (filledCount > 0) {
+        badge.className = 'px-2.5 py-0.5 bg-emerald-100 border border-emerald-300 text-emerald-900 rounded-full text-xs font-black';
+      } else {
+        badge.className = 'px-2.5 py-0.5 bg-slate-100 border border-slate-300 text-slate-500 rounded-full text-xs font-semibold';
+      }
+    }
+
+    const btnLabel = document.getElementById('excel-grid-import-btn-label');
+    if (btnLabel) {
+      btnLabel.textContent = filledCount > 0 ? `Import All (${filledCount} Records) into Sheet` : 'Import All Records into Sheet';
+    }
+  }
+
+  handleExcelCellKeyDown(event, rIdx, colKey) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      const nextInput = document.querySelector(`input[data-row="${rIdx + 1}"][data-col="${colKey}"]`);
+      if (nextInput) {
+        nextInput.focus();
+        nextInput.select();
+      } else {
+        this.addExcelGridRow();
+        setTimeout(() => {
+          const addedInput = document.querySelector(`input[data-row="${rIdx + 1}"][data-col="${colKey}"]`);
+          if (addedInput) {
+            addedInput.focus();
+            addedInput.select();
+          }
+        }, 50);
+      }
+    }
+  }
+
+  async pasteClipboardToExcelGrid() {
+    try {
+      if (navigator.clipboard && typeof navigator.clipboard.readText === 'function') {
+        const text = await navigator.clipboard.readText();
+        if (text && text.trim()) {
+          const pasteBox = document.getElementById('excel-bulk-paste-input');
+          if (pasteBox) pasteBox.value = text;
+          this.fillExcelGridFromText(text, 0, null);
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn('Clipboard direct read not permitted:', e);
+    }
+
+    // Fallback: Focus paste input so user can press Ctrl+V
+    const pasteBox = document.getElementById('excel-bulk-paste-input');
+    if (pasteBox) {
+      pasteBox.focus();
+      pasteBox.select();
+      window.showToast('Press Ctrl+V to paste your Excel table rows into the box.', 'info', 3000, 'Paste Here');
+    }
+  }
+
+  fillExcelGridFromText(text, startRowIdx = 0, startColKey = null) {
+    if (!text || !text.trim()) return;
+    const cols = this._currentBulkCols || [];
+    if (!cols || cols.length === 0) return;
+
+    const lines = text.trim().split(/\r?\n/).filter(l => l.trim().length > 0);
+    if (lines.length === 0) return;
+
+    // Detect delimiter: tab or comma
+    const delimiter = lines[0].includes('\t') ? '\t' : ',';
+    const firstTokens = lines[0].split(delimiter).map(t => t.trim().replace(/^["']|["']$/g, ''));
+
+    // Check if first row is header
+    let rowStartIndex = 0;
+    const matchesHeader = firstTokens.some(tok => {
+      const lower = tok.toLowerCase();
+      return cols.some(c => (c.label || '').toLowerCase().includes(lower) || (c.key || '').toLowerCase() === lower);
+    });
+    if (matchesHeader) {
+      rowStartIndex = 1;
+    }
+
+    const dataLines = lines.slice(rowStartIndex);
+    if (dataLines.length === 0) {
+      window.showToast('No data rows found in pasted text.', 'warning', 3000, 'Paste Notice');
       return;
     }
 
-    if (statusBox && statusText && sourceName) {
-      statusText.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 inline mr-1 text-emerald-600"></i> Loaded "${sourceName}": ${rows.length} valid rows`;
-      statusBox.classList.remove('hidden');
-    }
+    const tbody = document.getElementById('bulk-excel-grid-tbody');
+    if (!tbody) return;
 
-    if (countBadge) {
-      countBadge.textContent = `${rows.length} Valid Records Detected`;
-    }
+    // Reset table and fill all rows cleanly
+    tbody.innerHTML = '';
 
-    if (executeBtn) {
-      executeBtn.disabled = false;
-      const btnLabel = document.getElementById('bulk-import-btn-label');
-      if (btnLabel) btnLabel.textContent = `Import ${rows.length} Records into Sheet`;
-    }
+    dataLines.forEach((line, rIdx) => {
+      const tokens = line.split(delimiter).map(t => t.trim().replace(/^["']|["']$/g, ''));
+      
+      // Auto-adjust offset if tokens match without sno
+      let offset = 0;
+      if (tokens.length === cols.length - 1 && (cols[0].key === 'sno' || cols[0].key === 's_no' || cols[0].key === 'sl_no')) {
+        offset = 1;
+      }
 
-    // Render Preview Table (first 5 rows)
-    const previewRows = rows.slice(0, 5);
-    if (previewTable) {
-      previewTable.innerHTML = `
-        <thead class="bg-slate-100 border-b border-slate-200">
-          <tr>
-            ${targetCols.map(c => `<th class="p-2 font-bold text-slate-700 whitespace-nowrap">${c.label}</th>`).join('')}
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-slate-100">
-          ${previewRows.map(r => `
-            <tr class="hover:bg-slate-50">
-              ${targetCols.map(c => `<td class="p-2 text-slate-800 whitespace-nowrap truncate max-w-[150px]">${r[c.key] || '<span class="text-slate-300">-</span>'}</td>`).join('')}
-            </tr>
-          `).join('')}
-        </tbody>
-      `;
-    }
+      const rowObj = {};
+      cols.forEach((col, cIdx) => {
+        const isSno = col.key === 'sno' || col.key === 's_no' || col.key === 'sl_no';
+        if (isSno) {
+          rowObj[col.key] = String(rIdx + 1);
+        } else {
+          const tokenIdx = cIdx - offset;
+          rowObj[col.key] = (tokenIdx >= 0 && tokens[tokenIdx] !== undefined) ? tokens[tokenIdx] : '';
+        }
+      });
 
-    if (previewContainer) {
-      previewContainer.classList.remove('hidden');
-    }
+      this.appendExcelRowToDOM(rIdx, cols, rowObj);
+    });
 
-    if (window.lucide) lucide.createIcons();
+    this.updateExcelGridCounter();
+    if (window.lucide) lucide.createIcons({ root: tbody });
+    window.showToast(`✓ ${dataLines.length} rows loaded from Excel! Ready to import.`, 'success', 3500, 'Excel Data Loaded');
   }
 
-  // Execute the import into state store and update view
-  executeBulkImport(sheetKey, targetId = null) {
-    const rows = this._pendingBulkRows || [];
+  // Import directly from the Excel Grid into the active sheet
+  importFromExcelGrid(sheetKey, targetId = null) {
+    const tbody = document.getElementById('bulk-excel-grid-tbody');
+    if (!tbody) return;
+    const cols = this._currentBulkCols || this.getColumnsForImport(sheetKey, targetId);
+
+    const rows = [];
+    const trs = tbody.querySelectorAll('tr');
+
+    trs.forEach((tr, rIdx) => {
+      const rowObj = {};
+      let hasData = false;
+
+      cols.forEach(col => {
+        const input = tr.querySelector(`[data-col="${col.key}"]`);
+        const val = input ? (input.value || '').trim() : '';
+        rowObj[col.key] = val;
+
+        const isSno = col.key === 'sno' || col.key === 's_no' || col.key === 'sl_no';
+        if (!isSno && val !== '') {
+          hasData = true;
+        }
+      });
+
+      if (hasData) {
+        rows.push(rowObj);
+      }
+    });
+
     if (rows.length === 0) {
-      window.showToast('No records to import.', 'warning', 3000, 'Import Notice');
+      window.showToast('Please paste or enter at least one record before importing.', 'warning', 4000, 'Grid Empty');
       return;
     }
 
-    const modeRadio = document.querySelector('input[name="bulk-import-mode"]:checked');
+    const modeRadio = document.querySelector('input[name="excel-grid-import-mode"]:checked');
     const importMode = modeRadio ? modeRadio.value : 'append';
+
+    this._pendingBulkRows = rows;
+    this.executeBulkImportWithMode(sheetKey, targetId, importMode);
+  }
+
+  // RFC 4180 CSV / TSV Parser: preserves commas inside quotes
+  parseDelimitedText(text, delimiter = ',') {
+    if (!text || !text.trim()) return [];
+    if (delimiter === '\t') {
+      return text.trim().split(/\r?\n/)
+        .filter(l => l.trim().length > 0)
+        .map(l => l.split('\t').map(t => t.trim().replace(/^["']|["']$/g, '')));
+    }
+
+    const rows = [];
+    let currentRow = [];
+    let currentCell = '';
+    let inQuotes = false;
+
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i];
+      const nextChar = text[i + 1];
+
+      if (char === '"') {
+        if (inQuotes && nextChar === '"') {
+          // Escaped quote
+          currentCell += '"';
+          i++;
+        } else {
+          inQuotes = !inQuotes;
+        }
+      } else if (char === ',' && !inQuotes) {
+        currentRow.push(currentCell.trim().replace(/^["']|["']$/g, ''));
+        currentCell = '';
+      } else if ((char === '\r' || char === '\n') && !inQuotes) {
+        if (char === '\r' && nextChar === '\n') {
+          i++;
+        }
+        currentRow.push(currentCell.trim().replace(/^["']|["']$/g, ''));
+        currentCell = '';
+        if (currentRow.some(c => c !== '')) {
+          rows.push(currentRow);
+        }
+        currentRow = [];
+      } else {
+        currentCell += char;
+      }
+    }
+
+    if (currentCell !== '' || currentRow.length > 0) {
+      currentRow.push(currentCell.trim().replace(/^["']|["']$/g, ''));
+      if (currentRow.some(c => c !== '')) {
+        rows.push(currentRow);
+      }
+    }
+
+    return rows;
+  }
+
+  parseDelimitedLine(line, delimiter = ',') {
+    if (!line) return [];
+    if (delimiter === '\t') {
+      return line.split('\t').map(t => t.trim().replace(/^["']|["']$/g, ''));
+    }
+    const rows = this.parseDelimitedText(line, delimiter);
+    return rows.length > 0 ? rows[0] : [];
+  }
+
+  // Execute import of records with explicit mode
+  executeBulkImportWithMode(sheetKey, targetId = null, importMode = 'append') {
+    const rows = this._pendingBulkRows || [];
+    if (rows.length === 0) return;
 
     const card = this.getActiveCard();
     if (!card) return;
@@ -2508,24 +3196,36 @@ class FormBuilder {
     const sheet = (card.sheets || []).find(s => s.key === sheetKey) || this.getActiveSheet();
     if (!sheet) return;
 
-    if (sheet.type === 'multi_table' && targetId) {
-      if (!cardData[sheetKey]) cardData[sheetKey] = {};
-      if (!Array.isArray(cardData[sheetKey][targetId]) || importMode === 'replace') {
-        cardData[sheetKey][targetId] = [];
+    const cleanTargetId = (targetId && targetId !== 'null' && targetId !== 'undefined' && targetId !== '') ? targetId : null;
+
+    if (sheet.type === 'multi_table') {
+      const actualTarget = cleanTargetId || sheet.sections?.[0]?.id;
+      if (!cardData[sheetKey] || typeof cardData[sheetKey] !== 'object' || Array.isArray(cardData[sheetKey])) {
+        cardData[sheetKey] = {};
       }
-      const cur = cardData[sheetKey][targetId];
+      if (!Array.isArray(cardData[sheetKey][actualTarget]) || importMode === 'replace') {
+        cardData[sheetKey][actualTarget] = [];
+      }
+      const cur = cardData[sheetKey][actualTarget];
       rows.forEach(r => {
-        r.sno = String(cur.length + 1);
+        if (r.sno !== undefined) r.sno = String(cur.length + 1);
+        if (r.s_no !== undefined) r.s_no = String(cur.length + 1);
+        if (r.sl_no !== undefined) r.sl_no = String(cur.length + 1);
         cur.push(r);
       });
-    } else if (sheet.type === 'batch_table' && targetId) {
-      if (!cardData[sheetKey]) cardData[sheetKey] = {};
-      if (!Array.isArray(cardData[sheetKey][targetId]) || importMode === 'replace') {
-        cardData[sheetKey][targetId] = [];
+    } else if (sheet.type === 'batch_table') {
+      const actualTarget = cleanTargetId || sheet.batches?.[0]?.id;
+      if (!cardData[sheetKey] || typeof cardData[sheetKey] !== 'object' || Array.isArray(cardData[sheetKey])) {
+        cardData[sheetKey] = {};
       }
-      const cur = cardData[sheetKey][targetId];
+      if (!Array.isArray(cardData[sheetKey][actualTarget]) || importMode === 'replace') {
+        cardData[sheetKey][actualTarget] = [];
+      }
+      const cur = cardData[sheetKey][actualTarget];
       rows.forEach(r => {
-        r.sno = String(cur.length + 1);
+        if (r.sno !== undefined) r.sno = String(cur.length + 1);
+        if (r.s_no !== undefined) r.s_no = String(cur.length + 1);
+        if (r.sl_no !== undefined) r.sl_no = String(cur.length + 1);
         cur.push(r);
       });
     } else {
@@ -2543,8 +3243,153 @@ class FormBuilder {
 
     this.triggerAutoSave();
     this.closeBulkImportModal();
-    window.showToast(`Successfully imported ${rows.length} records into ${sheet.sheetName || sheetKey}!`, 'success', 4000, 'Bulk Import Complete');
+    window.showToast(`Successfully imported ${rows.length} records into ${sheet.sheetName || sheetKey}!`, 'success', 4000, 'Import Complete');
     this.render(window.dataStore?.data);
   }
 
+  closeBulkImportModal() {
+    const modal = document.getElementById('bulk-import-modal');
+    if (modal) {
+      if (typeof modal.remove === 'function') modal.remove();
+      else if (modal.parentNode) modal.parentNode.removeChild(modal);
+    }
+    this._stagedImportData = null;
+    this._pendingBulkRows = null;
+  }
+
+  handleBulkFileDrop(event, sheetKey, targetId = null) {
+    const file = event.dataTransfer ? event.dataTransfer.files[0] : null;
+    if (file) {
+      this.processUploadedBulkFile(file, sheetKey, targetId);
+    }
+  }
+
+  handleBulkFileSelected(event, sheetKey, targetId = null) {
+    const file = event.target ? event.target.files[0] : null;
+    if (file) {
+      this.processUploadedBulkFile(file, sheetKey, targetId);
+    }
+  }
+
+  processUploadedBulkFile(file, sheetKey, targetId = null) {
+    const cleanTargetId = (targetId && targetId !== 'null' && targetId !== 'undefined' && targetId !== '') ? targetId : null;
+    const cols = this._currentBulkCols || this.getColumnsForImport(sheetKey, cleanTargetId);
+    const statusDiv = document.getElementById('bulk-file-status');
+    const statusText = document.getElementById('bulk-file-status-text');
+    const previewContainer = document.getElementById('bulk-import-preview-container');
+    const previewCountBadge = document.getElementById('bulk-preview-count-badge');
+    const previewTable = document.getElementById('bulk-import-preview-table');
+    const execBtn = document.getElementById('bulk-import-file-execute-btn');
+
+    if (!file) return;
+
+    if (statusDiv && statusText) {
+      statusDiv.classList.remove('hidden');
+      statusText.textContent = `Selected: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const text = e.target.result;
+        let parsedRows = [];
+
+        if (file.name.endsWith('.json')) {
+          const parsed = JSON.parse(text);
+          parsedRows = Array.isArray(parsed) ? parsed : (parsed.rows || []);
+        } else {
+          // RFC 4180 CSV / TSV parser (handles commas inside quotes perfectly)
+          const delimiter = text.includes('\t') && !text.includes(',') ? '\t' : (text.split(/\r?\n/)[0]?.includes('\t') ? '\t' : ',');
+          const parsedMatrix = this.parseDelimitedText(text, delimiter);
+
+          if (parsedMatrix.length > 0) {
+            const firstRow = parsedMatrix[0];
+            let rowStartIndex = 0;
+            const matchesHeader = firstRow.some(tok => {
+              const lower = (tok || '').toLowerCase();
+              return cols.some(c => (c.label || '').toLowerCase().includes(lower) || (c.key || '').toLowerCase() === lower);
+            });
+            if (matchesHeader) rowStartIndex = 1;
+
+            const dataRows = parsedMatrix.slice(rowStartIndex);
+            dataRows.forEach((tokens, rIdx) => {
+              let offset = 0;
+              if (tokens.length === cols.length - 1 && (cols[0].key === 'sno' || cols[0].key === 's_no' || cols[0].key === 'sl_no')) {
+                offset = 1;
+              }
+              const rowObj = {};
+              let hasData = false;
+              cols.forEach((col, cIdx) => {
+                const isSno = col.key === 'sno' || col.key === 's_no' || col.key === 'sl_no';
+                if (isSno) {
+                  rowObj[col.key] = String(rIdx + 1);
+                } else {
+                  const tokenIdx = cIdx - offset;
+                  const val = (tokenIdx >= 0 && tokens[tokenIdx] !== undefined) ? tokens[tokenIdx] : '';
+                  rowObj[col.key] = val;
+                  if (val !== '') hasData = true;
+                }
+              });
+              if (hasData) parsedRows.push(rowObj);
+            });
+          }
+        }
+
+        if (parsedRows.length === 0) {
+          window.showToast('No valid records found in the uploaded file.', 'warning', 3500, 'Empty File');
+          if (execBtn) execBtn.disabled = true;
+          return;
+        }
+
+        this._pendingBulkRows = parsedRows;
+
+        if (previewContainer && previewTable) {
+          previewContainer.classList.remove('hidden');
+          if (previewCountBadge) {
+            previewCountBadge.textContent = `${parsedRows.length} Rows Parsed`;
+          }
+
+          let tableHtml = `
+            <thead>
+              <tr class="bg-slate-100 border-b border-slate-200 text-slate-700 font-bold text-[11px]">
+                ${cols.map(c => `<th class="p-2 border-r border-slate-200 ${c.width || ''}">${c.label}</th>`).join('')}
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              ${parsedRows.slice(0, 5).map(r => `
+                <tr class="hover:bg-slate-50">
+                  ${cols.map(c => `<td class="p-2 border-r border-slate-100 font-medium text-slate-800">${r[c.key] || ''}</td>`).join('')}
+                </tr>
+              `).join('')}
+            </tbody>
+          `;
+          previewTable.innerHTML = tableHtml;
+        }
+
+        if (execBtn) {
+          execBtn.disabled = false;
+          execBtn.innerHTML = `<i data-lucide="check" class="w-4 h-4 text-[#53D2DC]"></i><span>Import ${parsedRows.length} Uploaded Records</span>`;
+          if (window.lucide) lucide.createIcons({ root: execBtn });
+        }
+
+        window.showToast(`Parsed ${parsedRows.length} rows successfully from ${file.name}. Ready to import!`, 'success', 3500, 'File Parsed');
+      } catch (err) {
+        console.error('Error parsing file:', err);
+        window.showToast('Failed to parse uploaded file: ' + err.message, 'error', 4000, 'Parse Error');
+        if (execBtn) execBtn.disabled = true;
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  // File Upload execute wrapper
+  executeBulkFileImport(sheetKey, targetId = null) {
+    const cleanTargetId = (targetId && targetId !== 'null' && targetId !== 'undefined' && targetId !== '') ? targetId : null;
+    const modeRadio = document.querySelector('input[name="bulk-file-import-mode"]:checked');
+    const importMode = modeRadio ? modeRadio.value : 'append';
+    this.executeBulkImportWithMode(sheetKey, cleanTargetId, importMode);
+  }
+
 }
+
+window.FormBuilder = FormBuilder;

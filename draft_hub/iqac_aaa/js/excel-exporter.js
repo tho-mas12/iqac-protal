@@ -410,163 +410,139 @@ class ExcelExporter {
     this.downloadFile(xml, `${cleanDept}_${attrKey}_2026_2027.xls`);
   }
 
-  // EXPORT COMPLETE DEPARTMENT WORKBOOK (ALL 10 ATTRIBUTES)
+  // EXPORT COMPLETE DEPARTMENT WORKBOOK (ALL ATTRIBUTES IN EXACT ORDER)
   static exportCompleteDepartmentToExcel(data, deptName = 'Department') {
-    const cleanDept = deptName.replace(/[^a-zA-Z0-9]/g, '_');
-    const sch = data.departmentInfo?.scholars || {};
-    const att1 = data.attributeI || {};
-    const att2 = data.attributeII || {};
-    const att3 = data.attributeIII || {};
-    const att4_7 = data.attributeIV_VII || {};
-    const att5 = data.attributeV || {};
-    const att6_8 = data.attributeVI_VIII || {};
-    const outcomes = data.studentsOutcomes2026 || {};
-    const att9 = data.attributeIX || {};
-    const att10 = data.attributeX || {};
-    const panel = data.panelReview || {};
+    const cleanDept = (deptName || 'Department').replace(/[^a-zA-Z0-9]/g, '_');
+    const cards = window.ALL_ATTRIBUTES_CARDS_SCHEMA || (window.dataStore ? window.dataStore.getAllCardsSchema() : []);
+    const formData = data?.attributeFormData || {};
 
-    const worksheets = [
-      // Sheet 1: Master Summary & Scholars
-      {
-        name: 'Master Profile & Scholars',
-        rows: [
-          [{ value: `St. Joseph's College (Autonomous) - Annual Academic Audit 2026-2027`, style: 'Title' }],
-          [{ value: `Department: ${deptName}`, style: 'SubHeader' }],
-          [{ value: `HOD: ${data.departmentInfo?.hodName || ''} | Estd: ${data.departmentInfo?.establishedYear || ''}`, style: 'SubHeader' }],
-          [],
-          [{ value: 'Research Scholars Matrix (Table 1)', style: 'SubHeader' }],
-          [{ value: 'Type', style: 'Header' }, { value: 'Male', style: 'Header' }, { value: 'Female', style: 'Header' }, { value: 'Total', style: 'Header' }],
-          [{ value: 'Full Time' }, { value: sch.fullTime?.male || 0, style: 'Number' }, { value: sch.fullTime?.female || 0, style: 'Number' }, { value: (sch.fullTime?.male || 0) + (sch.fullTime?.female || 0), style: 'Number' }],
-          [{ value: 'Part Time' }, { value: sch.partTime?.male || 0, style: 'Number' }, { value: sch.partTime?.female || 0, style: 'Number' }, { value: (sch.partTime?.male || 0) + (sch.partTime?.female || 0), style: 'Number' }],
-          [{ value: 'Total Scholars', style: 'SubHeader' }, { value: (sch.fullTime?.male || 0) + (sch.partTime?.male || 0), style: 'Number' }, { value: (sch.fullTime?.female || 0) + (sch.partTime?.female || 0), style: 'Number' }, { value: ((sch.fullTime?.male || 0) + (sch.fullTime?.female || 0) + (sch.partTime?.male || 0) + (sch.partTime?.female || 0)), style: 'Number' }],
-          [],
-          [{ value: 'Audit Grade Assigned:', style: 'SubHeader' }, { value: panel.overallGrade || 'A++', style: 'Header' }]
-        ]
-      },
-      // Sheet 2: Attribute I
-      {
-        name: 'Att I - Curriculum & PTM',
-        rows: [
-          [{ value: 'Attribute I: Curriculum Design & MOOCs', style: 'Title' }],
-          [{ value: 'Value Added Courses (VAC)', style: 'SubHeader' }],
-          [{ value: 'Course', style: 'Header' }, { value: 'Enrolled', style: 'Header' }, { value: 'Fee Collected', style: 'Header' }, { value: 'Agency', style: 'Header' }],
-          ...(att1.vac || []).map(v => [{ value: v.name }, { value: v.studentsEnrolled || 0, style: 'Number' }, { value: v.feeCollected || 0, style: 'Currency' }, { value: v.agenciesInvolved || '' }]),
-          [],
-          [{ value: 'Certificate Courses (CC)', style: 'SubHeader' }],
-          [{ value: 'Course', style: 'Header' }, { value: 'Enrolled', style: 'Header' }, { value: 'Fee Collected', style: 'Header' }, { value: 'Agency', style: 'Header' }],
-          ...(att1.cc || []).map(c => [{ value: c.name }, { value: c.studentsEnrolled || 0, style: 'Number' }, { value: c.feeCollected || 0, style: 'Currency' }, { value: c.agenciesInvolved || '' }]),
-          [],
-          [{ value: 'PTM Metrics', style: 'SubHeader' }],
-          [{ value: 'Total PTMs Conducted' }, { value: att1.ptm?.ptmCount || 0, style: 'Number' }],
-          [{ value: 'Total Parents Attended' }, { value: att1.ptm?.parentsAttended || 0, style: 'Number' }]
-        ]
-      },
-      // Sheet 3: Attribute II
-      {
-        name: 'Att II - Faculty',
-        rows: [
-          [{ value: 'Attribute II: Faculty Resources & Development', style: 'Title' }],
-          [{ value: 'Metric', style: 'Header' }, { value: 'Count', style: 'Header' }, { value: 'Details', style: 'Header' }],
-          [{ value: 'New Degrees' }, { value: att2.newDegrees?.count || 0, style: 'Number' }, { value: att2.newDegrees?.details || '' }],
-          [{ value: 'NET / SET Qualified' }, { value: att2.netSet?.count || 0, style: 'Number' }, { value: att2.netSet?.details || '' }],
-          [{ value: 'BoS Members' }, { value: att2.recognizedBodies?.bos || 0, style: 'Number' }, { value: '' }],
-          [{ value: 'Journal Reviewers' }, { value: att2.researchJournals?.reviewers || 0, style: 'Number' }, { value: '' }],
-          [{ value: 'Journal Editors' }, { value: att2.researchJournals?.editors || 0, style: 'Number' }, { value: '' }],
-          [{ value: 'FDPs Attended' }, { value: (att2.fdp?.mmttc || 0) + (att2.fdp?.otherInstitutions || 0), style: 'Number' }, { value: '' }],
-          [{ value: 'Abroad Visits' }, { value: att2.abroadVisits?.count || 0, style: 'Number' }, { value: att2.abroadVisits?.facultyNames || '' }]
-        ]
-      },
-      // Sheet 4: Attribute III
-      {
-        name: 'Att III - Infrastructure',
-        rows: [
-          [{ value: 'Attribute III: Infrastructure & Learning Resources', style: 'Title' }],
-          [{ value: 'Laboratory Equipment Procured (2026-2027)', style: 'SubHeader' }],
-          [{ value: 'Facility', style: 'Header' }, { value: 'Equipment', style: 'Header' }, { value: 'Type', style: 'Header' }, { value: 'Date', style: 'Header' }, { value: 'Cost (INR)', style: 'Header' }],
-          ...(att3.purchasedEquipments || []).map(e => [{ value: e.labName }, { value: e.equipmentName }, { value: e.type }, { value: e.purchaseDate }, { value: Number(e.amountINR) || 0, style: 'Currency' }]),
-          [],
-          [{ value: 'Department Library Resources', style: 'SubHeader' }],
-          [{ value: 'Indicator', style: 'Header' }, { value: 'Count', style: 'Header' }],
-          [{ value: 'Total Books in Dept' }, { value: att3.departmentLibrary?.totalBooks || 0, style: 'Number' }],
-          [{ value: 'Books Added in 2026-2027' }, { value: att3.departmentLibrary?.booksPurchased2026_2027 || 0, style: 'Number' }],
-          [{ value: 'Total Journals' }, { value: att3.departmentLibrary?.totalJournals || 0, style: 'Number' }],
-          [{ value: 'Daily Faculty Footfall' }, { value: att3.departmentLibrary?.dailyFacultyFootfall || 0, style: 'Number' }],
-          [{ value: 'Daily Student Footfall' }, { value: att3.departmentLibrary?.dailyStudentFootfall || 0, style: 'Number' }]
-        ]
-      },
-      // Sheet 5: Attribute IV & VII
-      {
-        name: 'Att IV & VII - Grants',
-        rows: [
-          [{ value: 'Attribute IV & VII: External Grants & Seed Money', style: 'Title' }],
-          [{ value: 'Category', style: 'Header' }, { value: 'Agency / Source', style: 'Header' }, { value: 'Amount (INR)', style: 'Header' }, { value: 'Faculty', style: 'Header' }],
-          ...(att4_7.externalFunds || []).map(f => [{ value: f.category }, { value: f.agency }, { value: Number(f.amountINR) || 0, style: 'Currency' }, { value: f.facultyInvolved }]),
-          ...(att4_7.managementFunds || []).map(m => [{ value: 'Management Grant' }, { value: m.purpose }, { value: Number(m.amountINR) || 0, style: 'Currency' }, { value: m.facultyInvolved }]),
-          [{ value: 'Seed Money' }, { value: 'Management' }, { value: Number(att4_7.seedMoney?.amountSanctioned) || 0, style: 'Currency' }, { value: `Count: ${att4_7.seedMoney?.projectsCount || 0}` }]
-        ]
-      },
-      // Sheet 6: Attribute V
-      {
-        name: 'Att V - Teaching & MoUs',
-        rows: [
-          [{ value: 'Attribute V: Teaching-Learning, MoUs & E-Contents', style: 'Title' }],
-          [{ value: 'Dimension', style: 'Header' }, { value: 'Count', style: 'Header' }, { value: 'Activities', style: 'Header' }],
-          [{ value: 'New MoUs Created' }, { value: att5.mouCreated?.count || 0, style: 'Number' }, { value: att5.mouCreated?.activitiesConducted || '' }],
-          [{ value: 'Previous Active MoUs' }, { value: att5.previousMous?.count || 0, style: 'Number' }, { value: att5.previousMous?.activitiesConducted || '' }],
-          [{ value: 'Linkages Created' }, { value: att5.linkages?.count || 0, style: 'Number' }, { value: att5.linkages?.activitiesConducted || '' }],
-          [{ value: '4-Quadrant E-Contents' }, { value: att5.eContent?.count || 0, style: 'Number' }, { value: att5.eContent?.details || '' }]
-        ]
-      },
-      // Sheet 7: Attribute VI & VIII & Outcomes
-      {
-        name: 'Att VI, VIII & Outcomes',
-        rows: [
-          [{ value: 'Extended Curricular Engagements & Student Outcomes', style: 'Title' }],
-          [{ value: 'Departmental Clubs (Attribute VI)', style: 'SubHeader' }],
-          [{ value: 'Club Name', style: 'Header' }, { value: 'UG Students', style: 'Header' }, { value: 'PG Students', style: 'Header' }, { value: 'Activities', style: 'Header' }],
-          ...(att6_8.clubs || []).map(c => [{ value: c.clubName }, { value: c.studentsUG || 0, style: 'Number' }, { value: c.studentsPG || 0, style: 'Number' }, { value: c.activities || '' }]),
-          [],
-          [{ value: 'Table 10: Student Outcomes (Passing Out Batch 2026)', style: 'SubHeader' }],
-          [{ value: 'Programme', style: 'Header' }, { value: 'Strength', style: 'Header' }, { value: 'On-Campus', style: 'Header' }, { value: 'Off-Campus', style: 'Header' }, { value: 'Higher Studies', style: 'Header' }, { value: 'Entrepreneurs', style: 'Header' }],
-          [{ value: 'UG' }, { value: outcomes.ug?.strength || 0, style: 'Number' }, { value: outcomes.ug?.onCampus || 0, style: 'Number' }, { value: outcomes.ug?.offCampus || 0, style: 'Number' }, { value: outcomes.ug?.higherStudies || 0, style: 'Number' }, { value: outcomes.ug?.entrepreneur || 0, style: 'Number' }],
-          [{ value: 'PG' }, { value: outcomes.pg?.strength || 0, style: 'Number' }, { value: outcomes.pg?.onCampus || 0, style: 'Number' }, { value: outcomes.pg?.offCampus || 0, style: 'Number' }, { value: outcomes.pg?.higherStudies || 0, style: 'Number' }, { value: outcomes.pg?.entrepreneur || 0, style: 'Number' }]
-        ]
-      },
-      // Sheet 8: Attribute IX
-      {
-        name: 'Att IX - Research & IPR',
-        rows: [
-          [{ value: 'Attribute IX: Research, Publications, Patents & IPR', style: 'Title' }],
-          [{ value: 'Metric', style: 'Header' }, { value: 'Count', style: 'Header' }, { value: 'Details', style: 'Header' }],
-          [{ value: 'Ph.D. Conferred' }, { value: att9.phdConferred?.count || 0, style: 'Number' }, { value: `New Guides: ${att9.phdConferred?.newGuides || 0}` }],
-          [{ value: 'Scopus Publications' }, { value: att9.papersPublished?.scopus || 0, style: 'Number' }, { value: '' }],
-          [{ value: 'WoS Publications' }, { value: att9.papersPublished?.wos || 0, style: 'Number' }, { value: '' }],
-          [{ value: 'Conference Papers (Indexed)' }, { value: att9.conferencePresented?.indexed || 0, style: 'Number' }, { value: '' }],
-          [{ value: 'Books Published' }, { value: att9.books?.published || 0, style: 'Number' }, { value: '' }],
-          [{ value: 'Book Chapters' }, { value: att9.books?.chapters || 0, style: 'Number' }, { value: '' }],
-          [{ value: 'Patents Applied' }, { value: att9.patents?.applied || 0, style: 'Number' }, { value: '' }],
-          [{ value: 'Patents Granted' }, { value: att9.patents?.granted || 0, style: 'Number' }, { value: '' }],
-          [{ value: 'OER Created' }, { value: att9.oer?.count || 0, style: 'Number' }, { value: att9.oer?.details || '' }]
-        ]
-      },
-      // Sheet 9: Attribute X
-      {
-        name: 'Att X - Values & CSR',
-        rows: [
-          [{ value: 'Attribute X: Institutional Values, Green Initiatives & CSR Extension', style: 'Title' }],
-          [{ value: 'CSR & Extension Outreach Projects', style: 'SubHeader' }],
-          [{ value: 'Activity Title', style: 'Header' }, { value: 'Type', style: 'Header' }, { value: 'Collaborating Partner', style: 'Header' }, { value: 'Beneficiaries', style: 'Header' }, { value: 'Funding (INR)', style: 'Header' }],
-          ...(att10.csrActivities || []).map(c => [{ value: c.activityName }, { value: c.type }, { value: c.collaboratingAgency }, { value: c.studentsBenefited || 0, style: 'Number' }, { value: Number(c.amountINR) || 0, style: 'Currency' }]),
-          [],
-          [{ value: 'Green Campus & Sustainability Practices', style: 'SubHeader' }],
-          [{ value: 'Dimension', style: 'Header' }, { value: 'Status / Practice', style: 'Header' }],
-          [{ value: 'Paperless CIA' }, { value: att10.sustainability?.paperlessCIA || '' }],
-          [{ value: 'Solar Energy Usage' }, { value: att10.sustainability?.solarEnergyUsage || '' }],
-          [{ value: 'Plastic-Free Campus' }, { value: att10.sustainability?.plasticFreeCampus || '' }],
-          [{ value: 'Rainwater Harvesting' }, { value: att10.sustainability?.rainwaterHarvesting || '' }]
-        ]
-      }
-    ];
+    const worksheets = [];
+
+    cards.forEach((card) => {
+      const cardData = formData[card.id] || (card.id === 'att1' ? (data?.attribute1Data || {}) : {});
+      const sheets = card.sheets || [];
+
+      sheets.forEach(sheet => {
+        const sheetKey = sheet.key;
+        const sData = cardData[sheetKey];
+        const rows = [];
+
+        // Title Header
+        rows.push([{ value: `St. Joseph's College (Autonomous) - Annual Academic Audit 2026-2027`, style: 'Title' }]);
+        rows.push([{ value: `${card.cardCode} • ${sheet.sheetName || sheetKey}: ${sheet.title || ''}`, style: 'SubHeader' }]);
+        rows.push([{ value: `Department: ${deptName} | Generated: ${new Date().toLocaleDateString()}`, style: 'SubHeader' }]);
+        rows.push([]);
+
+        if (sheet.type === 'profile') {
+          const prof = (sData && sData.profile) ? sData.profile : (sheet.profileQuestions || {});
+          rows.push([{ value: 'Department Profile', style: 'Header' }, { value: prof.department || deptName, style: 'Cell' }]);
+          rows.push([{ value: 'Shift', style: 'Header' }, { value: prof.shift || 'Shift I', style: 'Cell' }]);
+          rows.push([{ value: 'Programmes Offered - UG', style: 'Header' }, { value: prof.programmes?.ug || '', style: 'Cell' }]);
+          rows.push([{ value: 'Programmes Offered - PG', style: 'Header' }, { value: prof.programmes?.pg || '', style: 'Cell' }]);
+          rows.push([{ value: 'Programmes Offered - PhD', style: 'Header' }, { value: prof.programmes?.phd || '', style: 'Cell' }]);
+          rows.push([{ value: 'Head of Department / Coordinator', style: 'Header' }, { value: prof.hodName || '', style: 'Cell' }]);
+          rows.push([]);
+
+          // Faculty details
+          rows.push([{ value: 'Faculty Details', style: 'SubHeader' }]);
+          const facHeaders = sheet.facultyDetails?.headers || ['Faculty Category', 'Male', 'Female'];
+          rows.push([...facHeaders.map(h => ({ value: h, style: 'Header' })), { value: 'Total', style: 'Header' }]);
+          const facRows = (sData && sData.facultyDetails) ? sData.facultyDetails : (sheet.facultyDetails?.rows || []);
+          facRows.forEach(fr => {
+            const m = Number(fr.male) || 0;
+            const f = Number(fr.female) || 0;
+            rows.push([
+              { value: fr.label || fr.cadre || '', style: 'Cell' },
+              { value: m, style: 'Number' },
+              { value: f, style: 'Number' },
+              { value: m + f, style: 'Number' }
+            ]);
+          });
+          rows.push([]);
+
+          // Student details
+          rows.push([{ value: 'Student Details', style: 'SubHeader' }]);
+          const stuHeaders = sheet.studentDetails?.headers || ['Programme Level', 'Male', 'Female', 'Other Gender', 'Other States', 'Other Countries'];
+          rows.push([...stuHeaders.map(h => ({ value: h, style: 'Header' })), { value: 'Total', style: 'Header' }]);
+          const stuRows = (sData && sData.studentDetails) ? sData.studentDetails : (sheet.studentDetails?.rows || []);
+          const defaultLevels = ['Undergraduate (UG)', 'Postgraduate (PG)', 'Ph.D. / Research'];
+          stuRows.forEach((sr, idx) => {
+            const m = Number(sr.male) || 0;
+            const f = Number(sr.female) || 0;
+            const og = Number(sr.otherGender) || 0;
+            const os = Number(sr.otherStates) || 0;
+            const oc = Number(sr.otherCountries) || 0;
+            const lvl = (sr.programme && sr.programme !== 0 && sr.programme !== '0') ? sr.programme : (defaultLevels[idx] || 'Level ' + (idx + 1));
+            rows.push([
+              { value: lvl, style: 'Cell' },
+              { value: m, style: 'Number' },
+              { value: f, style: 'Number' },
+              { value: og, style: 'Number' },
+              { value: os, style: 'Number' },
+              { value: oc, style: 'Number' },
+              { value: m + f + og, style: 'Number' }
+            ]);
+          });
+
+        } else if (sheet.type === 'table') {
+          const cols = sheet.columns || [];
+          rows.push(cols.map(c => ({ value: c.label, style: 'Header' })));
+          const tableRows = Array.isArray(sData) ? sData : (sheet.rows || []);
+          if (tableRows.length === 0) {
+            rows.push([{ value: 'No records entered', style: 'Cell' }]);
+          } else {
+            tableRows.forEach(tr => {
+              rows.push(cols.map(c => ({
+                value: tr[c.key] !== undefined ? tr[c.key] : '',
+                style: typeof tr[c.key] === 'number' ? 'Number' : 'Cell'
+              })));
+            });
+          }
+
+        } else if (sheet.type === 'multi_table') {
+          (sheet.sections || []).forEach((sec, idx) => {
+            if (idx > 0) rows.push([]);
+            rows.push([{ value: sec.title, style: 'SubHeader' }]);
+            const cols = sec.columns || [];
+            rows.push(cols.map(c => ({ value: c.label, style: 'Header' })));
+            const secRows = (sData && sData[sec.id]) ? sData[sec.id] : (sec.rows || []);
+            if (secRows.length === 0) {
+              rows.push([{ value: 'No records entered', style: 'Cell' }]);
+            } else {
+              secRows.forEach(tr => {
+                rows.push(cols.map(c => ({
+                  value: tr[c.key] !== undefined ? tr[c.key] : '',
+                  style: typeof tr[c.key] === 'number' ? 'Number' : 'Cell'
+                })));
+              });
+            }
+          });
+
+        } else if (sheet.type === 'batch_table') {
+          const cols = sheet.columns || [];
+          (sheet.batches || []).forEach((bat, idx) => {
+            if (idx > 0) rows.push([]);
+            rows.push([{ value: bat.name || bat.batchName || bat.id, style: 'SubHeader' }]);
+            rows.push(cols.map(c => ({ value: c.label, style: 'Header' })));
+            const batRows = (sData && sData[bat.id]) ? sData[bat.id] : (bat.rows || []);
+            if (batRows.length === 0) {
+              rows.push([{ value: 'No records entered', style: 'Cell' }]);
+            } else {
+              batRows.forEach(tr => {
+                rows.push(cols.map(c => ({
+                  value: tr[c.key] !== undefined ? tr[c.key] : '',
+                  style: typeof tr[c.key] === 'number' ? 'Number' : 'Cell'
+                })));
+              });
+            }
+          });
+        }
+
+        // Clean worksheet name (Excel max 31 characters)
+        let wsName = `${card.cardCode} ${sheet.sheetName || sheetKey}`.replace(/[:\\/?*\[\]]/g, '').trim().substring(0, 31);
+        worksheets.push({ name: wsName, rows });
+      });
+    });
 
     const xml = this.generateXmlWorkbook(worksheets);
     this.downloadFile(xml, `${cleanDept}_Complete_AAA_Dossier_2026_2027.xls`);
@@ -669,14 +645,16 @@ class ExcelExporter {
         const stuHeaders = sheet.studentDetails?.headers || ['Programme Level', 'Male', 'Female', 'Other Gender', 'Other States', 'Other Countries'];
         rows.push([...stuHeaders.map(h => ({ value: h, style: 'Header' })), { value: 'Total', style: 'Header' }]);
         const stuRows = (sData && sData.studentDetails) ? sData.studentDetails : (sheet.studentDetails?.rows || []);
-        stuRows.forEach(sr => {
+        const defaultLevels = ['Undergraduate (UG)', 'Postgraduate (PG)', 'Ph.D. / Research'];
+        stuRows.forEach((sr, idx) => {
           const m = Number(sr.male) || 0;
           const f = Number(sr.female) || 0;
           const og = Number(sr.otherGender) || 0;
           const os = Number(sr.otherStates) || 0;
           const oc = Number(sr.otherCountries) || 0;
+          const lvl = (sr.programme && sr.programme !== 0 && sr.programme !== '0') ? sr.programme : (defaultLevels[idx] || 'Level ' + (idx + 1));
           rows.push([
-            { value: sr.programme || '', style: 'Cell' },
+            { value: lvl, style: 'Cell' },
             { value: m, style: 'Number' },
             { value: f, style: 'Number' },
             { value: og, style: 'Number' },

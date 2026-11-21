@@ -266,21 +266,49 @@ class DataStore {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed)) {
-          parsed.forEach(c => {
-            (c.sheets || []).forEach(s => {
-              if (s.rows && s.rows.length > 0) s.rows = [];
-              if (s.sections) s.sections.forEach(sec => { if (sec.rows) sec.rows = []; });
-              if (s.batches) s.batches.forEach(bat => { if (bat.rows) bat.rows = []; });
+          // Check if cached schema has outdated generic placeholder titles, old structure, or 0 in studentDetails programme
+          const hasStaleTitles = parsed.some(c => 
+            (c.sheets || []).some(s => 
+              (s.title && (s.title.startsWith('Attribute ') || s.title === '9. 9.13' || s.title === 'Attribute X')) ||
+              (s.key === '3_3_1' && s.title !== '3.1 Research Facility') ||
+              (s.key === '4_4_1' && s.title !== '4.1 Alumni Meeting') ||
+              (s.key === '5_5_3' && s.type !== 'multi_table') ||
+              (s.key === '9_9_11' && s.type !== 'multi_table') ||
+              (s.key === '9_9_4' && !s.columns?.some(col => col.key === 'university_reference_number')) ||
+              (s.studentDetails && s.studentDetails.rows && s.studentDetails.rows.some(r => r.programme === 0 || r.programme === '0'))
+            )
+          );
+          if (!hasStaleTitles) {
+            parsed.forEach(c => {
+              (c.sheets || []).forEach(s => {
+                if (s.rows && s.rows.length > 0) s.rows = [];
+                if (s.sections) s.sections.forEach(sec => { if (sec.rows) sec.rows = []; });
+                if (s.batches) s.batches.forEach(bat => { if (bat.rows) bat.rows = []; });
+                if (s.studentDetails && Array.isArray(s.studentDetails.rows)) {
+                  const defaultLevels = ['Undergraduate (UG)', 'Postgraduate (PG)', 'Ph.D. / Research'];
+                  s.studentDetails.rows.forEach((r, idx) => {
+                    if (!r.programme || r.programme === 0 || r.programme === '0') {
+                      r.programme = defaultLevels[idx] || `Level ${idx + 1}`;
+                    }
+                  });
+                }
+              });
             });
-          });
-          return parsed;
+            return parsed;
+          } else {
+            console.info('Detected stale card schema in localStorage, updating with latest descriptive schema...');
+          }
         }
       }
     } catch (e) {
       console.warn('Error reading saved master cards schema:', e);
     }
     if (window.ALL_ATTRIBUTES_CARDS_SCHEMA) {
-      return JSON.parse(JSON.stringify(window.ALL_ATTRIBUTES_CARDS_SCHEMA));
+      const fresh = JSON.parse(JSON.stringify(window.ALL_ATTRIBUTES_CARDS_SCHEMA));
+      try {
+        localStorage.setItem('IQAC_AAA_MASTER_CARDS_SCHEMA', JSON.stringify(fresh));
+      } catch (err) {}
+      return fresh;
     }
     return [];
   }
@@ -307,6 +335,7 @@ class DataStore {
   initDefaultCardsFormData() {
     const data = {};
     const cards = this.getAllCardsSchema();
+    const defaultLevels = ['Undergraduate (UG)', 'Postgraduate (PG)', 'Ph.D. / Research'];
     if (cards && Array.isArray(cards)) {
       cards.forEach(card => {
         data[card.id] = {};
@@ -324,8 +353,8 @@ class DataStore {
                 male: 0,
                 female: 0
               })),
-              studentDetails: (sheet.studentDetails?.rows || []).map(r => ({
-                programme: r.programme || "",
+              studentDetails: (sheet.studentDetails?.rows || []).map((r, idx) => ({
+                programme: (r.programme && r.programme !== 0 && r.programme !== '0') ? r.programme : (defaultLevels[idx] || `Level ${idx + 1}`),
                 male: 0,
                 female: 0,
                 otherGender: 0,
@@ -440,6 +469,18 @@ class DataStore {
     if (!data.attributeFormData || Object.keys(data.attributeFormData).length === 0) {
       data.attributeFormData = this.initDefaultCardsFormData();
     }
+    // Heal any empty studentDetails level names in existing saved data
+    if (data.attributeFormData && data.attributeFormData['part_a'] && data.attributeFormData['part_a']['PART-A']) {
+      const partA = data.attributeFormData['part_a']['PART-A'];
+      if (Array.isArray(partA.studentDetails)) {
+        const defaultLevels = ['Undergraduate (UG)', 'Postgraduate (PG)', 'Ph.D. / Research'];
+        partA.studentDetails.forEach((r, idx) => {
+          if (!r.programme || r.programme === 0 || r.programme === '0' || String(r.programme).trim() === '') {
+            r.programme = defaultLevels[idx] || `Level ${idx + 1}`;
+          }
+        });
+      }
+    }
     if (!data.attribute1Data || Object.keys(data.attribute1Data).length === 0) {
       data.attribute1Data = this.initDefaultAttribute1Data();
     }
@@ -513,6 +554,23 @@ class DataStore {
       const saved = localStorage.getItem(key);
       if (saved) return JSON.parse(saved);
     } catch (e) {}
+
+    // Fallback: check UsersDB in case user has lock flag
+    try {
+      const db = this.getUsersDB();
+      const u = (db.departments || []).find(d => 
+        (d.name || '').toLowerCase() === name.toLowerCase() || 
+        (d.code || '').toLowerCase() === name.toLowerCase()
+      );
+      if (u && u.is_locked) {
+        return {
+          status: 'submitted',
+          is_locked: true,
+          last_updated: new Date().toISOString()
+        };
+      }
+    } catch (e) {}
+
     return {
       status: 'draft',
       is_locked: false,
@@ -520,12 +578,35 @@ class DataStore {
     };
   }
 
-  setDepartmentSubmissionStatus(deptName, statusObj) {
+  setDepartmentSubmissionStatus(deptName, statusObj, isLocked) {
     const name = deptName || this.activeDepartment || 'Default';
     const key = 'IQAC_AAA_STATUS_' + name;
     const current = this.getDepartmentSubmissionStatus(name);
-    const updated = { ...current, ...statusObj, last_updated: new Date().toISOString() };
+
+    let patch = {};
+    if (typeof statusObj === 'string') {
+      patch = { status: statusObj, is_locked: Boolean(isLocked) };
+    } else if (typeof statusObj === 'object' && statusObj !== null) {
+      patch = statusObj;
+    }
+
+    const updated = { ...current, ...patch, last_updated: new Date().toISOString() };
     localStorage.setItem(key, JSON.stringify(updated));
+
+    // Also update UsersDB for consistency
+    try {
+      const db = this.getUsersDB();
+      const dept = (db.departments || []).find(d => 
+        (d.name || '').toLowerCase() === name.toLowerCase() || 
+        (d.code || '').toLowerCase() === name.toLowerCase()
+      );
+      if (dept && patch.is_locked !== undefined) {
+        dept.is_locked = Boolean(patch.is_locked);
+        if (patch.status) dept.status = patch.status;
+        this.saveUsersDB(db);
+      }
+    } catch (e) {}
+
     this.notify();
     return updated;
   }
