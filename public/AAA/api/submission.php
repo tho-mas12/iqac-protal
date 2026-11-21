@@ -4,6 +4,7 @@
  * Directly reads & writes to MySQL database `iqac_aaa` -> table `audit_submissions`
  */
 require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/metric_sync.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -11,6 +12,12 @@ try {
     $pdo = getDBConnection();
 
     if ($method === 'GET') {
+        // Optional trigger to backfill all audit_submissions into individual metric tables
+        if (isset($_GET['action']) && $_GET['action'] === 'backfill') {
+            $backfillResults = MetricSyncEngine::backfillAllSubmissions($pdo);
+            sendJsonResponse(['success' => true, 'message' => 'Backfill completed across metric tables', 'results' => $backfillResults]);
+        }
+
         $deptParam = isset($_GET['dept_id']) ? trim($_GET['dept_id']) : (isset($_GET['code']) ? trim($_GET['code']) : null);
 
         // If not specified, use authenticated user's department
@@ -144,6 +151,14 @@ try {
             $pdo->prepare("UPDATE departments SET status = 'in_progress' WHERE id = :id AND status = 'draft'")->execute([':id' => $deptId]);
         }
 
+        // Synchronize row-level records directly into individual metric_* MySQL tables
+        $syncedTables = [];
+        try {
+            $syncedTables = MetricSyncEngine::syncAuditData($pdo, $deptId, $deptRow['name'], $academicYear, $auditData);
+        } catch (Exception $syncErr) {
+            error_log("MetricSyncEngine error: " . $syncErr->getMessage());
+        }
+
         sendJsonResponse([
             'success' => true,
             'message' => $isFinalSubmit ? 'Final audit report submitted to IQAC successfully!' : 'Submission saved to database successfully.',
@@ -151,6 +166,7 @@ try {
             'department_code' => $deptRow['code'],
             'department_name' => $deptRow['name'],
             'status' => $isFinalSubmit ? 'submitted' : ($deptRow['status'] === 'draft' ? 'in_progress' : $deptRow['status']),
+            'synced_tables' => $syncedTables,
             'updated_at' => date('Y-m-d H:i:s')
         ]);
     }

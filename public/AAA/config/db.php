@@ -8,10 +8,10 @@
 // ==============================================================
 // EDIT THESE 4 VALUES TO MATCH YOUR CPANEL MYSQL CREDENTIALS
 // ==============================================================
-define('DB_HOST', 'localhost');
+define('DB_HOST', '127.0.0.1');
 define('DB_NAME', 'iqac_aaa');         // Target Database on phpMyAdmin (URL: db=iqac_aaa)
-define('DB_USER', 'root');             // e.g. 'cpaneluser_dbuser'
-define('DB_PASS', '');                 // e.g. 'YourStrongPassword123'
+define('DB_USER', 'iqac_user');        // Target Database user
+define('DB_PASS', 'sjcIQAC-portal26'); // Target Database password
 define('DB_CHARSET', 'utf8mb4');
 
 // Start session if not started
