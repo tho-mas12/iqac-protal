@@ -116,6 +116,7 @@ try {
                 'last_updated' => $row['last_updated'],
                 'submitted_at' => $row['submitted_at'],
                 'has_submission' => !empty($data),
+                'data' => $data,
                 'metrics' => [
                     'publications' => $pubs,
                     'grants_lakhs' => round($grants / 100000, 2),

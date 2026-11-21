@@ -1,6 +1,7 @@
 <?php
 /**
  * API: Get and Save Department Audit Submission
+ * Directly reads & writes to MySQL database `iqac_aaa` -> table `audit_submissions`
  */
 require_once __DIR__ . '/../config/db.php';
 
@@ -10,102 +11,147 @@ try {
     $pdo = getDBConnection();
 
     if ($method === 'GET') {
-        $deptId = isset($_GET['dept_id']) ? (int)$_GET['dept_id'] : null;
+        $deptParam = isset($_GET['dept_id']) ? trim($_GET['dept_id']) : (isset($_GET['code']) ? trim($_GET['code']) : null);
 
         // If not specified, use authenticated user's department
-        if (!$deptId) {
+        if (!$deptParam) {
             $user = getAuthUser();
-            if ($user && $user['department_id']) {
-                $deptId = $user['department_id'];
+            if ($user && !empty($user['department_id'])) {
+                $deptParam = $user['department_id'];
+            } elseif ($user && !empty($user['department_code'])) {
+                $deptParam = $user['department_code'];
             }
         }
 
-        if (!$deptId) {
-            // Default to department 1 (Computer Science) if not logged in
-            $deptId = 1;
+        // Default to department 1 (Computer Science) if still null
+        if (!$deptParam) {
+            $deptParam = 1;
         }
 
-        $stmt = $pdo->prepare("
-            SELECT s.*, d.name AS department_name, d.code AS department_code, d.status AS department_status, d.is_locked
-            FROM departments d
-            LEFT JOIN audit_submissions s ON d.id = s.department_id
-            WHERE d.id = :dept_id
-            LIMIT 1
-        ");
-        $stmt->execute([':dept_id' => $deptId]);
+        // Resolve department by ID, code, or name
+        if (is_numeric($deptParam)) {
+            $stmt = $pdo->prepare("
+                SELECT d.*, s.data_json, s.submitted_at AS sub_submitted_at, s.updated_at AS sub_updated_at
+                FROM departments d
+                LEFT JOIN audit_submissions s ON d.id = s.department_id
+                WHERE d.id = :id
+                LIMIT 1
+            ");
+            $stmt->execute([':id' => (int)$deptParam]);
+        } else {
+            $stmt = $pdo->prepare("
+                SELECT d.*, s.data_json, s.submitted_at AS sub_submitted_at, s.updated_at AS sub_updated_at
+                FROM departments d
+                LEFT JOIN audit_submissions s ON d.id = s.department_id
+                WHERE d.code = :val OR d.name = :val
+                LIMIT 1
+            ");
+            $stmt->execute([':val' => $deptParam]);
+        }
+        
         $row = $stmt->fetch();
 
         if (!$row) {
-            sendJsonResponse(['success' => false, 'error' => 'Department not found.'], 404);
+            sendJsonResponse(['success' => false, 'error' => 'Department not found in database.'], 404);
         }
 
         $data = !empty($row['data_json']) ? json_decode($row['data_json'], true) : null;
 
         sendJsonResponse([
             'success' => true,
-            'department_id' => $deptId,
-            'department_name' => $row['department_name'],
-            'department_status' => $row['department_status'],
+            'department_id' => (int)$row['id'],
+            'department_code' => $row['code'],
+            'department_name' => $row['name'],
+            'department_status' => $row['status'],
             'is_locked' => (bool)$row['is_locked'],
             'data' => $data,
-            'submitted_at' => $row['submitted_at'] ?? null,
-            'updated_at' => $row['updated_at'] ?? null
+            'submitted_at' => $row['sub_submitted_at'] ?? $row['submitted_at'] ?? null,
+            'updated_at' => $row['sub_updated_at'] ?? null
         ]);
 
     } elseif ($method === 'POST') {
         $input = json_decode(file_get_contents('php://input'), true);
-        $deptId = isset($input['department_id']) ? (int)$input['department_id'] : null;
+        if (!$input) {
+            sendJsonResponse(['success' => false, 'error' => 'Invalid JSON payload received.'], 400);
+        }
+
+        $deptParam = $input['department_id'] ?? ($input['department_code'] ?? ($input['department_name'] ?? null));
         $auditData = $input['data'] ?? null;
         $isFinalSubmit = !empty($input['is_final_submit']);
+        $academicYear = !empty($input['academic_year']) ? trim($input['academic_year']) : '2026 - 2027';
 
-        // Authenticate
+        // Check authentication
         $user = getAuthUser();
-        if ($user && $user['role'] === 'department') {
-            $deptId = (int)$user['department_id']; // enforce own department
+        if ($user && $user['role'] === 'department' && !empty($user['department_id'])) {
+            $deptParam = $user['department_id']; // enforce own department
         }
 
-        if (!$deptId || !$auditData) {
-            sendJsonResponse(['success' => false, 'error' => 'Department ID and data are required.'], 400);
+        if (!$deptParam || !$auditData) {
+            sendJsonResponse(['success' => false, 'error' => 'Department identifier and audit data payload are required.'], 400);
         }
 
-        // Check if locked
-        $checkStmt = $pdo->prepare("SELECT is_locked, name FROM departments WHERE id = :id");
-        $checkStmt->execute([':id' => $deptId]);
-        $deptRow = $checkStmt->fetch();
+        // Resolve department record
+        if (is_numeric($deptParam)) {
+            $stmt = $pdo->prepare("SELECT id, name, code, is_locked, status FROM departments WHERE id = :id LIMIT 1");
+            $stmt->execute([':id' => (int)$deptParam]);
+        } else {
+            $stmt = $pdo->prepare("SELECT id, name, code, is_locked, status FROM departments WHERE code = :val OR name = :val LIMIT 1");
+            $stmt->execute([':val' => trim($deptParam)]);
+        }
+        $deptRow = $stmt->fetch();
 
-        if ($deptRow && $deptRow['is_locked'] && (!$user || $user['role'] !== 'admin')) {
-            sendJsonResponse(['success' => false, 'error' => 'This department submission is locked by IQAC.'], 403);
+        if (!$deptRow) {
+            sendJsonResponse(['success' => false, 'error' => 'Matching department not found in database.'], 404);
+        }
+
+        $deptId = (int)$deptRow['id'];
+
+        // Enforce lock check (unless admin)
+        if ($deptRow['is_locked'] && (!$user || $user['role'] !== 'admin')) {
+            sendJsonResponse(['success' => false, 'error' => 'This department audit is currently locked by IQAC.'], 403);
         }
 
         $jsonStr = json_encode($auditData, JSON_UNESCAPED_UNICODE);
 
-        // Upsert submission
+        // Upsert into audit_submissions
         if ($isFinalSubmit) {
-            $stmt = $pdo->prepare("
+            $subStmt = $pdo->prepare("
                 INSERT INTO audit_submissions (department_id, academic_year, data_json, submitted_at)
-                VALUES (:dept_id, '2026 - 2027', :data_json, NOW())
+                VALUES (:dept_id, :acad_year, :data_json, NOW())
                 ON DUPLICATE KEY UPDATE data_json = VALUES(data_json), submitted_at = NOW()
             ");
+            $subStmt->execute([
+                ':dept_id' => $deptId,
+                ':acad_year' => $academicYear,
+                ':data_json' => $jsonStr
+            ]);
+
+            // Update departments table status
             $pdo->prepare("UPDATE departments SET status = 'submitted' WHERE id = :id")->execute([':id' => $deptId]);
         } else {
-            $stmt = $pdo->prepare("
+            $subStmt = $pdo->prepare("
                 INSERT INTO audit_submissions (department_id, academic_year, data_json)
-                VALUES (:dept_id, '2026 - 2027', :data_json)
+                VALUES (:dept_id, :acad_year, :data_json)
                 ON DUPLICATE KEY UPDATE data_json = VALUES(data_json)
             ");
+            $subStmt->execute([
+                ':dept_id' => $deptId,
+                ':acad_year' => $academicYear,
+                ':data_json' => $jsonStr
+            ]);
+
+            // If draft, advance to in_progress
             $pdo->prepare("UPDATE departments SET status = 'in_progress' WHERE id = :id AND status = 'draft'")->execute([':id' => $deptId]);
         }
 
-        $stmt->execute([
-            ':dept_id' => $deptId,
-            ':data_json' => $jsonStr
-        ]);
-
         sendJsonResponse([
             'success' => true,
-            'message' => $isFinalSubmit ? 'Final audit report submitted to IQAC successfully!' : 'Submission saved successfully.',
+            'message' => $isFinalSubmit ? 'Final audit report submitted to IQAC successfully!' : 'Submission saved to database successfully.',
             'department_id' => $deptId,
-            'status' => $isFinalSubmit ? 'submitted' : 'in_progress'
+            'department_code' => $deptRow['code'],
+            'department_name' => $deptRow['name'],
+            'status' => $isFinalSubmit ? 'submitted' : ($deptRow['status'] === 'draft' ? 'in_progress' : $deptRow['status']),
+            'updated_at' => date('Y-m-d H:i:s')
         ]);
     }
 } catch (Exception $e) {

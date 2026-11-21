@@ -60,6 +60,14 @@ class AuthManager {
         if (result.success && result.user) {
           this.user = result.user;
           localStorage.setItem('IQAC_AUTH_USER', JSON.stringify(this.user));
+          
+          // Load authoritative department data from MySQL server
+          if (this.user.role === 'department' && (this.user.department_id || this.user.department_name) && window.dataStore) {
+            try {
+              await window.dataStore.loadDepartmentFromServer(this.user.department_id || this.user.department_name);
+            } catch (e) {}
+          }
+
           this.updateUI();
           this.notify();
           return { success: true, user: this.user };

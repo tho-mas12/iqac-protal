@@ -86,6 +86,22 @@ class DataStore {
     }
 
     let activeDeptName = localStorage.getItem(ACTIVE_DEPT_KEY) || deptList[0];
+
+    // Priority 1: Check server MySQL database for existing saved submission
+    try {
+      const authUser = window.authManager?.user;
+      const targetDeptId = (authUser && authUser.role === 'department' && authUser.department_id) 
+        ? authUser.department_id 
+        : this.getDepartmentId(activeDeptName);
+      
+      const serverLoaded = await this.loadDepartmentFromServer(targetDeptId);
+      if (serverLoaded) {
+        return;
+      }
+    } catch (e) {
+      console.warn('Initial server load check skipped:', e);
+    }
+
     let stored = localStorage.getItem(STORAGE_KEY_PREFIX + activeDeptName);
 
     if (stored) {
@@ -616,36 +632,138 @@ class DataStore {
     return Boolean(status.is_locked);
   }
 
+  // ================= MYSQL SERVER DATABASE SYNC =================
+  getDepartmentId(deptName = null) {
+    const target = deptName || this.activeDepartment;
+    if (window.authManager?.user?.department_id && (!deptName || window.authManager.user.department_name === deptName)) {
+      return window.authManager.user.department_id;
+    }
+    const db = this.getUsersDB();
+    const found = (db?.departments || []).find(d => 
+      (d.name || '').toLowerCase() === (target || '').toLowerCase() || 
+      (d.code || '').toLowerCase() === (target || '').toLowerCase() ||
+      String(d.id) === String(target)
+    );
+    return found ? found.id : (window.authManager?.user?.department_id || 1);
+  }
+
+  getDepartmentCode(deptName = null) {
+    const target = deptName || this.activeDepartment;
+    if (window.authManager?.user?.department_code && (!deptName || window.authManager.user.department_name === deptName)) {
+      return window.authManager.user.department_code;
+    }
+    const db = this.getUsersDB();
+    const found = (db?.departments || []).find(d => 
+      (d.name || '').toLowerCase() === (target || '').toLowerCase() || 
+      (d.code || '').toLowerCase() === (target || '').toLowerCase()
+    );
+    return found ? found.code : 'cs';
+  }
+
+  async saveToServer(isFinalSubmit = false) {
+    if (!this.data || !this.data.departmentInfo) return;
+    const deptId = this.getDepartmentId();
+    const deptCode = this.getDepartmentCode();
+    const deptName = this.data.departmentInfo.departmentName || this.activeDepartment;
+    const academicYear = this.getActiveYear();
+
+    try {
+      const resp = await fetch('api/submission.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          department_id: deptId,
+          department_code: deptCode,
+          department_name: deptName,
+          academic_year: academicYear,
+          data: this.data,
+          is_final_submit: isFinalSubmit
+        })
+      });
+      const res = await resp.json();
+      if (res.success) {
+        console.log(`✅ [Database Sync] Submission successfully saved to MySQL database for dept: ${deptName} (${deptId})`);
+        this.lastServerSave = new Date();
+        return res;
+      } else {
+        console.warn('⚠️ [Database Sync] Server responded with warning:', res.error);
+      }
+    } catch (err) {
+      console.warn('⚠️ [Database Sync] Network error connecting to MySQL server:', err);
+    }
+  }
+
+  triggerDebouncedServerSave(isFinalSubmit = false) {
+    if (isFinalSubmit) {
+      if (this.serverSaveTimer) clearTimeout(this.serverSaveTimer);
+      return this.saveToServer(true);
+    }
+    if (this.serverSaveTimer) clearTimeout(this.serverSaveTimer);
+    this.serverSaveTimer = setTimeout(() => {
+      this.saveToServer(false);
+    }, 1200);
+  }
+
+  async loadDepartmentFromServer(deptIdOrCode) {
+    if (!deptIdOrCode) return false;
+    try {
+      const resp = await fetch(`api/submission.php?dept_id=${encodeURIComponent(deptIdOrCode)}`);
+      if (resp.ok) {
+        const res = await resp.json();
+        if (res.success && res.data) {
+          console.log(`✅ [Database Sync] Loaded live department data from MySQL for: ${deptIdOrCode}`);
+          this.data = this.ensureSchema(res.data);
+          if (res.department_name) {
+            this.activeDepartment = res.department_name;
+            localStorage.setItem(ACTIVE_DEPT_KEY, res.department_name);
+          }
+          const activeYear = this.getActiveYear();
+          localStorage.setItem(STORAGE_KEY_PREFIX + activeYear + '_' + this.activeDepartment, JSON.stringify(this.data));
+          localStorage.setItem(STORAGE_KEY_PREFIX + this.activeDepartment, JSON.stringify(this.data));
+          this.notify();
+          return true;
+        }
+      }
+    } catch (e) {
+      console.warn('Could not load department data from server:', e);
+    }
+    return false;
+  }
+
   switchDepartment(deptName) {
     if (this.data && this.activeDepartment) {
       this.saveCurrentData();
     }
 
-    const activeYear = this.getActiveYear();
-    const yearStorageKey = STORAGE_KEY_PREFIX + activeYear + '_' + deptName;
-    const stored = localStorage.getItem(yearStorageKey) || localStorage.getItem(STORAGE_KEY_PREFIX + deptName);
-
-    if (stored) {
-      try {
-        this.data = this.ensureSchema(JSON.parse(stored));
-        this.activeDepartment = deptName;
-        localStorage.setItem(ACTIVE_DEPT_KEY, deptName);
-        this.notify();
-        return;
-      } catch (e) {
-        console.error('Error switching department', e);
-      }
-    }
-
-    // Create fresh zero-dummy dataset for this department
-    this.data = this.ensureSchema(this.createDefaultData(deptName));
     this.activeDepartment = deptName;
     localStorage.setItem(ACTIVE_DEPT_KEY, deptName);
-    this.saveCurrentData();
-    this.notify();
+
+    // Try loading from server database first
+    this.loadDepartmentFromServer(deptName).then(loaded => {
+      if (!loaded) {
+        const activeYear = this.getActiveYear();
+        const yearStorageKey = STORAGE_KEY_PREFIX + activeYear + '_' + deptName;
+        const stored = localStorage.getItem(yearStorageKey) || localStorage.getItem(STORAGE_KEY_PREFIX + deptName);
+
+        if (stored) {
+          try {
+            this.data = this.ensureSchema(JSON.parse(stored));
+            this.notify();
+            return;
+          } catch (e) {
+            console.error('Error switching department', e);
+          }
+        }
+
+        // Create fresh zero-dummy dataset for this department
+        this.data = this.ensureSchema(this.createDefaultData(deptName));
+        this.saveCurrentData();
+        this.notify();
+      }
+    });
   }
 
-  saveCurrentData() {
+  saveCurrentData(isFinalSubmit = false) {
     if (!this.data || !this.data.departmentInfo) return;
     const name = this.data.departmentInfo.departmentName || 'Untitled Department';
     const activeYear = this.getActiveYear();
@@ -664,6 +782,9 @@ class DataStore {
       list.push(name);
       this.saveDepartmentList(list);
     }
+
+    // Persist automatically to Server MySQL Database
+    this.triggerDebouncedServerSave(isFinalSubmit);
   }
 
   updateData(newData) {

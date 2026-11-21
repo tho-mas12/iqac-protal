@@ -2242,16 +2242,21 @@ class FormBuilder {
     }
   }
 
-  confirmAndSaveCardRecords(cardId) {
+  async confirmAndSaveCardRecords(cardId) {
     const card = this.getMasterSchema().find(c => c.id === cardId);
     if (window.dataStore) {
-      window.dataStore.saveCurrentData();
+      window.dataStore.saveCurrentData(false);
+      try {
+        await window.dataStore.saveToServer(false);
+      } catch (e) {
+        console.warn('Server save backgrounded:', e);
+      }
     }
     this.closeReviewModal();
     this.showSaveIndicator();
 
     const title = card ? card.cardTitle : 'Attribute';
-    window.showToast(`All records for ${title} have been verified and saved successfully!`, 'success', 4000, 'All Records Saved');
+    window.showToast(`All records for ${title} have been verified and saved to database successfully!`, 'success', 4000, 'Saved to Database');
     this.render(window.dataStore?.data);
   }
 
@@ -2448,7 +2453,7 @@ class FormBuilder {
   }
 
   // Confirm Final Submission to IQAC
-  confirmFinalSubmissionToIQAC() {
+  async confirmFinalSubmissionToIQAC() {
     const deptName = window.dataStore?.activeDepartment || 'Department';
 
     // Save current active attribute data
@@ -2456,7 +2461,12 @@ class FormBuilder {
       window.dataStore?.saveAttributeFormData(this.currentFormData);
     }
     if (window.dataStore?.saveCurrentData) {
-      window.dataStore.saveCurrentData();
+      window.dataStore.saveCurrentData(true);
+      try {
+        await window.dataStore.saveToServer(true);
+      } catch (e) {
+        console.warn('Final submit server call backgrounded:', e);
+      }
     }
 
     // Set submission status in dataStore

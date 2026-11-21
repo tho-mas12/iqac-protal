@@ -2364,9 +2364,29 @@ class AdminDashboard {
   }
 
   // Inspect data entered by a department for an attribute
-  inspectDepartmentAttributeData(deptName, cardId, cardTitle) {
+  async inspectDepartmentAttributeData(deptName, cardId, cardTitle) {
     const activeYear = window.dataStore ? window.dataStore.getActiveYear() : '2026 - 2027';
-    const deptData = window.dataStore ? window.dataStore.getDepartmentDataForYear(deptName, activeYear) : null;
+    let deptObj = (this.departments || []).find(d => 
+      (d.name || '').toLowerCase() === (deptName || '').toLowerCase() ||
+      (d.code || '').toLowerCase() === (deptName || '').toLowerCase()
+    );
+    let deptData = deptObj?.data || null;
+
+    if (!deptData) {
+      try {
+        const resp = await fetch(`api/submission.php?dept_id=${encodeURIComponent(deptObj?.id || deptName)}`);
+        if (resp.ok) {
+          const res = await resp.json();
+          if (res.success && res.data) {
+            deptData = res.data;
+          }
+        }
+      } catch (e) {}
+    }
+
+    if (!deptData && window.dataStore) {
+      deptData = window.dataStore.getDepartmentDataForYear(deptName, activeYear);
+    }
     const cardsSchema = window.dataStore ? window.dataStore.getAllCardsSchema() : [];
     const card = cardsSchema.find(c => c.id === cardId);
     if (!card) return;
