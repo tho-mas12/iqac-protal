@@ -91,11 +91,11 @@ export async function POST(req: NextRequest) {
                 shift: null,
               });
 
-              let redirectUrl = '/hub';
+              let redirectUrl = '/department/dashboard';
               if (f.invitationRole === 'ADMIN') redirectUrl = '/admin';
               else if (f.invitationRole === 'DIRECTOR') redirectUrl = '/director/dashboard';
               else if (f.invitationRole === 'ADMINISTRATOR') redirectUrl = '/staff/dashboard';
-              else redirectUrl = '/hub';
+              else redirectUrl = '/department/dashboard';
 
               const res = NextResponse.json({
                 success: true,
@@ -190,12 +190,12 @@ export async function POST(req: NextRequest) {
       shift: user.department?.shift || null,
     });
 
-    // Unified ERP redirect path: Admin goes to /admin, Administrator to /staff/dashboard, Director to /director/dashboard, Staff to /hub
-    let redirectUrl = '/hub';
+    // Unified redirect path: Admin goes to /admin, Administrator to /staff/dashboard, Director to /director/dashboard, Staff/Department to /department/dashboard
+    let redirectUrl = '/department/dashboard';
     if (userRoleResolved === 'ADMIN') redirectUrl = '/admin';
     else if (userRoleResolved === 'DIRECTOR') redirectUrl = '/director/dashboard';
     else if (userRoleResolved === 'ADMINISTRATOR') redirectUrl = '/staff/dashboard';
-    else redirectUrl = '/hub';
+    else redirectUrl = '/department/dashboard';
 
     // Synchronize HOD / MQC status for database users
     const academicRoles = require('@/lib/academic-roles').getAcademicRoles();

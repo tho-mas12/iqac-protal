@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Lock, User, ShieldCheck, ArrowRight, Sparkles, AlertTriangle, X, LogOut } from 'lucide-react';
-import sjcLogo from '../../../public/sjc-logo.png';
+import { User, Lock, ArrowRight, ExternalLink, Calendar, AlertTriangle, LogOut } from 'lucide-react';
+import Logo from '@/components/Logo';
+import frontierLogo from '../../../public/frontierwox-logo.jpg';
 import collegeBg from '../../../public/college-bg.jpg';
 
 export default function LoginPage() {
@@ -68,7 +69,7 @@ export default function LoginPage() {
         );
       }
 
-      window.location.href = data.redirectUrl || '/hub';
+      window.location.href = data.redirectUrl || '/department/dashboard';
     } catch (err: any) {
       setError(err.message || 'Invalid username or password');
       setLoading(false);
@@ -81,76 +82,87 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#faf8f2] flex flex-col items-center justify-center p-4 selection:bg-[#4F8FC0]/20 selection:text-[#26648E] overflow-hidden font-sans">
-      {/* Arctic Frost Aura Gradient Background Layers (Matching AAA styles) */}
-      <div className="aura-layer-1" aria-hidden="true" />
-      <div className="aura-layer-2" aria-hidden="true" />
-
-      {/* College Background Image with gentle overlay */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+    <div className="relative min-h-screen gradient-bg flex flex-col items-center justify-center p-4 selection:bg-purple-600 selection:text-white overflow-hidden font-sans">
+      {/* College Background Image Overlay with subtle transparency */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <Image
           src={collegeBg}
           alt="St. Joseph's College"
           fill
           priority
           sizes="100vw"
-          quality={85}
-          className="object-cover opacity-[0.06] select-none"
+          quality={90}
+          className="object-cover opacity-25 pointer-events-none select-none"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#f8fafc] via-transparent to-[#f8fafc]/80" />
       </div>
 
-      {/* Login Card Container with AAA Academic Theme */}
-      <div className="relative z-10 w-full max-w-md bg-white/95 backdrop-blur-md rounded-3xl shadow-[0_20px_50px_rgba(38,100,142,0.12)] border border-[#4F8FC0]/30 p-8 sm:p-10 transition-all duration-300 hover:shadow-[0_25px_60px_rgba(38,100,142,0.18)] animate-fadeIn">
-        {/* Institutional Crest and Header */}
-        <div className="flex flex-col items-center text-center mb-6">
-          <div className="w-16 h-20 rounded-2xl bg-gradient-to-b from-[#f0f5f9] via-white to-[#FFE3B3]/35 border border-[#4F8FC0]/35 flex items-center justify-center p-2 shadow-2xs mb-3.5 transform hover:scale-105 transition-transform duration-200">
-            <Image
-              src={sjcLogo}
-              alt="St. Joseph's College Crest"
-              className="h-14 w-auto object-contain drop-shadow-xs"
-              priority
-            />
-          </div>
+      {/* Dark/Gradient Vignette for contrast */}
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 via-transparent to-slate-900/15 pointer-events-none" />
 
-          <h1 className="text-xl sm:text-2xl font-black text-[#26648E] font-crest tracking-tight">
-            St. Joseph&apos;s College
+      {/* Top Navigation Menu: Course Plan & AAA */}
+      <div className="fixed top-4 right-4 sm:top-6 sm:right-6 z-20 flex items-center gap-2 sm:gap-3 flex-wrap justify-end">
+        {/* Course Plan 2026 - 2027 (Even) Direct Form */}
+        <a
+          href="/course-plan/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 bg-white/95 hover:bg-white text-slate-800 hover:text-indigo-600 font-bold text-xs sm:text-sm rounded-2xl shadow-lg hover:shadow-xl border border-slate-200/80 backdrop-blur-md transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] group"
+        >
+          <Calendar className="w-3.5 h-3.5 text-indigo-500 group-hover:scale-110 transition-transform" />
+          <span>Course Plan Form</span>
+          <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-600 transition-colors" />
+        </a>
+
+        {/* AAA 2026 - 2027 Link */}
+        <a
+          href="/AAA/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 bg-white/95 hover:bg-white text-slate-800 hover:text-[#6320ee] font-bold text-xs sm:text-sm rounded-2xl shadow-lg hover:shadow-xl border border-slate-200/80 backdrop-blur-md transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] group"
+        >
+          <span>AAA 2026 - 2027</span>
+          <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#6320ee] transition-colors" />
+        </a>
+      </div>
+
+      {/* Login Card Container */}
+      <div className="relative z-10 w-full max-w-md bg-white/95 backdrop-blur-md rounded-3xl shadow-[0_20px_50px_rgba(79,70,229,0.15)] border border-slate-100/90 p-8 sm:p-10 transition-all duration-300">
+        
+        {/* Logo and Header */}
+        <div className="flex flex-col items-center text-center mb-8">
+          <div className="mb-4 transform hover:scale-105 transition-transform duration-200">
+            <Logo size="lg" />
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#2a1b54] tracking-tight">
+            IQAC Portal
           </h1>
-          <p className="text-xs font-bold text-slate-700 mt-0.5">
-            (Autonomous) • Tiruchirappalli - 620 002
-          </p>
-
-          <div className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFE3B3] text-[#26648E] border border-[#fedba0] text-[10px] font-black uppercase tracking-wider shadow-2xs">
-            <ShieldCheck className="w-3.5 h-3.5 text-[#26648E]" />
-            <span>IQAC Central SSO Gateway</span>
-          </div>
         </div>
 
         {/* Error Alert */}
         {error && (
-          <div className="mb-5 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-bold flex items-center gap-2">
+          <div className="mb-6 p-3.5 rounded-xl bg-red-50 border border-red-200/80 text-red-600 text-xs font-semibold flex items-center gap-2 animate-shake">
             <span className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* Username Field */}
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1.5 ml-1">
-              User ID / Staff Code <span className="text-[#4F8FC0] font-black uppercase text-[10px]">(Caps Only)</span>
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5 ml-1">
+              Username / User ID <span className="text-purple-600 font-bold text-[10px] uppercase">(Caps Only)</span>
             </label>
             <div className="relative flex items-center">
-              <span className="absolute left-3.5 text-[#4F8FC0]">
+              <span className="absolute left-3.5 text-slate-400">
                 <User className="w-4 h-4" />
               </span>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value.toUpperCase())}
-                placeholder="ENTER USER ID (E.G. ADMIN, CS_SHIFT1)"
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#4F8FC0]/30 focus:border-[#26648E] transition-all bg-white font-mono uppercase font-bold tracking-wider"
+                placeholder="ENTER USER ID (E.G. CS_SHIFT1, ADMIN)"
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-600/30 focus:border-purple-600 transition-all bg-white font-mono uppercase font-bold tracking-wider"
                 required
                 autoComplete="username"
               />
@@ -159,19 +171,19 @@ export default function LoginPage() {
 
           {/* Password Field */}
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1.5 ml-1">
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5 ml-1">
               Password
             </label>
             <div className="relative flex items-center">
-              <span className="absolute left-3.5 text-[#4F8FC0]">
+              <span className="absolute left-3.5 text-slate-400">
                 <Lock className="w-4 h-4" />
               </span>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter password"
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#4F8FC0]/30 focus:border-[#26648E] transition-all bg-white font-medium"
+                placeholder="••••••••"
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-purple-600/30 focus:border-purple-600 transition-all bg-white font-medium"
                 required
                 autoComplete="current-password"
               />
@@ -182,36 +194,36 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-2 py-3.5 px-4 bg-[#26648E] hover:bg-[#1f5072] active:bg-[#163850] text-white font-extrabold rounded-xl shadow-md shadow-[#26648E]/25 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed text-xs sm:text-sm group"
+            className="w-full py-3.5 px-4 bg-[#6320ee] hover:bg-[#5215ce] active:bg-[#430fb3] text-white font-bold rounded-xl shadow-lg shadow-purple-600/25 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed text-sm"
           >
             {loading ? (
               <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             ) : (
               <>
-                <span>Sign In to Unified Portal</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <span>Log In</span>
+                <ArrowRight className="w-4 h-4" />
               </>
             )}
           </button>
         </form>
+      </div>
 
-        {/* Footer info within Card */}
-        <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-500">
-          <span className="flex items-center gap-1 text-[#26648E]">
-            <Sparkles className="w-3.5 h-3.5 text-[#53D2DC]" />
-            <span>AAA • Invitation • Course Plan</span>
-          </span>
-          <span className="text-slate-400">Estd. 1844</span>
+      {/* Bottom Right FrontierWox Branding: Powered by on top, Logo below */}
+      <div className="sm:fixed sm:bottom-4 sm:right-4 mt-6 sm:mt-0 flex flex-col items-center justify-center bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-lg border border-slate-200/80 transition-all hover:shadow-xl hover:scale-[1.02] z-20">
+        <span className="text-[9px] uppercase font-extrabold tracking-widest text-slate-400 mb-1.5 leading-none">
+          Powered by
+        </span>
+        <div className="w-36 sm:w-44 h-auto relative flex items-center justify-center py-0.5">
+          <Image
+            src={frontierLogo}
+            alt="FrontierWox Tech Private Limited"
+            className="w-full h-auto object-contain"
+            priority
+            quality={100}
+          />
         </div>
       </div>
 
-      {/* Institutional Footer */}
-      <footer className="relative z-10 mt-6 text-center text-xs font-semibold text-slate-500 max-w-md px-4">
-        <p>Internal Quality Assurance Cell (IQAC)</p>
-        <p className="text-[11px] text-slate-400 mt-0.5">
-          St. Joseph&apos;s College (Autonomous), Tiruchirappalli - 620 002
-        </p>
-      </footer>
       {/* Session Lock Conflict Modal Popup */}
       {sessionConflictModal && (
         <div className="fixed inset-0 z-50 flex items-start justify-center p-4 sm:p-6 overflow-y-auto pt-10 sm:pt-20 bg-slate-950/70 backdrop-blur-md animate-in fade-in duration-200">
