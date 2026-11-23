@@ -7,28 +7,44 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif'],
+        crest: ['"Cinzel"', 'serif'],
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        academic: {
+          primary: '#26648E',     // Deep Classic Ocean / Academic Blue
+          primaryHover: '#1f5072',
+          secondary: '#4F8FC0',   // Soft Cerulean / Slate Blue
+          cyan: '#53D2DC',        // Vibrant Cyan / Turquoise Accent
+          cyanHover: '#3ec8d3',
+          peach: '#FFE3B3',       // Warm Cream / Soft Champagne Peach
+          peachBorder: '#fedba0',
+          bgPage: '#f8fafc',
+          bgSidebar: '#f0f5f9',
+          border: 'rgba(79, 143, 192, 0.25)',
+        },
         brand: {
-          50: "#f5f3ff",
-          100: "#ede9fe",
-          200: "#ddd6fe",
-          300: "#c4b5fd",
-          400: "#a78bfa",
-          500: "#8b5cf6",
-          600: "#7c3aed",
-          700: "#6d28d9",
-          800: "#5b21b6",
-          900: "#4c1d95",
+          50: "#f0f5f9",
+          100: "#e0edf5",
+          200: "#c3dbe9",
+          300: "#95c0dc",
+          400: "#4F8FC0",
+          500: "#3777a8",
+          600: "#26648E",
+          700: "#1f5072",
+          800: "#1b4360",
+          900: "#163850",
         },
         sidebar: {
-          bg: "#0d131f",
-          card: "#161f30",
-          hover: "#1e293b",
-          border: "#1f293d",
-          text: "#94a3b8",
-          active: "#6d28d9",
+          bg: "#f0f5f9",
+          card: "#ffffff",
+          hover: "#e8f1f7",
+          border: "rgba(79, 143, 192, 0.25)",
+          text: "#334155",
+          active: "#26648E",
         }
       },
     },

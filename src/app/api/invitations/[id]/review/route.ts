@@ -8,7 +8,7 @@ export async function POST(
 ) {
   try {
     const session = await getCurrentUser();
-    if (!session || session.role !== 'DIRECTOR') {
+    if (!session || (session.role !== 'DIRECTOR' && session.role !== 'ADMIN')) {
       return NextResponse.json({ error: 'Only the Director can review invitations' }, { status: 403 });
     }
 

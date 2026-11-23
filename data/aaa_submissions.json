@@ -1,0 +1,923 @@
+{
+  "1_2026 - 2027": {
+    "department_id": 1,
+    "department_name": "PG & Research Department of Computer Science",
+    "academic_year": "2026 - 2027",
+    "data": {
+      "departmentInfo": {
+        "collegeName": "St. Joseph's College (Autonomous)",
+        "accreditation": "Special Heritage Status, NIRF Ranked, NAAC A++ Accredited",
+        "academicYear": "2026 - 2027",
+        "departmentName": "PG & Research Department of Computer Science",
+        "school": "Academic School",
+        "hodName": "",
+        "auditDate": "2026-11-23",
+        "facultyCount": 0,
+        "studentCountUG": 0,
+        "studentCountPG": 0,
+        "researchScholarsCount": 0,
+        "scholars": {
+          "fullTime": {
+            "male": 0,
+            "female": 0
+          },
+          "partTime": {
+            "male": 0,
+            "female": 0
+          }
+        }
+      },
+      "attributeFormData": {
+        "part_a": {
+          "PART-A": {
+            "profile": {
+              "collegeName": "St. Joseph's College (Autonomous)",
+              "department": "",
+              "hodName": "",
+              "programmesOffered": ""
+            },
+            "facultyDetails": [
+              {
+                "label": "Total No. of Teaching Faculty",
+                "male": 0,
+                "female": 0
+              },
+              {
+                "label": "No. of Faculty (Aided)",
+                "male": 0,
+                "female": 0
+              },
+              {
+                "label": "No. of Faculty (Coordinator-Appointed)",
+                "male": 0,
+                "female": 0
+              },
+              {
+                "label": "No. of Faculty (Secretary-Appointed)",
+                "male": 0,
+                "female": 0
+              },
+              {
+                "label": "No. of Professor of Practice",
+                "male": 0,
+                "female": 0
+              },
+              {
+                "label": "No. of Faculty (Hourly Basis)",
+                "male": 0,
+                "female": 0
+              },
+              {
+                "label": "No. of Faculty from Other States",
+                "male": 0,
+                "female": 0
+              },
+              {
+                "label": "No. of Faculty Graduating from Other States",
+                "male": 0,
+                "female": 0
+              },
+              {
+                "label": "No. of Academic Support Staff (Technical) and Non-teaching Staff",
+                "male": 0,
+                "female": 0
+              }
+            ],
+            "studentDetails": [
+              {
+                "programme": "Undergraduate (UG)",
+                "male": 0,
+                "female": 0,
+                "otherGender": 0,
+                "otherStates": 0,
+                "otherCountries": 0
+              },
+              {
+                "programme": "Postgraduate (PG)",
+                "male": 0,
+                "female": 0,
+                "otherGender": 0,
+                "otherStates": 0,
+                "otherCountries": 0
+              },
+              {
+                "programme": "Ph.D. / Research",
+                "male": 0,
+                "female": 0,
+                "otherGender": 0,
+                "otherStates": 0,
+                "otherCountries": 0
+              }
+            ]
+          }
+        },
+        "att1": {
+          "1.1": [],
+          "1.2": {
+            "1.2_a": [],
+            "1.2_b": []
+          },
+          "1.3": [],
+          "1.4": [],
+          "1.5": {
+            "ug_batch": [],
+            "pg_batch": []
+          },
+          "1.6": {
+            "ug_batch": [],
+            "pg_batch": []
+          },
+          "1.7": [],
+          "1.8": [],
+          "1.9": [],
+          "1.10": [],
+          "1.11": []
+        },
+        "att2": {
+          "2_2_1": [],
+          "2_2_2": [],
+          "2_2_3": [],
+          "2_2_4": [],
+          "2_2_5": [],
+          "2_2_6": [],
+          "2_2_7": [],
+          "2_2_8": [],
+          "2_2_9": [],
+          "2_2_10": [],
+          "2_2_11": [],
+          "2_2_12": [],
+          "2_2_13": []
+        },
+        "att3": {
+          "3_3_1": [],
+          "3_3_2": []
+        },
+        "att4": {
+          "4_4_1": [],
+          "4_4_2": [],
+          "4_4_3": [],
+          "4_4_4": [],
+          "4_4_5": []
+        },
+        "att5": {
+          "5_5_1": [],
+          "5_5_2": [],
+          "5_5_3": {
+            "teaching_methodologies": [],
+            "remedial_classes": []
+          },
+          "5_5_4": [],
+          "5_5_5": [],
+          "5_5_6": []
+        },
+        "att6": {
+          "6_6_1": [],
+          "6_6_2": [],
+          "6_6_3": [],
+          "6_6_4": [],
+          "6_6_5": []
+        },
+        "att7": {
+          "7_7_1": [],
+          "7_7_2": [],
+          "7_7_3": [],
+          "7_7_4": []
+        },
+        "att8": {
+          "8_8_1": [],
+          "8_8_2": [],
+          "8_8_3": []
+        },
+        "att9": {
+          "9_9_1": [],
+          "9_9_2": [],
+          "9_9_3": [],
+          "9_9_4": [],
+          "9_9_5": [],
+          "9_9_6": [],
+          "9_9_7": [],
+          "9_9_8": [],
+          "9_9_9": [],
+          "9_9_10": [],
+          "9_9_11": {
+            "ipr_details": [],
+            "oer_details": []
+          },
+          "9_9_12": [],
+          "9_9_13": []
+        },
+        "att10": {
+          "10_attribute_x": []
+        }
+      },
+      "attributeI": {
+        "vac": [],
+        "cc": [],
+        "iks": {
+          "seminarCount": 0,
+          "workshopCount": 0,
+          "fieldVisitCount": 0,
+          "studentsBenefitted": 0,
+          "details": ""
+        },
+        "visits": {
+          "industrial": 0,
+          "educational": 0,
+          "fieldWork": 0,
+          "fieldVisit": 0,
+          "studentsParticipated": 0,
+          "classSec": "",
+          "details": ""
+        },
+        "internships": {
+          "studentsInvolved": 0,
+          "details": ""
+        },
+        "ptm": {
+          "numberOfPTMs": 0,
+          "parentsParticipated": 0,
+          "details": ""
+        },
+        "moocs": {
+          "ug": {
+            "totalStudents": 0,
+            "cycle1_registered": 0,
+            "cycle2_registered": 0,
+            "cycle1_completed": 0,
+            "cycle2_completed": 0
+          },
+          "pg": {
+            "totalStudents": 0,
+            "cycle1_registered": 0,
+            "cycle2_registered": 0,
+            "cycle1_completed": 0,
+            "cycle2_completed": 0
+          }
+        }
+      },
+      "attributeII": {
+        "newDegrees": {
+          "count": 0,
+          "details": ""
+        },
+        "netSetJrf": {
+          "count": 0,
+          "details": ""
+        },
+        "recognizedBodies": {
+          "bosCount": 0,
+          "externalAuditCount": 0,
+          "details": ""
+        },
+        "researchJournals": {
+          "reviewersCount": 0,
+          "editorsCount": 0,
+          "details": ""
+        },
+        "professionalBodies": {
+          "count": 0,
+          "details": ""
+        },
+        "resourcePerson": {
+          "international": 0,
+          "national": 0,
+          "state": 0,
+          "regional": 0,
+          "institutional": 0,
+          "servedFacultyNames": ""
+        },
+        "fdp": {
+          "mmttc_aicte_ugc": 0,
+          "otherInstitutions": 0,
+          "throughFdc": 0,
+          "institutionalLevel": 0,
+          "details": ""
+        },
+        "industrialTraining": {
+          "count": 0,
+          "details": ""
+        },
+        "socialSectorProjects": {
+          "count": 0,
+          "details": ""
+        },
+        "fellowships": {
+          "national": 0,
+          "international": 0,
+          "details": ""
+        },
+        "awards": {
+          "count": 0,
+          "details": ""
+        },
+        "facultyMooc": {
+          "registered": 0,
+          "completed": 0,
+          "details": ""
+        },
+        "abroadVisits": {
+          "count": 0,
+          "facultyNames": ""
+        }
+      },
+      "attributeIV_VII": {
+        "externalFunds": [],
+        "managementFunds": [],
+        "seedMoney": {
+          "projectsAmount": 0,
+          "patentsAmount": 0,
+          "copyrightAmount": 0,
+          "totalSanctioned": 0,
+          "details": ""
+        },
+        "endowments": {
+          "count": 0,
+          "details": ""
+        }
+      },
+      "attributeV": {
+        "mouCreated": {
+          "count": 0,
+          "activitiesConducted": ""
+        },
+        "previousMous": {
+          "count": 0,
+          "activitiesConducted": ""
+        },
+        "linkages": {
+          "count": 0,
+          "activitiesConducted": ""
+        },
+        "eContent": {
+          "count": 0,
+          "details": ""
+        }
+      },
+      "attributeVI_VIII": {
+        "clubs": [],
+        "pursuingOtherDegrees": {
+          "count": 0,
+          "details": ""
+        },
+        "studentChapters": {
+          "count": 0,
+          "details": ""
+        },
+        "competitiveExams": {
+          "appeared": 0,
+          "qualified": 0,
+          "details": ""
+        },
+        "studentParticipationAwards": {
+          "sports": 0,
+          "cultural": 0,
+          "externalAcademicEvents": 0,
+          "extraCurricularEvents": 0,
+          "coCurricularEvents": 0,
+          "details": ""
+        }
+      },
+      "attributeIX": {
+        "phdConferred": {
+          "count": 0,
+          "details": ""
+        },
+        "newGuides": {
+          "count": 0,
+          "details": ""
+        },
+        "newScholars": {
+          "count": 0,
+          "details": ""
+        },
+        "papersPublished": {
+          "scopus": 0,
+          "wos": 0,
+          "ugcCare": 0,
+          "details": ""
+        },
+        "conferencesPresented": {
+          "indexed": 0,
+          "nonIndexed": 0,
+          "details": ""
+        },
+        "books": {
+          "published": 0,
+          "edited": 0,
+          "chaptersContributed": 0,
+          "details": ""
+        },
+        "patents": {
+          "applied": 0,
+          "granted": 0,
+          "details": ""
+        },
+        "copyrights": {
+          "count": 0,
+          "details": ""
+        },
+        "oer": {
+          "count": 0,
+          "details": ""
+        }
+      },
+      "studentsOutcomes2026": {
+        "ug": {
+          "strength": 0,
+          "onCampus": 0,
+          "offCampus": 0,
+          "higherStudies": 0,
+          "entrepreneur": 0,
+          "others": 0
+        },
+        "pg": {
+          "strength": 0,
+          "onCampus": 0,
+          "offCampus": 0,
+          "higherStudies": 0,
+          "entrepreneur": 0,
+          "others": 0
+        },
+        "phd": {
+          "strength": 0,
+          "onCampus": 0,
+          "offCampus": 0,
+          "higherStudies": 0,
+          "entrepreneur": 0,
+          "others": 0
+        }
+      },
+      "qualitativePresentation": {
+        "signatureAchievements": [],
+        "uniqueness": "",
+        "statusOfActivities": {
+          "basedOnAAA2025_2026": [],
+          "basedOnFacultyOrientation2026": []
+        },
+        "statusAAA2025_2026": [],
+        "bestPractices": [],
+        "swoc": {
+          "strengths": [],
+          "weaknesses": [],
+          "opportunities": [],
+          "challenges": []
+        },
+        "futurePlans": {
+          "shortTerm": [],
+          "longTerm": []
+        },
+        "pillars": {
+          "ptm": {
+            "meetingsConducted": 0,
+            "dates": "",
+            "parentAttendancePercentage": 0,
+            "keyFeedback": "",
+            "actionTaken": ""
+          },
+          "feedback": {
+            "studentRating": 0,
+            "parentRating": 0,
+            "alumniRating": 0,
+            "employerRating": 0,
+            "actionTakenReport": ""
+          },
+          "teachingLearning": {
+            "innovations": "",
+            "ictToolsUsed": ""
+          },
+          "assessmentProcess": {
+            "reforms": ""
+          },
+          "remedialTeaching": {
+            "strategy": "",
+            "impact": ""
+          },
+          "studentSupport": {
+            "mentoringRatio": "",
+            "supportMeasures": ""
+          },
+          "guidanceCompExam": {
+            "initiatives": ""
+          },
+          "sustainability": {
+            "initiatives": ""
+          }
+        }
+      },
+      "panelReview": {
+        "expertName": "",
+        "deanName": "",
+        "iqacCoordinator": "",
+        "administratorName": "",
+        "comments": "",
+        "rating": 0
+      },
+      "attribute1Data": {
+        "PART-A": {
+          "profile": {
+            "department": "PG & Research Department of Computer Science",
+            "shift": "Shift I & Shift II",
+            "programmes": {
+              "ug": "B.Sc. Computer Science",
+              "pg": "M.Sc. Computer Science, MCA",
+              "phd": "Ph.D. Computer Science"
+            },
+            "hodName": "Dr. S. Albert Rabara"
+          },
+          "facultyDetails": [
+            {
+              "label": "Total No. of Teaching Faculty",
+              "male": 18,
+              "female": 12
+            },
+            {
+              "label": "No. of Faculty (Aided)",
+              "male": 8,
+              "female": 4
+            },
+            {
+              "label": "No. of Faculty (Coordinator-Appointed)",
+              "male": 4,
+              "female": 3
+            },
+            {
+              "label": "No. of Faculty (Secretary-Appointed)",
+              "male": 5,
+              "female": 4
+            },
+            {
+              "label": "No. of Professor of Practice",
+              "male": 1,
+              "female": 0
+            },
+            {
+              "label": "No. of Faculty (Hourly Basis)",
+              "male": 0,
+              "female": 1
+            },
+            {
+              "label": "No. of Faculty from Other States",
+              "male": 1,
+              "female": 1
+            },
+            {
+              "label": "No. of Faculty Graduating from Other States",
+              "male": 2,
+              "female": 1
+            },
+            {
+              "label": "No. of Academic Support Staff (Technical) and Non-teaching Staff",
+              "male": 4,
+              "female": 2
+            }
+          ],
+          "studentDetails": [
+            {
+              "programme": "UG",
+              "male": 160,
+              "female": 120,
+              "otherGender": 0,
+              "otherStates": 4,
+              "otherCountries": 2
+            },
+            {
+              "programme": "PG",
+              "male": 55,
+              "female": 45,
+              "otherGender": 0,
+              "otherStates": 2,
+              "otherCountries": 1
+            },
+            {
+              "programme": "PhD",
+              "male": 14,
+              "female": 10,
+              "otherGender": 0,
+              "otherStates": 1,
+              "otherCountries": 0
+            }
+          ]
+        },
+        "1.1": [],
+        "1.2": {
+          "1.2_a": [
+            {
+              "sno": "1",
+              "nature": "VAC",
+              "collaboratingAgency": "Not Applicable",
+              "courseCode": "VAC-CS01",
+              "courseTitle": "Digital Literacy and Productivity Tools",
+              "creditsAssigned": "0",
+              "coordinatorName": "Dr. A. Vimal Jerald",
+              "mode": "Blended",
+              "iksBased": "No",
+              "focus": "Skill",
+              "multidisciplinary": "Yes",
+              "durationHours": "30",
+              "datesFromTo": "01.07.2026 – 15.07.2026",
+              "industryCollab": "No",
+              "staffOrExperts": "Dr. A. Vimal Jerald, Assistant Professor, Department of Computer Science, St. Joseph’s College (Autonomous), Tiruchirappalli – 620002",
+              "enrolled": "80",
+              "completed": "75"
+            },
+            {
+              "sno": "2",
+              "nature": "CC",
+              "collaboratingAgency": "Not Applicable",
+              "courseCode": "CC-AI01",
+              "courseTitle": "Artificial Intelligence and Generative AI",
+              "creditsAssigned": "2",
+              "coordinatorName": "Dr. R. Lenin",
+              "mode": "Offline",
+              "iksBased": "No",
+              "focus": "Both",
+              "multidisciplinary": "Yes",
+              "durationHours": "40",
+              "datesFromTo": "15.07.2026 – 30.07.2026",
+              "industryCollab": "Yes",
+              "staffOrExperts": "Dr. R. Lenin, Associate Professor, Department of Computer Science, St. Joseph’s College (Autonomous), Tiruchirappalli – 620002; Mr. Arun Kumar, Senior AI Engineer, ABC Technologies Pvt. Ltd., 25 Anna Salai, Chennai – 600002",
+              "enrolled": "60",
+              "completed": "55"
+            },
+            {
+              "sno": "3",
+              "nature": "CC",
+              "collaboratingAgency": "ABC Technologies Pvt. Ltd., 25 Anna Salai, Chennai – 600002, Tamil Nadu",
+              "courseCode": "CC-FS01",
+              "courseTitle": "Full Stack Web Development",
+              "creditsAssigned": "3",
+              "coordinatorName": "Mr. G. Novin Senetra Roy",
+              "mode": "Blended",
+              "iksBased": "No",
+              "focus": "Skill",
+              "multidisciplinary": "Yes",
+              "durationHours": "60",
+              "datesFromTo": "01.08.2026 – 20.08.2026",
+              "industryCollab": "Yes",
+              "staffOrExperts": "Mr. G. Novin Senetra Roy, Assistant Professor, Department of Computer Science, St. Joseph’s College (Autonomous); Ms. Priya Joseph, Senior Software Developer, ABC Technologies Pvt. Ltd.",
+              "enrolled": "50",
+              "completed": "45"
+            },
+            {
+              "sno": "4",
+              "nature": "VAC",
+              "collaboratingAgency": "Not Applicable",
+              "courseCode": "VAC-IKS01",
+              "courseTitle": "Indian Knowledge Systems and Sustainable Living",
+              "creditsAssigned": "0",
+              "coordinatorName": "Dr. S. Thulasi Bharathi",
+              "mode": "Offline",
+              "iksBased": "Yes",
+              "focus": "Knowledge",
+              "multidisciplinary": "Yes",
+              "durationHours": "20",
+              "datesFromTo": "05.08.2026 – 12.08.2026",
+              "industryCollab": "No",
+              "staffOrExperts": "Dr. S. Thulasi Bharathi, Assistant Professor, Department of Commerce, St. Joseph’s College (Autonomous), Tiruchirappalli – 620002",
+              "enrolled": "100",
+              "completed": "96"
+            }
+          ],
+          "1.2_b": [
+            {
+              "sno": "1",
+              "regNo": "26UCS101",
+              "studentName": "Arun Kumar",
+              "courseTitle": "Certificate Course in Full Stack Web Development",
+              "agencyDetails": "ABC Technologies Pvt. Ltd., 25 Anna Salai, Chennai – 600002, Tamil Nadu",
+              "mode": "Offline",
+              "datesFromTo": "01.07.2026 – 15.07.2026",
+              "credits": "2"
+            },
+            {
+              "sno": "2",
+              "regNo": "26UCS115",
+              "studentName": "Priya Joseph",
+              "courseTitle": "Certificate Course in Data Analytics",
+              "agencyDetails": "XYZ Analytics Solutions, 18 MG Road, Bengaluru – 560001, Karnataka",
+              "mode": "Blended",
+              "datesFromTo": "10.07.2026 – 25.07.2026",
+              "credits": "3"
+            }
+          ]
+        },
+        "1.3": [
+          {
+            "sno": "1",
+            "title": "Traditional Knowledge Systems in Sustainable Agriculture",
+            "nature": "Seminar",
+            "relevance": "25PCA1CC01-Industrial IoT",
+            "date": "22.09.2025",
+            "placeVisited": "NIL",
+            "resourcePerson": "Dr. R. Anitha, Associate Professor of Botany, ABC College, Tiruchirappalli",
+            "studentsBenefitted": "25",
+            "facultyBenefitted": "5"
+          }
+        ],
+        "1.4": [
+          {
+            "sno": "1",
+            "nature": "Industrial Visit",
+            "placeDetails": "Systech Hardware & Networking Academy Pvt. Ltd., Tiruchirappalli, Tamil Nadu",
+            "relevance": "25UCS4CC05-Internship",
+            "staffAccompanying": "Dr. J. Antony John Prabu & Dr. K. Subash",
+            "datesFromTo": "30.08.2025",
+            "durationDays": "0.5",
+            "mouLinkage": "MoU",
+            "learningOutcome": "Enhanced Industry Awareness, Practical Learning Impact, Career Motivation",
+            "targetGroup": "III BSc Computer Science 'A'",
+            "studentsBenefitted": "60"
+          }
+        ],
+        "1.5": {
+          "ug_batch": [
+            {
+              "sno": "1",
+              "studentName": "Kishore Ignatius R",
+              "regNo": "24UCS604",
+              "internshipTitle": "Data Analytics",
+              "organizationDetails": "We Touch Technologies Pvt. Ltd., No. 45, IT Park, Coimbatore",
+              "placeNature": "Industry",
+              "durationDays": "30",
+              "datesFromTo": "02.05.2026 - 03.06.2026",
+              "staffInCharge": "Ms. I. Reshma Monica",
+              "sdgGoal": "GOAL 8: Decent Work and Economic Growth",
+              "mouLinkage": "MoU",
+              "iksBased": "No"
+            }
+          ],
+          "pg_batch": []
+        },
+        "1.6": {
+          "ug_batch": [
+            {
+              "sno": "1",
+              "studentName": "Santhosh S",
+              "regNo": "24UCS101",
+              "projectTitle": "Web Application Development",
+              "organizationDetails": "Tech Solutions Pvt. Ltd., No. 45, IT Park, Coimbatore",
+              "placeNature": "Industry",
+              "durationDays": "30",
+              "datesFromTo": "01.12.2025-30.12.2025",
+              "staffInCharge": "Dr. V. Jude Nirmal",
+              "sdgGoal": "GOAL 8: Decent Work and Economic Growth",
+              "mouLinkage": "Linkage",
+              "iksBased": "NO"
+            }
+          ],
+          "pg_batch": []
+        },
+        "1.7": [
+          {
+            "sno": "1",
+            "studentName": "Thomas A",
+            "regNo": "25UCS101",
+            "apprenticeshipTitle": "Full Stack Development",
+            "organizationDetails": "Tech Solutions Pvt. Ltd., No. 45, IT Park, Coimbatore",
+            "durationDays": "180",
+            "datesFromTo": "01.01.2025-30.06.2025",
+            "status": "Ongoing",
+            "stipend": "Rs. 4000"
+          }
+        ],
+        "1.8": [
+          {
+            "sno": "1",
+            "className": "III B.Com.",
+            "regNo": "24UCO115",
+            "studentName": "Priya Joseph",
+            "activityType": "Project – Financial Data Analysis",
+            "agencyDetails": "XYZ Financial Services, 45 MG Road, Bengaluru – 560001, Karnataka",
+            "durationDays": "20",
+            "datesFromTo": "10.06.2026 – 29.06.2026",
+            "skillsAcquired": "Excel, Data Analysis, Financial Reporting",
+            "stipend": "-"
+          },
+          {
+            "sno": "2",
+            "className": "II B.A. English",
+            "regNo": "25UEN208",
+            "studentName": "David Paul",
+            "activityType": "Internship – Content Writing",
+            "agencyDetails": "Creative Media Solutions, 18 College Road, Tiruchirappalli – 620002, Tamil Nadu",
+            "durationDays": "15",
+            "datesFromTo": "15.07.2026 – 29.07.2026",
+            "skillsAcquired": "Content Writing, Editing, Communication",
+            "stipend": "3000"
+          }
+        ],
+        "1.9": [
+          {
+            "sno": "1",
+            "className": "I BSc Computer Science",
+            "regNo": "26UCS101",
+            "studentName": "Raju S",
+            "courseTitle": "Relational Database Management",
+            "platform": "SWAYAM",
+            "cycle": "July 2026",
+            "duration": "8",
+            "examDate": "28.09.2026",
+            "credits": "2",
+            "status": "Registered"
+          },
+          {
+            "sno": "2",
+            "className": "I MCA",
+            "regNo": "26PCA101",
+            "studentName": "Abishek A",
+            "courseTitle": "C++ & Data Structures",
+            "platform": "Coursera",
+            "cycle": "NIL",
+            "duration": "30",
+            "examDate": "NIL",
+            "credits": "NIL",
+            "status": "Completed"
+          }
+        ],
+        "1.10": [
+          {
+            "date": "15.07.2026",
+            "className": "II B.Sc. Computer Science",
+            "studentsOrganized": "45",
+            "parentsAttending": "38",
+            "feedbackReceived": "32",
+            "actionTaken": "Individual counselling and academic follow-up initiated for students requiring support"
+          },
+          {
+            "date": "22.07.2026",
+            "className": "I B.Com.",
+            "studentsOrganized": "52",
+            "parentsAttending": "45",
+            "feedbackReceived": "40",
+            "actionTaken": "Attendance and academic performance concerns communicated to parents and monitored"
+          }
+        ],
+        "1.11": [
+          {
+            "sno": "1",
+            "stakeholderType": "Teachers",
+            "feedbackDate": "15.07.2026",
+            "feedbackReceived": "85",
+            "mode": "Online",
+            "actionTaken": "Faculty suggestions regarding curriculum delivery were reviewed and necessary improvements initiated"
+          },
+          {
+            "sno": "2",
+            "stakeholderType": "Alumni",
+            "feedbackDate": "20.07.2026",
+            "feedbackReceived": "120",
+            "mode": "Online",
+            "actionTaken": "Suggestions regarding employability and skill development were considered for curriculum enrichment"
+          },
+          {
+            "sno": "3",
+            "stakeholderType": "Employers/Industry",
+            "feedbackDate": "25.07.2026",
+            "feedbackReceived": "35",
+            "mode": "Online / Offline",
+            "actionTaken": "Industry suggestions were incorporated into skill-oriented training and curriculum review"
+          },
+          {
+            "sno": "4",
+            "stakeholderType": "Entrepreneurs",
+            "feedbackDate": "30.07.2026",
+            "feedbackReceived": "20",
+            "mode": "Online",
+            "actionTaken": "Suggestions regarding entrepreneurship and start-up skills were considered for student development activities"
+          },
+          {
+            "sno": "5",
+            "stakeholderType": "Students",
+            "feedbackDate": "05.08.2026",
+            "feedbackReceived": "450",
+            "mode": "Online",
+            "actionTaken": "Feedback on teaching-learning, infrastructure and student support services was analysed and corrective measures initiated"
+          }
+        ]
+      },
+      "attributeIII": {
+        "researchFacility": [],
+        "departmentLibrary": {
+          "booksPurchased": 0,
+          "journalsPurchased": 0,
+          "totalBooks": 0,
+          "totalJournals": 0,
+          "facultyVisitsPerDay": 0,
+          "studentVisitsPerDay": 0
+        }
+      },
+      "attributeX": {
+        "csrExtension": [],
+        "greenInitiatives": {
+          "paperlessCIA": "",
+          "solarEnergyUsage": "",
+          "plasticFreeCampus": "",
+          "rainWaterHarvesting": ""
+        }
+      }
+    },
+    "is_final_submit": false,
+    "submitted_at": null,
+    "updated_at": "2026-11-23T05:44:42.592Z"
+  }
+}

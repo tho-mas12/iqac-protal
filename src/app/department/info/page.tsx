@@ -31,6 +31,13 @@ export default function DepartmentInfoPage() {
       if (res.ok) {
         const data = await res.json();
         setUser(data.user);
+      } else if (typeof window !== 'undefined') {
+        const ssoRaw = localStorage.getItem('IQAC_SSO_USER');
+        if (ssoRaw) {
+          try {
+            setUser(JSON.parse(ssoRaw));
+          } catch (e) {}
+        }
       }
     } catch (e) {
       console.error(e);
@@ -84,7 +91,7 @@ export default function DepartmentInfoPage() {
   return (
     <div className="flex min-h-screen bg-[#f8fafc]">
       <Sidebar
-        role="DEPARTMENT"
+        role="STAFF"
         userName={user?.name}
         departmentName={user?.department?.name}
         shift={user?.department?.shift}
@@ -92,9 +99,9 @@ export default function DepartmentInfoPage() {
 
       <div className="flex-1 flex flex-col min-w-0">
         <Header
-          title="Department Profile & Security"
+          title="Staff Profile & Security"
           userName={user?.name}
-          userRole="Department"
+          userRole="Staff"
         />
 
         <main className="p-6 md:p-8 space-y-8 flex-1 max-w-5xl">

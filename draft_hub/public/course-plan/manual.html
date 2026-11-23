@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Faculty &amp; HOD User Manual | IQAC Course Plan Portal</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white !important; color: black !important; font-size: 10.5pt; }
+      .page-break { page-break-before: always; }
+      .screenshot-card { break-inside: avoid; border: 1px solid #cbd5e1 !important; box-shadow: none !important; }
+      a { text-decoration: none !important; color: inherit !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen">
+
+  <!-- Sticky Top Header / Quick Actions -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs px-4 sm:px-8 py-3.5 no-print">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <img src="sjc-logo.png" alt="St. Joseph's College Logo" class="h-10 sm:h-11 w-auto object-contain drop-shadow-sm shrink-0" />
+        <div>
+          <h1 class="text-xs sm:text-sm font-black text-slate-900 leading-tight">IQAC Course Plan Portal — Comprehensive User Manual</h1>
+          <p class="text-[11px] text-slate-500 font-medium">St. Joseph’s College (Autonomous), Tiruchirappalli • Rev 2.5</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="window.print()" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 shadow-2xs transition flex items-center gap-1.5 cursor-pointer">
+          <i data-lucide="printer" class="w-4 h-4"></i>
+          <span>Print / Save as PDF</span>
+        </button>
+        <a href="./" class="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition flex items-center gap-1.5">
+          <i data-lucide="external-link" class="w-4 h-4"></i>
+          <span>Open Portal</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Document Container -->
+  <main class="max-w-4xl mx-auto py-8 sm:py-12 px-4 sm:px-6 space-y-12">
+
+    <!-- Document Cover Banner -->
+    <div class="bg-white rounded-3xl border border-slate-200 p-8 sm:p-12 shadow-sm text-center space-y-6">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-800 text-xs font-black uppercase tracking-wider">
+        <i data-lucide="award" class="w-4 h-4 text-indigo-600"></i>
+        <span>Internal Quality Assurance Cell (IQAC)</span>
+      </div>
+
+      <div class="space-y-2">
+        <h1 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+          St. Joseph’s College <span class="text-sm font-bold text-slate-500 uppercase block sm:inline">(Autonomous)</span>
+        </h1>
+        <p class="text-xs sm:text-sm font-bold text-slate-600 uppercase tracking-widest">
+          Tiruchirappalli – 620 002 • Accredited at A++ Grade (Cycle IV) by NAAC • College with Potential for Excellence
+        </p>
+        <div class="pt-3 text-xl sm:text-2xl font-black text-indigo-700">
+          Course Plan &amp; Teaching–Learning Management Portal
+        </div>
+        <p class="text-xs font-semibold text-slate-500">Academic Year 2026–2027 (Even Semester: Semesters II, IV &amp; VI)</p>
+      </div>
+
+      <div class="border-t border-slate-200 pt-6 max-w-2xl mx-auto text-xs text-slate-600 leading-relaxed">
+        This user manual provides step-by-step guidance for <strong>Faculty Members</strong> preparing institutional course plans and <strong>Heads of Departments (HOD) &amp; College Leadership</strong> reviewing, approving, and monitoring academic quality compliance.
+      </div>
+
+      <div class="inline-flex flex-wrap items-center justify-center gap-2 pt-2">
+        <span class="px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-[11px] font-bold text-emerald-800 flex items-center gap-1">
+          <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> Multi-Faculty Course Sharing
+        </span>
+        <span class="px-2.5 py-1 rounded-lg bg-indigo-50 border border-indigo-200 text-[11px] font-bold text-indigo-800 flex items-center gap-1">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Unified HOD &amp; Leadership Sign-In
+        </span>
+        <span class="px-2.5 py-1 rounded-lg bg-blue-50 border border-blue-200 text-[11px] font-bold text-blue-800 flex items-center gap-1">
+          <i data-lucide="book-open" class="w-3.5 h-3.5"></i> Syllabus Topic Picker (From–To)
+        </span>
+        <span class="px-2.5 py-1 rounded-lg bg-amber-50 border border-amber-200 text-[11px] font-bold text-amber-800 flex items-center gap-1">
+          <i data-lucide="laptop" class="w-3.5 h-3.5"></i> JosTEL Default ICT Integration
+        </span>
+      </div>
+    </div>
+
+    <!-- Quick Navigation Index -->
+    <nav class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4 no-print">
+      <h2 class="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+        <i data-lucide="list" class="w-4 h-4 text-indigo-600"></i>
+        <span>Manual Table of Contents</span>
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs font-bold text-indigo-700">
+        <a href="#section-1" class="p-2.5 hover:bg-indigo-50 rounded-xl transition flex items-center gap-2 border border-slate-100 hover:border-indigo-200">
+          <span class="w-5 h-5 rounded-md bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px]">1</span>
+          <span>Portal Access &amp; Unified Sign In</span>
+        </a>
+        <a href="#section-2" class="p-2.5 hover:bg-indigo-50 rounded-xl transition flex items-center gap-2 border border-slate-100 hover:border-indigo-200">
+          <span class="w-5 h-5 rounded-md bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px]">2</span>
+          <span>Faculty Dashboard &amp; 2-Step Workflow</span>
+        </a>
+        <a href="#section-3" class="p-2.5 hover:bg-indigo-50 rounded-xl transition flex items-center gap-2 border border-slate-100 hover:border-indigo-200">
+          <span class="w-5 h-5 rounded-md bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px]">3</span>
+          <span>Part-I: Course Info &amp; Multi-Faculty Sharing</span>
+        </a>
+        <a href="#section-4" class="p-2.5 hover:bg-indigo-50 rounded-xl transition flex items-center gap-2 border border-slate-100 hover:border-indigo-200">
+          <span class="w-5 h-5 rounded-md bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px]">4</span>
+          <span>Part-II: Teaching Plan (From–To Picker &amp; Hours)</span>
+        </a>
+        <a href="#section-5" class="p-2.5 hover:bg-indigo-50 rounded-xl transition flex items-center gap-2 border border-slate-100 hover:border-indigo-200">
+          <span class="w-5 h-5 rounded-md bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px]">5</span>
+          <span>Part-III: Activities, CIA &amp; ICT (JosTEL Default)</span>
+        </a>
+        <a href="#section-6" class="p-2.5 hover:bg-indigo-50 rounded-xl transition flex items-center gap-2 border border-slate-100 hover:border-indigo-200">
+          <span class="w-5 h-5 rounded-md bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px]">6</span>
+          <span>Part-IV: Declaration &amp; Submission Lock</span>
+        </a>
+        <a href="#section-7" class="p-2.5 hover:bg-indigo-50 rounded-xl transition flex items-center gap-2 border border-slate-100 hover:border-indigo-200">
+          <span class="w-5 h-5 rounded-md bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px]">7</span>
+          <span>Official IQAC Print Preview &amp; Signatures</span>
+        </a>
+        <a href="#section-8" class="p-2.5 hover:bg-indigo-50 rounded-xl transition flex items-center gap-2 border border-slate-100 hover:border-indigo-200">
+          <span class="w-5 h-5 rounded-md bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px]">8</span>
+          <span>Teaching-Learning Practices Form (Step 2)</span>
+        </a>
+        <a href="#section-9" class="p-2.5 hover:bg-indigo-50 rounded-xl transition flex items-center gap-2 border border-slate-100 hover:border-indigo-200">
+          <span class="w-5 h-5 rounded-md bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px]">9</span>
+          <span>HOD &amp; Leadership Control Room Hub</span>
+        </a>
+        <a href="#section-10" class="p-2.5 hover:bg-indigo-50 rounded-xl transition flex items-center gap-2 border border-slate-100 hover:border-indigo-200">
+          <span class="w-5 h-5 rounded-md bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px]">10</span>
+          <span>Cross-Teaching (English &amp; Tamil Faculty)</span>
+        </a>
+      </div>
+    </nav>
+
+    <!-- SECTION 1: PORTAL ACCESS & LOGIN -->
+    <section id="section-1" class="space-y-4">
+      <div class="border-b-2 border-indigo-600 pb-2">
+        <h2 class="text-lg font-black text-slate-900 flex items-center gap-2">
+          <span class="w-7 h-7 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-xs">1</span>
+          <span>Portal Access &amp; Unified Role-Based Sign In</span>
+        </h2>
+      </div>
+      <p class="text-xs text-slate-600 leading-relaxed">
+        Access the portal directly from any web browser on desktop, tablet, or mobile phone via:
+        <a href="https://sjciqac.frontierwox.in/course-plan/" target="_blank" class="text-indigo-600 font-bold underline">https://sjciqac.frontierwox.in/course-plan/</a>.
+      </p>
+
+      <div class="screenshot-card bg-white rounded-2xl border border-slate-200 p-3 shadow-xs space-y-2">
+        <img src="manual_images/01_portal_login.png" alt="Portal Login Screen" class="w-full rounded-xl border border-slate-200 shadow-2xs">
+        <p class="text-[11px] text-slate-500 font-medium italic text-center">Figure 1.1: Institutional Login Portal with single-point faculty authentication.</p>
+      </div>
+
+      <div class="bg-indigo-50/80 border border-indigo-200 rounded-2xl p-5 text-xs text-indigo-950 space-y-3">
+        <h4 class="font-black text-indigo-900 text-sm flex items-center gap-1.5">
+          <i data-lucide="check-circle" class="w-4 h-4 text-indigo-600"></i>
+          Unified Single-Door Login for Faculty, HODs, and Administrators:
+        </h4>
+        <ol class="list-decimal list-inside space-y-2 font-medium">
+          <li><strong>Faculty &amp; HODs:</strong> Enter your <strong>Staff Code</strong> (e.g., <code>24CAI51</code>) and your College ERP password. Alternatively, click <em>"Or sign in by selecting Department &amp; Faculty Name"</em> to pick directly from the verified dropdown lists.</li>
+          <li><strong>IQAC Administrator:</strong> Enter <code>admin</code> in the username field and <code>admin123</code> in the password field to access the institution-wide administrative dashboard.</li>
+          <li>Click <strong>Sign In to Portal</strong>.</li>
+        </ol>
+        <div class="mt-2 p-3 bg-white rounded-xl border border-indigo-100 text-indigo-900 font-medium">
+          <strong>💡 Heads of Departments (HOD) &amp; Leadership:</strong> HODs do not need a separate login or separate password! You simply sign in with your Staff Code or faculty name. The system automatically detects your administrative role and displays the <span class="font-bold text-purple-700">🏛️ View Department Status (HOD Dashboard)</span> button right on your faculty dashboard.
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: FACULTY DASHBOARD & 2-STEP WORKFLOW -->
+    <section id="section-2" class="space-y-4 page-break">
+      <div class="border-b-2 border-indigo-600 pb-2">
+        <h2 class="text-lg font-black text-slate-900 flex items-center gap-2">
+          <span class="w-7 h-7 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-xs">2</span>
+          <span>Faculty Dashboard &amp; 2-Step Completion Lifecycle</span>
+        </h2>
+      </div>
+      <p class="text-xs text-slate-600 leading-relaxed">
+        The dashboard serves as your academic workspace to track your course plans, create new plans, view submission statuses, and access departmental monitoring if you are an HOD.
+      </p>
+
+      <div class="screenshot-card bg-white rounded-2xl border border-slate-200 p-3 shadow-xs space-y-2">
+        <img src="manual_images/02_faculty_dashboard.png" alt="Faculty Dashboard" class="w-full rounded-xl border border-slate-200 shadow-2xs">
+        <p class="text-[11px] text-slate-500 font-medium italic text-center">Figure 2.1: Faculty Dashboard with Course Plans repository and action buttons.</p>
+      </div>
+
+      <!-- Unified HOD Button Screenshot Callout -->
+      <div class="screenshot-card bg-white rounded-2xl border border-purple-200 p-3 shadow-xs space-y-2">
+        <img src="manual_images/14_unified_hod_button.png" alt="Unified HOD Button on Faculty Dashboard" class="w-full rounded-xl border border-purple-100 shadow-2xs">
+        <p class="text-[11px] text-purple-700 font-semibold italic text-center">Figure 2.2: Prominent "🏛️ View Department Status (HOD Dashboard)" toggle displayed for recognized HODs.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+        <div class="p-4 bg-white rounded-2xl border border-slate-200 space-y-2 shadow-2xs">
+          <div class="flex items-center justify-between">
+            <span class="px-2 py-0.5 rounded-md bg-indigo-100 text-indigo-700 font-black text-[10px]">STEP 1</span>
+            <span class="text-emerald-600 font-bold flex items-center gap-1"><i data-lucide="check" class="w-3.5 h-3.5"></i> Primary Action</span>
+          </div>
+          <h4 class="font-bold text-slate-900 text-sm">Course Plan Preparation</h4>
+          <p class="text-slate-600">Click <strong>`+ Create New Course Plan`</strong> to enter the 4-part guided planner for your assigned theory or practical course.</p>
+        </div>
+
+        <div class="p-4 bg-white rounded-2xl border border-slate-200 space-y-2 shadow-2xs">
+          <div class="flex items-center justify-between">
+            <span class="px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 font-black text-[10px]">STEP 2</span>
+            <span class="text-slate-500 font-semibold text-[11px]">Requires Step 1 First</span>
+          </div>
+          <h4 class="font-bold text-slate-900 text-sm">TL Practices, Assessment &amp; E-Content</h4>
+          <p class="text-slate-600">Click <strong>`TL Practices, Assessment Components, E-Content`</strong> to submit your institutional pedagogical summary. Automatically unlocks once at least 1 course plan is initiated.</p>
+        </div>
+      </div>
+
+      <!-- Plan Status Guide -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-4 space-y-3">
+        <h4 class="text-xs font-black text-slate-900 uppercase tracking-wider">Course Plan Status Indicators:</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 text-[11px]">
+          <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+            <span class="font-bold text-slate-700 block">📝 Draft</span>
+            <span class="text-slate-500">Plan is in progress and fully editable.</span>
+          </div>
+          <div class="p-2.5 rounded-xl bg-amber-50 border border-amber-200">
+            <span class="font-bold text-amber-800 block">⏳ Submitted to HOD</span>
+            <span class="text-amber-700">Submitted for review. Editing is locked.</span>
+          </div>
+          <div class="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200">
+            <span class="font-bold text-emerald-800 block">✅ Approved</span>
+            <span class="text-emerald-700">Verified and approved by the HOD.</span>
+          </div>
+          <div class="p-2.5 rounded-xl bg-rose-50 border border-rose-200">
+            <span class="font-bold text-rose-800 block">↩ Revision Requested</span>
+            <span class="text-rose-700">Returned by HOD; unlocked for revisions.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: PART-I COURSE INFO & MULTI-FACULTY SHARING -->
+    <section id="section-3" class="space-y-4 page-break">
+      <div class="border-b-2 border-indigo-600 pb-2">
+        <h2 class="text-lg font-black text-slate-900 flex items-center gap-2">
+          <span class="w-7 h-7 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-xs">3</span>
+          <span>Part-I: Course Information &amp; Multi-Faculty Course Sharing</span>
+        </h2>
+      </div>
+      <p class="text-xs text-slate-600 leading-relaxed">
+        Part-I captures course metadata, credits, hours, and Course Outcomes (CO1 to CO6). You do not need to type course titles, credits, or outcomes manually—everything auto-fetches directly from the verified syllabus repository!
+      </p>
+
+      <div class="screenshot-card bg-white rounded-2xl border border-slate-200 p-3 shadow-xs space-y-2">
+        <img src="manual_images/03_part1_course_details.png" alt="Part-I Course Details" class="w-full rounded-xl border border-slate-200 shadow-2xs">
+        <p class="text-[11px] text-slate-500 font-medium italic text-center">Figure 3.1: Academic Programme, Class, Section, and Syllabus Course selection.</p>
+      </div>
+
+      <!-- Collaborative Course Sharing Callout -->
+      <div class="bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-200 rounded-3xl p-6 space-y-4 shadow-xs">
+        <div class="flex items-center gap-2">
+          <span class="p-2 rounded-xl bg-indigo-600 text-white"><i data-lucide="users" class="w-4 h-4"></i></span>
+          <h3 class="text-sm font-black text-indigo-950">Collaborative Course Handling: Multi-Faculty Sharing</h3>
+        </div>
+        <p class="text-xs text-indigo-900 leading-relaxed">
+          When a course is taught jointly by more than one instructor (e.g., divided across units or shared practical batches), use the <strong>Collaborative Course Handling</strong> feature:
+        </p>
+
+        <div class="screenshot-card bg-white rounded-2xl border border-indigo-200 p-3 shadow-xs space-y-2">
+          <img src="manual_images/15_multi_faculty_chips.png" alt="Multi-Faculty Selection with Chip Badges" class="w-full rounded-xl border border-slate-200 shadow-2xs">
+          <p class="text-[11px] text-indigo-700 font-semibold italic text-center">Figure 3.2: Multi-faculty chip badges showing participating instructors with easy "+ Add Co-Faculty" picker.</p>
+        </div>
+
+        <div class="space-y-2 text-xs text-slate-700">
+          <h4 class="font-black text-slate-900">How to Configure a Shared Course:</h4>
+          <ol class="list-decimal list-inside space-y-1.5 font-medium">
+            <li>In <strong>Course Handling Mode</strong>, select <strong>Shared with Other Faculty (Collaborative)</strong>.</li>
+            <li>The <strong>Co-Faculty Selection</strong> section appears with your department’s faculty dropdown.</li>
+            <li>Select your colleague's name from the dropdown and click <strong>+ Add Co-Faculty</strong>.</li>
+            <li>You can add <strong>multiple co-faculty members</strong> (2, 3, or more). Each teacher appears as an interactive chip tag with a remove (<code class="text-rose-600 font-bold">&times;</code>) icon.</li>
+            <li><strong>Automated Downstream Impact:</strong>
+              <ul class="list-disc list-inside ml-5 mt-1 space-y-1 text-slate-600 font-normal">
+                <li>In <strong>Part-II (Unit Completion Plan)</strong>, a <span class="font-bold text-slate-800">Handled by</span> dropdown is enabled for each Unit (I to V) to assign specific units to specific instructors.</li>
+                <li>In <strong>Part-III (CIA Assessments)</strong>, an <span class="font-bold text-slate-800">Assessed by</span> field allows designating which teacher evaluates each assessment component.</li>
+                <li>In <strong>Official Print Preview</strong>, all handling faculty members are listed in the course header and provided dedicated signature lines alongside the HOD.</li>
+              </ul>
+            </li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Auto-Filled Course Outcomes Screenshot -->
+      <div class="screenshot-card bg-white rounded-2xl border border-slate-200 p-3 shadow-xs space-y-2">
+        <img src="manual_images/04_part1_autofilled_cos.png" alt="Auto-Filled Course Outcomes" class="w-full rounded-xl border border-slate-200 shadow-2xs">
+        <p class="text-[11px] text-slate-500 font-medium italic text-center">Figure 3.3: Automatic auto-fill of Course Outcomes (CO1–CO6) with Bloom's Taxonomy Cognitive K-Levels.</p>
+      </div>
+    </section>
+
+    <!-- SECTION 4: PART-II TEACHING PLAN -->
+    <section id="section-4" class="space-y-4 page-break">
+      <div class="border-b-2 border-indigo-600 pb-2">
+        <h2 class="text-lg font-black text-slate-900 flex items-center gap-2">
+          <span class="w-7 h-7 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-xs">4</span>
+          <span>Part-II: Detailed Teaching Plan &amp; Unit Completion Plan</span>
+        </h2>
+      </div>
+      <p class="text-xs text-slate-600 leading-relaxed">
+        Part-II outlines the day-by-day and month-by-month instructional delivery. It consists of two seamlessly interconnected sections: <strong>A. Detailed Teaching Plan</strong> and <strong>B. Unit Completion Plan</strong>.
+      </p>
+
+      <!-- From-To Syllabus Topic Picker Callout -->
+      <div class="bg-blue-50 border border-blue-200 rounded-3xl p-5 space-y-3">
+        <div class="flex items-center gap-2">
+          <span class="p-1.5 rounded-lg bg-blue-600 text-white"><i data-lucide="book-open" class="w-4 h-4"></i></span>
+          <h3 class="text-sm font-black text-blue-950">Syllabus Topic Picker: Instant FROM – TO Insertion</h3>
+        </div>
+        <p class="text-xs text-blue-900 leading-relaxed">
+          Faculty no longer need to manually re-type syllabus topics! The streamlined syllabus popup enables selecting start and end topics directly:
+        </p>
+
+        <div class="screenshot-card bg-white rounded-2xl border border-blue-200 p-3 shadow-xs space-y-2">
+          <img src="manual_images/19_syllabus_from_to_picker.png" alt="Syllabus From-To Topic Picker" class="w-full rounded-xl border border-slate-200 shadow-2xs">
+          <p class="text-[11px] text-blue-700 font-semibold italic text-center">Figure 4.1: Interactive Syllabus unit modal with FROM topic and TO topic dropdown selection.</p>
+        </div>
+
+        <p class="text-xs text-blue-950 font-medium">
+          Simply open the syllabus modal, pick the unit, select your starting topic in <strong>FROM Topic</strong> and finishing topic in <strong>TO Topic</strong>, and click <strong>Apply to Row</strong> to instantly populate the teaching schedule.
+        </p>
+      </div>
+
+      <div class="screenshot-card bg-white rounded-2xl border border-slate-200 p-3 shadow-xs space-y-2">
+        <img src="manual_images/06_part2_detailed_teaching_plan.png" alt="Detailed Teaching Plan" class="w-full rounded-xl border border-slate-200 shadow-2xs">
+        <p class="text-[11px] text-slate-500 font-medium italic text-center">Figure 4.2: Detailed Teaching Plan with Month, Working Days, Topics, Hours, and Pedagogy.</p>
+      </div>
+
+      <!-- Unit Completion Plan & Auto Planned Hours Screenshot -->
+      <div class="screenshot-card bg-white rounded-2xl border border-emerald-200 p-3 shadow-xs space-y-2">
+        <img src="manual_images/16_ucp_handled_by_and_planned_hours.png" alt="Unit Completion Plan with Handled By and Auto Planned Hours" class="w-full rounded-xl border border-slate-200 shadow-2xs">
+        <p class="text-[11px] text-emerald-800 font-semibold italic text-center">Figure 4.3: Unit Completion Plan displaying "Handled by" faculty dropdowns and auto-synchronized Planned Hours.</p>
+      </div>
+
+      <div class="bg-slate-100 rounded-2xl p-4 text-xs text-slate-700 space-y-2">
+        <h4 class="font-black text-slate-900">Key Teaching Plan Features &amp; Quality Safeguards:</h4>
+        <ul class="list-disc list-inside space-y-1 font-medium">
+          <li><strong>Clean Hours Input:</strong> Spinner stepper arrows have been removed to prevent accidental scrolling changes while typing.</li>
+          <li><strong>Month-wise Visual Grouping:</strong> Distinct borders separate teaching blocks across November, December, January, February, and March.</li>
+          <li><strong>Auto-Synced Planned Hours:</strong> In Section B, the <em>Planned Hours</em> column automatically calculates the exact sum of hours allocated in Section A for each unit. Editing in Section B is locked to eliminate numerical discrepancies.</li>
+          <li><strong>Collaborative Unit Assignment:</strong> In shared courses, assign Unit I through Unit V to the appropriate instructor using the <em>Handled by</em> dropdown.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SECTION 5: PART-III ACTIVITIES, CIA & ICT -->
+    <section id="section-5" class="space-y-4 page-break">
+      <div class="border-b-2 border-indigo-600 pb-2">
+        <h2 class="text-lg font-black text-slate-900 flex items-center gap-2">
+          <span class="w-7 h-7 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-xs">5</span>
+          <span>Part-III: Learning Activities, Assessment Plan &amp; ICT Integration</span>
+        </h2>
+      </div>
+
+      <!-- Learning Activities Modal Cleanup Screenshot -->
+      <div class="screenshot-card bg-white rounded-2xl border border-slate-200 p-3 shadow-xs space-y-2">
+        <img src="manual_images/20_activity_modal_cleanup.png" alt="Cleaned Add Learning Activity Modal" class="w-full rounded-xl border border-slate-200 shadow-2xs">
+        <p class="text-[11px] text-slate-500 font-medium italic text-center">Figure 5.1: Streamlined "Add Learning Activity" popup modal with single-allocation component locking.</p>
+      </div>
+
+      <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-xs text-amber-950 space-y-2">
+        <h4 class="font-black text-amber-900">A. Student-Centric Learning Activities:</h4>
+        <p>Plan innovative pedagogical activities (Experiential Learning, Participatory Learning, Problem Solving). The modal automatically locks once a component is allocated, preventing duplicate mark entries.</p>
+      </div>
+
+      <!-- CIA and ICT Screenshot -->
+      <div class="screenshot-card bg-white rounded-2xl border border-slate-200 p-3 shadow-xs space-y-2">
+        <img src="manual_images/17_cia_assessed_by_and_ict_platform.png" alt="CIA Assessed By and ICT Platform" class="w-full rounded-xl border border-slate-200 shadow-2xs">
+        <p class="text-[11px] text-slate-500 font-medium italic text-center">Figure 5.2: CIA Assessment schedule with "Assessed by" dropdown and ICT Tools with JosTEL platform default.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+        <div class="p-4 bg-white rounded-2xl border border-slate-200 space-y-2">
+          <h4 class="font-bold text-slate-900 text-sm flex items-center gap-1.5 text-indigo-700">
+            <i data-lucide="clipboard-check" class="w-4 h-4"></i> B. CIA Assessment Plan
+          </h4>
+          <ul class="list-disc list-inside space-y-1 text-slate-600 font-medium">
+            <li><strong>C1 JosTEL MCQ:</strong> Locked at official marks (UG: 5m, PG: 7.5m).</li>
+            <li><strong>Mid Sem Test:</strong> Written test (UG: 10m, PG: 15m).</li>
+            <li><strong>C2 Component:</strong> Flexible assignment/model (UG: 6m, PG: 7.5m).</li>
+            <li><strong>Library Referencing:</strong> (UG: 4m).</li>
+            <li><strong>Assessed By:</strong> In collaborative courses, select the responsible evaluator for each component.</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-white rounded-2xl border border-slate-200 space-y-2">
+          <h4 class="font-bold text-slate-900 text-sm flex items-center gap-1.5 text-indigo-700">
+            <i data-lucide="laptop" class="w-4 h-4"></i> C. Digital Resources &amp; ICT Integration
+          </h4>
+          <ul class="list-disc list-inside space-y-1 text-slate-600 font-medium">
+            <li><strong>Mandatory:</strong> Minimum 1 row is required.</li>
+            <li><strong>ICT Tool:</strong> Select PPT, LMS, Online Quizzes, Simulation, etc.</li>
+            <li><strong>Platform:</strong> <span class="font-bold text-amber-700">JosTEL is selected by default</span>.</li>
+            <li><strong>Other Platforms:</strong> Selecting "Others" instantly opens a custom text field to specify Google Classroom, Canvas, Coursera, etc.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6: PART-IV DECLARATION & SUBMISSION -->
+    <section id="section-6" class="space-y-4 page-break">
+      <div class="border-b-2 border-indigo-600 pb-2">
+        <h2 class="text-lg font-black text-slate-900 flex items-center gap-2">
+          <span class="w-7 h-7 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-xs">6</span>
+          <span>Part-IV: Declaration &amp; Submission Workflow</span>
+        </h2>
+      </div>
+
+      <div class="screenshot-card bg-white rounded-2xl border border-slate-200 p-3 shadow-xs space-y-2">
+        <img src="manual_images/21_declaration_clean_submit.png" alt="Part-IV Declaration and Submit" class="w-full rounded-xl border border-slate-200 shadow-2xs">
+        <p class="text-[11px] text-slate-500 font-medium italic text-center">Figure 6.1: Compliance check declaration and single-click "Submit to HOD" action.</p>
+      </div>
+
+      <div class="bg-indigo-50 border border-indigo-200 rounded-2xl p-5 text-xs text-indigo-950 space-y-3">
+        <h4 class="font-black text-indigo-900 text-sm flex items-center gap-1.5">
+          <i data-lucide="lock" class="w-4 h-4 text-indigo-600"></i> Submission Workflow &amp; Automatic Editing Lock:
+        </h4>
+        <ol class="list-decimal list-inside space-y-2 font-medium">
+          <li><strong>Intelligent Form Validation:</strong> If any mandatory field or minimum row requirement is missed across any tab, an error notification is displayed at the top, and the window smoothly scrolls to top to highlight the exact issue.</li>
+          <li><strong>Compliance Affirmation:</strong> Review the compliance declaration affirming adherence to the approved syllabus, pedagogical policies, and institutional evaluation schedules.</li>
+          <li><strong>Check the confirmation box:</strong> Click <em>"I hereby declare that this course plan has been prepared in accordance with the syllabus..."</em></li>
+          <li><strong>Click `Submit to HOD`:</strong> Once submitted, your course plan status changes to <span class="font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded">Submitted to HOD</span>.</li>
+          <li><strong>Lock on Submission:</strong> To ensure data integrity during departmental review, submitted plans are locked from editing on your dashboard. If changes are necessary, your HOD can return the plan with feedback notes, which automatically re-enables editing.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- SECTION 7: OFFICIAL PRINT PREVIEW -->
+    <section id="section-7" class="space-y-4 page-break">
+      <div class="border-b-2 border-indigo-600 pb-2">
+        <h2 class="text-lg font-black text-slate-900 flex items-center gap-2">
+          <span class="w-7 h-7 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-xs">7</span>
+          <span>Official IQAC Print Preview &amp; Collaborative Signatures</span>
+        </h2>
+      </div>
+
+      <div class="screenshot-card bg-white rounded-2xl border border-slate-200 p-3 shadow-xs space-y-2">
+        <img src="manual_images/18_print_preview_multi_faculty.png" alt="Official Print Preview with Multi-Faculty Signatures" class="w-full rounded-xl border border-slate-200 shadow-2xs">
+        <p class="text-[11px] text-slate-500 font-medium italic text-center">Figure 7.1: Official IQAC Course Plan document formatted for A4 printing and PDF export with multi-faculty headers and signatures.</p>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-200 p-5 text-xs text-slate-700 space-y-3">
+        <h4 class="font-black text-slate-900 text-sm">Print Layout Features:</h4>
+        <ul class="list-disc list-inside space-y-1.5 font-medium">
+          <li><strong>Clean Institutional Layout:</strong> All instructional helper boxes and form controls are cleanly omitted, presenting only the finalized academic curriculum.</li>
+          <li><strong>Comprehensive Course Header:</strong> Displays Course Code, Title, Class, Section, Credits, Weekly Hours, Handling Faculty, and all Co-Faculty.</li>
+          <li><strong>Multi-Faculty Sign-Off:</strong> Renders individual digital signature lines for each handling instructor alongside the HOD sign-off block.</li>
+          <li><strong>PDF Archiving:</strong> In the print preview, click <strong>Print Document</strong> and choose <em>"Save as PDF"</em> as your destination printer.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SECTION 8: TL PRACTICES REPORTING FORM -->
+    <section id="section-8" class="space-y-4 page-break">
+      <div class="border-b-2 border-indigo-600 pb-2">
+        <h2 class="text-lg font-black text-slate-900 flex items-center gap-2">
+          <span class="w-7 h-7 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-xs">8</span>
+          <span>Teaching-Learning Practices, Assessment &amp; E-Content Form (Step 2)</span>
+        </h2>
+      </div>
+
+      <div class="screenshot-card bg-white rounded-2xl border border-slate-200 p-3 shadow-xs space-y-2">
+        <img src="manual_images/11_tl_practices_form.png" alt="TL Practices Form Modal" class="w-full rounded-xl border border-slate-200 shadow-2xs">
+        <p class="text-[11px] text-slate-500 font-medium italic text-center">Figure 8.1: Dedicated institutional reporting modal for Teaching-Learning Practices, CIA, and E-Content.</p>
+      </div>
+
+      <div class="bg-slate-100 rounded-2xl p-4 text-xs text-slate-700 space-y-2 font-medium">
+        <p>1. Complete this form for each of your assigned courses after preparing your Course Plan (Step 1).</p>
+        <p>2. Select the Course Code and Title from your assigned courses list.</p>
+        <p>3. Enter <strong>Part A: Innovative Teaching–Learning Practices</strong> (Methodology, ICT tool, JosTEL link, Outcome).</p>
+        <p>4. Enter <strong>Part B: Innovative CIA Assessment Strategies</strong> (Group discussion, seminar, role play, rubric).</p>
+        <p>5. Enter <strong>Part C: E-Content &amp; JosTEL Development</strong> (Video lectures, modules, interactive quizzes).</p>
+        <p>6. Click <strong>Save &amp; Submit Details</strong> to transmit to the institutional IQAC database.</p>
+      </div>
+    </section>
+
+    <!-- SECTION 9: HEAD OF DEPARTMENT (HOD) CONTROL ROOM -->
+    <section id="section-9" class="space-y-4 page-break">
+      <div class="border-b-2 border-indigo-600 pb-2">
+        <h2 class="text-lg font-black text-slate-900 flex items-center gap-2">
+          <span class="w-7 h-7 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-xs">9</span>
+          <span>Head of Department (HOD) &amp; Leadership Control Room</span>
+        </h2>
+      </div>
+
+      <div class="bg-purple-50 border border-purple-200 rounded-2xl p-5 text-xs text-purple-950 space-y-3">
+        <div class="flex items-center gap-2">
+          <span class="p-1.5 rounded-lg bg-purple-600 text-white"><i data-lucide="shield-check" class="w-4 h-4"></i></span>
+          <h3 class="text-sm font-black text-purple-950">Unified HOD &amp; College Leadership Access</h3>
+        </div>
+        <p class="leading-relaxed">
+          Heads of all <strong>32 Academic Departments</strong> and members of the <strong>Standing Committee of the Governing Body (Rector, Secretary, Principal)</strong> access the monitoring workspace directly through the standard faculty sign-in.
+        </p>
+        <p class="font-bold">
+          Simply click the purple <code class="bg-purple-200 px-1.5 py-0.5 rounded text-purple-900">🏛️ View Department Status (HOD Dashboard)</code> button located on your Faculty Dashboard. To return to your personal teaching course plans, simply click <code class="bg-purple-200 px-1.5 py-0.5 rounded text-purple-900">← Back to My Faculty Dashboard</code>.
+        </p>
+      </div>
+
+      <div class="screenshot-card bg-white rounded-2xl border border-slate-200 p-3 shadow-xs space-y-2">
+        <img src="manual_images/13_hod_dashboard.png" alt="HOD Monitoring Dashboard" class="w-full rounded-xl border border-slate-200 shadow-2xs">
+        <p class="text-[11px] text-slate-500 font-medium italic text-center">Figure 9.1: Department Course Plan Control Room with real-time submission metrics and action controls.</p>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-200 p-5 text-xs text-slate-700 space-y-3">
+        <h4 class="font-black text-slate-900 text-sm">HOD Review &amp; Approval Actions:</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+            <strong class="text-slate-900 block flex items-center gap-1"><i data-lucide="eye" class="w-3.5 h-3.5 text-indigo-600"></i> 1. Review Plan</strong>
+            <p class="text-slate-600">Click to open the full interactive viewer. Inspect the lecture schedule, textbooks, outcomes, and assessment plan.</p>
+          </div>
+          <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 space-y-1">
+            <strong class="text-emerald-900 block flex items-center gap-1"><i data-lucide="check-check" class="w-3.5 h-3.5 text-emerald-600"></i> 2. ✓ Approve &amp; Sign</strong>
+            <p class="text-emerald-800">Digitally verifies the course plan. Immediately updates status to <em>Approved</em> and publishes to the IQAC college repository.</p>
+          </div>
+          <div class="p-3 rounded-xl bg-rose-50 border border-rose-200 space-y-1">
+            <strong class="text-rose-900 block flex items-center gap-1"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5 text-rose-600"></i> 3. ↩ Return with Feedback</strong>
+            <p class="text-rose-800">Allows providing specific revision notes to the faculty member. Unlocks the plan for editing on their dashboard.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 9B: IQAC CENTRAL ADMIN CONTROLS & CSV EXPORTS -->
+    <section id="section-admin-controls" class="space-y-4 page-break">
+      <div class="border-b-2 border-indigo-600 pb-2">
+        <h2 class="text-lg font-black text-slate-900 flex items-center gap-2">
+          <span class="w-7 h-7 rounded-xl bg-purple-700 text-white flex items-center justify-center text-xs">9B</span>
+          <span>IQAC Central Admin Controls, Development Mode &amp; CSV Exports</span>
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+        <div class="p-4 bg-white rounded-2xl border border-slate-200 space-y-2">
+          <div class="flex items-center gap-2 text-indigo-700 font-extrabold text-sm">
+            <i data-lucide="lock" class="w-4 h-4"></i>
+            <span>Submission Control</span>
+          </div>
+          <p class="text-slate-600 leading-relaxed">
+            Administrators can enable or disable course plan submissions college-wide with a single click. When submissions are closed, faculty can view and print existing records, but new submissions and edits are securely locked.
+          </p>
+        </div>
+
+        <div class="p-4 bg-white rounded-2xl border border-slate-200 space-y-2">
+          <div class="flex items-center gap-2 text-amber-700 font-extrabold text-sm">
+            <i data-lucide="wrench" class="w-4 h-4"></i>
+            <span>Development / Maintenance Mode</span>
+          </div>
+          <p class="text-slate-600 leading-relaxed">
+            During system upgrades or syllabus updates, administrators can activate Maintenance Mode. Non-admin users (Faculty &amp; HODs) will see a maintenance notice and will be prevented from logging in until maintenance mode is deactivated.
+          </p>
+        </div>
+
+        <div class="p-4 bg-white rounded-2xl border border-slate-200 space-y-2">
+          <div class="flex items-center gap-2 text-emerald-700 font-extrabold text-sm">
+            <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+            <span>Master CSV Exports</span>
+          </div>
+          <p class="text-slate-600 leading-relaxed">
+            Two comprehensive CSV exports are provided in the Admin Hub:
+            <ul class="list-disc list-inside mt-1 space-y-1 font-medium text-slate-700">
+              <li><strong>All Course Plans (CSV):</strong> Exports all 34 departments' course plans with hours, credits, and review status.</li>
+              <li><strong>TL Practices (CSV):</strong> Exports all faculty Teaching-Learning innovations, CIA components, and digital links.</li>
+            </ul>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 10: LANGUAGE FACULTY CROSS-TEACHING -->
+    <section id="section-10" class="space-y-4 page-break">
+      <div class="border-b-2 border-indigo-600 pb-2">
+        <h2 class="text-lg font-black text-slate-900 flex items-center gap-2">
+          <span class="w-7 h-7 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-xs">10</span>
+          <span>General English &amp; General Tamil Cross-Department Guide</span>
+        </h2>
+      </div>
+
+      <div class="bg-indigo-50 border border-indigo-200 rounded-2xl p-5 text-xs text-indigo-950 space-y-3">
+        <p class="font-bold text-sm text-indigo-900">Instructions for Department of English and Department of Tamil Faculty:</p>
+        <p class="leading-relaxed">
+          General Tamil (Part I - <code>GL</code>) and General English (Part II - <code>GE</code>) are taken by all undergraduate students across all 24 UG degree programmes in Semesters II &amp; IV.
+        </p>
+        <ol class="list-decimal list-inside space-y-2 font-medium">
+          <li>Sign in under your home department (<strong>English</strong> or <strong>Tamil</strong>).</li>
+          <li>Click <strong>+ Create New Course Plan</strong>.</li>
+          <li>In <strong>Programme</strong>, select the target student programme you teach (e.g., <em>B.Sc. Computer Science</em>, <em>B.Com. Commerce</em>, <em>B.Voc. SD &amp; SA</em>, <em>B.Sc. Mathematics</em>).</li>
+          <li>In <strong>Year and Class</strong>, choose <em>I UG</em> (Semester II) or <em>II UG</em> (Semester IV).</li>
+          <li>In <strong>Select Course</strong>:
+            <ul class="list-disc list-inside ml-4 mt-1 space-y-1 text-slate-700">
+              <li><strong>Semester II (I UG):</strong> English faculty choose <code>25UEN22GE02A/B</code>; Tamil faculty choose <code>25UTA21GL02</code>.</li>
+              <li><strong>Semester IV (II UG):</strong> English faculty choose <code>GE04B</code> (Science), <code>GE04C</code> (Commerce), or <code>GE04A</code> (Arts); Tamil faculty choose <code>GL04B</code> (Scientific Tamil), <code>GL04C</code> (Business Tamil), or <code>GL04A</code> (Media Tamil).</li>
+            </ul>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- SECTION 11: FAQ & TROUBLESHOOTING -->
+    <section id="section-11" class="space-y-4 page-break">
+      <div class="border-b-2 border-indigo-600 pb-2">
+        <h2 class="text-lg font-black text-slate-900 flex items-center gap-2">
+          <span class="w-7 h-7 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-xs">11</span>
+          <span>Frequently Asked Questions (FAQ) &amp; Troubleshooting</span>
+        </h2>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div class="p-4 bg-white rounded-2xl border border-slate-200 space-y-1.5">
+          <strong class="text-slate-900 text-sm block">Q: Can I edit a course plan after clicking "Submit to HOD"?</strong>
+          <p class="text-slate-600">Once submitted, the course plan is locked from editing to maintain audit trail consistency during HOD review. If you need to make changes, request your HOD to click <strong>"↩ Return with Feedback"</strong>, which will immediately re-enable editing on your dashboard.</p>
+        </div>
+
+        <div class="p-4 bg-white rounded-2xl border border-slate-200 space-y-1.5">
+          <strong class="text-slate-900 text-sm block">Q: How do co-teachers collaborate on a shared course plan?</strong>
+          <p class="text-slate-600">The primary faculty member creates the course plan, selects <em>"Shared with Other Faculty (Collaborative)"</em>, and adds the co-faculty member(s). In Part-II (Unit Completion Plan), specify which faculty member handles which unit (I through V). In Part-III (CIA Assessments), allocate assessment responsibilities accordingly. Both teachers' names appear on the final approved document.</p>
+        </div>
+
+        <div class="p-4 bg-white rounded-2xl border border-slate-200 space-y-1.5">
+          <strong class="text-slate-900 text-sm block">Q: Why are "Planned Hours" in Part-II Section B uneditable?</strong>
+          <p class="text-slate-600">Planned Hours in Section B (Unit Completion Plan) are automatically calculated from the sum of hours allocated in Section A (Detailed Teaching Plan). To change the unit hours, update the lecture hours in the Detailed Teaching Plan rows for that unit.</p>
+        </div>
+
+        <div class="p-4 bg-white rounded-2xl border border-slate-200 space-y-1.5">
+          <strong class="text-slate-900 text-sm block">Q: How do I export my Course Plan as a clean PDF?</strong>
+          <p class="text-slate-600">Open your course plan and click <strong>Print Preview</strong> (or click the print icon from your dashboard). In the preview modal, click <strong>Print Document</strong>. In your browser's print dialog, set the Destination to <em>"Save as PDF"</em> and click Save.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER / CONTACT -->
+    <footer class="border-t border-slate-200 pt-8 text-center text-xs text-slate-500 space-y-2">
+      <p class="font-bold text-slate-700">Internal Quality Assurance Cell (IQAC) • St. Joseph’s College (Autonomous), Tiruchirappalli – 620 002</p>
+      <p>Technical support &amp; inquiries: <a href="mailto:iqac@mail.sjctni.edu" class="text-indigo-600 underline font-medium">iqac@mail.sjctni.edu</a> • Portal: <a href="https://sjciqac.frontierwox.in/course-plan/" class="text-indigo-600 underline font-medium">https://sjciqac.frontierwox.in/course-plan/</a></p>
+      <p class="text-[10px] text-slate-400">Document Revision 2.5 • Updated Academic Year 2026–2027</p>
+    </footer>
+
+  </main>
+
+  <script>
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
+    }
+  </script>
+</body>
+</html>

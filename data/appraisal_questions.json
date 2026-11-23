@@ -1,0 +1,622 @@
+{
+  "questions": [
+    {
+      "id": "appraisal_q_1",
+      "category": "Curriculum Development",
+      "title": "New Course Taught",
+      "marks": 10,
+      "fields": [
+        "Sl.No.",
+        "ProgrammeEg. B. A. English",
+        "Course Code",
+        "Title of the Course"
+      ],
+      "enabled": true,
+      "fieldType": "calendar",
+      "options": []
+    },
+    {
+      "id": "appraisal_q_2",
+      "category": "Curriculum Development",
+      "title": "No. of Courses Revised in Syllabus Revision",
+      "marks": 20,
+      "fields": [
+        "Sl.No.",
+        "ProgrammeEg. B. A. English",
+        "Course Code",
+        "Title of the Course"
+      ],
+      "enabled": true,
+      "fieldType": "number",
+      "options": []
+    },
+    {
+      "id": "appraisal_q_3",
+      "category": "Curriculum Development",
+      "title": "No. of Value Added Courses offered (Offline)",
+      "marks": 20,
+      "fields": [
+        "Sl.No.",
+        "ProgrammeEg. B. A. English",
+        "Course Code",
+        "Title of the Value Added Course",
+        "Curse Conducted From -To",
+        "No. of Students Enrolled",
+        "No. of Students Completed"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_4",
+      "category": "Curriculum Development",
+      "title": "Certificate Course/Extra Credit Course (Offline)",
+      "marks": 20,
+      "fields": [
+        "Sl.No.",
+        "ProgrammeEg. B. A. English",
+        "Course Code",
+        "Title of the Certificate Course",
+        "No. of Students Enrolled",
+        "No. of Students Completed"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_5",
+      "category": "Curriculum Development",
+      "title": "Student Feedback Taken During Staff Evaluation",
+      "marks": 10,
+      "fields": [],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_6",
+      "category": "Curriculum Development",
+      "title": "Innovative TLE Practices",
+      "marks": 10,
+      "fields": [
+        "Sl. No.",
+        "Innovative TLE Practice"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_7",
+      "category": "Curriculum Development",
+      "title": "Industrial Visit / Field Visit / Educational Visits",
+      "marks": 10,
+      "fields": [
+        "Sl.No.",
+        "PurposeFV/IV/EV",
+        "Class",
+        "Address of Industries/Places Visited",
+        "DateFrom-To",
+        "No. of Students Benefitted"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_8",
+      "category": "Student Support Activities",
+      "title": "Clubs and Institutes /Centres of  Excellence in charge of",
+      "marks": 30,
+      "fields": [
+        "Sl.No.",
+        "Name of the Club",
+        "DesignationCoordinator/Asst Coordinator",
+        "No. of activities Conducted",
+        "No. of Students Benefitted"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_9",
+      "category": "Student Support Activities",
+      "title": "Remedial Classes handled",
+      "marks": 20,
+      "fields": [
+        "Sl.No.",
+        "Class/Prog",
+        "Title of the Course",
+        "No. of Hours",
+        "No. of Students Benefitted"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_10",
+      "category": "Student Support Activities",
+      "title": "Capability Enhancement Programmes",
+      "marks": 20,
+      "fields": [
+        "Name of the capability enhancement program",
+        "Date of implementation (DD-MM-YYYY)",
+        "Nature of Beneficiaries (Dept/Gender, etc.,)",
+        "Number of Students Benefitted",
+        "Name of the Agencies/Consultants involved with contact details (if any)"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_11",
+      "category": "Student Support Activities",
+      "title": "Bridge Course",
+      "marks": 10,
+      "fields": [
+        "Sl.No.",
+        "Class/Prog",
+        "Stream(Advanced/Intermediate/Basic)",
+        "No. of Days",
+        "No. of Students Benefitted"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_12",
+      "category": "Student Support Activities",
+      "title": "In charge of Department Activities (eg. Dept. Inventory, MQC, etc.,)",
+      "marks": 20,
+      "fields": [
+        "Sl.No.",
+        "Name of the Activity",
+        "Nature of Work",
+        "Work Accomplished"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_13",
+      "category": "ICT Based Teaching Learning and Evaluation",
+      "title": "E materials in Department/College Repository other than LMS",
+      "marks": 50,
+      "fields": [
+        "Sl.No.",
+        "Programme",
+        "Course Code",
+        "Title of the Course",
+        "Type of E material (ppt, pdf, videos, others)"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_14",
+      "category": "ICT Based Teaching Learning and Evaluation",
+      "title": "E materials on LMS",
+      "marks": 50,
+      "fields": [
+        "Sl.No.",
+        "Nature of Course Offered (Certificate Course, value Added Course, Self Paced)",
+        "Course Code",
+        "Title of the Course",
+        "Percentage of contribution to the course",
+        "Type of E material (ppt, pdf, videos, others)",
+        "No. of ematerials",
+        "No. of Students Benefitted"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_15",
+      "category": "Resource Person",
+      "title": "UGC-HRDC",
+      "marks": 30,
+      "fields": [
+        "Sl.No.",
+        "Nature of Programme (OP, RC, STC, FDP, Others)",
+        "Name and Address of the University",
+        "Topic of Presentation",
+        "No. of Beneficiaries"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_16",
+      "category": "Resource Person",
+      "title": "International Programmes (Held in countries other than India)",
+      "marks": 30,
+      "fields": [
+        "Sl.No.",
+        "Nature of Programme (Seminar, Conference, Workshop, Guest Lecture, Others)",
+        "Name and Address of the Institution",
+        "Nature and Topic of Presentation",
+        "Mode of Conduct(Online, Offline)",
+        "No. of Beneficiaries"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_17",
+      "category": "Resource Person",
+      "title": "National Programmes (Held in states other than Tamilnadu)",
+      "marks": 20,
+      "fields": [
+        "Sl.No.",
+        "Nature of Programme (Seminar, Conference, Workshop, Guest Lecture, Others)",
+        "Name and Address of the Institution",
+        "Nature and Topic of Presentation",
+        "Mode of Conduct(Online, Offline)",
+        "No. of Beneficiaries"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_18",
+      "category": "Resource Person",
+      "title": "State Level Programmes",
+      "marks": 20,
+      "fields": [
+        "Sl.No.",
+        "Nature of Programme (Seminar, Conference, Workshop, Guest Lecture, Others)",
+        "Name and Address of the Institution",
+        "Nature and Topic of Presentation",
+        "Mode of Conduct(Online, Offline)",
+        "No. of Beneficiaries"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_19",
+      "category": "Research Activities",
+      "title": "Papers Presented",
+      "marks": 5,
+      "fields": [
+        "Name and Address of the Institution",
+        "Title of the Conference",
+        "S/N/IN",
+        "Date",
+        "Title of paper"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_20",
+      "category": "Research Activities",
+      "title": "Papers Published",
+      "marks": 10,
+      "fields": [
+        "S.No",
+        "Name of Author(s)",
+        "Title of the Paper",
+        "Name of the Journal",
+        "National / International",
+        "ISSN No. & Impact Factor",
+        "h-index",
+        "Citation Index & No. of Citations (Excluding SelfCitation)",
+        "Vol          (Page)  Year",
+        "Link to the Journal",
+        "Link to the  Recognition in UGC Enlistment of the Journal"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_21",
+      "category": "Research Activities",
+      "title": "Chapters in Books",
+      "marks": 15,
+      "fields": [
+        "Sl.No.",
+        "Title of the Chapter",
+        "Title of the Book",
+        "Month and Year of  Publication",
+        "Name of the Publisher",
+        "ISBN No."
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_22",
+      "category": "Research Activities",
+      "title": "Books Edited",
+      "marks": 20,
+      "fields": [
+        "Sl.No.",
+        "Title of the Book",
+        "Name and Address of Co-Editors",
+        "Month and Year of  Publication",
+        "Name of the Publisher",
+        "ISBN No."
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_23",
+      "category": "Research Activities",
+      "title": "Books Published",
+      "marks": 25,
+      "fields": [
+        "Sl.No.",
+        "Title of the Book",
+        "Name and Address of Co-Authors",
+        "Month and Year of  Publication",
+        "Name of the Publisher",
+        "ISBN No."
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_24",
+      "category": "Research Activities",
+      "title": "Member of  Editorial Board",
+      "marks": 10,
+      "fields": [
+        "Sl.No.",
+        "Name of the Journal",
+        "S/N/IN",
+        "Position Held",
+        "Publication details",
+        "ISBN No."
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_25",
+      "category": "Research Activities",
+      "title": "Research Guidance",
+      "marks": 15,
+      "fields": [
+        "Sl.No.",
+        "Programme (UG/PG/MPhil/PhD)",
+        "Nature of Guidance(Project/Internship)",
+        "No. of Students/Scholars Guiding",
+        "D.No or Name of Students/Scholars"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_26",
+      "category": "Funds Generated and Received",
+      "title": "Research Projects Applied for",
+      "marks": 10,
+      "fields": [
+        "Sl.No.",
+        "Name of the Funding agency",
+        "Role(PI/CI)",
+        "Title of the Project",
+        "Date of Applying for Proposal",
+        "Fund to be Granted"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_27",
+      "category": "Funds Generated and Received",
+      "title": "Research Projects Granted",
+      "marks": 20,
+      "fields": [
+        "Sl.No.",
+        "Name of the Funding agency",
+        "Role(PI/CI)",
+        "Title of the Project",
+        "Date of Applying for Proposal",
+        "Fund allotted",
+        "Fund Received"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_28",
+      "category": "Funds Generated and Received",
+      "title": "Consultancy Activities",
+      "marks": 15,
+      "fields": [
+        "Sl.No.",
+        "Name of the Facility and Department",
+        "Name of the Consultancy Project",
+        "Consulting/Sponsoring Agency with Contact Details",
+        "DateFrom -To",
+        "Revenue Generated"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_29",
+      "category": "Funds Generated and Received",
+      "title": "Engagement in Corporate Training",
+      "marks": 10,
+      "fields": [
+        "Sl.No.",
+        "Name of the Company/Industry to which Training is Offered (With Contact Details)",
+        "Nature of Corporate TrainingEg. Communication Skills/ ICT Skills/Counselling",
+        "No. of Beneficiaries",
+        "DateFrom -To",
+        "Revenue Generated"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_30",
+      "category": "Funds Generated and Received",
+      "title": "IPR – No. of Patents Received, Income Generated",
+      "marks": 25,
+      "fields": [
+        "Sl.No."
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_31",
+      "category": "Funds Generated and Received",
+      "title": "Engagement in Start up Activities (No. of Products, Income Generated)",
+      "marks": 20,
+      "fields": [
+        "Sl.No.",
+        "Name of the Product",
+        "Student MenteesNames and D.Nos."
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_32",
+      "category": "Professional Enrichment",
+      "title": "Seminar/Conference/Workshop/Webinar Attended",
+      "marks": 30,
+      "fields": [
+        "Sl.No.",
+        "Title of the Conference/Workshop, etc.,",
+        "Nature I/N/S",
+        "Name and Address of the Institution",
+        "DateFrom - To",
+        "No. of Days"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_33",
+      "category": "Professional Enrichment",
+      "title": "Short Term Course Attended",
+      "marks": 30,
+      "fields": [
+        "Sl.No.",
+        "Title of the Short Term Course",
+        "Nature I/N/S",
+        "Name and Address of the Institution",
+        "DateFrom - To",
+        "No. of Days"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_34",
+      "category": "Professional Enrichment",
+      "title": "UGC-HRDC or MoE or MHRD – OP, RC, ST Courses, Workshops, FDP, PDP, etc.,",
+      "marks": 40,
+      "fields": [
+        "Sl.No.",
+        "Title of the Course",
+        "Nature (WS/OP/RC/STC/FDP/Others)",
+        "Name and Address of the Institution",
+        "DateFrom - To",
+        "No. of Days"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_35",
+      "category": "Professional Enrichment",
+      "title": "Fellowship Received",
+      "marks": 25,
+      "fields": [
+        "Name of the Fellowship",
+        "Name of the Awarding Agency",
+        "Nature of the Fellowship",
+        "Date of Award of Fellowship",
+        "Duration of Fellowhip"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_36",
+      "category": "Professional Enrichment",
+      "title": "Awards Received (Governmental bodies or organisations)",
+      "marks": 25,
+      "fields": [
+        "Name of the Activity",
+        "Name of the Award/ Recognition",
+        "Name of the Awarding Government/ Government Recognised Bodies",
+        "Month and Year of Award"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_37",
+      "category": "Member of Academic or Professional Bodies",
+      "title": "Member of Governing Body",
+      "marks": 30,
+      "fields": [
+        "Sl.No.",
+        "Name and Address of the Institution",
+        "N/S",
+        "Date of GB Meeting(s) Attended",
+        "Duration of MembershipFrom - To",
+        "No. of Years"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_38",
+      "category": "Member of Academic or Professional Bodies",
+      "title": "Academic Council",
+      "marks": 25,
+      "fields": [
+        "Sl.No.",
+        "Name and Address of the Institution",
+        "N/S",
+        "Date of AC Meeting(s) Attended",
+        "Duration of MembershipFrom - To",
+        "No. of Years"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_39",
+      "category": "Member of Academic or Professional Bodies",
+      "title": "BoS of other Colleges/Universities",
+      "marks": 25,
+      "fields": [
+        "Sl.No.",
+        "Name and Address of the Institution",
+        "Department",
+        "Date of BoS Meeting(s) Attended",
+        "Duration of MembershipFrom - To",
+        "No. of Years"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_40",
+      "category": "Member of Academic or Professional Bodies",
+      "title": "BoS of SJC",
+      "marks": 10,
+      "fields": [
+        "Number of Courses Revised"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_41",
+      "category": "Member of Academic or Professional Bodies",
+      "title": "Member of Other Bodies in Other Institutions (E.g. Member of IQAC)",
+      "marks": 10,
+      "fields": [
+        "Sl.No.",
+        "Name and Address of the Institution",
+        "Name of the Body",
+        "Date of Meeting(s) Attended",
+        "Duration of MembershipFrom - To",
+        "No. of Years"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_q_42",
+      "category": "Contribution to Governance",
+      "title": "Administrative Responsibilities",
+      "marks": 50,
+      "fields": [
+        "Sl.No.",
+        "Position Held",
+        "Significant Contributions Made"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "appraisal_custom_1795367990141",
+      "category": "Curriculum Development",
+      "title": "what is your Name",
+      "marks": 10,
+      "fieldType": "dropdown",
+      "options": [
+        "thomas",
+        "Darwin",
+        "aro",
+        "cyril"
+      ],
+      "fields": [
+        "Details / Description",
+        "Supporting Document / Evidence Link"
+      ],
+      "enabled": true
+    }
+  ],
+  "updatedAt": "2026-11-22T17:28:36.966Z"
+}

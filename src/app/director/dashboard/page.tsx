@@ -381,8 +381,8 @@ export default function DirectorDashboard() {
 
       {/* Full Screen Review Modal with Split View */}
       {selectedInv && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-6xl w-full shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[92vh] animate-scaleUp">
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-start justify-center p-2 sm:p-4 overflow-y-auto pt-4 sm:pt-8">
+          <div className="bg-white rounded-3xl max-w-6xl w-full shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[92vh] mb-8 animate-scaleUp">
             {/* Modal Top Bar */}
             <div className="px-6 py-4 bg-gradient-to-r from-[#2a1b54] to-[#4c1d95] text-white flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3">

@@ -1,0 +1,4025 @@
+// IQAC AAA 2026-2027 - Master Schema for PART-A and Attributes 1 to 10
+// Official St. Joseph's College Autonomous NAAC / AAA Master Data Structure
+window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
+  {
+    "id": "part_a",
+    "cardNumber": 0,
+    "cardTitle": "PART A - Profile of the Department",
+    "cardCode": "PART-A",
+    "cardSubtitle": "Mandatory Institutional Profile: Programmes Offered, Head/Coordinator, Faculty Cadres & Student Details",
+    "icon": "building",
+    "color": "blue",
+    "sheets": [
+      {
+        "key": "PART-A",
+        "sheetName": "PART-A",
+        "title": "PART A - PROFILE OF THE DEPARTMENT",
+        "subtitle": "(Presenting Data on all the questions in Part A is mandatory)",
+        "type": "profile",
+        "profileQuestions": {
+          "department": "",
+          "shift": "Shift I",
+          "programmes": {
+            "ug": "",
+            "pg": "",
+            "phd": ""
+          },
+          "hodName": "",
+          "coordinatorName": ""
+        },
+        "facultyDetails": {
+          "headers": [
+            "Faculty Category / Cadre",
+            "Male",
+            "Female"
+          ],
+          "rows": [
+            {
+              "label": "Total No. of Teaching Faculty",
+              "male": 0,
+              "female": 0
+            },
+            {
+              "label": "No. of Faculty (Aided)",
+              "male": 0,
+              "female": 0
+            },
+            {
+              "label": "No. of Faculty (Coordinator-Appointed)",
+              "male": 0,
+              "female": 0
+            },
+            {
+              "label": "No. of Faculty (Secretary-Appointed)",
+              "male": 0,
+              "female": 0
+            },
+            {
+              "label": "No. of Professor of Practice",
+              "male": 0,
+              "female": 0
+            },
+            {
+              "label": "No. of Faculty (Hourly Basis)",
+              "male": 0,
+              "female": 0
+            },
+            {
+              "label": "No. of Faculty from Other States",
+              "male": 0,
+              "female": 0
+            },
+            {
+              "label": "No. of Faculty Graduating from Other States",
+              "male": 0,
+              "female": 0
+            },
+            {
+              "label": "No. of Academic Support Staff (Technical) and Non-teaching Staff",
+              "male": 0,
+              "female": 0
+            }
+          ]
+        },
+        "studentDetails": {
+          "headers": [
+            "Programme Level",
+            "Male",
+            "Female",
+            "Other Gender",
+            "Other States",
+            "Other Countries"
+          ],
+          "rows": [
+            {
+              "programme": "Undergraduate (UG)",
+              "male": 0,
+              "female": 0,
+              "otherGender": 0,
+              "otherStates": 0,
+              "otherCountries": 0
+            },
+            {
+              "programme": "Postgraduate (PG)",
+              "male": 0,
+              "female": 0,
+              "otherGender": 0,
+              "otherStates": 0,
+              "otherCountries": 0
+            },
+            {
+              "programme": "Ph.D. / Research",
+              "male": 0,
+              "female": 0,
+              "otherGender": 0,
+              "otherStates": 0,
+              "otherCountries": 0
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "att1",
+    "cardNumber": 1,
+    "cardTitle": "Attribute I - Curriculum Design",
+    "cardCode": "Attribute 1",
+    "cardSubtitle": "Value-Added & Certificate Courses, IKS, Internships, Projects, MOOCs, PTM & Stakeholder Feedback (1.1 - 1.11)",
+    "icon": "book-open",
+    "color": "indigo",
+    "sheets": [
+      {
+        "key": "1.1",
+        "sheetName": "1.1",
+        "title": "1.1 Courses offered by the Department during the year 2026-27",
+        "badge": "Part B - Attribute I: Curriculum Design",
+        "instruction": "Mention all the Courses offered by the Department during the year 2026-2027",
+        "note": "No need to fill this Data for this Academic Year",
+        "type": "table",
+        "columns": [
+          {
+            "key": "sno",
+            "label": "S.No.",
+            "width": "w-14"
+          },
+          {
+            "key": "programmeName",
+            "label": "Programme Name (Commerce CA, History, etc.,)",
+            "width": "w-48"
+          },
+          {
+            "key": "level",
+            "label": "PG / UG (MSc, BA, BSc, BCom, etc.,)",
+            "width": "w-36"
+          },
+          {
+            "key": "courseCode",
+            "label": "Course Code",
+            "width": "w-32"
+          },
+          {
+            "key": "courseTitle",
+            "label": "Title of the Course",
+            "width": "w-64"
+          },
+          {
+            "key": "newSyllabus",
+            "label": "Mention YES if it is introduced in the new syllabus",
+            "width": "w-36"
+          },
+          {
+            "key": "revisionPct",
+            "label": "Percentage (%) of the revision",
+            "width": "w-28"
+          },
+          {
+            "key": "skillPractical",
+            "label": "Skill / Practical Hands on Training (Mention Yes if applicable)",
+            "width": "w-36"
+          },
+          {
+            "key": "iksBased",
+            "label": "IKS Based (Mention Yes if applicable)",
+            "width": "w-28"
+          },
+          {
+            "key": "nsqfAligned",
+            "label": "Aligned with NSQF / NHEQF (Mention Yes if applicable)",
+            "width": "w-32"
+          },
+          {
+            "key": "fieldWorkVisit",
+            "label": "Field Work/Field Visit/Industrial Visit (Mention Yes if applicable)",
+            "width": "w-36"
+          },
+          {
+            "key": "internship",
+            "label": "Internship (Mention Yes if applicable)",
+            "width": "w-28"
+          },
+          {
+            "key": "project",
+            "label": "Project (Mention Yes if applicable)",
+            "width": "w-28"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "1.2",
+        "sheetName": "1.2",
+        "title": "1.2 Value-Added Courses & Certificate Courses",
+        "badge": "Attribute I - Section 1.2",
+        "type": "multi_table",
+        "sections": [
+          {
+            "id": "1.2_a",
+            "title": "1.2 (a) Value-Added Courses / Certificate Course Conducted by SJC",
+            "columns": [
+              {
+                "key": "sno",
+                "label": "S.No.",
+                "width": "w-14"
+              },
+              {
+                "key": "nature",
+                "label": "Nature of the Course (VAC / CC)",
+                "width": "w-28"
+              },
+              {
+                "key": "collaboratingAgency",
+                "label": "Collaborating institutions/Agency, Name and Address",
+                "width": "w-64"
+              },
+              {
+                "key": "courseCode",
+                "label": "Course Code",
+                "width": "w-28"
+              },
+              {
+                "key": "courseTitle",
+                "label": "Title of the Course",
+                "width": "w-56"
+              },
+              {
+                "key": "creditsAssigned",
+                "label": "Credits Assigned (For Certificate Course)",
+                "width": "w-28"
+              },
+              {
+                "key": "coordinatorName",
+                "label": "Name of the Course Coordinator",
+                "width": "w-44"
+              },
+              {
+                "key": "mode",
+                "label": "Mode (Online / Offline / Blended)",
+                "width": "w-32"
+              },
+              {
+                "key": "iksBased",
+                "label": "Course conducted based on IKS (Mention YES/NO)",
+                "width": "w-32"
+              },
+              {
+                "key": "focus",
+                "label": "Focus (Mention SKILL, KNOWLEDGE, BOTH)",
+                "width": "w-36"
+              },
+              {
+                "key": "multidisciplinary",
+                "label": "Multidisciplinary (Mention YES/NO)",
+                "width": "w-32"
+              },
+              {
+                "key": "durationHours",
+                "label": "Duration of the Course (in hrs)",
+                "width": "w-28"
+              },
+              {
+                "key": "datesFromTo",
+                "label": "Dates conducted From - To (DD.MM.YYYY)",
+                "width": "w-40"
+              },
+              {
+                "key": "industryCollab",
+                "label": "Industry Collaboration (Mention YES/NO)",
+                "width": "w-32"
+              },
+              {
+                "key": "staffOrExperts",
+                "label": "Staff Members / External Experts Handling the Course",
+                "width": "w-72"
+              },
+              {
+                "key": "enrolled",
+                "label": "No. of Students Enrolled",
+                "width": "w-28"
+              },
+              {
+                "key": "completed",
+                "label": "No. of Students Completing the Course",
+                "width": "w-28"
+              }
+            ],
+            "rows": []
+          },
+          {
+            "id": "1.2_b",
+            "title": "1.2 (b) Students Attending Certificate Courses Offered by Other Agencies/Industries (Do not include MOOC)",
+            "columns": [
+              {
+                "key": "sno",
+                "label": "S.No.",
+                "width": "w-14"
+              },
+              {
+                "key": "regNo",
+                "label": "Register Number",
+                "width": "w-32"
+              },
+              {
+                "key": "studentName",
+                "label": "Name of the Student",
+                "width": "w-44"
+              },
+              {
+                "key": "courseTitle",
+                "label": "Title of the Certificate Course",
+                "width": "w-56"
+              },
+              {
+                "key": "agencyDetails",
+                "label": "Name and Address of the Agency offering the Course",
+                "width": "w-64"
+              },
+              {
+                "key": "mode",
+                "label": "Mode (Online / Offline / Blended)",
+                "width": "w-32"
+              },
+              {
+                "key": "datesFromTo",
+                "label": "Dates conducted FROM-TO",
+                "width": "w-40"
+              },
+              {
+                "key": "credits",
+                "label": "Credits from Recognized Body / Agency, if any",
+                "width": "w-32"
+              }
+            ],
+            "rows": []
+          }
+        ]
+      },
+      {
+        "key": "1.3",
+        "sheetName": "1.3",
+        "title": "1.3 Activities conducted with reference to IKS",
+        "badge": "Attribute I - Section 1.3",
+        "type": "table",
+        "columns": [
+          {
+            "key": "sno",
+            "label": "S.No",
+            "width": "w-14"
+          },
+          {
+            "key": "title",
+            "label": "Title of the Programme",
+            "width": "w-60"
+          },
+          {
+            "key": "nature",
+            "label": "Nature of Programme (Workshop, Seminar, Field Visit, Industry Visit, Guest Lectures, etc.,)",
+            "width": "w-52"
+          },
+          {
+            "key": "relevance",
+            "label": "Academic/Course Relevance",
+            "width": "w-44"
+          },
+          {
+            "key": "date",
+            "label": "Date",
+            "width": "w-28"
+          },
+          {
+            "key": "placeVisited",
+            "label": "Name and Address of Place Visited (In case of FV/IV)",
+            "width": "w-52"
+          },
+          {
+            "key": "resourcePerson",
+            "label": "Name, Designation of Resource Person",
+            "width": "w-56"
+          },
+          {
+            "key": "studentsBenefitted",
+            "label": "No. of Student Benefitted",
+            "width": "w-28"
+          },
+          {
+            "key": "facultyBenefitted",
+            "label": "No. of Faculty Benefitted",
+            "width": "w-28"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "1.4",
+        "sheetName": "1.4",
+        "title": "1.4 Industrial Visit, Educational Visit, Field Visit, Field Work, etc",
+        "badge": "Attribute I - Section 1.4",
+        "instruction": "Don't include if mentioned in 1.3",
+        "type": "table",
+        "columns": [
+          {
+            "key": "sno",
+            "label": "S.No.",
+            "width": "w-14"
+          },
+          {
+            "key": "nature",
+            "label": "Nature (Industrial Visit / Educational Visit / Field Visit / Field Work)",
+            "width": "w-48"
+          },
+          {
+            "key": "placeDetails",
+            "label": "Details of Industry / Institution / Places Visited",
+            "width": "w-60"
+          },
+          {
+            "key": "relevance",
+            "label": "Academic/Course Relevance",
+            "width": "w-40"
+          },
+          {
+            "key": "staffAccompanying",
+            "label": "Name of the Staff Accompanying the Students",
+            "width": "w-52"
+          },
+          {
+            "key": "datesFromTo",
+            "label": "Date From – To DD.MM.YYYY",
+            "width": "w-36"
+          },
+          {
+            "key": "durationDays",
+            "label": "Duration (Days)",
+            "width": "w-28"
+          },
+          {
+            "key": "mouLinkage",
+            "label": "Part of the MoU/Linkage",
+            "width": "w-32"
+          },
+          {
+            "key": "learningOutcome",
+            "label": "Learning Outcome",
+            "width": "w-52"
+          },
+          {
+            "key": "targetGroup",
+            "label": "Target Group",
+            "width": "w-40"
+          },
+          {
+            "key": "studentsBenefitted",
+            "label": "Students Benefitted",
+            "width": "w-28"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "1.5",
+        "sheetName": "1.5",
+        "title": "1.5 Internship",
+        "badge": "Attribute I - Section 1.5",
+        "type": "batch_table",
+        "columns": [
+          {
+            "key": "sno",
+            "label": "S.No.",
+            "width": "w-14"
+          },
+          {
+            "key": "studentName",
+            "label": "Name of the Student",
+            "width": "w-40"
+          },
+          {
+            "key": "regNo",
+            "label": "Reg. No.",
+            "width": "w-28"
+          },
+          {
+            "key": "internshipTitle",
+            "label": "Title of the Internship",
+            "width": "w-44"
+          },
+          {
+            "key": "organizationDetails",
+            "label": "Name and Address of the Organization",
+            "width": "w-56"
+          },
+          {
+            "key": "placeNature",
+            "label": "Nature of Place (Industry / Company / Institution, etc.)",
+            "width": "w-40"
+          },
+          {
+            "key": "durationDays",
+            "label": "Duration (No. of Days)",
+            "width": "w-28"
+          },
+          {
+            "key": "datesFromTo",
+            "label": "Dates FROM-TO DD.MM.YYYY - DD.MM.YYYY",
+            "width": "w-40"
+          },
+          {
+            "key": "staffInCharge",
+            "label": "Name of the Staff in charge",
+            "width": "w-40"
+          },
+          {
+            "key": "sdgGoal",
+            "label": "SDG Goal with Title",
+            "width": "w-48"
+          },
+          {
+            "key": "mouLinkage",
+            "label": "Part of the MoU/Linkage",
+            "width": "w-32"
+          },
+          {
+            "key": "iksBased",
+            "label": "Was the Internship based on IKS ? (Mention Yes/No)",
+            "width": "w-36"
+          }
+        ],
+        "batches": [
+          {
+            "id": "ug_batch",
+            "name": "(2024 UG Batch)",
+            "rows": []
+          },
+          {
+            "id": "pg_batch",
+            "name": "(2025 PG Batch)",
+            "rows": []
+          }
+        ]
+      },
+      {
+        "key": "1.6",
+        "sheetName": "1.6",
+        "title": "1.6 Project",
+        "badge": "Attribute I - Section 1.6",
+        "type": "batch_table",
+        "columns": [
+          {
+            "key": "sno",
+            "label": "S.No.",
+            "width": "w-14"
+          },
+          {
+            "key": "studentName",
+            "label": "Name of the Student",
+            "width": "w-40"
+          },
+          {
+            "key": "regNo",
+            "label": "Reg. No.",
+            "width": "w-28"
+          },
+          {
+            "key": "projectTitle",
+            "label": "Title of the Project",
+            "width": "w-44"
+          },
+          {
+            "key": "organizationDetails",
+            "label": "Name and Address of the Organization",
+            "width": "w-56"
+          },
+          {
+            "key": "placeNature",
+            "label": "Nature of Place (Industry / Company / Institution)",
+            "width": "w-40"
+          },
+          {
+            "key": "durationDays",
+            "label": "Duration (No. of Days)",
+            "width": "w-28"
+          },
+          {
+            "key": "datesFromTo",
+            "label": "Dates FROM-TO DD.MM.YYYY - DD.MM.YYYY",
+            "width": "w-40"
+          },
+          {
+            "key": "staffInCharge",
+            "label": "Name of the Staff in charge",
+            "width": "w-40"
+          },
+          {
+            "key": "sdgGoal",
+            "label": "SDG Goal with Title",
+            "width": "w-48"
+          },
+          {
+            "key": "mouLinkage",
+            "label": "Part of the MoU/Linkage",
+            "width": "w-32"
+          },
+          {
+            "key": "iksBased",
+            "label": "Was the Project based on IKS ? (Mention Yes/No)",
+            "width": "w-36"
+          }
+        ],
+        "batches": [
+          {
+            "id": "ug_batch",
+            "name": "(2024 UG Batch)",
+            "rows": []
+          },
+          {
+            "id": "pg_batch",
+            "name": "(2025 PG Batch)",
+            "rows": []
+          }
+        ]
+      },
+      {
+        "key": "1.7",
+        "sheetName": "1.7",
+        "title": "1.7 Apprenticeship",
+        "badge": "Attribute I - Section 1.7",
+        "type": "table",
+        "columns": [
+          {
+            "key": "sno",
+            "label": "S.No.",
+            "width": "w-14"
+          },
+          {
+            "key": "studentName",
+            "label": "Name of the Student",
+            "width": "w-44"
+          },
+          {
+            "key": "regNo",
+            "label": "Reg. No.",
+            "width": "w-28"
+          },
+          {
+            "key": "apprenticeshipTitle",
+            "label": "Title of the Apprenticeship",
+            "width": "w-52"
+          },
+          {
+            "key": "organizationDetails",
+            "label": "Name and Address of the Organization",
+            "width": "w-60"
+          },
+          {
+            "key": "durationDays",
+            "label": "Duration (No of Days)",
+            "width": "w-28"
+          },
+          {
+            "key": "datesFromTo",
+            "label": "Date From - To",
+            "width": "w-36"
+          },
+          {
+            "key": "status",
+            "label": "Status (Completed/Ongoing)",
+            "width": "w-32"
+          },
+          {
+            "key": "stipend",
+            "label": "Stipend (if applicable)",
+            "width": "w-32"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "1.8",
+        "sheetName": "1.8",
+        "title": "1.8 INTERNSHIP / PROJECT ACTIVITY OUTSIDE THE CURRICULUM",
+        "badge": "Attribute I - Section 1.8",
+        "type": "table",
+        "columns": [
+          {
+            "key": "sno",
+            "label": "Sl. No",
+            "width": "w-14"
+          },
+          {
+            "key": "className",
+            "label": "Class",
+            "width": "w-36"
+          },
+          {
+            "key": "regNo",
+            "label": "Reg. No. of the Student",
+            "width": "w-32"
+          },
+          {
+            "key": "studentName",
+            "label": "Name of the Student",
+            "width": "w-44"
+          },
+          {
+            "key": "activityType",
+            "label": "Internship / Project",
+            "width": "w-48"
+          },
+          {
+            "key": "titleOfInternshipProject",
+            "label": "Title of Internship / Project",
+            "width": "w-56"
+          },
+          {
+            "key": "agencyDetails",
+            "label": "Name and Address of the Agency providing Internship/Project",
+            "width": "w-64"
+          },
+          {
+            "key": "durationDays",
+            "label": "Duration in Days",
+            "width": "w-28"
+          },
+          {
+            "key": "datesFromTo",
+            "label": "Dates From - To",
+            "width": "w-36"
+          },
+          {
+            "key": "skillsAcquired",
+            "label": "Skills Acquired",
+            "width": "w-52"
+          },
+          {
+            "key": "stipend",
+            "label": "Stipend, if any (₹)",
+            "width": "w-28"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "1.9",
+        "sheetName": "1.9",
+        "title": "1.9 Students Registering / Completing MOOC",
+        "badge": "Attribute I - Section 1.9",
+        "type": "table",
+        "columns": [
+          {
+            "key": "sno",
+            "label": "S. No.",
+            "width": "w-14"
+          },
+          {
+            "key": "className",
+            "label": "Class",
+            "width": "w-36"
+          },
+          {
+            "key": "regNo",
+            "label": "Reg. No. of the Student",
+            "width": "w-32"
+          },
+          {
+            "key": "studentName",
+            "label": "Name of the Student",
+            "width": "w-44"
+          },
+          {
+            "key": "courseTitle",
+            "label": "Title of the MOOC",
+            "width": "w-52"
+          },
+          {
+            "key": "platform",
+            "label": "Platform (SWAYAM/NPTEL, Coursera, EdX, Udemy, SWAYAM PLUS)",
+            "width": "w-56"
+          },
+          {
+            "key": "cycle",
+            "label": "Cycle (incase the platform is SWAYAM / NPTEL)",
+            "width": "w-36"
+          },
+          {
+            "key": "duration",
+            "label": "Duration (Weeks for SWAYAM/NPTEL, Hrs for others)",
+            "width": "w-36"
+          },
+          {
+            "key": "examDate",
+            "label": "Date of Examination",
+            "width": "w-32"
+          },
+          {
+            "key": "credits",
+            "label": "No. of Credits",
+            "width": "w-24"
+          },
+          {
+            "key": "status",
+            "label": "Registered / Completed",
+            "width": "w-32"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "1.10",
+        "sheetName": "1.10",
+        "title": "1.10 Parent Teacher Meet Conducted",
+        "badge": "Attribute I - Section 1.10",
+        "type": "table",
+        "columns": [
+          {
+            "key": "date",
+            "label": "Date",
+            "width": "w-32"
+          },
+          {
+            "key": "className",
+            "label": "Class",
+            "width": "w-44"
+          },
+          {
+            "key": "studentsOrganized",
+            "label": "No. of Students for whom PT was organised",
+            "width": "w-36"
+          },
+          {
+            "key": "parentsAttending",
+            "label": "No. of Parents Attending",
+            "width": "w-36"
+          },
+          {
+            "key": "feedbackReceived",
+            "label": "No. of Feedback Received",
+            "width": "w-36"
+          },
+          {
+            "key": "actionTaken",
+            "label": "Action Taken based on feedback received",
+            "width": "w-72"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "1.11",
+        "sheetName": "1.11",
+        "title": "1.11 Feedback Collected from Stakeholders",
+        "badge": "Attribute I - Section 1.11",
+        "type": "table",
+        "columns": [
+          {
+            "key": "sno",
+            "label": "S.No",
+            "width": "w-14"
+          },
+          {
+            "key": "stakeholderType",
+            "label": "Type of Stakeholder (Teachers/Alumni/Employers/Industry/Entrepreneurs/Students)",
+            "width": "w-64"
+          },
+          {
+            "key": "feedbackDate",
+            "label": "Date of Feedback Collected",
+            "width": "w-36"
+          },
+          {
+            "key": "feedbackReceived",
+            "label": "No. of Feedback Received",
+            "width": "w-36"
+          },
+          {
+            "key": "mode",
+            "label": "Mode of Feedback (Online / Offline)",
+            "width": "w-36"
+          },
+          {
+            "key": "actionTaken",
+            "label": "Action Taken",
+            "width": "w-72"
+          }
+        ],
+        "rows": []
+      }
+    ]
+  },
+  {
+    "id": "att2",
+    "cardNumber": 2,
+    "cardTitle": "Attribute II - Faculty Resources",
+    "cardCode": "Attribute 2",
+    "cardSubtitle": "Faculty Appointments, Ph.D./PDF Degrees, Recognized Bodies, Reviewers, FDPs, Awards, Abroad Visits (2.1 - 2.13)",
+    "icon": "users",
+    "color": "purple",
+    "sheets": [
+      {
+        "key": "2_2_1",
+        "sheetName": "2.1",
+        "title": "2.1 Details of Teaching Faculty Members",
+        "badge": "Attribute 2 - 2.1",
+        "instruction": "Faculty Resources",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "shift_i_ii",
+            "label": "Shift (I/II)",
+            "width": "w-32"
+          },
+          {
+            "key": "appointment_type_aided_coordin",
+            "label": "Appointment Type (Aided/Coordinator/Secretary)",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_teaching_staff",
+            "label": "Name of the Teaching Staff",
+            "width": "w-52"
+          },
+          {
+            "key": "designation",
+            "label": "Designation",
+            "width": "w-32"
+          },
+          {
+            "key": "date_of_appointment",
+            "label": "Date of Appointment",
+            "width": "w-52"
+          },
+          {
+            "key": "educational_qualification",
+            "label": "Educational Qualification",
+            "width": "w-52"
+          },
+          {
+            "key": "does_the_staff_have_a_doctoral",
+            "label": "Does the staff have a Doctoral Degree Yes/No",
+            "width": "w-52"
+          },
+          {
+            "key": "if_no_year_of_registration_of_",
+            "label": "If No, Year of  registration of PhD Degree (Mention NIL if not registered)",
+            "width": "w-52"
+          },
+          {
+            "key": "year_of_acquiring_doctoral_deg",
+            "label": "Year of Acquiring  Doctoral Degree",
+            "width": "w-52"
+          },
+          {
+            "key": "phd_guide_mention_yes_no",
+            "label": "PhD Guide Mention (Yes/No)",
+            "width": "w-52"
+          },
+          {
+            "key": "year_of_recognition_as_phd_gui",
+            "label": "Year of Recognition as PhD Guide",
+            "width": "w-52"
+          },
+          {
+            "key": "guideship_reference_number",
+            "label": "Guideship Reference Number",
+            "width": "w-52"
+          },
+          {
+            "key": "total_no_of_doctoral_research_",
+            "label": "Total No. of Doctoral Research Scholars Guided",
+            "width": "w-52"
+          },
+          {
+            "key": "no_of_doctoral_research_schola",
+            "label": "No. of Doctoral Research Scholars Guiding",
+            "width": "w-52"
+          },
+          {
+            "key": "personal_mail_id",
+            "label": "Personal Mail ID",
+            "width": "w-52"
+          },
+          {
+            "key": "institutional_email_address",
+            "label": "Institutional Email Address",
+            "width": "w-52"
+          },
+          {
+            "key": "aadhaar_no",
+            "label": "AADHAAR No.",
+            "width": "w-32"
+          },
+          {
+            "key": "pan_no",
+            "label": "PAN No.",
+            "width": "w-32"
+          },
+          {
+            "key": "linkedin_profile",
+            "label": "LinkedIn Profile",
+            "width": "w-52"
+          },
+          {
+            "key": "vidwan_id",
+            "label": "VIDWAN ID",
+            "width": "w-32"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "2_2_2",
+        "sheetName": "2.2",
+        "title": "2.2 New Degrees Awarded",
+        "badge": "Attribute 2 - 2.2",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_the_faculty",
+            "label": "Name of the Faculty",
+            "width": "w-52"
+          },
+          {
+            "key": "degree_awarded",
+            "label": "Degree Awarded",
+            "width": "w-32"
+          },
+          {
+            "key": "specialization",
+            "label": "Specialization",
+            "width": "w-32"
+          },
+          {
+            "key": "name_address_of_the_awarding_i",
+            "label": "Name & Address of the Awarding Institution",
+            "width": "w-52"
+          },
+          {
+            "key": "month_year",
+            "label": "Month & Year",
+            "width": "w-32"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "2_2_3",
+        "sheetName": "2.3",
+        "title": "2.3  Member in various recognized bodies",
+        "badge": "Attribute 2 - 2.3",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S. No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_the_faculty",
+            "label": "Name of the Faculty",
+            "width": "w-52"
+          },
+          {
+            "key": "level_international_national_s",
+            "label": "Level (International/National/State/Institutional)",
+            "width": "w-52"
+          },
+          {
+            "key": "nature_of_body_committee_acade",
+            "label": "Nature of Body/Committee (Academic /Co-curricular Administrative Bodies /External Member in Academic or Administrative Audits, Mock Visits)",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_activity",
+            "label": "Name of the Activity",
+            "width": "w-52"
+          },
+          {
+            "key": "position_chairperson_member_un",
+            "label": "Position (Chairperson, Member, University Nominee, External Expert etc.)",
+            "width": "w-52"
+          },
+          {
+            "key": "institution_address",
+            "label": "Institution & Address",
+            "width": "w-52"
+          },
+          {
+            "key": "no_of_days",
+            "label": "No. of Days",
+            "width": "w-32"
+          },
+          {
+            "key": "dates_from_to_dd_mm_yyyy_dd_mm",
+            "label": "Dates From - To                    (DD.MM.YYYY - DD.MM.YYYY)",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "2_2_4",
+        "sheetName": "2.4",
+        "title": "2.4 Contribution to Research Journals",
+        "badge": "Attribute 2 - 2.4",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_the_faculty",
+            "label": "Name of the Faculty",
+            "width": "w-52"
+          },
+          {
+            "key": "level_international_national_s",
+            "label": "Level (International/National/State)",
+            "width": "w-52"
+          },
+          {
+            "key": "position_editor_co_editor_memb",
+            "label": "Position (Editor, Co-Editor, Member, Reviewer, etc.,)",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_journal",
+            "label": "Name of the Journal",
+            "width": "w-52"
+          },
+          {
+            "key": "mention_if_wos_scopus_etc",
+            "label": "Mention if WoS, SCOPUS, etc.,",
+            "width": "w-52"
+          },
+          {
+            "key": "url_of_the_journal",
+            "label": "URL of the Journal",
+            "width": "w-52"
+          },
+          {
+            "key": "duration_in_years",
+            "label": "Duration in Years",
+            "width": "w-52"
+          },
+          {
+            "key": "date_from_to_dd_mm_yyyy_dd_mm_",
+            "label": "Date  From – To                                (DD.MM.YYYY - DD.MM.YYYY)",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "2_2_5",
+        "sheetName": "2.5",
+        "title": "2.5 Member in Professional Bodies",
+        "badge": "Attribute 2 - 2.5",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_the_faculty",
+            "label": "Name of the Faculty",
+            "width": "w-52"
+          },
+          {
+            "key": "level_international_national_s",
+            "label": "Level (International/National/State)",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_professional_body",
+            "label": "Name of the Professional Body",
+            "width": "w-52"
+          },
+          {
+            "key": "institution_address",
+            "label": "Institution & Address",
+            "width": "w-52"
+          },
+          {
+            "key": "membership_id_no",
+            "label": "Membership ID/No.",
+            "width": "w-52"
+          },
+          {
+            "key": "duration_of_membership_in_year",
+            "label": "Duration of Membership in Years",
+            "width": "w-52"
+          },
+          {
+            "key": "from_to_dd_mm_yyyy_dd_mm_yyyy",
+            "label": "From - To (DD.MM.YYYY - DD.MM.YYYY)",
+            "width": "w-52"
+          },
+          {
+            "key": "amount_provided_by_the_institu",
+            "label": "Amount provided by the Institution (Rs.)",
+            "width": "w-52"
+          },
+          {
+            "key": "date_of_financial_support",
+            "label": "Date of Financial Support",
+            "width": "w-52"
+          },
+          {
+            "key": "activity_involved_in_this_acad",
+            "label": "Activity involved in this academic year as a member",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "2_2_6",
+        "sheetName": "2.6",
+        "title": "2.6 Activity as Resource Person",
+        "badge": "Attribute 2 - 2.6",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S. No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_the_faculty",
+            "label": "Name of the Faculty",
+            "width": "w-52"
+          },
+          {
+            "key": "level_international_national_s",
+            "label": "Level (International/National/State/Institutional)",
+            "width": "w-52"
+          },
+          {
+            "key": "title_of_the_seminar_conf_ws",
+            "label": "Title of the Seminar/Conf/WS",
+            "width": "w-52"
+          },
+          {
+            "key": "type_of_programme_sem_conf_ws_",
+            "label": "Type of Programme (Sem, Conf, WS, Webinar, FDP, etc.)",
+            "width": "w-52"
+          },
+          {
+            "key": "institution_address",
+            "label": "Institution & Address",
+            "width": "w-52"
+          },
+          {
+            "key": "date_dd_mm_yyyy",
+            "label": "Date                    (DD.MM.YYYY)",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "2_2_7",
+        "sheetName": "2.7",
+        "title": "2.7 Faculty Development / Training Programmes through Govt. Recognised Bodies",
+        "badge": "Attribute 2 - 2.7",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S. No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_the_faculty",
+            "label": "Name of the Faculty",
+            "width": "w-52"
+          },
+          {
+            "key": "refresher_course_orientation_p",
+            "label": "Refresher Course/Orientation Programme/Short-Term Course/Faculty Development Programme/others",
+            "width": "w-52"
+          },
+          {
+            "key": "mention_online_offline",
+            "label": "Mention ONLINE/OFFLINE",
+            "width": "w-52"
+          },
+          {
+            "key": "title_of_the_programme",
+            "label": "Title of the Programme",
+            "width": "w-52"
+          },
+          {
+            "key": "name_and_address_of_the_univer",
+            "label": "Name and Address of the University",
+            "width": "w-52"
+          },
+          {
+            "key": "duration_in_days",
+            "label": "Duration in Days",
+            "width": "w-52"
+          },
+          {
+            "key": "date_from_to_dd_mm_yyyy_dd_mm_",
+            "label": "Date  From – To                                (DD.MM.YYYY - DD.MM.YYYY)",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "2_2_8",
+        "sheetName": "2.8",
+        "title": "2.8  Participation in Academic and Professional Development Programmes (Other than 2.7)",
+        "badge": "Attribute 2 - 2.8",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S. No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_the_faculty",
+            "label": "Name of the Faculty",
+            "width": "w-52"
+          },
+          {
+            "key": "level_international_national_s",
+            "label": "Level (International/National/State/Institutional)",
+            "width": "w-52"
+          },
+          {
+            "key": "type_of_programme_seminar_conf",
+            "label": "Type of Programme  (Seminar, Conference,FDP, Workshop, Webinar, etc.)",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_programme",
+            "label": "Name of the Programme",
+            "width": "w-52"
+          },
+          {
+            "key": "name_and_place_of_the_institut",
+            "label": "Name and Place of the Institution",
+            "width": "w-52"
+          },
+          {
+            "key": "duration_in_days",
+            "label": "Duration in Days",
+            "width": "w-52"
+          },
+          {
+            "key": "date_from_to_dd_mm_yyyy_dd_mm_",
+            "label": "Date  From – To                                (DD.MM.YYYY - DD.MM.YYYY)",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "2_2_9",
+        "sheetName": "2.9",
+        "title": "2.9 Industrial Training / Social Sector Projects / Fellowships Attended",
+        "badge": "Attribute 2 - 2.9",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_the_faculty",
+            "label": "Name of the Faculty",
+            "width": "w-52"
+          },
+          {
+            "key": "level_international_national_s",
+            "label": "Level (International/National/State)",
+            "width": "w-52"
+          },
+          {
+            "key": "type_industrial_training_socia",
+            "label": "Type (Industrial Training / Social Sector Projects / Fellowships)",
+            "width": "w-52"
+          },
+          {
+            "key": "sponsored_by_management_others",
+            "label": "Sponsored by Management/Others (mention the details)",
+            "width": "w-52"
+          },
+          {
+            "key": "amount_received_in",
+            "label": "Amount Received  (in ₹)",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_scheme_under_which",
+            "label": "Name of the Scheme under which the Training was Offered",
+            "width": "w-52"
+          },
+          {
+            "key": "name_and_address_of_the_indust",
+            "label": "Name and Address of the Industry",
+            "width": "w-52"
+          },
+          {
+            "key": "duration_in_days",
+            "label": "Duration in Days",
+            "width": "w-52"
+          },
+          {
+            "key": "date_from_to_dd_mm_yyyy_dd_mm_",
+            "label": "Date  From – To                                (DD.MM.YYYY - DD.MM.YYYY)",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "2_2_10",
+        "sheetName": "2.10",
+        "title": "2.10  NET / SET / JRF / Others Qualified in the current Academic Year",
+        "badge": "Attribute 2 - 2.10",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S. No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_the_staff",
+            "label": "Name of the Staff",
+            "width": "w-52"
+          },
+          {
+            "key": "examination_registration_numbe",
+            "label": "Examination Registration Number",
+            "width": "w-52"
+          },
+          {
+            "key": "net_set_jrf_others",
+            "label": "NET/SET/JRF/Others",
+            "width": "w-52"
+          },
+          {
+            "key": "subject",
+            "label": "SUBJECT",
+            "width": "w-32"
+          },
+          {
+            "key": "date_of_passing_dd_mm_yyyy",
+            "label": "Date of Passing             (DD.MM.YYYY)",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "2_2_11",
+        "sheetName": "2.11",
+        "title": "2.11 Awards Received",
+        "badge": "Attribute 2 - 2.11",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S. No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_the_staff",
+            "label": "Name of the Staff",
+            "width": "w-52"
+          },
+          {
+            "key": "level_international_national_s",
+            "label": "Level (International/National/State/Institutional)",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_award",
+            "label": "Name of the Award",
+            "width": "w-52"
+          },
+          {
+            "key": "date_dd_mm_yyyy",
+            "label": "Date                        (DD.MM.YYYY)",
+            "width": "w-52"
+          },
+          {
+            "key": "awarding_agency_and_contact_de",
+            "label": "Awarding Agency and Contact Details",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "2_2_12",
+        "sheetName": "2.12",
+        "title": "2.12 Faculty Registering  / Completing MOOC",
+        "badge": "Attribute 2 - 2.12",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_the_staff",
+            "label": "Name of the Staff",
+            "width": "w-52"
+          },
+          {
+            "key": "platform_offering_mooc_swayam_",
+            "label": "Platform offering MOOC (SWAYAM/NPTEL, Recognized Platforms by the Departments (Coursera, EdX, Udemy, etc.), SWAYAM PLUS",
+            "width": "w-52"
+          },
+          {
+            "key": "title_of_the_mooc",
+            "label": "Title of the MOOC",
+            "width": "w-52"
+          },
+          {
+            "key": "cycle_incase_the_platform_is_s",
+            "label": "Cycle (incase the platform is SWAYAM / NPTEL)",
+            "width": "w-52"
+          },
+          {
+            "key": "duration_of_course",
+            "label": "Duration of Course",
+            "width": "w-52"
+          },
+          {
+            "key": "number_of_credits",
+            "label": "Number of Credits",
+            "width": "w-52"
+          },
+          {
+            "key": "fdp_yes_no",
+            "label": "FDP (YES/NO)",
+            "width": "w-32"
+          },
+          {
+            "key": "date_of_examination_dd_mm_yyyy",
+            "label": "Date of Examination  (DD.MM.YYYY)",
+            "width": "w-52"
+          },
+          {
+            "key": "registered_completed",
+            "label": "Registered / Completed",
+            "width": "w-52"
+          },
+          {
+            "key": "result",
+            "label": "Result",
+            "width": "w-32"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "2_2_13",
+        "sheetName": "2.13",
+        "title": "2.13 Faculty Going Abroad for Academic Visits",
+        "badge": "Attribute 2 - 2.13",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_the_staff",
+            "label": "Name of the Staff",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_country_visited",
+            "label": "Name of the Country Visited",
+            "width": "w-52"
+          },
+          {
+            "key": "purpose_nature_of_the_visit",
+            "label": "Purpose / Nature of the Visit",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_fellowship_if_any",
+            "label": "Name of the Fellowship, if any",
+            "width": "w-52"
+          },
+          {
+            "key": "awarding_agency_host_instituti",
+            "label": "Awarding Agency / Host Institution with Complete Address",
+            "width": "w-52"
+          },
+          {
+            "key": "whether_the_visit_based_on_mou",
+            "label": "Whether the visit based on MoU",
+            "width": "w-52"
+          },
+          {
+            "key": "no_of_days",
+            "label": "No. of Days",
+            "width": "w-32"
+          },
+          {
+            "key": "date_from_to_dd_mm_yyyy_dd_mm_",
+            "label": "Date FROM - TO                 DD.MM.YYYY - DD.MM.YYYY",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      }
+    ]
+  },
+  {
+    "id": "att3",
+    "cardNumber": 3,
+    "cardTitle": "Attribute III - Infrastructure & Learning Resources",
+    "cardCode": "Attribute 3",
+    "cardSubtitle": "Laboratory Equipment Purchases, Computing Facilities, Department Library Books & Journals (3.1 - 3.2)",
+    "icon": "hard-drive",
+    "color": "emerald",
+    "sheets": [
+      {
+        "key": "3_3_1",
+        "sheetName": "3.1",
+        "title": "3.1 Research Facility",
+        "badge": "Attribute 3 - 3.1",
+        "instruction": "Infrastructure",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "department",
+            "label": "Department",
+            "width": "w-48"
+          },
+          {
+            "key": "name_of_the_lab",
+            "label": "Name of the Lab",
+            "width": "w-52"
+          },
+          {
+            "key": "equipment_instruments_purchased",
+            "label": "Equipment / Instruments Purchased",
+            "width": "w-64"
+          },
+          {
+            "key": "existing_new_facility",
+            "label": "Existing / New Facility",
+            "width": "w-36"
+          },
+          {
+            "key": "date_of_purchase",
+            "label": "Date of Purchase",
+            "width": "w-36"
+          },
+          {
+            "key": "amount_inr",
+            "label": "Amount (₹)",
+            "width": "w-32"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "3_3_2",
+        "sheetName": "3.2",
+        "title": "3.2  Department Library",
+        "badge": "Attribute 3 - 3.2",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "department",
+            "label": "Department",
+            "width": "w-32"
+          },
+          {
+            "key": "type_books_jounal",
+            "label": "Type (Books/Jounal)",
+            "width": "w-52"
+          },
+          {
+            "key": "purchased_during_2026_2027_in_",
+            "label": "Purchased during 2026-2027 (in numbers)",
+            "width": "w-52"
+          },
+          {
+            "key": "total_number_in_the_department",
+            "label": "Total Number in the Department Library",
+            "width": "w-52"
+          },
+          {
+            "key": "no_of_visits_to_the_department",
+            "label": "No. of Visits to the Department Library by Faculty /Day",
+            "width": "w-52"
+          },
+          {
+            "key": "col_7",
+            "label": "No. of Visits to the Department Library by Students/Day",
+            "width": "w-52"
+          },
+          {
+            "key": "no_of_books_checked_out_by_fac",
+            "label": "No. of Books checked out by faculty  in the Academic Year",
+            "width": "w-52"
+          },
+          {
+            "key": "no_of_books_checked_out_by_stu",
+            "label": "No. of Books checked out by students in the Academic Year",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      }
+    ]
+  },
+  {
+    "id": "att4",
+    "cardNumber": 4,
+    "cardTitle": "Attribute IV - Student Support & Financial Aid",
+    "cardCode": "Attribute 4",
+    "cardSubtitle": "Alumni Interactions, Scholarships, External Research Grants, Management Grants & Seed Money (4.1 - 4.5)",
+    "icon": "banknote",
+    "color": "amber",
+    "sheets": [
+      {
+        "key": "4_4_1",
+        "sheetName": "4.1",
+        "title": "4.1 Alumni Meeting",
+        "badge": "Attribute 4 - 4.1",
+        "instruction": "Financial Resources & Management",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S. No.",
+            "width": "w-16"
+          },
+          {
+            "key": "programme",
+            "label": "Programme",
+            "width": "w-36"
+          },
+          {
+            "key": "batch",
+            "label": "Batch",
+            "width": "w-28"
+          },
+          {
+            "key": "no_of_alumni_participated",
+            "label": "No. of Alumni Participated",
+            "width": "w-28"
+          },
+          {
+            "key": "date",
+            "label": "Date",
+            "width": "w-36"
+          },
+          {
+            "key": "details_of_notable_alumni_part",
+            "label": "Details of Notable Alumni Participated with Designation and Official Address",
+            "width": "w-64"
+          },
+          {
+            "key": "financial_contribution_inr",
+            "label": "Financial Contribution (₹), if any",
+            "width": "w-36"
+          },
+          {
+            "key": "purpose_of_financial_contribution",
+            "label": "Purpose of the Financial Contribution",
+            "width": "w-52"
+          },
+          {
+            "key": "support_for_other_contributions",
+            "label": "Support for other Contributions (Placement, Internship Opportunities, Knowledge sharing, etc)",
+            "width": "w-64"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "4_4_2",
+        "sheetName": "4.2",
+        "title": "4.2 Scholarship/ Freeship / Financial Assistance Received by the Students from the College/Alumni/External Agencies",
+        "badge": "Attribute 4 - 4.2",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S. No.",
+            "width": "w-16"
+          },
+          {
+            "key": "reg_no",
+            "label": "Reg. No",
+            "width": "w-32"
+          },
+          {
+            "key": "name_of_the_student",
+            "label": "Name of the Student",
+            "width": "w-52"
+          },
+          {
+            "key": "college_alumni_external_agenci",
+            "label": "College /Alumni /External Agencies",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_agency_with_comple",
+            "label": "Name of the Agency with complete address",
+            "width": "w-52"
+          },
+          {
+            "key": "mention_name_of_the_scholarshi",
+            "label": "Mention Name of the Scholarship",
+            "width": "w-52"
+          },
+          {
+            "key": "amount_received_in_rupees",
+            "label": "Amount Received in Rupees (₹)",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "4_4_3",
+        "sheetName": "4.3",
+        "title": "4.3 Funds Received (Grants received from the External Funding Agencies to conduct Courses/Conferences, etc.)",
+        "badge": "Attribute 4 - 4.3",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S. No.",
+            "width": "w-16"
+          },
+          {
+            "key": "title_of_the_programme",
+            "label": "Title of the Programme",
+            "width": "w-52"
+          },
+          {
+            "key": "date_of_the_event_from_to",
+            "label": "Date of the Event (FROM-TO)",
+            "width": "w-52"
+          },
+          {
+            "key": "nature_of_the_programme_worksh",
+            "label": "Nature of the Programme (Workshop/Seminar/Conference/Courses,etc)",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_funding_agency",
+            "label": "Name of the Funding Agency",
+            "width": "w-52"
+          },
+          {
+            "key": "purpose",
+            "label": "Purpose",
+            "width": "w-32"
+          },
+          {
+            "key": "date_of_grant",
+            "label": "Date of Grant",
+            "width": "w-32"
+          },
+          {
+            "key": "amount",
+            "label": "Amount (₹)",
+            "width": "w-32"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "4_4_4",
+        "sheetName": "4.4",
+        "title": "4.4  Endowments Established (this academic year)",
+        "badge": "Attribute 4 - 4.4",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S. No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_the_endowment",
+            "label": "Name of the Endowment",
+            "width": "w-52"
+          },
+          {
+            "key": "purpose_of_the_endowment",
+            "label": "Purpose of the Endowment",
+            "width": "w-52"
+          },
+          {
+            "key": "instituted_by_alumni_others_if",
+            "label": "Instituted By (Alumni/Others).If Alumni, mention the Batch and Programme",
+            "width": "w-52"
+          },
+          {
+            "key": "instituted_by_with_complete_ad",
+            "label": "Instituted By (with complete address)",
+            "width": "w-52"
+          },
+          {
+            "key": "date_of_institution_dd_mm_yyyy",
+            "label": "Date of Institution DD.MM.YYYY",
+            "width": "w-52"
+          },
+          {
+            "key": "amount",
+            "label": "Amount (₹)",
+            "width": "w-32"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "4_4_5",
+        "sheetName": "4.5",
+        "title": "4.5 Details of Endowment Lectures/Workshops conducted (Instituted in the Current or Previous Academic years)",
+        "badge": "Attribute 4 - 4.5",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_the_endowment_lecture_",
+            "label": "Name of the Endowment Lecture /Workshop",
+            "width": "w-52"
+          },
+          {
+            "key": "title_of_the_talk_workshop",
+            "label": "Title of the Talk/Workshop",
+            "width": "w-52"
+          },
+          {
+            "key": "resource_person_s_name_designa",
+            "label": "Resource Person’s Name, Designation, Affiliation and Complete Address",
+            "width": "w-52"
+          },
+          {
+            "key": "date",
+            "label": "Date",
+            "width": "w-32"
+          },
+          {
+            "key": "beneficiaries",
+            "label": "Beneficiaries",
+            "width": "w-32"
+          },
+          {
+            "key": "no_of_beneficiaries",
+            "label": "No. of Beneficiaries",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      }
+    ]
+  },
+  {
+    "id": "att5",
+    "cardNumber": 5,
+    "cardTitle": "Attribute V - Teaching-Learning & E-Content",
+    "cardCode": "Attribute 5",
+    "cardSubtitle": "MoUs Signed, Industry Linkages, Four-Quadrant E-Content Packages & Pedagogical Innovations (5.1 - 5.6)",
+    "icon": "laptop",
+    "color": "cyan",
+    "sheets": [
+      {
+        "key": "5_5_1",
+        "sheetName": "5.1",
+        "title": "5.1 Pedagogical Approaches & Innovative Teaching Practices Adopted",
+        "badge": "Attribute 5 - 5.1",
+        "instruction": "Learning and Teaching",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "programme",
+            "label": "Programme",
+            "width": "w-32"
+          },
+          {
+            "key": "class",
+            "label": "Class",
+            "width": "w-32"
+          },
+          {
+            "key": "name_of_the_faculty_member",
+            "label": "Name of the Faculty Member",
+            "width": "w-52"
+          },
+          {
+            "key": "course_code",
+            "label": "Course Code",
+            "width": "w-32"
+          },
+          {
+            "key": "course_title",
+            "label": "Course Title",
+            "width": "w-32"
+          },
+          {
+            "key": "date",
+            "label": "Date",
+            "width": "w-32"
+          },
+          {
+            "key": "pedagogical_approach_adopted",
+            "label": "Pedagogical approach adopted",
+            "width": "w-52"
+          },
+          {
+            "key": "platform_offline_jostel_if_oth",
+            "label": "Platform (OFFLINE/JosTEL/if others, mention the name platform)",
+            "width": "w-52"
+          },
+          {
+            "key": "semester_odd_even",
+            "label": "Semester (ODD/Even)",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "5_5_2",
+        "sheetName": "5.2",
+        "title": "5.2 Assessment Practices Employed by the Faculty",
+        "badge": "Attribute 5 - 5.2",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "programme",
+            "label": "Programme",
+            "width": "w-32"
+          },
+          {
+            "key": "class",
+            "label": "Class",
+            "width": "w-32"
+          },
+          {
+            "key": "name_of_the_faculty_member",
+            "label": "Name of the Faculty Member",
+            "width": "w-52"
+          },
+          {
+            "key": "course_code",
+            "label": "Course Code",
+            "width": "w-32"
+          },
+          {
+            "key": "course_title",
+            "label": "Course Title",
+            "width": "w-32"
+          },
+          {
+            "key": "date",
+            "label": "Date",
+            "width": "w-32"
+          },
+          {
+            "key": "assessment_component",
+            "label": "Assessment Component",
+            "width": "w-52"
+          },
+          {
+            "key": "if_part_of_cia_mention_the_com",
+            "label": "If part of CIA, Mention the Component and Level",
+            "width": "w-52"
+          },
+          {
+            "key": "platform_offline_jostel_if_oth",
+            "label": "Platform (OFFLINE/JosTEL/if others, mention the name platform)",
+            "width": "w-52"
+          },
+          {
+            "key": "semester_odd_even",
+            "label": "Semester (ODD/Even)",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "5_5_3",
+        "sheetName": "5.3",
+        "title": "5.3 Remedial Coaching Conducted",
+        "badge": "Attribute 5 - 5.3",
+        "instruction": "",
+        "type": "multi_table",
+        "sections": [
+          {
+            "id": "teaching_methodologies",
+            "title": "Teaching Methodologies Adopted",
+            "columns": [
+              {
+                "key": "s_no",
+                "label": "S.No.",
+                "width": "w-16"
+              },
+              {
+                "key": "teaching_methodology",
+                "label": "Teaching Methodology",
+                "width": "w-64"
+              },
+              {
+                "key": "mention_yes_no",
+                "label": "Mention YES/NO",
+                "width": "w-32"
+              },
+              {
+                "key": "no_of_staff_using_the_tl_metho",
+                "label": "No. of Staff Using the TL Methodology",
+                "width": "w-36"
+              }
+            ],
+            "defaultRows": [
+              {
+                "s_no": "1",
+                "teaching_methodology": "Inclusive Remedial Teaching",
+                "mention_yes_no": "YES",
+                "no_of_staff_using_the_tl_metho": ""
+              },
+              {
+                "s_no": "2",
+                "teaching_methodology": "Peer assisted Remedial Teaching",
+                "mention_yes_no": "YES",
+                "no_of_staff_using_the_tl_metho": ""
+              },
+              {
+                "s_no": "3",
+                "teaching_methodology": "Multi Sensory Remedial Teaching",
+                "mention_yes_no": "NO",
+                "no_of_staff_using_the_tl_metho": ""
+              },
+              {
+                "s_no": "4",
+                "teaching_methodology": "Skill Based Remedial Teaching",
+                "mention_yes_no": "YES",
+                "no_of_staff_using_the_tl_metho": ""
+              },
+              {
+                "s_no": "5",
+                "teaching_methodology": "Individualized Teacher Interventions",
+                "mention_yes_no": "YES",
+                "no_of_staff_using_the_tl_metho": ""
+              },
+              {
+                "s_no": "6",
+                "teaching_methodology": "Language Barrier Remedial",
+                "mention_yes_no": "YES",
+                "no_of_staff_using_the_tl_metho": ""
+              },
+              {
+                "s_no": "7",
+                "teaching_methodology": "Any other please specify",
+                "mention_yes_no": "NO",
+                "no_of_staff_using_the_tl_metho": ""
+              }
+            ]
+          },
+          {
+            "id": "remedial_classes",
+            "title": "Details of Remedial Coaching Conducted",
+            "columns": [
+              {
+                "key": "s_no",
+                "label": "S.No.",
+                "width": "w-16"
+              },
+              {
+                "key": "class",
+                "label": "Class",
+                "width": "w-32"
+              },
+              {
+                "key": "course_title",
+                "label": "Title of the Course",
+                "width": "w-52"
+              },
+              {
+                "key": "course_code",
+                "label": "Course Code",
+                "width": "w-32"
+              },
+              {
+                "key": "methodologies_used",
+                "label": "Remedial Methodologies Used (refer the above table)",
+                "width": "w-56"
+              },
+              {
+                "key": "duration_hours",
+                "label": "Duration in hours",
+                "width": "w-28"
+              },
+              {
+                "key": "dates_from_to",
+                "label": "Dates FROM -TO",
+                "width": "w-44"
+              },
+              {
+                "key": "faculty_names",
+                "label": "Name(s) of Faculty handling classes",
+                "width": "w-52"
+              },
+              {
+                "key": "students_benefitted",
+                "label": "No. of students benefitted",
+                "width": "w-32"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "5_5_4",
+        "sheetName": "5.4",
+        "title": "5.4  Support to Fast Learners",
+        "badge": "Attribute 5 - 5.4",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S. No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_the_programme",
+            "label": "Name of the Programme",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_faculty_member_in_",
+            "label": "Name of the Faculty Member in-charge",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_club_involved_if_a",
+            "label": "Name of the Club involved, if any",
+            "width": "w-52"
+          },
+          {
+            "key": "details_of_resource_person",
+            "label": "Details of Resource Person",
+            "width": "w-52"
+          },
+          {
+            "key": "date_from_to_dd_mm_yyyy",
+            "label": "Date FROM - TO                 DD.MM.YYYY",
+            "width": "w-52"
+          },
+          {
+            "key": "no_of_beneficiaries",
+            "label": "No. of Beneficiaries",
+            "width": "w-52"
+          },
+          {
+            "key": "strategy_adopted_by_the_depart",
+            "label": "Strategy adopted by the Department to identify the fast learners",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "5_5_5",
+        "sheetName": "5.5",
+        "title": "5.5 Industry-Academia Collaboration: MoUs / Linkages",
+        "badge": "Attribute 5 - 5.5",
+        "instruction": "Details of MoU/Linkage",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S. No.",
+            "width": "w-16"
+          },
+          {
+            "key": "nature_i_n",
+            "label": "Nature (I/N)",
+            "width": "w-32"
+          },
+          {
+            "key": "type_mou_linkage",
+            "label": "Type (MoU/Linkage)",
+            "width": "w-52"
+          },
+          {
+            "key": "name_and_address_of_the_organi",
+            "label": "Name and Address of the Organisation with which MoU/Linkage is Established",
+            "width": "w-52"
+          },
+          {
+            "key": "type_of_the_organisation_insti",
+            "label": "Type of the Organisation  (Institution/ Industry/ Corporate House, etc.,)",
+            "width": "w-52"
+          },
+          {
+            "key": "date_of_establishment_of_mou_l",
+            "label": "Date of Establishment of MoU/Linkage",
+            "width": "w-52"
+          },
+          {
+            "key": "duration_in_years",
+            "label": "Duration in Years",
+            "width": "w-52"
+          },
+          {
+            "key": "nature_of_activity_student_exc",
+            "label": "Nature of Activity (Student Exchange/Faculty Exchange/Networking and Sharing of Resources/Mentorship Programmes/Research Colloboration/Industry/Community Collaboration/Internship/Placement/Apprenticeship/Others etc.)",
+            "width": "w-52"
+          },
+          {
+            "key": "date_of_activity",
+            "label": "Date of Activity",
+            "width": "w-52"
+          },
+          {
+            "key": "number_of_students_participati",
+            "label": "Number of Students  participating in Activities related to MoU/Linkage",
+            "width": "w-52"
+          },
+          {
+            "key": "number_of_faculty_participatin",
+            "label": "Number of Faculty participating in Activities related to MoU/Linkage",
+            "width": "w-52"
+          },
+          {
+            "key": "outcome",
+            "label": "Outcome",
+            "width": "w-32"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "5_5_6",
+        "sheetName": "5.6",
+        "title": "5.6 E-contents (Four Quadrant) created by the Faculty",
+        "badge": "Attribute 5 - 5.6",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "programme",
+            "label": "Programme",
+            "width": "w-32"
+          },
+          {
+            "key": "class",
+            "label": "Class",
+            "width": "w-32"
+          },
+          {
+            "key": "name_of_the_faculty_member",
+            "label": "Name of the Faculty Member",
+            "width": "w-52"
+          },
+          {
+            "key": "course_code",
+            "label": "Course Code",
+            "width": "w-32"
+          },
+          {
+            "key": "course_title",
+            "label": "Course Title",
+            "width": "w-32"
+          },
+          {
+            "key": "youtube_link",
+            "label": "Youtube Link",
+            "width": "w-32"
+          },
+          {
+            "key": "semester_odd_even",
+            "label": "Semester (ODD/Even)",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      }
+    ]
+  },
+  {
+    "id": "att6",
+    "cardNumber": 6,
+    "cardTitle": "Attribute VI - Extension Activities & Student Support",
+    "cardCode": "Attribute 6",
+    "cardSubtitle": "Department Associations, Student Clubs, Community Outreach, Extension & Social Projects (6.1 - 6.5)",
+    "icon": "heart-handshake",
+    "color": "rose",
+    "sheets": [
+      {
+        "key": "6_6_1",
+        "sheetName": "6.1",
+        "title": "6.1 Departmental Academic and Student Support & Development Activities (other than club activities)",
+        "badge": "Attribute 6 - 6.1",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "type_of_programme",
+            "label": "Type of Programme (FDP, Sem, Conf, WS, Webinar, Guest Lectures, Vocational / Placement Trainings, etc.)",
+            "width": "w-64"
+          },
+          {
+            "key": "level",
+            "label": "Level (International / National / State / Regional / Other)",
+            "width": "w-44"
+          },
+          {
+            "key": "title_of_the_programme",
+            "label": "Title of the Programme",
+            "width": "w-56"
+          },
+          {
+            "key": "resource_person_details",
+            "label": "Resource Person’s Name, Designation, Affiliation and Complete Address",
+            "width": "w-64"
+          },
+          {
+            "key": "mode",
+            "label": "Mode (Online / Offline / Blended / Other)",
+            "width": "w-36"
+          },
+          {
+            "key": "date_from_to",
+            "label": "Date From – To",
+            "width": "w-44"
+          },
+          {
+            "key": "beneficiaries",
+            "label": "Beneficiaries",
+            "width": "w-40"
+          },
+          {
+            "key": "no_of_beneficiaries",
+            "label": "No. of Beneficiaries",
+            "width": "w-32"
+          },
+          {
+            "key": "whether_part_of_mou",
+            "label": "Whether conducted part of MoU Activity (Yes/No)",
+            "width": "w-36"
+          },
+          {
+            "key": "hands_on",
+            "label": "Hands on (Yes/No)",
+            "width": "w-32"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "6_6_2",
+        "sheetName": "6.2",
+        "title": "6.2 Guidance for Competitive Examinations",
+        "badge": "Attribute 6 - 6.2",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S. No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_the_programme",
+            "label": "Name of the Programme",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_examination_net_se",
+            "label": "Name of the Examination (NET, SET, CA, TNPSC, UPSC, JAM, etc.)",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_faculty_organising",
+            "label": "Name of the Faculty Organising the Activity",
+            "width": "w-52"
+          },
+          {
+            "key": "resource_person_s_name_designa",
+            "label": "Resource Person’s Name, Designation, Affiliation and Complete Address",
+            "width": "w-52"
+          },
+          {
+            "key": "date_dd_mm_yyyy",
+            "label": "Date (DD.MM.YYYY)",
+            "width": "w-52"
+          },
+          {
+            "key": "no_of_beneficiaries",
+            "label": "No. of Beneficiaries",
+            "width": "w-52"
+          },
+          {
+            "key": "no_of_students_passing_the_exa",
+            "label": "No. of Students passing the Exams",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_external_agency_if",
+            "label": "Name of the External Agency if any",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "6_6_3",
+        "sheetName": "6.3",
+        "title": "6.3 Students Pursuing other Degree / Programmes (Offline/ODL/Online/Blended)",
+        "badge": "Attribute 6 - 6.3",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "register_number",
+            "label": "Register Number",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_student",
+            "label": "Name of the Student",
+            "width": "w-52"
+          },
+          {
+            "key": "mode_offline_odl_online_blende",
+            "label": "Mode  (Offline/ODL/Online/Blended)",
+            "width": "w-52"
+          },
+          {
+            "key": "programme_pursuing",
+            "label": "Programme Pursuing",
+            "width": "w-52"
+          },
+          {
+            "key": "name_address_of_the_institutio",
+            "label": "Name & Address of the  Institution",
+            "width": "w-52"
+          },
+          {
+            "key": "duration_of_the_programme",
+            "label": "Duration of the Programme",
+            "width": "w-52"
+          },
+          {
+            "key": "year_of_completion",
+            "label": "Year of Completion",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "6_6_4",
+        "sheetName": "6.4",
+        "title": "6.4  Activities of various Clubs of the Department",
+        "badge": "Attribute 6 - 6.4",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "nature_of_club_technical_cultu",
+            "label": "Nature of Club (Technical/Cultural/Domain/Others)",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_club",
+            "label": "Name of the Club",
+            "width": "w-52"
+          },
+          {
+            "key": "nature_of_activity",
+            "label": "Nature of Activity",
+            "width": "w-52"
+          },
+          {
+            "key": "industry_external_partner_invo",
+            "label": "Industry / External Partner Involved",
+            "width": "w-52"
+          },
+          {
+            "key": "nature_of_collaboration_role_o",
+            "label": "Nature of Collaboration / Role of Industry",
+            "width": "w-52"
+          },
+          {
+            "key": "date",
+            "label": "Date",
+            "width": "w-32"
+          },
+          {
+            "key": "no_of_participants_from_other_",
+            "label": "No. of Participants from Other Institutions / Departments",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_institutions_departmen",
+            "label": "Name of Institutions / Departments Participated",
+            "width": "w-52"
+          },
+          {
+            "key": "no_of_participants_from_parent",
+            "label": "No. of Participants from Parent Department",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "6_6_5",
+        "sheetName": "6.5",
+        "title": "6.5 Establishment of Student Chapters of Professional Bodies",
+        "badge": "Attribute 6 - 6.5",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No",
+            "width": "w-16"
+          },
+          {
+            "key": "reg_number_of_the_student",
+            "label": "Reg. Number of the Student",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_student",
+            "label": "Name of the Student",
+            "width": "w-52"
+          },
+          {
+            "key": "details_of_the_professional_bo",
+            "label": "Details of the Professional Body",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_student_chapter",
+            "label": "Name of the Student Chapter",
+            "width": "w-52"
+          },
+          {
+            "key": "date_of_establishment",
+            "label": "Date of Establishment",
+            "width": "w-52"
+          },
+          {
+            "key": "establishment_fee_if_any",
+            "label": "Establishment Fee (if any)",
+            "width": "w-52"
+          },
+          {
+            "key": "financial_support_from_the_man",
+            "label": "Financial Support from the Management (in Rupees)",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      }
+    ]
+  },
+  {
+    "id": "att7",
+    "cardNumber": 7,
+    "cardTitle": "Attribute VII - Financial Support & Management Grants",
+    "cardCode": "Attribute 7",
+    "cardSubtitle": "Seed Money for Research & Patents, Endowments Established, Financial Assistance for Faculty (7.1 - 7.4)",
+    "icon": "coins",
+    "color": "orange",
+    "sheets": [
+      {
+        "key": "7_7_1",
+        "sheetName": "7.1",
+        "title": "7.1 Financial Support & Grants Received from Management for Academic Activities",
+        "badge": "Attribute 7 - 7.1",
+        "instruction": "Management Support",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "title_of_the_course_conference",
+            "label": "Title of the Course/Conference",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_funding_agency",
+            "label": "Name of the Funding Agency",
+            "width": "w-52"
+          },
+          {
+            "key": "purpose",
+            "label": "Purpose",
+            "width": "w-32"
+          },
+          {
+            "key": "amount",
+            "label": "Amount (₹)",
+            "width": "w-32"
+          },
+          {
+            "key": "no_of_days",
+            "label": "No of Days",
+            "width": "w-32"
+          },
+          {
+            "key": "period_from_to",
+            "label": "Period FROM - TO",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "7_7_2",
+        "sheetName": "7.2",
+        "title": "7.2  Seed Money (Received from Management for Patent/Copyright,etc.)",
+        "badge": "Attribute 7 - 7.2",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_the_staff",
+            "label": "Name of the Staff",
+            "width": "w-52"
+          },
+          {
+            "key": "amount_in_rupees",
+            "label": "Amount in Rupees (₹)",
+            "width": "w-52"
+          },
+          {
+            "key": "date",
+            "label": "Date",
+            "width": "w-32"
+          },
+          {
+            "key": "type_of_intellectual_property_",
+            "label": "Type of Intellectual Property (Patent / Copyright / Design, etc.)",
+            "width": "w-52"
+          },
+          {
+            "key": "title_of_patent_copyright_desi",
+            "label": "Title of Patent / Copyright / Design",
+            "width": "w-52"
+          },
+          {
+            "key": "purpose_intended_use_of_seed_m",
+            "label": "Purpose / Intended Use of Seed Money",
+            "width": "w-52"
+          },
+          {
+            "key": "status",
+            "label": "Status",
+            "width": "w-32"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "7_7_3",
+        "sheetName": "7.3",
+        "title": "7.3  Seed Money (Received from Management for Research Project)",
+        "badge": "Attribute 7 - 7.3",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_the_staff",
+            "label": "Name of the Staff",
+            "width": "w-52"
+          },
+          {
+            "key": "amount_received_from_managemen",
+            "label": "Amount Received from Management (₹)",
+            "width": "w-52"
+          },
+          {
+            "key": "duration_of_the_project",
+            "label": "Duration of the Project",
+            "width": "w-52"
+          },
+          {
+            "key": "date_of_grant",
+            "label": "Date of Grant",
+            "width": "w-32"
+          },
+          {
+            "key": "title_of_the_research_project",
+            "label": "Title of the Research Project",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "7_7_4",
+        "sheetName": "7.4",
+        "title": "7.4 Financial Support Received (Financial Support from Management for attending Conference, Seminar, etc.)",
+        "badge": "Attribute 7 - 7.4",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_the_staff",
+            "label": "Name of the Staff",
+            "width": "w-52"
+          },
+          {
+            "key": "amount_received_from_managemen",
+            "label": "Amount Received from Management (₹)",
+            "width": "w-52"
+          },
+          {
+            "key": "date_of_financial_support",
+            "label": "Date of Financial Support",
+            "width": "w-52"
+          },
+          {
+            "key": "purpose",
+            "label": "Purpose",
+            "width": "w-32"
+          },
+          {
+            "key": "name_address_of_the_organizing",
+            "label": "Name & Address of the organizing Institution",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_conference_seminar",
+            "label": "Name of the Conference / Seminar / Programme",
+            "width": "w-52"
+          },
+          {
+            "key": "date_of_event_from_to",
+            "label": "Date of Event FROM–TO",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      }
+    ]
+  },
+  {
+    "id": "att8",
+    "cardNumber": 8,
+    "cardTitle": "Attribute VIII - Student Achievements & Progression",
+    "cardCode": "Attribute 8",
+    "cardSubtitle": "Competitive Examinations Qualified (NET/GATE/CAT/UPSC), Cultural, Sports & Technical Hackathon Awards (8.1 - 8.3)",
+    "icon": "trophy",
+    "color": "yellow",
+    "sheets": [
+      {
+        "key": "8_8_1",
+        "sheetName": "8.1",
+        "title": "8.1 Students Qualifying in State / National / International Competitive Examinations",
+        "badge": "Attribute 8 - 8.1",
+        "instruction": "Student Outcomes",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S. No.",
+            "width": "w-16"
+          },
+          {
+            "key": "register_number",
+            "label": "Register Number",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_student",
+            "label": "Name of the Student",
+            "width": "w-52"
+          },
+          {
+            "key": "type_of_competitive_exam_net_s",
+            "label": "Type of Competitive Exam (NET/ SET/ GATE /CAT /UPSC/TNPSC/JAM/Others)",
+            "width": "w-52"
+          },
+          {
+            "key": "exam_registration_number",
+            "label": "Exam Registration Number",
+            "width": "w-52"
+          },
+          {
+            "key": "date_of_exam_dd_mm_yyyy",
+            "label": "Date of Exam  (DD.MM.YYYY)",
+            "width": "w-52"
+          },
+          {
+            "key": "result_status",
+            "label": "Result / Status",
+            "width": "w-52"
+          },
+          {
+            "key": "score_rank_qualification_detai",
+            "label": "Score / Rank / Qualification Details",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "8_8_2",
+        "sheetName": "8.2",
+        "title": "8.2 – Students’ Participation and Awards in External Cultural, Sports and Extra-Curricular Events",
+        "badge": "Attribute 8 - 8.2",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "level_international_national_s",
+            "label": "Level (International / National / State / University / Regional)",
+            "width": "w-52"
+          },
+          {
+            "key": "nature_culturals_sports_events",
+            "label": "Nature (culturals/sports events/any other, specify )",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_activity",
+            "label": "Name of the Activity",
+            "width": "w-52"
+          },
+          {
+            "key": "register_number",
+            "label": "Register Number",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_student",
+            "label": "Name of the Student",
+            "width": "w-52"
+          },
+          {
+            "key": "name_address_of_the_organising",
+            "label": "Name & Address of the Organising Institution",
+            "width": "w-52"
+          },
+          {
+            "key": "participation_status_participa",
+            "label": "Participation Status (Participated/Position Secured)",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_award_position",
+            "label": "Name of the Award / Position",
+            "width": "w-52"
+          },
+          {
+            "key": "date_of_receipt_of_award",
+            "label": "Date of Receipt of Award",
+            "width": "w-52"
+          },
+          {
+            "key": "awarding_agency_and_contact_de",
+            "label": "Awarding Agency and Contact Details",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "8_8_3",
+        "sheetName": "8.3",
+        "title": "8.3 – Students’ Participation and Awards in External Academic and Co-Curricular Events",
+        "badge": "Attribute 8 - 8.3",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "nature_conference_technical_fe",
+            "label": "Nature (Conference/Technical Festivals / Competitions / Hackathons / Workshops)",
+            "width": "w-52"
+          },
+          {
+            "key": "programme",
+            "label": "Programme",
+            "width": "w-32"
+          },
+          {
+            "key": "staff_in_charge",
+            "label": "Staff In-charge",
+            "width": "w-52"
+          },
+          {
+            "key": "reg_no_of_the_student",
+            "label": "Reg. No. of the Student",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_student",
+            "label": "Name of the Student",
+            "width": "w-52"
+          },
+          {
+            "key": "date_from_to",
+            "label": "DATE From – To",
+            "width": "w-32"
+          },
+          {
+            "key": "name_address_of_the_institutio",
+            "label": "Name & Address of the  Institution",
+            "width": "w-52"
+          },
+          {
+            "key": "position_secured_if_any",
+            "label": "Position Secured  (IF ANY)",
+            "width": "w-52"
+          },
+          {
+            "key": "outcome",
+            "label": "Outcome",
+            "width": "w-32"
+          }
+        ],
+        "rows": []
+      }
+    ]
+  },
+  {
+    "id": "att9",
+    "cardNumber": 9,
+    "cardTitle": "Attribute IX - Research, Publications & IPR",
+    "cardCode": "Attribute 9",
+    "cardSubtitle": "Ph.D. Guides & Enrolment, Scopus/WoS Papers, Conference Proceedings, Books, Patents & Copyrights (9.1 - 9.13)",
+    "icon": "award",
+    "color": "violet",
+    "sheets": [
+      {
+        "key": "9_9_1",
+        "sheetName": "9.1",
+        "title": "9.1 Ph.D. Degrees Awarded during the Academic Year",
+        "badge": "Attribute 9 - 9.1",
+        "instruction": "Research and Innovation Outcomes",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_the_guide",
+            "label": "Name of the Guide",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_scholar",
+            "label": "Name of the Scholar",
+            "width": "w-52"
+          },
+          {
+            "key": "university_ref_no",
+            "label": "University Ref. No.",
+            "width": "w-52"
+          },
+          {
+            "key": "title_of_the_thesis",
+            "label": "Title of the Thesis",
+            "width": "w-52"
+          },
+          {
+            "key": "date_of_viva_voce",
+            "label": "Date of Viva-Voce",
+            "width": "w-52"
+          },
+          {
+            "key": "name_and_place_of_the_universi",
+            "label": "Name and Place of the University",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "9_9_2",
+        "sheetName": "9.2",
+        "title": "9.2  PhD Thesis Submitted",
+        "badge": "Attribute 9 - 9.2",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S. No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_the_guide",
+            "label": "Name of the Guide",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_scholar",
+            "label": "Name of the Scholar",
+            "width": "w-52"
+          },
+          {
+            "key": "university_ref_no",
+            "label": "University Ref. No.",
+            "width": "w-52"
+          },
+          {
+            "key": "title_of_the_thesis",
+            "label": "Title of the Thesis",
+            "width": "w-52"
+          },
+          {
+            "key": "date_of_submission",
+            "label": "Date of Submission",
+            "width": "w-52"
+          },
+          {
+            "key": "name_and_place_of_the_universi",
+            "label": "Name and Place of the University",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "9_9_3",
+        "sheetName": "9.3",
+        "title": "9.3 New Guides",
+        "badge": "Attribute 9 - 9.3",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_the_faculty",
+            "label": "Name of the Faculty",
+            "width": "w-52"
+          },
+          {
+            "key": "guideship_reference_number",
+            "label": "Guideship Reference Number",
+            "width": "w-52"
+          },
+          {
+            "key": "date_of_guideship_granted_comm",
+            "label": "Date of Guideship Granted (Communication Date)",
+            "width": "w-52"
+          },
+          {
+            "key": "name_and_place_of_the_universi",
+            "label": "Name and Place of the University",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "9_9_4",
+        "sheetName": "9.4",
+        "title": "9.4 PhD Enrolment (New & Existing Scholars)",
+        "badge": "Attribute 9 - 9.4",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_the_guide",
+            "label": "Name of the Guide",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_co_guide_if_availa",
+            "label": "Name of the Co-Guide (if available)",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_scholar",
+            "label": "Name of the Scholar",
+            "width": "w-52"
+          },
+          {
+            "key": "gender",
+            "label": "Gender",
+            "width": "w-32"
+          },
+          {
+            "key": "jrf_srf",
+            "label": "JRF/SRF",
+            "width": "w-32"
+          },
+          {
+            "key": "type_ft_pt",
+            "label": "Type FT/PT",
+            "width": "w-32"
+          },
+          {
+            "key": "college_register_no",
+            "label": "College Register No",
+            "width": "w-40"
+          },
+          {
+            "key": "university_reference_number",
+            "label": "University Reference number",
+            "width": "w-52"
+          },
+          {
+            "key": "date_of_ref_number",
+            "label": "Date of Ref Number",
+            "width": "w-36"
+          },
+          {
+            "key": "title_of_the_thesis_broad_area",
+            "label": "Title of the Thesis/Broad Area",
+            "width": "w-56"
+          },
+          {
+            "key": "name_place_of_the_university",
+            "label": "Name & Place of the University",
+            "width": "w-52"
+          },
+          {
+            "key": "new_active_completed_discontin",
+            "label": "New/Active / Completed / Discontinued",
+            "width": "w-44"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "9_9_5",
+        "sheetName": "9.5",
+        "title": "9.5 Consultancy",
+        "badge": "Attribute 9 - 9.5",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S. No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_the_faculty",
+            "label": "Name of the Faculty",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_consultancy_project",
+            "label": "Name of Consultancy Project",
+            "width": "w-52"
+          },
+          {
+            "key": "client_organisation_agency",
+            "label": "Client Organisation / Agency",
+            "width": "w-52"
+          },
+          {
+            "key": "date_from_to",
+            "label": "Date FROM - TO",
+            "width": "w-32"
+          },
+          {
+            "key": "revenue_generated",
+            "label": "Revenue Generated (₹)",
+            "width": "w-52"
+          },
+          {
+            "key": "no_of_beneficiaries_trainees",
+            "label": "No. of Beneficiaries/Trainees",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "9_9_6",
+        "sheetName": "9.6",
+        "title": "9.6  Corporate Training",
+        "badge": "Attribute 9 - 9.6",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_the_faculty_corporate_",
+            "label": "Name of the Faculty / Corporate Trainer",
+            "width": "w-52"
+          },
+          {
+            "key": "title_of_training_programme",
+            "label": "Title of Training Programme",
+            "width": "w-52"
+          },
+          {
+            "key": "agency_seeking_training_with_c",
+            "label": "Agency Seeking Training with Complete Address & Contact Details",
+            "width": "w-52"
+          },
+          {
+            "key": "date_from_to_dd_mm_yyyy_dd_mm_",
+            "label": "Date FROM – TO (DD.MM.YYYY – DD.MM.YYYY)",
+            "width": "w-52"
+          },
+          {
+            "key": "revenue_generated",
+            "label": "Revenue Generated (₹)",
+            "width": "w-52"
+          },
+          {
+            "key": "no_of_trainees",
+            "label": "No. of Trainees",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "9_9_7",
+        "sheetName": "9.7",
+        "title": "9.7 Externally funded Research Projects",
+        "badge": "Attribute 9 - 9.7",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_the_pi_ci_if_applicabl",
+            "label": "Name of the PI (CI, if applicable)",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_funding_agency",
+            "label": "Name of the Funding Agency",
+            "width": "w-52"
+          },
+          {
+            "key": "title_of_the_research_project",
+            "label": "Title of the Research Project",
+            "width": "w-52"
+          },
+          {
+            "key": "type_government_non_government",
+            "label": "Type (Government/Non-Government)",
+            "width": "w-52"
+          },
+          {
+            "key": "for_non_government_mention_the",
+            "label": "For Non-Government,mention the source as IN /CH/BO",
+            "width": "w-52"
+          },
+          {
+            "key": "duration_of_the_project",
+            "label": "Duration of the Project",
+            "width": "w-52"
+          },
+          {
+            "key": "funds_received",
+            "label": "Funds Received (₹)",
+            "width": "w-52"
+          },
+          {
+            "key": "date_of_award",
+            "label": "Date of Award",
+            "width": "w-32"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "9_9_8",
+        "sheetName": "9.8",
+        "title": "9.8  Papers Published in the Journals",
+        "badge": "Attribute 9 - 9.8",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_author_s_mention_all_t",
+            "label": "Name of Author(s) Mention all the names as it appears in the publication, highlighting the name of the faculty of your department in BOLD letters",
+            "width": "w-52"
+          },
+          {
+            "key": "published_in_scopus_web_of_sci",
+            "label": "Published in (SCOPUS/WEB OF SCIENCE/OTHERS)",
+            "width": "w-52"
+          },
+          {
+            "key": "title_of_the_paper",
+            "label": "Title of the Paper",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_journal",
+            "label": "Name of the Journal",
+            "width": "w-52"
+          },
+          {
+            "key": "national_international",
+            "label": "National / International",
+            "width": "w-52"
+          },
+          {
+            "key": "issn_isbn_no",
+            "label": "ISSN/ ISBN No.",
+            "width": "w-32"
+          },
+          {
+            "key": "impact_factor",
+            "label": "Impact Factor",
+            "width": "w-32"
+          },
+          {
+            "key": "h_index",
+            "label": "h-index",
+            "width": "w-32"
+          },
+          {
+            "key": "no_of_citations_excluding_self",
+            "label": "No. of Citations (Excluding Self Citation)",
+            "width": "w-52"
+          },
+          {
+            "key": "vol_number_page",
+            "label": "Vol ,Number,Page",
+            "width": "w-52"
+          },
+          {
+            "key": "month_year",
+            "label": "Month &Year",
+            "width": "w-32"
+          },
+          {
+            "key": "link_for_the_paper",
+            "label": "Link for the paper",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "9_9_9",
+        "sheetName": "9.9",
+        "title": "9.9 Papers Presented in Conferences",
+        "badge": "Attribute 9 - 9.9",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_the_staff",
+            "label": "Name of the Staff",
+            "width": "w-52"
+          },
+          {
+            "key": "title_of_the_paper",
+            "label": "Title of the Paper",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_institution_organi",
+            "label": "Name of the Institution / Organising Body",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_conference",
+            "label": "Name of the Conference",
+            "width": "w-52"
+          },
+          {
+            "key": "national_international",
+            "label": "National / International",
+            "width": "w-52"
+          },
+          {
+            "key": "title_of_the_proceedings_if_pu",
+            "label": "Title of the Proceedings, if Published",
+            "width": "w-52"
+          },
+          {
+            "key": "title_of_the_book_of_abstracts",
+            "label": "Title of the Book of Abstracts, if Published",
+            "width": "w-52"
+          },
+          {
+            "key": "volume_issue_page",
+            "label": "Volume, Issue & Page",
+            "width": "w-52"
+          },
+          {
+            "key": "month_year",
+            "label": "Month & Year",
+            "width": "w-32"
+          },
+          {
+            "key": "issn_isbn_no",
+            "label": "ISSN / ISBN No.",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "9_9_10",
+        "sheetName": "9.10",
+        "title": "9.10 Books Published /Books Edited / Chapter Contribution",
+        "badge": "Attribute 9 - 9.10",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_the_author_s",
+            "label": "Name of the Author (s)",
+            "width": "w-52"
+          },
+          {
+            "key": "published_edited_chapter_contr",
+            "label": "Published / Edited / Chapter Contributed",
+            "width": "w-52"
+          },
+          {
+            "key": "title_of_the_book",
+            "label": "Title of the Book",
+            "width": "w-52"
+          },
+          {
+            "key": "if_chapter_contributed_provide",
+            "label": "If chapter contributed, provide the Title of the Chapter",
+            "width": "w-52"
+          },
+          {
+            "key": "month_and_year_of_publication",
+            "label": "Month and Year of Publication",
+            "width": "w-52"
+          },
+          {
+            "key": "isbn_no",
+            "label": "ISBN No.",
+            "width": "w-32"
+          },
+          {
+            "key": "name_place_of_the_publisher",
+            "label": "Name & Place  of the Publisher",
+            "width": "w-52"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "9_9_11",
+        "sheetName": "9.11",
+        "title": "9.11 Patents/Copyright/ Trade Mark/ Design Registration/Geographical Indication/ Open Educational Resources",
+        "badge": "Attribute 9 - 9.11",
+        "instruction": "",
+        "type": "multi_table",
+        "sections": [
+          {
+            "id": "ipr_details",
+            "title": "Patents / Copyright / Trade Mark / Design Registration / Geographical Indication",
+            "columns": [
+              {
+                "key": "s_no",
+                "label": "S.No.",
+                "width": "w-16"
+              },
+              {
+                "key": "name_of_the_faculty",
+                "label": "Name of the Faculty",
+                "width": "w-52"
+              },
+              {
+                "key": "type_of_ipr_output",
+                "label": "Type of IPR / Output",
+                "width": "w-52"
+              },
+              {
+                "key": "status_applied_granted_publish",
+                "label": "Status (Applied / Granted / Published / Registered)",
+                "width": "w-52"
+              },
+              {
+                "key": "title_details_of_the_ipr_publi",
+                "label": "Title / Details of the IPR / Publication",
+                "width": "w-64"
+              },
+              {
+                "key": "country",
+                "label": "Country",
+                "width": "w-32"
+              },
+              {
+                "key": "date_of_application_grant_publ",
+                "label": "Date of Application / Grant / Publication / Registration",
+                "width": "w-48"
+              },
+              {
+                "key": "application_no_ipr_no_certific",
+                "label": "Application No. / IPR No. / Certificate No.",
+                "width": "w-52"
+              },
+              {
+                "key": "registered_in_the_name_of_sjc_",
+                "label": "Registered in the name of \"SJC\" (Yes/No)",
+                "width": "w-40"
+              }
+            ]
+          },
+          {
+            "id": "oer_details",
+            "title": "Open Educational Resources (OERs)",
+            "columns": [
+              {
+                "key": "s_no",
+                "label": "S.No.",
+                "width": "w-16"
+              },
+              {
+                "key": "faculty_name",
+                "label": "Name of the Faculty",
+                "width": "w-52"
+              },
+              {
+                "key": "title_of_oer",
+                "label": "Title of OER",
+                "width": "w-56"
+              },
+              {
+                "key": "resource_link",
+                "label": "Resource Link",
+                "width": "w-56"
+              },
+              {
+                "key": "details_of_oer",
+                "label": "Details of OER",
+                "width": "w-64"
+              },
+              {
+                "key": "date_of_publication",
+                "label": "Date of Publication",
+                "width": "w-36"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "9_9_12",
+        "sheetName": "9.12",
+        "title": "9.12 Collaboration with national/international institutions of higher ranking /industries with focus",
+        "badge": "Attribute 9 - 9.12",
+        "instruction": "Details of Collaboration",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "institution_industry",
+            "label": "Institution/Industry",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_collaborating_agen",
+            "label": "Name of the Collaborating Agency with Contact Details",
+            "width": "w-52"
+          },
+          {
+            "key": "purpose_of_collaboration_inter",
+            "label": "Purpose of Collaboration",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_faculty",
+            "label": "Name of the Faculty",
+            "width": "w-52"
+          },
+          {
+            "key": "year_of_collaboration",
+            "label": "Year of Collaboration",
+            "width": "w-52"
+          },
+          {
+            "key": "duration_of_collaboration",
+            "label": "Duration of Collaboration",
+            "width": "w-52"
+          },
+          {
+            "key": "nature_of_the_activity",
+            "label": "Nature of the Activity",
+            "width": "w-52"
+          },
+          {
+            "key": "date_of_activity",
+            "label": "Date of Activity",
+            "width": "w-52"
+          },
+          {
+            "key": "no_of_beneficiaries_from_the_d",
+            "label": "No. of Beneficiaries from the Department",
+            "width": "w-52"
+          },
+          {
+            "key": "no_of_beneficiaries_from_the_c",
+            "label": "No. of Beneficiaries from the collaborating Institution/Industry",
+            "width": "w-52"
+          },
+          {
+            "key": "outcome",
+            "label": "Outcome",
+            "width": "w-32"
+          }
+        ],
+        "rows": []
+      },
+      {
+        "key": "9_9_13",
+        "sheetName": "9.13",
+        "title": "9.13 Incubation and Start-up through Technology Business Incubator (TBI)",
+        "badge": "Attribute 9 - 9.13",
+        "instruction": "",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_of_incubated_startup",
+            "label": "Name of the Incubated Start-up / Venture",
+            "width": "w-56"
+          },
+          {
+            "key": "nature_type_of_startup",
+            "label": "Nature / Type of Start-up",
+            "width": "w-44"
+          },
+          {
+            "key": "mentor_category",
+            "label": "Mentor Category (Alumni/Entrepreneur/Faculty/Researchers/Industry professionals/Local Community Personal)",
+            "width": "w-64"
+          },
+          {
+            "key": "name_of_mentor_with_details",
+            "label": "Name of the Mentor with Designation and complete details",
+            "width": "w-64"
+          },
+          {
+            "key": "reg_no_of_mentee",
+            "label": "Reg. No. of the Student Mentee",
+            "width": "w-36"
+          },
+          {
+            "key": "name_of_student_mentee",
+            "label": "Name of the Student Mentee",
+            "width": "w-44"
+          },
+          {
+            "key": "date_from_to",
+            "label": "Date From – To",
+            "width": "w-44"
+          },
+          {
+            "key": "duration",
+            "label": "Duration",
+            "width": "w-32"
+          },
+          {
+            "key": "status_outcome",
+            "label": "Status / Outcome",
+            "width": "w-44"
+          }
+        ],
+        "rows": [],
+        "subtitle": "Name of the TBI / Incubation Centre in SJC: St. Joseph's Start-up Center (JSC)"
+      }
+    ]
+  },
+  {
+    "id": "att10",
+    "cardNumber": 10,
+    "cardTitle": "Attribute X - Institutional Values & Best Practices",
+    "cardCode": "Attribute 10",
+    "cardSubtitle": "Corporate Social Responsibility (CSR), Environmental Sustainability, Paperless CIA & Institutional Best Practices",
+    "icon": "leaf",
+    "color": "green",
+    "sheets": [
+      {
+        "key": "10_attribute_x",
+        "sheetName": "10.1",
+        "title": "10.1 Institutional Values, Green Initiatives, CSR & Outreach Projects",
+        "badge": "Attribute 10 - 10.1",
+        "instruction": "Sustainability (Green initiatives) – Outcomes",
+        "type": "table",
+        "columns": [
+          {
+            "key": "s_no",
+            "label": "S.No.",
+            "width": "w-16"
+          },
+          {
+            "key": "name_and_nature_of_the_activit",
+            "label": "Name and Nature of the Activity",
+            "width": "w-52"
+          },
+          {
+            "key": "type_government_ngo_industry_r",
+            "label": "Type (Government/NGO/Industry/Recognized Body)",
+            "width": "w-52"
+          },
+          {
+            "key": "collaborating_agency",
+            "label": "Collaborating Agency",
+            "width": "w-52"
+          },
+          {
+            "key": "whether_part_of_csr_activities",
+            "label": "Whether Part of CSR Activities of the Industry (YES/NO)",
+            "width": "w-52"
+          },
+          {
+            "key": "name_of_the_scheme_csr_initiat",
+            "label": "Name of the Scheme / CSR Initiative, if any",
+            "width": "w-52"
+          },
+          {
+            "key": "sustainability_goal_sdg",
+            "label": "Sustainability Goal / SDG",
+            "width": "w-52"
+          },
+          {
+            "key": "place_of_activity_full_address",
+            "label": "Place of Activity – Full Address",
+            "width": "w-52"
+          },
+          {
+            "key": "no_of_students_participating",
+            "label": "No. of Students Participating",
+            "width": "w-52"
+          },
+          {
+            "key": "details_of_beneficiaries",
+            "label": "Details of Beneficiaries",
+            "width": "w-52"
+          },
+          {
+            "key": "date_from_to",
+            "label": "Date FROM–TO",
+            "width": "w-32"
+          }
+        ],
+        "rows": []
+      }
+    ]
+  }
+];

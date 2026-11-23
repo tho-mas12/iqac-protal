@@ -39,6 +39,10 @@ next-env.d.ts
 !prisma/dev.db
 *.db-journal
 
+# archives
+*.zip
+*.tar.gz
+
 # scratch / temp
 scratch/
 

@@ -3,59 +3,163 @@
 @tailwind utilities;
 
 :root {
+  --color-primary: #26648E;    /* Deep Classic Ocean / Academic Blue */
+  --color-secondary: #4F8FC0;  /* Soft Cerulean / Slate Blue */
+  --color-cyan: #53D2DC;       /* Vibrant Cyan / Turquoise Accent */
+  --color-peach: #FFE3B3;      /* Warm Cream / Soft Champagne Peach */
+  --color-bg-page: #f8fafc;
+  --color-bg-sidebar: #f0f5f9;
+  --color-border: rgba(79, 143, 192, 0.25);
   --background: #f8fafc;
-  --foreground: #0f172a;
+  --foreground: #1e293b;
 }
 
 body {
   color: var(--foreground);
-  background: var(--background);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #f8fafc;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  letter-spacing: -0.012em;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  background-image: radial-gradient(rgba(79, 143, 192, 0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
-/* Custom sleek scrollbar */
+/* College Crest & Title Typography */
+.college-crest-title, .academic-crest-heading {
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.025em;
+}
+
+/* Arctic Frost Aura Background Layers */
+.aura-layer-1 {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(rgba(0,0,0,0) 0%, rgba(200,230,255,0.14) 28%, rgb(255,255,255) 18%, rgb(150,200,255) 68%, rgb(100,130,200) 100%);
+  mix-blend-mode: multiply;
+  filter: blur(90px);
+  transform: translateZ(0);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.aura-layer-2 {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(rgba(0,0,0,0) 0%, rgba(200,230,255,0.22) 34%, rgb(255,255,255) 66%, rgb(150,200,255) 82%, rgb(100,130,200) 100%);
+  mix-blend-mode: multiply;
+  filter: blur(90px);
+  transform: translateZ(0);
+  pointer-events: none;
+  z-index: 0;
+}
+
+@media (min-width: 768px) {
+  .aura-layer-1, .aura-layer-2 {
+    filter: blur(130px);
+  }
+}
+
+/* Custom Sleek Academic Scrollbar (Matching AAA) */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
 }
-
 ::-webkit-scrollbar-track {
-  background: rgba(241, 245, 249, 0.8);
+  background: #f0f5f9;
 }
-
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.5);
+  background: #c3d7e8;
   border-radius: 4px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 116, 139, 0.8);
+  background: #4F8FC0;
 }
 
-.gradient-bg {
-  background: radial-gradient(circle at 50% 30%, #ede9fe 0%, #f8fafc 70%, #f1f5f9 100%);
+/* Academic Card & Container Styles */
+.academic-card {
+  background: #ffffff;
+  border: 1px solid rgba(79, 143, 192, 0.25);
+  border-radius: 1.25rem;
+  box-shadow: 0 1px 3px 0 rgba(38, 100, 142, 0.05), 0 1px 2px -1px rgba(38, 100, 142, 0.05);
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.sidebar-gradient {
-  background: linear-gradient(180deg, #0d131f 0%, #080c14 100%);
+.academic-card:hover {
+  border-color: #4F8FC0;
+  box-shadow: 0 12px 28px -6px rgba(38, 100, 142, 0.14), 0 4px 10px -2px rgba(38, 100, 142, 0.06);
 }
 
-@keyframes marquee {
-  0% {
-    transform: translateX(0%);
+/* Academic Header Banners */
+.academic-banner {
+  background: linear-gradient(135deg, rgba(38, 100, 142, 0.08) 0%, rgba(79, 143, 192, 0.08) 50%, rgba(255, 227, 179, 0.25) 100%);
+  border: 1px solid rgba(79, 143, 192, 0.35);
+  border-radius: 1.25rem;
+}
+
+/* Academic Badges (Matching AAA) */
+.badge-peach {
+  background-color: #FFE3B3;
+  color: #26648E;
+  border: 1px solid #fedba0;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-cyan {
+  background-color: rgba(83, 210, 220, 0.18);
+  color: #125e64;
+  border: 1px solid rgba(83, 210, 220, 0.45);
+  font-weight: 800;
+}
+
+.badge-blue {
+  background-color: rgba(79, 143, 192, 0.12);
+  color: #26648E;
+  border: 1px solid rgba(79, 143, 192, 0.3);
+  font-weight: 800;
+}
+
+/* Primary Theme Button */
+.btn-primary-theme {
+  background-color: #26648E;
+  color: #ffffff;
+  transition: all 0.2s ease-in-out;
+}
+.btn-primary-theme:hover {
+  background-color: #1f5072;
+}
+
+/* Accent Theme Button */
+.btn-accent-theme {
+  background-color: #53D2DC;
+  color: #1a424a;
+  transition: all 0.2s ease-in-out;
+}
+.btn-accent-theme:hover {
+  background-color: #3ec8d3;
+}
+
+/* Glass panel */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(79, 143, 192, 0.25);
+}
+
+/* Smooth FadeIn Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
   }
-  100% {
-    transform: translateX(-50%);
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-.animate-marquee {
-  display: flex;
-  width: max-content;
-  animation: marquee 35s linear infinite;
-}
-
-.animate-marquee:hover {
-  animation-play-state: paused;
+.animate-fadeIn {
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }

@@ -1,8 +1,9 @@
 ﻿'use client';
 
 import React, { useState, useEffect } from 'react';
-import { LogOut, Clock, Menu, User as UserIcon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { LogOut, Clock, Menu, ArrowLeft, LayoutDashboard } from 'lucide-react';
 
 interface HeaderProps {
   title: string;
@@ -12,7 +13,46 @@ interface HeaderProps {
 
 export default function Header({ title, userName, userRole }: HeaderProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const [timeString, setTimeString] = useState<string>('');
+
+  const normalizedRole = (userRole || '').toUpperCase();
+  const isAdmin = normalizedRole === 'ADMIN' || pathname.startsWith('/admin');
+  const isDirector = normalizedRole === 'DIRECTOR' || pathname.startsWith('/director');
+  const isAdministrator = normalizedRole === 'ADMINISTRATOR' || pathname === '/staff/dashboard';
+
+  let homeLink = '/hub';
+  let homeLabel = 'Common Dashboard';
+  let showBackButton = false;
+
+  if (isAdmin) {
+    homeLink = '/admin';
+    homeLabel = 'Admin Console';
+    showBackButton = pathname !== '/admin';
+  } else if (isDirector) {
+    homeLink = '/director/dashboard';
+    homeLabel = 'Director Dashboard';
+    showBackButton = pathname !== '/director/dashboard';
+  } else if (isAdministrator) {
+    homeLink = '/staff/dashboard';
+    homeLabel = 'Administrator Dashboard';
+    showBackButton = pathname !== '/staff/dashboard';
+  } else {
+    // Staff / Faculty
+    homeLink = '/hub';
+    homeLabel = 'Common Dashboard';
+    showBackButton = pathname !== '/hub';
+  }
+
+  const getDisplayRole = (role?: string) => {
+    if (!role) return '';
+    const r = role.toUpperCase();
+    if (r === 'STAFF' || r === 'DEPARTMENT') return 'Staff';
+    if (r === 'ADMINISTRATOR') return 'Administrator';
+    if (r === 'DIRECTOR') return 'Director';
+    if (r === 'ADMIN') return 'Admin';
+    return role;
+  };
 
   useEffect(() => {
     const updateTime = () => {
@@ -45,63 +85,79 @@ export default function Header({ title, userName, userRole }: HeaderProps) {
 
   const handleLogout = async () => {
     try {
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('IQAC_SSO_USER');
+        localStorage.removeItem('IQAC_AUTH_USER');
+      }
       await fetch('/api/auth/logout', { method: 'POST' });
       router.push('/login');
       router.refresh();
-    } catch (e) {
+    } catch {
       router.push('/login');
     }
   };
 
   return (
-    <header className="h-16 sm:h-20 bg-white border-b border-slate-200/80 px-4 sm:px-6 md:px-8 flex items-center justify-between sticky top-0 z-30 shadow-sm/50">
+    <header className="h-16 sm:h-20 bg-white/95 backdrop-blur-md border-b border-[#4F8FC0]/25 px-4 sm:px-6 md:px-8 flex items-center justify-between sticky top-0 z-30 shadow-2xs">
       {/* Left side: Hamburger (Mobile) + Title + Role Badge */}
       <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
         {/* Mobile Hamburger Menu Button */}
         <button
           onClick={handleOpenMobileSidebar}
-          className="md:hidden p-2 rounded-xl text-slate-700 hover:bg-slate-100 hover:text-[#6320ee] transition-colors shrink-0 cursor-pointer border border-slate-200"
+          className="md:hidden p-2 rounded-xl text-slate-700 hover:bg-[#f0f5f9] hover:text-[#26648E] transition-colors shrink-0 cursor-pointer border border-[#4F8FC0]/30"
           title="Open Menu"
         >
-          <Menu className="w-5 h-5" />
+          <Menu className="w-5 h-5 text-[#26648E]" />
         </button>
 
-        <div className="flex items-center gap-2 min-w-0">
-          <h1 className="text-base sm:text-xl md:text-2xl font-bold text-slate-900 tracking-tight truncate">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <h1 className="text-base sm:text-xl md:text-2xl font-black text-[#26648E] font-crest tracking-tight truncate">
             {title}
           </h1>
 
           {userRole && (
-            <span className="hidden xs:inline-block text-[10px] sm:text-xs font-bold px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-purple-50 text-purple-700 border border-purple-200 uppercase tracking-wide shrink-0">
-              {userRole}
+            <span className="hidden xs:inline-block text-[10px] sm:text-xs font-black px-2.5 py-0.5 rounded-full bg-[#FFE3B3] text-[#26648E] border border-[#fedba0] uppercase tracking-wider shrink-0 shadow-2xs">
+              {getDisplayRole(userRole)}
             </span>
           )}
         </div>
       </div>
 
-      {/* Right side: Clock, User Profile, Logout */}
-      <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+      {/* Right side: Back to Hub, Clock, User Profile, Logout */}
+      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+        {/* Context-aware Return Button */}
+        {showBackButton && (
+          <Link
+            href={homeLink}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#26648E] hover:bg-[#1f5072] text-white text-xs font-black shadow-xs transition active:scale-95"
+            title={`Return to ${homeLabel}`}
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">{homeLabel}</span>
+          </Link>
+        )}
+
         {/* Real-time Clock (Visible on sm and above) */}
-        <div className="hidden lg:flex items-center gap-2 text-xs font-semibold text-slate-600 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200/80 shadow-inner">
-          <Clock className="w-3.5 h-3.5 text-purple-600 animate-pulse" />
+        <div className="hidden lg:flex items-center gap-2 text-xs font-bold text-[#26648E] bg-[#f0f5f9] px-3 py-1.5 rounded-xl border border-[#4F8FC0]/25 shadow-2xs">
+          <Clock className="w-3.5 h-3.5 text-[#4F8FC0] animate-pulse" />
           <span>{timeString || 'Loading time...'}</span>
         </div>
 
         {/* User profile initial (Desktop) */}
         {userName && (
-          <div className="hidden sm:flex items-center gap-2 text-xs font-bold text-slate-700 bg-slate-50 border border-slate-200 px-2.5 py-1.5 rounded-xl">
-            <div className="w-6 h-6 rounded-full bg-purple-600 text-white flex items-center justify-center text-xs font-extrabold">
+          <div className="hidden sm:flex items-center gap-2 text-xs font-extrabold text-[#26648E] bg-white border border-[#4F8FC0]/25 px-2.5 py-1.5 rounded-xl shadow-2xs">
+            <div className="w-6 h-6 rounded-lg bg-[#26648E] text-white flex items-center justify-center text-xs font-black">
               {userName.charAt(0).toUpperCase()}
             </div>
-            <span className="truncate max-w-[120px]">{userName}</span>
+            <span className="truncate max-w-[130px]">{userName}</span>
           </div>
         )}
 
         {/* Logout Button */}
         <button
           onClick={handleLogout}
-          className="flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-rose-600 bg-slate-50 hover:bg-rose-50 border border-slate-200 hover:border-rose-200 px-3 py-2 rounded-xl transition-all duration-150 cursor-pointer shadow-sm"
-          title="Sign out of your account"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 hover:border-red-300 bg-white hover:bg-red-50 text-slate-600 hover:text-red-600 text-xs font-bold transition shadow-2xs cursor-pointer active:scale-95"
+          title="Sign out"
         >
           <LogOut className="w-3.5 h-3.5" />
           <span className="hidden sm:inline">Logout</span>

@@ -24,8 +24,8 @@ export default function GuidelinesModal({ isOpen, onClose }: GuidelinesModalProp
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[999] flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-3 sm:p-6 overflow-y-auto animate-in fade-in duration-200">
-      <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-[999] flex items-start justify-center bg-slate-950/80 backdrop-blur-md p-3 sm:p-6 overflow-y-auto pt-6 sm:pt-12 animate-in fade-in duration-200">
+      <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden mb-12 animate-in zoom-in-95 duration-200">
         {/* Header */}
         <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 text-white shrink-0">
           <div className="flex items-center gap-3">

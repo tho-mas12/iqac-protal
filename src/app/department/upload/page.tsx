@@ -67,6 +67,11 @@ export default function UploadInvitationPage() {
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Departments list for uploading for any/every department
+  const [departments, setDepartments] = useState<any[]>([]);
+  const [selectedDeptId, setSelectedDeptId] = useState('');
+  const [shift, setShift] = useState('Shift I');
+
   // 4-Point Pre-Submission Checklist States
   const [checkLogo, setCheckLogo] = useState(false);
   const [checkDates, setCheckDates] = useState(false);
@@ -76,23 +81,70 @@ export default function UploadInvitationPage() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [uRes, iRes] = await Promise.all([
+      const [uRes, iRes, dRes] = await Promise.all([
         fetch('/api/auth/me'),
         fetch('/api/invitations'),
+        fetch('/api/departments'),
       ]);
 
+      let currentUser: any = null;
       if (uRes.ok) {
         const u = await uRes.json();
+        currentUser = u.user;
         setUser(u.user);
+      } else if (typeof window !== 'undefined') {
+        const ssoRaw = localStorage.getItem('IQAC_SSO_USER');
+        if (ssoRaw) {
+          try {
+            currentUser = JSON.parse(ssoRaw);
+            setUser(currentUser);
+          } catch (e) {}
+        }
       }
       if (iRes.ok) {
         const i = await iRes.json();
         setInvitations(i.invitations || []);
       }
+      if (dRes.ok) {
+        const d = await dRes.json();
+        const depts = d.departments || [];
+        setDepartments(depts);
+
+        // Pre-select user's department if available
+        if (currentUser?.departmentId) {
+          setSelectedDeptId(currentUser.departmentId);
+          const matched = depts.find((x: any) => x.id === currentUser.departmentId);
+          if (matched) setShift(matched.shift || 'Shift I');
+        } else if (currentUser?.department?.name) {
+          const matched = depts.find(
+            (x: any) =>
+              x.name.toLowerCase() === currentUser.department.name.toLowerCase() ||
+              x.code.toLowerCase() === (currentUser.department.code || '').toLowerCase()
+          );
+          if (matched) {
+            setSelectedDeptId(matched.id);
+            setShift(matched.shift || 'Shift I');
+          } else if (depts.length > 0) {
+            setSelectedDeptId(depts[0].id);
+            setShift(depts[0].shift || 'Shift I');
+          }
+        } else if (depts.length > 0) {
+          setSelectedDeptId(depts[0].id);
+          setShift(depts[0].shift || 'Shift I');
+        }
+      }
     } catch (e) {
       console.error(e);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeptSelect = (deptId: string) => {
+    setSelectedDeptId(deptId);
+    const matched = departments.find((d) => d.id === deptId);
+    if (matched) {
+      setShift(matched.shift || 'Shift I');
     }
   };
 
@@ -214,7 +266,10 @@ export default function UploadInvitationPage() {
       if (category === 'Other') {
         formData.append('customCategory', customCategory);
       }
-      formData.append('shift', user?.department?.shift || 'Shift I');
+      if (selectedDeptId) {
+        formData.append('departmentId', selectedDeptId);
+      }
+      formData.append('shift', shift || user?.department?.shift || 'Shift I');
       formData.append('fromDate', fromDate);
       if (toDate) formData.append('toDate', toDate);
       formData.append('file', fileToUpload);
@@ -249,7 +304,7 @@ export default function UploadInvitationPage() {
   return (
     <div className="flex min-h-screen bg-[#f8fafc]">
       <Sidebar
-        role="DEPARTMENT"
+        role="STAFF"
         userName={user?.name}
         departmentName={user?.department?.name}
         shift={user?.department?.shift}
@@ -259,7 +314,7 @@ export default function UploadInvitationPage() {
         <Header
           title="Upload Invitation"
           userName={user?.name}
-          userRole="Department"
+          userRole="Staff"
         />
 
         <main className="p-4 sm:p-6 md:p-8 space-y-6 flex-1 max-w-7xl mx-auto w-full">
@@ -495,8 +550,8 @@ export default function UploadInvitationPage() {
 
       {/* Add Invitation Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-slate-100 overflow-hidden my-8 animate-scaleUp">
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-start justify-center p-3 sm:p-6 overflow-y-auto pt-6 sm:pt-12">
+          <div className="bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-slate-100 overflow-hidden mb-12 animate-scaleUp">
             {/* Modal Header */}
             <div className="px-6 py-5 bg-gradient-to-r from-[#2a1b54] to-[#4c1d95] text-white flex items-center justify-between">
               <div className="flex items-center gap-2.5">
@@ -527,18 +582,25 @@ export default function UploadInvitationPage() {
                 />
               </div>
 
-              {/* Department Name & Shift */}
+              {/* Department Name & Shift - Selectable for every department */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                    Department Name
+                    Department to Upload For <span className="text-rose-500">*</span>
                   </label>
-                  <input
-                    type="text"
-                    value={user?.department?.name || 'Department'}
-                    disabled
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-600 text-sm font-semibold cursor-not-allowed"
-                  />
+                  <select
+                    value={selectedDeptId}
+                    onChange={(e) => handleDeptSelect(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-purple-600/30 focus:border-purple-600 transition-all bg-white"
+                    required
+                  >
+                    <option value="">-- Select Department --</option>
+                    {departments.map((d) => (
+                      <option key={d.id} value={d.id}>
+                        {d.name} ({d.shift})
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
@@ -546,7 +608,7 @@ export default function UploadInvitationPage() {
                   </label>
                   <input
                     type="text"
-                    value={user?.department?.shift || 'Shift I'}
+                    value={shift || 'Shift I'}
                     disabled
                     className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-600 text-sm font-semibold cursor-not-allowed"
                   />

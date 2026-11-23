@@ -1,0 +1,265 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Department {
+  id            String       @id @default(cuid())
+  name          String
+  code          String       @unique
+  shift         String       @default("Shift I")
+  driveFolderId String?      // Google Drive Folder ID
+  isActive      Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  users         User[]
+  invitations   Invitation[]
+  checklistSubmissions ChecklistSubmission[]
+}
+
+model User {
+  id                 String              @id @default(cuid())
+  username           String              @unique
+  password           String              // Hashed bcrypt password or SHA256
+  plainPassword      String?             // For seamless testing
+  name               String
+  role               String              // "FACULTY", "DEPARTMENT", "DIRECTOR", "STAFF", "ADMIN"
+  staffCode          String?             // e.g. "24CAI51"
+  departmentId       String?
+  department         Department?         @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  departmentName     String?
+  isHead             Boolean             @default(false)
+  isMqc              Boolean             @default(false)
+  email              String?
+  phone              String?
+  isPasswordChanged  Boolean             @default(false)
+  isActive           Boolean             @default(true)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  invitations        Invitation[]
+  dynamicSubmissions DynamicSubmission[]
+}
+
+model Invitation {
+  id                 String              @id @default(cuid())
+  programTitle       String
+  departmentId       String
+  department         Department          @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  userId             String?
+  user               User?               @relation(fields: [userId], references: [id], onDelete: SetNull)
+  facultyName        String?
+  staffCode          String?
+  shift              String
+  category           String              // Endowment Lecture, Conference, Webinar, Seminar, Orientation, Skill Development, Induction, FDP, Workshop, Club Activity, Gender Based, Career Guidance, Placement Lecture Series, Training, or custom
+  customCategory     String?
+  fromDate           DateTime
+  toDate             DateTime?
+  
+  // File Details
+  driveFileId        String?
+  driveViewLink      String?
+  driveDownloadLink  String?
+  localFilePath      String?
+  fileData           String?
+  fileName           String
+  fileSize           Int?
+  mimeType           String?
+  
+  // Workflow Status: "PENDING", "REMARKS", "APPROVED"
+  status             String              @default("PENDING")
+  revisionCount      Int                 @default(0)
+  
+  // Director Checklist Review Flags
+  checkLogo          Boolean             @default(false)
+  checkTitle         Boolean             @default(false)
+  checkHeaders       Boolean             @default(false)
+  checkOthers        Boolean             @default(false)
+  directorRemarks    String?
+  remarkedAt         DateTime?
+  approvedAt         DateTime?
+  
+  // Staff Hard Copy Status
+  hardCopyReceived   Boolean             @default(false)
+  hardCopyReceivedAt DateTime?
+  hardCopyStaffName  String?
+
+  // Staff ERP Mail Dispatch Status
+  mailSent           Boolean             @default(false)
+  mailSentAt         DateTime?
+  mailSentStaffName  String?
+  
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  history            InvitationHistory[]
+}
+
+model InvitationHistory {
+  id           String      @id @default(cuid())
+  invitationId String
+  invitation   Invitation  @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  action       String      // "UPLOAD", "REMARKS_ADDED", "REUPLOAD_CORRECTION", "APPROVED", "HARD_COPY_MARKED", "REMARKS_EDITED"
+  actorName    String
+  actorRole    String
+  notes        String?
+  driveFileId  String?
+  fileData     String?
+  timestamp    DateTime    @default(now())
+}
+
+model SystemSettings {
+  id                       String   @id @default("default")
+  whatsappSenderNumber     String   @default("9626806328")
+  whatsappReceiverNumber   String   @default("7418671366")
+  whatsappEnabled          Boolean  @default(true)
+  whatsappProvider         String   @default("ultramsg")
+  whatsappInstanceId       String?
+  whatsappApiKey           String?
+  whatsappCustomWebhookUrl String?
+  announcementText         String?
+  submissionsEnabled       Boolean  @default(true)
+  updatedAt                DateTime @updatedAt
+}
+
+model DynamicCampaign {
+  id           String              @id @default(cuid())
+  title        String
+  description  String?
+  targetRole   String              @default("ALL_FACULTY") // "ALL_FACULTY", "HEAD_ONLY", "MQC_ONLY"
+  academicYear String              @default("2026 - 2027")
+  deadline     DateTime
+  isActive     Boolean             @default(true)
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  fields       DynamicField[]
+  submissions  DynamicSubmission[]
+}
+
+model DynamicField {
+  id          String          @id @default(cuid())
+  campaignId  String
+  campaign    DynamicCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  fieldName   String          // e.g. "fdp_name", "award_title"
+  fieldLabel  String          // Label shown in UI
+  fieldType   String          @default("TEXT") // TEXT, NUMBER, TEXTAREA, SELECT, DATE, FILE
+  marks       Int             @default(10)
+  optionsJson String?         // For SELECT: JSON array e.g. ["International", "National"]
+  placeholder String?
+  isRequired  Boolean         @default(true)
+  orderIndex  Int             @default(0)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+}
+
+model DynamicSubmission {
+  id          String          @id @default(cuid())
+  campaignId  String
+  campaign    DynamicCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dataJson    String          // JSON string storing field responses
+  submittedAt DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@unique([campaignId, userId])
+}
+
+model CoursePlanRecord {
+  id              String   @id @default(cuid())
+  facultyId       String
+  facultyName     String
+  staffCode       String?
+  departmentName  String
+  courseCode      String
+  courseTitle     String
+  programme       String
+  semester        String   @default("Even")
+  academicYear    String   @default("2026 - 2027")
+  status          String   @default("Draft")
+  hodStatus       String   @default("Pending") // Pending, Approved, Revision
+  tlPracticesJson String?  // TLE methods, ICT tools, e-content links
+  unitsJson       String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model AaaDepartmentRecord {
+  id             String   @id @default(cuid())
+  departmentId   String   @unique
+  departmentCode String   @unique
+  departmentName String
+  school         String?
+  hodName        String?
+  academicYear   String   @default("2026 - 2027")
+  status         String   @default("in_progress") // draft, in_progress, submitted, audited
+  isLocked       Boolean  @default(false)
+  auditDate      String?
+  dataJson       String?  // JSON store for Attributes I to X
+  evaluatedAt    DateTime?
+  compositeScore Float?
+  overallGrade   String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+// Append Checklist and EWYL models to prisma/schema.prisma
+model ChecklistEvent {
+  id              String                @id @default(cuid())
+  title           String
+  description     String?
+  deadline        String
+  shiftsScope     String                @default("Shift I,Shift II,Combined Department")
+  isVisiblePublic Boolean               @default(true)
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+  submissions     ChecklistSubmission[]
+}
+
+model ChecklistSubmission {
+  id           String         @id @default(cuid())
+  eventId      String
+  event        ChecklistEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  departmentId String
+  department   Department     @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  status       String         @default("pending") // "pending", "received", "remarks"
+  receivedTime String?
+  remarks      String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@unique([eventId, departmentId])
+}
+
+model EwylStudent {
+  id         String        @id @default(cuid())
+  name       String
+  regNo      String        @unique
+  deptName   String
+  shift      String        @default("Shift I")
+  bankName   String
+  accountNo  String
+  ifscCode   String
+  branchName String
+  hourlyRate Float         @default(100.0)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  hours      EwylHourLog[]
+}
+
+model EwylHourLog {
+  id          String      @id @default(cuid())
+  studentId   String
+  student     EwylStudent @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  date        String
+  inTime      String
+  outTime     String
+  totalHours  Float
+  monthActive String      // e.g. "2026-11"
+  workDone    String?
+  status      String      @default("Approved") // "Approved", "Pending"
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}

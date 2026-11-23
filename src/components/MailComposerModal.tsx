@@ -107,8 +107,8 @@ export default function MailComposerModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[999] flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-3 sm:p-6 overflow-y-auto animate-in fade-in duration-200">
-      <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-[999] flex items-start justify-center bg-slate-950/80 backdrop-blur-md p-3 sm:p-6 overflow-y-auto pt-6 sm:pt-12 animate-in fade-in duration-200">
+      <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-2xl overflow-hidden flex flex-col mb-12 animate-in zoom-in-95 duration-200">
         {/* Header */}
         <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-blue-50 via-indigo-50/50 to-white">
           <div className="flex items-center gap-3">

@@ -258,13 +258,13 @@ export default function AdminDepartmentsPage() {
 
         <main className="p-4 sm:p-6 md:p-8 space-y-6 flex-1 max-w-7xl mx-auto w-full">
           {/* Top Bar with Add Department & Master Bulk Actions */}
-          <div className="bg-white rounded-3xl border border-slate-200/80 p-5 sm:p-6 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="bg-white rounded-3xl border border-[#4F8FC0]/25 p-5 sm:p-6 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2">
-                <Building2 className="w-5 h-5 text-[#6320ee]" />
-                <h2 className="text-xl font-bold text-slate-900">Academic & Administrative Departments</h2>
+                <Building2 className="w-5 h-5 text-[#26648E]" />
+                <h2 className="text-xl font-black text-[#26648E] font-crest">Academic &amp; Administrative Departments</h2>
               </div>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-slate-500 font-semibold mt-1">
                 Configure departments, shifts, user credentials, and portal access permissions.
               </p>
             </div>
@@ -273,6 +273,7 @@ export default function AdminDepartmentsPage() {
               {/* Master Bulk Disable / Enable Button */}
               {allDisabled ? (
                 <button
+                  type="button"
                   onClick={() => handleBulkToggle(true)}
                   className="px-4 py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-300 font-bold rounded-xl text-xs flex items-center gap-2 transition-all cursor-pointer shadow-sm"
                   title="Enable all department accounts"
@@ -282,6 +283,7 @@ export default function AdminDepartmentsPage() {
                 </button>
               ) : (
                 <button
+                  type="button"
                   onClick={() => handleBulkToggle(false)}
                   className="px-4 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-300 font-bold rounded-xl text-xs flex items-center gap-2 transition-all cursor-pointer shadow-sm"
                   title="Block/Disable all department accounts at once"
@@ -293,8 +295,9 @@ export default function AdminDepartmentsPage() {
 
               {/* Add Department Button */}
               <button
+                type="button"
                 onClick={() => setIsAddModalOpen(true)}
-                className="px-5 py-2.5 bg-[#6320ee] hover:bg-[#5215ce] text-white font-bold rounded-xl shadow-lg shadow-purple-600/25 transition-all flex items-center gap-2 text-xs sm:text-sm shrink-0 cursor-pointer transform hover:-translate-y-0.5"
+                className="px-5 py-2.5 bg-[#26648E] hover:bg-[#1f5072] text-white font-extrabold rounded-xl shadow-md transition-all flex items-center gap-2 text-xs sm:text-sm shrink-0 cursor-pointer transform hover:-translate-y-0.5"
               >
                 <Plus className="w-4 h-4" />
                 <span>Add Department</span>
@@ -303,14 +306,15 @@ export default function AdminDepartmentsPage() {
           </div>
 
           {/* Filter & Search Bar */}
-          <div className="bg-white rounded-2xl border border-slate-200/80 p-3 sm:p-4 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="bg-white rounded-2xl border border-[#4F8FC0]/20 p-3 sm:p-4 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="relative w-full sm:w-80">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
+                placeholder="Search department name or code..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-purple-600/20 focus:border-purple-600"
+                className="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#4F8FC0]/20 focus:border-[#26648E]"
               />
             </div>
 
@@ -319,10 +323,11 @@ export default function AdminDepartmentsPage() {
               {['ALL', 'Shift I', 'Shift II', 'Units'].map((s) => (
                 <button
                   key={s}
+                  type="button"
                   onClick={() => setSelectedShiftFilter(s)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shrink-0 cursor-pointer ${
                     selectedShiftFilter === s
-                      ? 'bg-purple-700 text-white shadow-sm'
+                      ? 'bg-[#26648E] text-white shadow-sm'
                       : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                   }`}
                 >
@@ -333,20 +338,20 @@ export default function AdminDepartmentsPage() {
           </div>
 
           {/* Departments List / Table */}
-          <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
+          <div className="bg-white rounded-3xl border border-[#4F8FC0]/25 shadow-xs overflow-hidden">
             <div className="p-5 border-b border-slate-100 flex items-center justify-between">
               <div>
-                <h3 className="font-bold text-slate-900 text-base">Registered Departments</h3>
+                <h3 className="font-black text-[#26648E] text-base">Registered Departments</h3>
                 <p className="text-xs text-slate-500 mt-0.5">Manage permissions, edit details, or reset credentials</p>
               </div>
-              <span className="text-xs font-bold px-3 py-1 bg-purple-50 text-purple-700 rounded-full border border-purple-200">
+              <span className="text-xs font-bold px-3 py-1 bg-[#f0f5f9] text-[#26648E] rounded-full border border-[#4F8FC0]/30">
                 {filteredDepts.length} of {departments.length}
               </span>
             </div>
 
             {loading ? (
               <div className="p-12 text-center text-slate-400 text-sm">
-                <div className="w-6 h-6 border-2 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                <div className="w-6 h-6 border-2 border-[#26648E] border-t-transparent rounded-full animate-spin mx-auto mb-2" />
                 Loading departments...
               </div>
             ) : filteredDepts.length === 0 ? (
@@ -399,8 +404,8 @@ export default function AdminDepartmentsPage() {
                                   dept.shift === 'Units'
                                     ? 'bg-blue-100 text-blue-800'
                                     : dept.shift === 'Shift II'
-                                    ? 'bg-purple-100 text-purple-800'
-                                    : 'bg-slate-100 text-slate-700'
+                                    ? 'bg-indigo-100 text-indigo-900 border border-indigo-200'
+                                    : 'bg-amber-100 text-amber-900 border border-amber-200'
                                 }`}
                               >
                                 {dept.shift}
@@ -409,7 +414,7 @@ export default function AdminDepartmentsPage() {
                             <td className="px-4 py-4">
                               {userAccount ? (
                                 <div>
-                                  <span className="font-mono text-xs font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-200">
+                                  <span className="font-mono text-xs font-bold text-[#26648E] bg-[#f0f5f9] px-2 py-0.5 rounded border border-[#4F8FC0]/30">
                                     {userAccount.username}
                                   </span>
                                 </div>
@@ -418,7 +423,7 @@ export default function AdminDepartmentsPage() {
                               )}
                             </td>
                             <td className="px-4 py-4">
-                              <div className="flex items-center gap-1.5 text-xs text-indigo-700 font-medium bg-indigo-50/80 px-2.5 py-1 rounded-lg border border-indigo-100 w-fit font-mono">
+                              <div className="flex items-center gap-1.5 text-xs text-[#26648E] font-medium bg-[#f0f5f9] px-2.5 py-1 rounded-lg border border-[#4F8FC0]/25 w-fit font-mono">
                                 {dept.code}
                               </div>
                             </td>
@@ -445,7 +450,7 @@ export default function AdminDepartmentsPage() {
                                 {/* Edit Button */}
                                 <button
                                   onClick={() => handleOpenEdit(dept)}
-                                  className="p-2 text-slate-500 hover:text-purple-700 hover:bg-purple-50 rounded-xl transition-colors cursor-pointer"
+                                  className="p-2 text-slate-500 hover:text-[#26648E] hover:bg-[#f0f5f9] rounded-xl transition-colors cursor-pointer"
                                   title="Edit Department"
                                 >
                                   <Edit className="w-4 h-4" />
@@ -561,14 +566,15 @@ export default function AdminDepartmentsPage() {
       {isAddModalOpen && (
         <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200">
           <div className="bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-slate-100 overflow-hidden">
-            <div className="px-6 py-5 bg-gradient-to-r from-[#2a1b54] to-[#4c1d95] text-white flex items-center justify-between">
+            <div className="px-6 py-5 bg-gradient-to-r from-[#163850] via-[#26648E] to-[#1f5072] text-white flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Building2 className="w-5 h-5 text-purple-300" />
-                <h3 className="font-bold text-lg">Register New Department</h3>
+                <Building2 className="w-5 h-5 text-[#FFE3B3]" />
+                <h3 className="font-bold text-lg font-crest">Register New Department</h3>
               </div>
               <button
+                type="button"
                 onClick={() => setIsAddModalOpen(false)}
-                className="text-purple-200 hover:text-white p-1 rounded-lg cursor-pointer"
+                className="text-slate-300 hover:text-white p-1 rounded-lg cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -583,7 +589,7 @@ export default function AdminDepartmentsPage() {
                   type="text"
                   value={deptName}
                   onChange={(e) => setDeptName(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-600/30 focus:border-purple-600"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#4F8FC0]/20 focus:border-[#26648E]"
                   required
                 />
               </div>
@@ -595,11 +601,11 @@ export default function AdminDepartmentsPage() {
                 <select
                   value={deptShift}
                   onChange={(e) => setDeptShift(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-600/30 focus:border-purple-600 bg-white"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#4F8FC0]/20 focus:border-[#26648E] bg-white"
                 >
-                  <option value="Shift I">Shift I (Day)</option>
-                  <option value="Shift II">Shift II (Evening)</option>
-                  <option value="Units">Units</option>
+                  <option value="Shift I">Shift I (Day / Aided)</option>
+                  <option value="Shift II">Shift II (Evening / Self-Financed)</option>
+                  <option value="Units">Units &amp; Centers</option>
                   <option value="Both">Both Shifts</option>
                   <option value="General">General / Administrative</option>
                 </select>
@@ -613,10 +619,10 @@ export default function AdminDepartmentsPage() {
                   type="text"
                   value={customUsername}
                   onChange={(e) => setCustomUsername(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-600/30 focus:border-purple-600"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#4F8FC0]/20 focus:border-[#26648E]"
                 />
-                <p className="text-[11px] text-purple-700 mt-1.5 font-medium">
-                  Initial password will be automatically assigned as: <code className="font-mono bg-purple-100 px-1 rounded font-bold">sjciqac</code>
+                <p className="text-[11px] text-[#26648E] mt-1.5 font-medium">
+                  Initial password will be automatically assigned as: <code className="font-mono bg-[#f0f5f9] text-[#26648E] px-1 rounded font-bold border border-[#4F8FC0]/30">sjciqac</code>
                 </p>
               </div>
 
@@ -632,7 +638,7 @@ export default function AdminDepartmentsPage() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-6 py-2.5 bg-[#6320ee] hover:bg-[#5215ce] text-white text-sm font-bold rounded-xl shadow-lg shadow-purple-600/25 flex items-center gap-2 cursor-pointer disabled:opacity-60"
+                  className="px-6 py-2.5 bg-[#26648E] hover:bg-[#1f5072] text-white text-sm font-bold rounded-xl shadow-md flex items-center gap-2 cursor-pointer disabled:opacity-60"
                 >
                   {submitting ? (
                     <>
@@ -656,14 +662,15 @@ export default function AdminDepartmentsPage() {
       {editingDept && (
         <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200">
           <div className="bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-slate-100 overflow-hidden">
-            <div className="px-6 py-5 bg-gradient-to-r from-purple-900 to-indigo-900 text-white flex items-center justify-between">
+            <div className="px-6 py-5 bg-gradient-to-r from-[#163850] via-[#26648E] to-[#1f5072] text-white flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Edit className="w-5 h-5 text-purple-300" />
-                <h3 className="font-bold text-lg">Edit Department Details</h3>
+                <Edit className="w-5 h-5 text-[#FFE3B3]" />
+                <h3 className="font-bold text-lg font-crest">Edit Department Details</h3>
               </div>
               <button
+                type="button"
                 onClick={() => setEditingDept(null)}
-                className="text-purple-200 hover:text-white p-1 rounded-lg cursor-pointer"
+                className="text-slate-300 hover:text-white p-1 rounded-lg cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -678,7 +685,7 @@ export default function AdminDepartmentsPage() {
                   type="text"
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-600/30 focus:border-purple-600"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#4F8FC0]/20 focus:border-[#26648E]"
                   required
                 />
               </div>
@@ -690,11 +697,11 @@ export default function AdminDepartmentsPage() {
                 <select
                   value={editShift}
                   onChange={(e) => setEditShift(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-600/30 focus:border-purple-600 bg-white"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#4F8FC0]/20 focus:border-[#26648E] bg-white"
                 >
-                  <option value="Shift I">Shift I (Day)</option>
-                  <option value="Shift II">Shift II (Evening)</option>
-                  <option value="Units">Units</option>
+                  <option value="Shift I">Shift I (Day / Aided)</option>
+                  <option value="Shift II">Shift II (Evening / Self-Financed)</option>
+                  <option value="Units">Units &amp; Centers</option>
                   <option value="Both">Both Shifts</option>
                   <option value="General">General / Administrative</option>
                 </select>
@@ -708,7 +715,7 @@ export default function AdminDepartmentsPage() {
                   type="text"
                   value={editCode}
                   onChange={(e) => setEditCode(e.target.value.toUpperCase())}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-medium font-mono uppercase focus:outline-none focus:ring-2 focus:ring-purple-600/30 focus:border-purple-600"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-medium font-mono uppercase focus:outline-none focus:ring-2 focus:ring-[#4F8FC0]/20 focus:border-[#26648E]"
                   required
                 />
               </div>
@@ -725,7 +732,7 @@ export default function AdminDepartmentsPage() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-6 py-2.5 bg-[#6320ee] hover:bg-[#5215ce] text-white text-sm font-bold rounded-xl shadow-lg shadow-purple-600/25 flex items-center gap-2 cursor-pointer disabled:opacity-60"
+                  className="px-6 py-2.5 bg-[#26648E] hover:bg-[#1f5072] text-white text-sm font-bold rounded-xl shadow-md flex items-center gap-2 cursor-pointer disabled:opacity-60"
                 >
                   {submitting ? (
                     <>

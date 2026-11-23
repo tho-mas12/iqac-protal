@@ -1,0 +1,535 @@
+[
+  {
+    "category": "Curriculum Development",
+    "totalMarks": 100,
+    "questions": [
+      {
+        "title": "New Course Taught",
+        "marks": 10,
+        "fields": [
+          "Sl.No.",
+          "ProgrammeEg. B. A. English",
+          "Course Code",
+          "Title of the Course"
+        ]
+      },
+      {
+        "title": "No. of Courses Revised in Syllabus Revision",
+        "marks": 20,
+        "fields": [
+          "Sl.No.",
+          "ProgrammeEg. B. A. English",
+          "Course Code",
+          "Title of the Course"
+        ]
+      },
+      {
+        "title": "No. of Value Added Courses offered (Offline)",
+        "marks": 20,
+        "fields": [
+          "Sl.No.",
+          "ProgrammeEg. B. A. English",
+          "Course Code",
+          "Title of the Value Added Course",
+          "Curse Conducted From -To",
+          "No. of Students Enrolled",
+          "No. of Students Completed"
+        ]
+      },
+      {
+        "title": "Certificate Course/Extra Credit Course (Offline)",
+        "marks": 20,
+        "fields": [
+          "Sl.No.",
+          "ProgrammeEg. B. A. English",
+          "Course Code",
+          "Title of the Certificate Course",
+          "No. of Students Enrolled",
+          "No. of Students Completed"
+        ]
+      },
+      {
+        "title": "Student Feedback Taken During Staff Evaluation",
+        "marks": 10,
+        "fields": []
+      },
+      {
+        "title": "Innovative TLE Practices",
+        "marks": 10,
+        "fields": [
+          "Sl. No.",
+          "Innovative TLE Practice"
+        ]
+      },
+      {
+        "title": "Industrial Visit / Field Visit / Educational Visits",
+        "marks": 10,
+        "fields": [
+          "Sl.No.",
+          "PurposeFV/IV/EV",
+          "Class",
+          "Address of Industries/Places Visited",
+          "DateFrom-To",
+          "No. of Students Benefitted"
+        ]
+      }
+    ]
+  },
+  {
+    "category": "Student Support Activities",
+    "totalMarks": 100,
+    "questions": [
+      {
+        "title": "Clubs and Institutes /Centres of  Excellence in charge of",
+        "marks": 30,
+        "fields": [
+          "Sl.No.",
+          "Name of the Club",
+          "DesignationCoordinator/Asst Coordinator",
+          "No. of activities Conducted",
+          "No. of Students Benefitted"
+        ]
+      },
+      {
+        "title": "Remedial Classes handled",
+        "marks": 20,
+        "fields": [
+          "Sl.No.",
+          "Class/Prog",
+          "Title of the Course",
+          "No. of Hours",
+          "No. of Students Benefitted"
+        ]
+      },
+      {
+        "title": "Capability Enhancement Programmes",
+        "marks": 20,
+        "fields": [
+          "Name of the capability enhancement program",
+          "Date of implementation (DD-MM-YYYY)",
+          "Nature of Beneficiaries (Dept/Gender, etc.,)",
+          "Number of Students Benefitted",
+          "Name of the Agencies/Consultants involved with contact details (if any)"
+        ]
+      },
+      {
+        "title": "Bridge Course",
+        "marks": 10,
+        "fields": [
+          "Sl.No.",
+          "Class/Prog",
+          "Stream(Advanced/Intermediate/Basic)",
+          "No. of Days",
+          "No. of Students Benefitted"
+        ]
+      },
+      {
+        "title": "In charge of Department Activities (eg. Dept. Inventory, MQC, etc.,)",
+        "marks": 20,
+        "fields": [
+          "Sl.No.",
+          "Name of the Activity",
+          "Nature of Work",
+          "Work Accomplished"
+        ]
+      }
+    ]
+  },
+  {
+    "category": "ICT Based Teaching Learning and Evaluation",
+    "totalMarks": 100,
+    "questions": [
+      {
+        "title": "E materials in Department/College Repository other than LMS",
+        "marks": 50,
+        "fields": [
+          "Sl.No.",
+          "Programme",
+          "Course Code",
+          "Title of the Course",
+          "Type of E material (ppt, pdf, videos, others)"
+        ]
+      },
+      {
+        "title": "E materials on LMS",
+        "marks": 50,
+        "fields": [
+          "Sl.No.",
+          "Nature of Course Offered (Certificate Course, value Added Course, Self Paced)",
+          "Course Code",
+          "Title of the Course",
+          "Percentage of contribution to the course",
+          "Type of E material (ppt, pdf, videos, others)",
+          "No. of ematerials",
+          "No. of Students Benefitted"
+        ]
+      }
+    ]
+  },
+  {
+    "category": "Resource Person",
+    "totalMarks": 100,
+    "questions": [
+      {
+        "title": "UGC-HRDC",
+        "marks": 30,
+        "fields": [
+          "Sl.No.",
+          "Nature of Programme (OP, RC, STC, FDP, Others)",
+          "Name and Address of the University",
+          "Topic of Presentation",
+          "No. of Beneficiaries"
+        ]
+      },
+      {
+        "title": "International Programmes (Held in countries other than India)",
+        "marks": 30,
+        "fields": [
+          "Sl.No.",
+          "Nature of Programme (Seminar, Conference, Workshop, Guest Lecture, Others)",
+          "Name and Address of the Institution",
+          "Nature and Topic of Presentation",
+          "Mode of Conduct(Online, Offline)",
+          "No. of Beneficiaries"
+        ]
+      },
+      {
+        "title": "National Programmes (Held in states other than Tamilnadu)",
+        "marks": 20,
+        "fields": [
+          "Sl.No.",
+          "Nature of Programme (Seminar, Conference, Workshop, Guest Lecture, Others)",
+          "Name and Address of the Institution",
+          "Nature and Topic of Presentation",
+          "Mode of Conduct(Online, Offline)",
+          "No. of Beneficiaries"
+        ]
+      },
+      {
+        "title": "State Level Programmes",
+        "marks": 20,
+        "fields": [
+          "Sl.No.",
+          "Nature of Programme (Seminar, Conference, Workshop, Guest Lecture, Others)",
+          "Name and Address of the Institution",
+          "Nature and Topic of Presentation",
+          "Mode of Conduct(Online, Offline)",
+          "No. of Beneficiaries"
+        ]
+      }
+    ]
+  },
+  {
+    "category": "Research Activities",
+    "totalMarks": 100,
+    "questions": [
+      {
+        "title": "Papers Presented",
+        "marks": 5,
+        "fields": [
+          "Name and Address of the Institution",
+          "Title of the Conference",
+          "S/N/IN",
+          "Date",
+          "Title of paper"
+        ]
+      },
+      {
+        "title": "Papers Published",
+        "marks": 10,
+        "fields": [
+          "S.No",
+          "Name of Author(s)",
+          "Title of the Paper",
+          "Name of the Journal",
+          "National / International",
+          "ISSN No. & Impact Factor",
+          "h-index",
+          "Citation Index & No. of Citations (Excluding SelfCitation)",
+          "Vol          (Page)  Year",
+          "Link to the Journal",
+          "Link to the  Recognition in UGC Enlistment of the Journal"
+        ]
+      },
+      {
+        "title": "Chapters in Books",
+        "marks": 15,
+        "fields": [
+          "Sl.No.",
+          "Title of the Chapter",
+          "Title of the Book",
+          "Month and Year of  Publication",
+          "Name of the Publisher",
+          "ISBN No."
+        ]
+      },
+      {
+        "title": "Books Edited",
+        "marks": 20,
+        "fields": [
+          "Sl.No.",
+          "Title of the Book",
+          "Name and Address of Co-Editors",
+          "Month and Year of  Publication",
+          "Name of the Publisher",
+          "ISBN No."
+        ]
+      },
+      {
+        "title": "Books Published",
+        "marks": 25,
+        "fields": [
+          "Sl.No.",
+          "Title of the Book",
+          "Name and Address of Co-Authors",
+          "Month and Year of  Publication",
+          "Name of the Publisher",
+          "ISBN No."
+        ]
+      },
+      {
+        "title": "Member of  Editorial Board",
+        "marks": 10,
+        "fields": [
+          "Sl.No.",
+          "Name of the Journal",
+          "S/N/IN",
+          "Position Held",
+          "Publication details",
+          "ISBN No."
+        ]
+      },
+      {
+        "title": "Research Guidance",
+        "marks": 15,
+        "fields": [
+          "Sl.No.",
+          "Programme (UG/PG/MPhil/PhD)",
+          "Nature of Guidance(Project/Internship)",
+          "No. of Students/Scholars Guiding",
+          "D.No or Name of Students/Scholars"
+        ]
+      }
+    ]
+  },
+  {
+    "category": "Funds Generated and Received",
+    "totalMarks": 100,
+    "questions": [
+      {
+        "title": "Research Projects Applied for",
+        "marks": 10,
+        "fields": [
+          "Sl.No.",
+          "Name of the Funding agency",
+          "Role(PI/CI)",
+          "Title of the Project",
+          "Date of Applying for Proposal",
+          "Fund to be Granted"
+        ]
+      },
+      {
+        "title": "Research Projects Granted",
+        "marks": 20,
+        "fields": [
+          "Sl.No.",
+          "Name of the Funding agency",
+          "Role(PI/CI)",
+          "Title of the Project",
+          "Date of Applying for Proposal",
+          "Fund allotted",
+          "Fund Received"
+        ]
+      },
+      {
+        "title": "Consultancy Activities",
+        "marks": 15,
+        "fields": [
+          "Sl.No.",
+          "Name of the Facility and Department",
+          "Name of the Consultancy Project",
+          "Consulting/Sponsoring Agency with Contact Details",
+          "DateFrom -To",
+          "Revenue Generated"
+        ]
+      },
+      {
+        "title": "Engagement in Corporate Training",
+        "marks": 10,
+        "fields": [
+          "Sl.No.",
+          "Name of the Company/Industry to which Training is Offered (With Contact Details)",
+          "Nature of Corporate TrainingEg. Communication Skills/ ICT Skills/Counselling",
+          "No. of Beneficiaries",
+          "DateFrom -To",
+          "Revenue Generated"
+        ]
+      },
+      {
+        "title": "IPR \u2013 No. of Patents Received, Income Generated",
+        "marks": 25,
+        "fields": [
+          "Sl.No."
+        ]
+      },
+      {
+        "title": "Engagement in Start up Activities (No. of Products, Income Generated)",
+        "marks": 20,
+        "fields": [
+          "Sl.No.",
+          "Name of the Product",
+          "Student MenteesNames and D.Nos."
+        ]
+      }
+    ]
+  },
+  {
+    "category": "Professional Enrichment",
+    "totalMarks": 150,
+    "questions": [
+      {
+        "title": "Seminar/Conference/Workshop/Webinar Attended",
+        "marks": 30,
+        "fields": [
+          "Sl.No.",
+          "Title of the Conference/Workshop, etc.,",
+          "Nature I/N/S",
+          "Name and Address of the Institution",
+          "DateFrom - To",
+          "No. of Days"
+        ]
+      },
+      {
+        "title": "Short Term Course Attended",
+        "marks": 30,
+        "fields": [
+          "Sl.No.",
+          "Title of the Short Term Course",
+          "Nature I/N/S",
+          "Name and Address of the Institution",
+          "DateFrom - To",
+          "No. of Days"
+        ]
+      },
+      {
+        "title": "UGC-HRDC or MoE or MHRD \u2013 OP, RC, ST Courses, Workshops, FDP, PDP, etc.,",
+        "marks": 40,
+        "fields": [
+          "Sl.No.",
+          "Title of the Course",
+          "Nature (WS/OP/RC/STC/FDP/Others)",
+          "Name and Address of the Institution",
+          "DateFrom - To",
+          "No. of Days"
+        ]
+      },
+      {
+        "title": "Fellowship Received",
+        "marks": 25,
+        "fields": [
+          "Name of the Fellowship",
+          "Name of the Awarding Agency",
+          "Nature of the Fellowship",
+          "Date of Award of Fellowship",
+          "Duration of Fellowhip"
+        ]
+      },
+      {
+        "title": "Awards Received (Governmental bodies or organisations)",
+        "marks": 25,
+        "fields": [
+          "Name of the Activity",
+          "Name of the Award/ Recognition",
+          "Name of the Awarding Government/ Government Recognised Bodies",
+          "Month and Year of Award"
+        ]
+      }
+    ]
+  },
+  {
+    "category": "Member of Academic or Professional Bodies",
+    "totalMarks": 100,
+    "questions": [
+      {
+        "title": "Member of Governing Body",
+        "marks": 30,
+        "fields": [
+          "Sl.No.",
+          "Name and Address of the Institution",
+          "N/S",
+          "Date of GB Meeting(s) Attended",
+          "Duration of MembershipFrom - To",
+          "No. of Years"
+        ]
+      },
+      {
+        "title": "Academic Council",
+        "marks": 25,
+        "fields": [
+          "Sl.No.",
+          "Name and Address of the Institution",
+          "N/S",
+          "Date of AC Meeting(s) Attended",
+          "Duration of MembershipFrom - To",
+          "No. of Years"
+        ]
+      },
+      {
+        "title": "BoS of other Colleges/Universities",
+        "marks": 25,
+        "fields": [
+          "Sl.No.",
+          "Name and Address of the Institution",
+          "Department",
+          "Date of BoS Meeting(s) Attended",
+          "Duration of MembershipFrom - To",
+          "No. of Years"
+        ]
+      },
+      {
+        "title": "BoS of SJC",
+        "marks": 10,
+        "fields": [
+          "Number of Courses Revised"
+        ]
+      },
+      {
+        "title": "Member of Other Bodies in Other Institutions (E.g. Member of IQAC)",
+        "marks": 10,
+        "fields": [
+          "Sl.No.",
+          "Name and Address of the Institution",
+          "Name of the Body",
+          "Date of Meeting(s) Attended",
+          "Duration of MembershipFrom - To",
+          "No. of Years"
+        ]
+      }
+    ]
+  },
+  {
+    "category": "Contribution to Governance",
+    "totalMarks": 50,
+    "questions": [
+      {
+        "title": "Administrative Responsibilities",
+        "marks": 50,
+        "fields": [
+          "Sl.No.",
+          "Position Held",
+          "Significant Contributions Made"
+        ]
+      }
+    ]
+  },
+  {
+    "category": "Extension Activities",
+    "totalMarks": 50,
+    "questions": []
+  },
+  {
+    "category": "Other Noteworthy Accomplishments",
+    "totalMarks": 50,
+    "questions": []
+  }
+]

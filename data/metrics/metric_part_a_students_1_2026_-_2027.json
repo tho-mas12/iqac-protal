@@ -1,0 +1,26 @@
+[
+  {
+    "programme": "Undergraduate (UG)",
+    "male": 0,
+    "female": 0,
+    "otherGender": 0,
+    "otherStates": 0,
+    "otherCountries": 0
+  },
+  {
+    "programme": "Postgraduate (PG)",
+    "male": 0,
+    "female": 0,
+    "otherGender": 0,
+    "otherStates": 0,
+    "otherCountries": 0
+  },
+  {
+    "programme": "Ph.D. / Research",
+    "male": 0,
+    "female": 0,
+    "otherGender": 0,
+    "otherStates": 0,
+    "otherCountries": 0
+  }
+]

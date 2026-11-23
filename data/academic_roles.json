@@ -1,0 +1,68 @@
+{
+  "mqcDepartments": [
+    "CS_S1",
+    "CS_S2",
+    "COM_S1",
+    "MAT_S1",
+    "AI_S2",
+    "CS"
+  ],
+  "hodUsers": [
+    "CS_S1",
+    "COM_S1",
+    "MAT_S1",
+    "AI_S2",
+    "BIOCHEM_S2",
+    "BIOTECH_S2",
+    "ENGLISH_SHIFT1"
+  ],
+  "userDesignations": {
+    "thomas": {
+      "designation": "Head of Department",
+      "isMqc": true,
+      "isHod": true
+    },
+    "english_shift1": {
+      "isHod": true
+    },
+    "darwin": {
+      "designation": "Staff Member",
+      "isMqc": false,
+      "isHod": false
+    },
+    "cs_shift1": {
+      "isMqc": true,
+      "isHod": false
+    },
+    "tho": {
+      "designation": "Staff Member",
+      "isMqc": true,
+      "isHod": false
+    },
+    "admin": {
+      "isMqc": true,
+      "isHod": false
+    },
+    "24ucs605": {
+      "isMqc": false,
+      "isHod": false
+    },
+    "ajay": {
+      "isMqc": false,
+      "isHod": false
+    },
+    "aro": {
+      "isMqc": false,
+      "isHod": false
+    },
+    "mm": {
+      "isMqc": true,
+      "isHod": true
+    },
+    "nn": {
+      "isMqc": false,
+      "isHod": false
+    }
+  },
+  "updatedAt": "2026-11-23T06:30:19.163Z"
+}

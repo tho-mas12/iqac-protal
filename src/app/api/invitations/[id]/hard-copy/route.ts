@@ -8,7 +8,7 @@ export async function POST(
 ) {
   try {
     const session = await getCurrentUser();
-    if (!session || (session.role !== 'STAFF' && session.role !== 'ADMIN' && session.role !== 'DIRECTOR')) {
+    if (!session || (session.role !== 'STAFF' && session.role !== 'ADMINISTRATOR' && session.role !== 'ADMIN' && session.role !== 'DIRECTOR')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 

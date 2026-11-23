@@ -1,0 +1,47 @@
+[
+  {
+    "label": "Total No. of Teaching Faculty",
+    "male": 0,
+    "female": 0
+  },
+  {
+    "label": "No. of Faculty (Aided)",
+    "male": 0,
+    "female": 0
+  },
+  {
+    "label": "No. of Faculty (Coordinator-Appointed)",
+    "male": 0,
+    "female": 0
+  },
+  {
+    "label": "No. of Faculty (Secretary-Appointed)",
+    "male": 0,
+    "female": 0
+  },
+  {
+    "label": "No. of Professor of Practice",
+    "male": 0,
+    "female": 0
+  },
+  {
+    "label": "No. of Faculty (Hourly Basis)",
+    "male": 0,
+    "female": 0
+  },
+  {
+    "label": "No. of Faculty from Other States",
+    "male": 0,
+    "female": 0
+  },
+  {
+    "label": "No. of Faculty Graduating from Other States",
+    "male": 0,
+    "female": 0
+  },
+  {
+    "label": "No. of Academic Support Staff (Technical) and Non-teaching Staff",
+    "male": 0,
+    "female": 0
+  }
+]

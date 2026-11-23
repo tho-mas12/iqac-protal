@@ -1,0 +1,43 @@
+[
+  {
+    "id": "ann-1795413261100",
+    "title": "How are you",
+    "content": "I am fine!",
+    "type": "GENERAL",
+    "target": "All Staff & Faculty",
+    "date": "2026-11-23",
+    "isActive": true,
+    "author": "IQAC Administrator",
+    "createdAt": "2026-11-23T05:54:21.100Z"
+  },
+  {
+    "id": "ann-1",
+    "title": "Annual Academic Audit (AAA) 2026–2027 Submission Cycle",
+    "content": "All designated MQC Members and Heads of Departments are requested to verify Part-A Profile and complete Attributes 1 to 10 sheets on or before the institutional deadline.",
+    "type": "INFO",
+    "target": "All Faculty & MQC Members",
+    "date": "2026-11-21",
+    "isActive": true,
+    "author": "IQAC Directorate"
+  },
+  {
+    "id": "ann-2",
+    "title": "Course Plan Submission & Lesson Unit Scheduling",
+    "content": "Faculty members are advised to upload Even Semester Course Plans with course outcomes, unit distribution, and weekly lesson schedules for Department HOD sign-off.",
+    "type": "NOTICE",
+    "target": "All Teaching Faculty",
+    "date": "2026-11-19",
+    "isActive": true,
+    "author": "Dean of Academics"
+  },
+  {
+    "id": "ann-3",
+    "title": "Event Invitations Standard Protocols & Advance Upload",
+    "content": "Kindly submit all event invitations and circulars at least 3-5 working days prior to the event date. Verify that official College Crest and IQAC logo follow the approved format.",
+    "type": "INFO",
+    "target": "All Departments & Staff",
+    "date": "2026-11-16",
+    "isActive": true,
+    "author": "IQAC Directorate"
+  }
+]

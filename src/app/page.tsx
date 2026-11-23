@@ -8,16 +8,9 @@ export default async function HomePage() {
     redirect('/login');
   }
 
-  switch (session.role) {
-    case 'DEPARTMENT':
-      redirect('/department/dashboard');
-    case 'DIRECTOR':
-      redirect('/director/dashboard');
-    case 'STAFF':
-      redirect('/staff/dashboard');
-    case 'ADMIN':
-      redirect('/admin/departments');
-    default:
-      redirect('/login');
+  if (session.role === 'ADMIN') {
+    redirect('/admin');
   }
+
+  redirect('/hub');
 }

@@ -42,6 +42,13 @@ export default function RemarksPage() {
       if (uRes.ok) {
         const u = await uRes.json();
         setUser(u.user);
+      } else if (typeof window !== 'undefined') {
+        const ssoRaw = localStorage.getItem('IQAC_SSO_USER');
+        if (ssoRaw) {
+          try {
+            setUser(JSON.parse(ssoRaw));
+          } catch (e) {}
+        }
       }
       if (iRes.ok) {
         const i = await iRes.json();
@@ -125,7 +132,7 @@ export default function RemarksPage() {
   return (
     <div className="flex min-h-screen bg-[#f8fafc]">
       <Sidebar
-        role="DEPARTMENT"
+        role="STAFF"
         userName={user?.name}
         departmentName={user?.department?.name}
         shift={user?.department?.shift}
@@ -135,7 +142,7 @@ export default function RemarksPage() {
         <Header
           title="Remarks & Corrections"
           userName={user?.name}
-          userRole="Department"
+          userRole="Staff"
         />
 
         <main className="p-6 md:p-8 space-y-6 flex-1">

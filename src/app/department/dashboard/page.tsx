@@ -92,6 +92,13 @@ export default function DepartmentDashboard() {
       if (userRes.ok) {
         const uData = await userRes.json();
         setUser(uData.user);
+      } else if (typeof window !== 'undefined') {
+        const ssoRaw = localStorage.getItem('IQAC_SSO_USER');
+        if (ssoRaw) {
+          try {
+            setUser(JSON.parse(ssoRaw));
+          } catch (e) {}
+        }
       }
 
       if (invRes.ok) {
@@ -151,7 +158,7 @@ export default function DepartmentDashboard() {
   return (
     <div className="flex min-h-screen bg-[#f8fafc]">
       <Sidebar
-        role="DEPARTMENT"
+        role="STAFF"
         userName={user?.name}
         departmentName={user?.department?.name}
         shift={user?.department?.shift}
@@ -168,9 +175,9 @@ export default function DepartmentDashboard() {
 
       <div className="flex-1 flex flex-col min-w-0">
         <Header
-          title="Department Dashboard"
+          title="Staff Dashboard"
           userName={user?.name}
-          userRole="Department"
+          userRole="Staff"
         />
 
         <main className="p-4 sm:p-6 md:p-8 space-y-6 flex-1 max-w-7xl mx-auto w-full">
@@ -207,7 +214,7 @@ export default function DepartmentDashboard() {
             <div className="space-y-2 z-10">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/30 text-purple-200 text-xs font-semibold backdrop-blur-sm border border-purple-400/20">
                 <Sparkles className="w-3.5 h-3.5 text-purple-300" />
-                <span>{user?.department?.name || 'Department'} Portal</span>
+                <span>{user?.department?.name || 'Staff'} Invitation Portal</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
                 Upload & Track Event Invitations

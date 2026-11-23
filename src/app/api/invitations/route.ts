@@ -19,15 +19,13 @@ export async function GET(req: NextRequest) {
     const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : undefined;
 
     const where: any = {};
+    const isCentralAuthority = session.role === 'DIRECTOR' || session.role === 'ADMINISTRATOR' || session.role === 'ADMIN';
 
-    // Department can only view their own invitations
-    if (session.role === 'DEPARTMENT') {
-      if (!session.departmentId) {
-        return NextResponse.json({ error: 'User is not assigned to a department' }, { status: 400 });
-      }
-      where.departmentId = session.departmentId;
-    } else if (departmentId) {
+    // Department role filtering: Central authorities see all; departments only see their own
+    if (departmentId && departmentId !== 'ALL') {
       where.departmentId = departmentId;
+    } else if (!isCentralAuthority && session.departmentId) {
+      where.departmentId = session.departmentId;
     }
 
     if (staffFilter === 'pending_action') {
@@ -99,8 +97,8 @@ export async function GET(req: NextRequest) {
       take: limit,
     });
 
-    // Calculate statistics
-    const statsWhere = session.role === 'DEPARTMENT' ? { departmentId: session.departmentId! } : {};
+    // Calculate statistics: Central authorities see global totals; departments see department totals
+    const statsWhere = !isCentralAuthority && session.departmentId ? { departmentId: session.departmentId } : {};
     
     const [total, pending, remarks, approved, staffPendingActions, staffCompletedCount] = await Promise.all([
       prisma.invitation.count({ where: statsWhere }),
@@ -156,23 +154,36 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const session = await getCurrentUser();
-    if (!session || session.role !== 'DEPARTMENT') {
-      return NextResponse.json({ error: 'Only departments can upload invitations' }, { status: 403 });
+    if (!session || (session.role !== 'DEPARTMENT' && session.role !== 'STAFF' && session.role !== 'ADMIN')) {
+      return NextResponse.json({ error: 'Department upload access required' }, { status: 403 });
     }
 
-    if (!session.departmentId) {
-      return NextResponse.json({ error: 'No department linked to current user account' }, { status: 400 });
+    const formData = await req.formData();
+    const explicitDeptId = formData.get('departmentId') as string;
+
+    let department = null;
+    if (explicitDeptId) {
+      department = await prisma.department.findUnique({
+        where: { id: explicitDeptId },
+      });
     }
 
-    const department = await prisma.department.findUnique({
-      where: { id: session.departmentId },
-    });
+    if (!department && session.departmentId) {
+      department = await prisma.department.findUnique({
+        where: { id: session.departmentId },
+      });
+    }
+
+    if (!department) {
+      department = await prisma.department.findFirst({
+        orderBy: { name: 'asc' },
+      });
+    }
 
     if (!department) {
       return NextResponse.json({ error: 'Department not found' }, { status: 404 });
     }
 
-    const formData = await req.formData();
     const programTitle = formData.get('programTitle') as string;
     const category = formData.get('category') as string;
     const customCategory = (formData.get('customCategory') as string) || null;

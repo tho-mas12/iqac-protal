@@ -10,7 +10,8 @@ export interface TokenPayload {
   userId: string;
   username: string;
   name: string;
-  role: 'DEPARTMENT' | 'DIRECTOR' | 'STAFF' | 'ADMIN';
+  role: 'DEPARTMENT' | 'DIRECTOR' | 'STAFF' | 'ADMIN' | 'ADMINISTRATOR';
+  sessionId?: string;
   departmentId?: string | null;
   shift?: string | null;
 }

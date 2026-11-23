@@ -187,10 +187,10 @@ export default function StaffDashboard() {
 
   return (
     <div className="flex min-h-screen bg-[#f8fafc]">
-      <Sidebar role="STAFF" userName={user?.name || 'IQAC Staff'} />
+      <Sidebar role="ADMINISTRATOR" userName={user?.name || 'IQAC Administrator'} />
 
       <div className="flex-1 flex flex-col min-w-0">
-        <Header title="Staff Dashboard" userName={user?.name} userRole="Staff" />
+        <Header title="Administrator Dashboard" userName={user?.name} userRole="Administrator" />
 
         {/* Dynamic Pop-up Toast */}
         <Toast toast={toast} onClose={() => setToast(null)} />
@@ -207,7 +207,7 @@ export default function StaffDashboard() {
           {/* Quick Statistics Grid */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
             <StatCard
-              title="Pending Staff Actions"
+              title="Pending Administrator Actions"
               value={stats.staffPendingActions}
               icon={Inbox}
               variant="yellow"
@@ -252,7 +252,7 @@ export default function StaffDashboard() {
                   }`}
                 >
                   <Inbox className="w-3.5 h-3.5" />
-                  <span>Pending Staff Actions</span>
+                  <span>Pending Administrator Actions</span>
                   <span
                     className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold ${
                       currentTab === 'pending_action'
@@ -672,7 +672,7 @@ export default function StaffDashboard() {
 
       {/* Staff View Modal */}
       {viewingInv && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-start justify-center p-4 pt-6 sm:pt-12 overflow-y-auto">
           <div className="bg-white rounded-3xl max-w-3xl w-full shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh] animate-scaleUp">
             <div className="px-6 py-4 bg-gradient-to-r from-[#2a1b54] to-[#4c1d95] text-white flex items-center justify-between">
               <div>

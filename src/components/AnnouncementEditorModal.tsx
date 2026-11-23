@@ -77,10 +77,10 @@ export default function AnnouncementEditorModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-start justify-center p-3 sm:p-6 overflow-y-auto pt-8 sm:pt-14 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
       <Toast toast={toast} onClose={() => setToast(null)} />
 
-      <div className="bg-white rounded-3xl shadow-2xl max-w-xl w-full flex flex-col overflow-hidden border border-slate-200 animate-in zoom-in-95 duration-200">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-xl w-full flex flex-col overflow-hidden mb-12 border border-slate-200 animate-in zoom-in-95 duration-200">
         {/* Header */}
         <div className="p-5 sm:p-6 bg-gradient-to-r from-[#2a1b54] to-[#6320ee] text-white flex items-center justify-between">
           <div className="flex items-center gap-3">
