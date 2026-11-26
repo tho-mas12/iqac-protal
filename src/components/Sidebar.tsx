@@ -35,6 +35,8 @@ import {
   Archive,
   Mail,
   Clock,
+  Activity,
+  Settings,
 } from 'lucide-react';
 import sjcLogo from '../../public/sjc-logo.png';
 
@@ -63,13 +65,132 @@ interface SidebarProps {
   userName?: string;
   departmentName?: string;
   shift?: string;
+  isHod?: boolean;
+  isMqc?: boolean;
+  isCoursePlanEnabled?: boolean;
 }
 
-export default function Sidebar({ role, userName, departmentName, shift }: SidebarProps) {
+export default function Sidebar({ role, userName, departmentName, shift, isHod, isMqc, isCoursePlanEnabled }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const [collapsed, setCollapsed] = useState(false);
+  const [currentHash, setCurrentHash] = useState('');
+  const [isFullyHidden, setIsFullyHidden] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isHodUser, setIsHodUser] = useState<boolean>(isHod || false);
+  const [isMqcUser, setIsMqcUser] = useState<boolean>(isMqc || false);
+  const [isCoursePlanActive, setIsCoursePlanActive] = useState<boolean>(
+    isCoursePlanEnabled !== undefined ? Boolean(isCoursePlanEnabled) : role === 'ADMIN'
+  );
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setCurrentHash(window.location.hash);
+      const savedHidden = localStorage.getItem('IQAC_SIDEBAR_HIDDEN') === 'true';
+      setIsFullyHidden(savedHidden);
+      // Dispatch initial state asynchronously so Header and layouts don't trigger React setState warnings
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent('iqac-sidebar-state', { detail: { isHidden: savedHidden } }));
+      }, 0);
+
+      const updateHash = () => setCurrentHash(window.location.hash);
+      const handlePortalHash = (e: any) => {
+        const h = e.detail ? (e.detail.startsWith('#') ? e.detail : '#' + e.detail) : window.location.hash;
+        setCurrentHash(h);
+      };
+
+      const handleToggle = () => {
+        setIsFullyHidden((prev) => {
+          const next = !prev;
+          try {
+            localStorage.setItem('IQAC_SIDEBAR_HIDDEN', String(next));
+          } catch (e) {}
+          setTimeout(() => {
+            window.dispatchEvent(new CustomEvent('iqac-sidebar-state', { detail: { isHidden: next } }));
+          }, 0);
+          return next;
+        });
+      };
+
+      window.addEventListener('hashchange', updateHash);
+      window.addEventListener('popstate', updateHash);
+      window.addEventListener('portal-hash-change', handlePortalHash);
+      window.addEventListener('toggle-iqac-sidebar', handleToggle);
+      return () => {
+        window.removeEventListener('hashchange', updateHash);
+        window.removeEventListener('popstate', updateHash);
+        window.removeEventListener('portal-hash-change', handlePortalHash);
+        window.removeEventListener('toggle-iqac-sidebar', handleToggle);
+      };
+    }
+  }, []);
+
+  const handleSubClick = (href: string) => {
+    if (typeof window !== 'undefined') {
+      const h = href.includes('#') ? '#' + href.split('#')[1] : '';
+      setCurrentHash(h);
+      window.dispatchEvent(new CustomEvent('portal-hash-change', { detail: h }));
+      const iframe = document.querySelector('iframe') as HTMLIFrameElement;
+      if (iframe && iframe.contentWindow) {
+        try {
+          iframe.contentWindow.location.hash = h ? h.replace('#', '') : '';
+        } catch (e) {}
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (isHod !== undefined) {
+      setIsHodUser(Boolean(isHod));
+      return;
+    }
+    if (typeof window !== 'undefined') {
+      try {
+        const sso = localStorage.getItem('IQAC_SSO_USER');
+        if (sso) {
+          const parsed = JSON.parse(sso);
+          if (parsed.isHod !== undefined) {
+            setIsHodUser(Boolean(parsed.isHod));
+          }
+        }
+      } catch (e) {}
+    }
+  }, [isHod]);
+
+  useEffect(() => {
+    if (isMqc !== undefined) {
+      setIsMqcUser(Boolean(isMqc));
+      return;
+    }
+    if (typeof window !== 'undefined') {
+      try {
+        const sso = localStorage.getItem('IQAC_SSO_USER');
+        if (sso) {
+          const parsed = JSON.parse(sso);
+          if (parsed.isMqc !== undefined) {
+            setIsMqcUser(Boolean(parsed.isMqc));
+          }
+        }
+      } catch (e) {}
+    }
+  }, [isMqc]);
+
+  useEffect(() => {
+    if (isCoursePlanEnabled !== undefined) {
+      setIsCoursePlanActive(Boolean(isCoursePlanEnabled));
+      return;
+    }
+    if (typeof window !== 'undefined') {
+      try {
+        const sso = localStorage.getItem('IQAC_SSO_USER');
+        if (sso) {
+          const parsed = JSON.parse(sso);
+          if (parsed.isCoursePlanEnabled !== undefined) {
+            setIsCoursePlanActive(Boolean(parsed.isCoursePlanEnabled));
+          }
+        }
+      } catch (e) {}
+    }
+  }, [isCoursePlanEnabled]);
 
   const getDisplayRole = (r?: string) => {
     if (!r) return '';
@@ -141,7 +262,7 @@ export default function Sidebar({ role, userName, departmentName, shift }: Sideb
       setOpenGroups((prev) => ({ ...prev, appraisal: true }));
     } else if (pathname.startsWith('/course-plan')) {
       setOpenGroups((prev) => ({ ...prev, coursePlan: true }));
-    } else if (pathname.startsWith('/AAA')) {
+    } else if (pathname.startsWith('/AAA') || pathname.startsWith('/aaa')) {
       setOpenGroups((prev) => ({ ...prev, aaa: true }));
     }
   }, [pathname]);
@@ -151,6 +272,8 @@ export default function Sidebar({ role, userName, departmentName, shift }: Sideb
     { label: 'Common Dashboard', href: '/admin', icon: LayoutDashboard },
     { label: 'Access Control', href: '/admin/users-roles', icon: ShieldCheck, badge: 'Access' },
     { label: 'Appraisal Questions', href: '/admin/appraisal-questions', icon: ClipboardList, badge: 'Appraisal' },
+    { label: 'Live Server Monitor', href: '/admin/server-status', icon: Activity, badge: 'Live' },
+    { label: 'System Settings', href: '/admin/settings', icon: Settings, badge: 'System' },
   ];
 
   // 2. Administrator (Invitation Office) Primary Items
@@ -174,12 +297,9 @@ export default function Sidebar({ role, userName, departmentName, shift }: Sideb
       id: 'invitation',
       label: 'Invitation Portal',
       icon: FileText,
-      badge: '4 pages',
+      badge: '1 page',
       items: [
         { label: 'All Invitations & History', href: '/department/history', icon: Archive, badge: 'All Stages' },
-        { label: 'Database Explorer', href: '/admin/database', icon: Database },
-        { label: 'Server & Storage', href: '/admin/server-status', icon: HardDrive },
-        { label: 'Notifications & Alerts', href: '/admin/notifications', icon: MessageSquare },
       ],
     },
     {
@@ -188,10 +308,10 @@ export default function Sidebar({ role, userName, departmentName, shift }: Sideb
       icon: BarChart3,
       badge: '4 pages',
       items: [
-        { label: 'Admin Hub', href: '/AAA/index.html#admin', icon: BarChart3 },
-        { label: 'Department Data', href: '/AAA/index.html#dept-data', icon: Building2 },
-        { label: 'All Attributes (Forms 1-10)', href: '/AAA/index.html#form', icon: Layers },
-        { label: 'Data Filters & Explorer', href: '/AAA/index.html#filter', icon: FileCheck2 },
+        { label: 'Admin Hub', href: '/aaa#admin', icon: BarChart3 },
+        { label: 'Department Data', href: '/aaa#dept-data', icon: Building2 },
+        { label: 'All Attributes (Forms 1-10)', href: '/aaa#form', icon: Layers },
+        { label: 'Data Filters & Explorer', href: '/aaa#filter', icon: FileCheck2 },
       ],
     },
     {
@@ -200,8 +320,8 @@ export default function Sidebar({ role, userName, departmentName, shift }: Sideb
       icon: BookOpen,
       badge: '2 pages',
       items: [
-        { label: 'Central Admin Audit', href: '/course-plan/index.html#admin', icon: BookOpen },
-        { label: 'HOD Department Status', href: '/course-plan/index.html#hod', icon: CheckCircle2 },
+        { label: 'Central Admin Audit', href: '/course-plan#admin', icon: BookOpen },
+        { label: 'HOD Course Plan Review Hub', href: '/course-plan#hod', icon: CheckCircle2 },
       ],
     },
   ];
@@ -251,17 +371,22 @@ export default function Sidebar({ role, userName, departmentName, shift }: Sideb
         { label: 'History of Invitations', href: '/department/history', icon: Archive },
       ],
     },
-    {
-      id: 'coursePlan',
-      label: 'Course Plan System',
-      icon: BookOpen,
-      badge: '3 pages',
-      items: [
-        { label: 'Course Plan Dashboard', href: '/course-plan/index.html', icon: LayoutDashboard },
-        { label: 'HOD Department Status', href: '/course-plan/index.html#hod', icon: GraduationCap, badge: 'HOD' },
-        { label: 'My Course Plans', href: '/course-plan/index.html#my-plans', icon: BookOpen },
-      ],
-    },
+    ...((isCoursePlanActive || role === 'ADMIN')
+      ? [
+          {
+            id: 'coursePlan',
+            label: 'Course Plan System',
+            icon: BookOpen,
+            badge: isHodUser ? '2 pages' : '1 page',
+            items: [
+              { label: 'Course Plan Dashboard', href: '/course-plan', icon: LayoutDashboard },
+              ...(isHodUser
+                ? [{ label: 'HOD Course Plan Review Hub', href: '/course-plan#hod', icon: GraduationCap, badge: 'HOD' }]
+                : []),
+            ],
+          },
+        ]
+      : []),
     {
       id: 'appraisal',
       label: 'Performance Appraisal',
@@ -271,15 +396,19 @@ export default function Sidebar({ role, userName, departmentName, shift }: Sideb
         { label: 'Teacher Appraisal Form', href: '/performance-appraisal', icon: ClipboardCheck },
       ],
     },
-    {
-      id: 'aaa',
-      label: 'AAA Platform',
-      icon: BarChart3,
-      badge: '1 page',
-      items: [
-        { label: 'AAA Department Portal', href: '/AAA/index.html', icon: BarChart3 },
-      ],
-    },
+    ...((isMqcUser || role === 'ADMIN')
+      ? [
+          {
+            id: 'aaa',
+            label: 'AAA Platform',
+            icon: BarChart3,
+            badge: '1 page',
+            items: [
+              { label: 'AAA Department Portal', href: '/aaa', icon: BarChart3 },
+            ],
+          },
+        ]
+      : []),
   ];
 
   // Resolve active items by role: Only ADMINISTRATOR gets office dispatch items; STAFF gets full academic suite
@@ -321,26 +450,47 @@ export default function Sidebar({ role, userName, departmentName, shift }: Sideb
       {/* 1. DESKTOP SIDEBAR (AAA Light Academic Tint Palette)     */}
       {/* ======================================================== */}
       <aside
-        className={`hidden md:flex sticky top-0 h-screen overflow-y-auto shrink-0 bg-[#f0f5f9]/95 backdrop-blur-md text-slate-800 flex-col justify-between border-r border-[#4F8FC0]/25 transition-all duration-300 select-none z-30 shadow-xs ${
-          collapsed ? 'w-20' : 'w-72'
+        className={`hidden md:flex sticky top-0 h-screen shrink-0 bg-[#f0f5f9]/95 backdrop-blur-md text-slate-800 flex-col justify-between transition-all duration-300 ease-in-out will-change-[width,transform,opacity] select-none z-30 shadow-xs relative overflow-hidden ${
+          isFullyHidden
+            ? 'w-0 max-w-0 border-none opacity-0 pointer-events-none p-0 -translate-x-full'
+            : 'w-72 border-r border-[#4F8FC0]/25 opacity-100 translate-x-0'
         }`}
       >
-        {/* Top Header & Brand */}
-        <div className="relative p-3">
-          {/* Institutional Brand Box (Matching AAA) */}
-          <div className="bg-white rounded-2xl p-3.5 border border-[#4F8FC0]/25 shadow-2xs flex flex-col items-center text-center transition hover:shadow-xs relative">
-            <Link href={homeHref} className="flex flex-col items-center w-full">
-              {/* Crest Logo Box */}
-              <div className="w-12 h-14 rounded-xl bg-gradient-to-b from-[#f0f5f9] via-white to-[#FFE3B3]/30 border border-[#4F8FC0]/30 flex items-center justify-center p-1.5 shadow-2xs mb-2">
-                <Image
-                  src={sjcLogo}
-                  alt="St. Joseph's College Crest"
-                  className="h-10 w-auto object-contain drop-shadow-xs"
-                  priority
-                />
-              </div>
+        <div className="w-72 h-full flex flex-col justify-between">
+          {/* Top Header & Brand */}
+          <div className="relative p-3 flex-1 overflow-y-auto custom-scrollbar">
+            {/* Institutional Brand Box (Matching AAA) */}
+            <div className="bg-white rounded-2xl p-3.5 border border-[#4F8FC0]/25 shadow-2xs flex flex-col items-center text-center transition hover:shadow-xs relative">
+              {/* In-Header Hide Sidebar Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  setIsFullyHidden(true);
+                  try {
+                    localStorage.setItem('IQAC_SIDEBAR_HIDDEN', 'true');
+                  } catch (e) {}
+                  setTimeout(() => {
+                    window.dispatchEvent(new CustomEvent('iqac-sidebar-state', { detail: { isHidden: true } }));
+                  }, 0);
+                }}
+                className="absolute top-2.5 right-2.5 w-8 h-8 rounded-xl bg-white hover:bg-[#26648E] text-[#26648E] hover:text-white border border-[#4F8FC0]/30 flex items-center justify-center transition-all duration-200 cursor-pointer shadow-xs active:scale-95 group z-20"
+                title="Hide navigation sidebar (View page in full width)"
+                aria-label="Hide navigation sidebar"
+              >
+                <ChevronLeft className="w-4 h-4 stroke-[2.5] group-hover:scale-110 transition-transform" />
+              </button>
 
-              {!collapsed && (
+              <Link href={homeHref} className="flex flex-col items-center w-full">
+                {/* Crest Logo (No Back Frame) */}
+                <div className="flex items-center justify-center mb-2">
+                  <Image
+                    src={sjcLogo}
+                    alt="St. Joseph's College Crest"
+                    className="h-12 w-auto object-contain drop-shadow-sm"
+                    priority
+                  />
+                </div>
+
                 <div className="w-full">
                   <h1 className="text-sm font-black text-[#26648E] font-crest tracking-tight leading-snug">
                     St. Joseph&apos;s College
@@ -358,28 +508,16 @@ export default function Sidebar({ role, userName, departmentName, shift }: Sideb
                     <span className="w-1.5 h-1.5 rounded-full bg-[#53D2DC] shadow-2xs"></span>
                   </div>
                 </div>
-              )}
-            </Link>
-          </div>
-
-          {/* Floating Collapse/Expand Button */}
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className="absolute -right-3 top-6 w-6 h-6 bg-[#26648E] text-white rounded-full flex items-center justify-center shadow-md hover:bg-[#1f5072] transition-colors z-40 border-2 border-white cursor-pointer"
-            title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          >
-            {collapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}
-          </button>
+              </Link>
+            </div>
 
           {/* Navigation Items Container */}
           <nav className="space-y-2 mt-3">
             {/* 1. Primary Top Links */}
             <div className="space-y-1.5">
-              {!collapsed && (
-                <div className="px-2 pt-1 pb-0.5 text-[10px] font-black uppercase tracking-wider text-slate-400">
-                  {role === 'ADMIN' ? 'Central Console' : (role === 'DIRECTOR' || role === 'ADMINISTRATOR' ? 'Invitation Office' : 'Staff Navigation')}
-                </div>
-              )}
+              <div className="px-2 pt-1 pb-0.5 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                {role === 'ADMIN' ? 'Central Console' : (role === 'DIRECTOR' || role === 'ADMINISTRATOR' ? 'Invitation Office' : 'Staff Navigation')}
+              </div>
               {activePrimaryItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = pathname === item.href;
@@ -393,15 +531,14 @@ export default function Sidebar({ role, userName, departmentName, shift }: Sideb
                         ? 'bg-[#26648E] text-white shadow-md shadow-[#26648E]/25 border border-[#26648E]'
                         : 'bg-white/80 hover:bg-white text-slate-700 hover:text-[#26648E] border border-slate-200/90 shadow-2xs'
                     }`}
-                    title={collapsed ? item.label : undefined}
                   >
                     <Icon
                       className={`w-4 h-4 shrink-0 ${
                         isActive ? 'text-[#53D2DC]' : 'text-[#4F8FC0] group-hover:text-[#26648E]'
                       }`}
                     />
-                    {!collapsed && <span className="truncate flex-1 tracking-tight">{item.label}</span>}
-                    {!collapsed && item.badge && (
+                    <span className="truncate flex-1 tracking-tight">{item.label}</span>
+                    {item.badge && (
                       <span className="text-[9px] px-1.5 py-0.5 rounded-md bg-[#FFE3B3] text-[#26648E] font-black border border-[#fedba0]">
                         {item.badge}
                       </span>
@@ -413,11 +550,9 @@ export default function Sidebar({ role, userName, departmentName, shift }: Sideb
 
             {/* 2. Dropdown Accordion Groups (User or Admin) */}
             <div className="pt-2.5 space-y-2">
-              {!collapsed && (
-                <div className="px-2 pt-1 pb-0.5 text-[10px] font-black uppercase tracking-wider text-slate-400">
-                  {role === 'ADMIN' ? 'Integrated Platforms' : (role === 'DIRECTOR' || role === 'ADMINISTRATOR' ? 'Invitation Portals' : 'Academic Quality Portals')}
-                </div>
-              )}
+              <div className="px-2 pt-1 pb-0.5 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                {role === 'ADMIN' ? 'Integrated Platforms' : (role === 'DIRECTOR' || role === 'ADMINISTRATOR' ? 'Invitation Portals' : 'Academic Quality Portals')}
+              </div>
 
               {activeDropdownGroups.map((group) => {
                 const GroupIcon = group.icon;
@@ -432,48 +567,47 @@ export default function Sidebar({ role, userName, departmentName, shift }: Sideb
                     {/* Group Header Button */}
                     <button
                       type="button"
-                      onClick={() => {
-                        if (collapsed) setCollapsed(false);
-                        toggleGroup(group.id);
-                      }}
+                      onClick={() => toggleGroup(group.id)}
                       className={`w-full flex items-center justify-between px-3 py-2.5 text-xs font-black transition-colors cursor-pointer ${
                         isAnySubActive
                           ? 'text-[#26648E] bg-[#e8f1f7]'
                           : 'text-slate-800 hover:text-[#26648E] hover:bg-[#f0f5f9]'
                       }`}
-                      title={collapsed ? group.label : undefined}
                     >
                       <div className="flex items-center gap-2.5 truncate">
                         <GroupIcon className={`w-4 h-4 shrink-0 ${isAnySubActive ? 'text-[#26648E]' : 'text-[#4F8FC0]'}`} />
-                        {!collapsed && <span className="truncate">{group.label}</span>}
+                        <span className="truncate">{group.label}</span>
                       </div>
-                      {!collapsed && (
-                        <div className="flex items-center gap-1.5">
-                          {group.badge && (
-                            <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-[#f0f5f9] text-[#26648E] font-extrabold border border-[#4F8FC0]/20">
-                              {group.badge}
-                            </span>
-                          )}
-                          <ChevronDown
-                            className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${
-                              isOpen ? 'rotate-180 text-[#26648E]' : ''
-                            }`}
-                          />
-                        </div>
-                      )}
+                      <div className="flex items-center gap-1.5">
+                        {group.badge && (
+                          <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-[#f0f5f9] text-[#26648E] font-extrabold border border-[#4F8FC0]/20">
+                            {group.badge}
+                          </span>
+                        )}
+                        <ChevronDown
+                          className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${
+                            isOpen ? 'rotate-180 text-[#26648E]' : ''
+                          }`}
+                        />
+                      </div>
                     </button>
 
                     {/* Collapsible Sub-Items Container */}
-                    {isOpen && !collapsed && (
+                    {isOpen && (
                       <div className="py-1 px-1.5 space-y-1 bg-[#f0f5f9]/70 border-t border-[#4F8FC0]/15">
                         {group.items.map((sub) => {
                           const SubIcon = sub.icon;
-                          const isSubActive = pathname === sub.href;
+                          const isSubActive = sub.href.includes('#')
+                            ? (pathname === sub.href.split('#')[0] && currentHash === '#' + sub.href.split('#')[1])
+                            : sub.href === '/course-plan'
+                            ? (pathname === '/course-plan' && currentHash !== '#hod' && currentHash !== '#admin')
+                            : (pathname === sub.href && !currentHash);
 
                           return (
                             <Link
                               key={sub.href}
                               href={sub.href}
+                              onClick={() => handleSubClick(sub.href)}
                               className={`flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition-all group ${
                                 isSubActive
                                   ? 'bg-[#26648E] text-white shadow-xs font-extrabold'
@@ -505,25 +639,19 @@ export default function Sidebar({ role, userName, departmentName, shift }: Sideb
 
         {/* Bottom User Info Section */}
         <div className="p-3 border-t border-[#4F8FC0]/25">
-          <div
-            className={`flex items-center justify-between p-2.5 rounded-2xl bg-white border border-[#4F8FC0]/25 shadow-2xs ${
-              collapsed ? 'flex-col gap-2' : ''
-            }`}
-          >
+          <div className="flex items-center justify-between p-2.5 rounded-2xl bg-white border border-[#4F8FC0]/25 shadow-2xs">
             <div className="flex items-center gap-2.5 overflow-hidden">
               <div className="w-8 h-8 rounded-xl bg-[#26648E] text-white flex items-center justify-center font-black text-xs shrink-0 shadow-xs">
                 {(userName || role).charAt(0).toUpperCase()}
               </div>
-              {!collapsed && (
-                <div className="flex flex-col min-w-0">
-                  <span className="text-xs font-black text-[#26648E] truncate">
-                    {userName || (departmentName ? `${departmentName}` : role)}
-                  </span>
-                  <span className="text-[10px] text-slate-500 font-bold uppercase truncate">
-                    {getDisplayRole(role)} {shift ? `(${shift})` : ''}
-                  </span>
-                </div>
-              )}
+              <div className="flex flex-col min-w-0">
+                <span className="text-xs font-black text-[#26648E] truncate">
+                  {userName || (departmentName ? `${departmentName}` : role)}
+                </span>
+                <span className="text-[10px] text-slate-500 font-bold uppercase truncate">
+                  {getDisplayRole(role)} {shift ? `(${shift})` : ''}
+                </span>
+              </div>
             </div>
 
             <button
@@ -536,7 +664,7 @@ export default function Sidebar({ role, userName, departmentName, shift }: Sideb
           </div>
 
           {/* Department Contact Support Footer */}
-          {role === 'DEPARTMENT' && !collapsed && (
+          {role === 'DEPARTMENT' && (
             <div className="mt-2.5 p-2.5 rounded-2xl bg-white border border-[#4F8FC0]/25 shadow-2xs text-slate-700 space-y-1">
               <div className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-[#26648E]">
                 <PhoneCall className="w-3 h-3 text-amber-500 shrink-0" />
@@ -554,7 +682,8 @@ export default function Sidebar({ role, userName, departmentName, shift }: Sideb
             </div>
           )}
         </div>
-      </aside>
+      </div>
+    </aside>
 
       {/* ======================================================== */}
       {/* 2. MOBILE DRAWER OVERLAY & SLIDE-OUT (For screens < md)  */}
@@ -573,8 +702,8 @@ export default function Sidebar({ role, userName, departmentName, shift }: Sideb
               {/* Drawer Top */}
               <div className="flex items-center justify-between pb-3 mb-2 border-b border-[#4F8FC0]/20">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-11 rounded-lg bg-white border border-[#4F8FC0]/30 flex items-center justify-center p-1">
-                    <Image src={sjcLogo} alt="SJC" className="h-8 w-auto object-contain" />
+                  <div className="flex items-center justify-center">
+                    <Image src={sjcLogo} alt="SJC" className="h-9 w-auto object-contain drop-shadow-xs" />
                   </div>
                   <div>
                     <span className="font-crest font-bold text-sm text-[#26648E] block leading-tight">IQAC Portal</span>
@@ -649,13 +778,20 @@ export default function Sidebar({ role, userName, departmentName, shift }: Sideb
                           <div className="py-1 px-1.5 space-y-1 bg-[#f0f5f9]/80 border-t border-[#4F8FC0]/15">
                             {group.items.map((sub) => {
                               const SubIcon = sub.icon;
-                              const isSubActive = pathname === sub.href;
+                              const isSubActive = sub.href.includes('#')
+                                ? (pathname === sub.href.split('#')[0] && currentHash === '#' + sub.href.split('#')[1])
+                                : sub.href === '/course-plan'
+                                ? (pathname === '/course-plan' && currentHash !== '#hod' && currentHash !== '#admin')
+                                : (pathname === sub.href && !currentHash);
 
                               return (
                                 <Link
                                   key={sub.href}
                                   href={sub.href}
-                                  onClick={() => setMobileOpen(false)}
+                                  onClick={() => {
+                                    handleSubClick(sub.href);
+                                    setMobileOpen(false);
+                                  }}
                                   className={`flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition-all ${
                                     isSubActive
                                       ? 'bg-[#26648E] text-white shadow-xs font-black'

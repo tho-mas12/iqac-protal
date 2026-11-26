@@ -11,7 +11,8 @@
       "position": "Faculty Member",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_1795415156960",
@@ -24,7 +25,8 @@
       "position": "Faculty Member",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": true
+      "isHod": true,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_1795409530877",
@@ -37,7 +39,8 @@
       "position": "Faculty Member",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_1795407414794",
@@ -50,7 +53,8 @@
       "position": "Faculty Member",
       "invitationRole": "DIRECTOR",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_1795367790092",
@@ -63,7 +67,8 @@
       "position": "Faculty Member",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_24CAI51",
@@ -75,7 +80,8 @@
       "credentials": "acaisjct",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25CAI51",
@@ -87,7 +93,8 @@
       "credentials": "@Joashna312220",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26CAI51",
@@ -99,7 +106,8 @@
       "credentials": "1057",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26CAI52",
@@ -111,7 +119,8 @@
       "credentials": "9994476122",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26CAI53",
@@ -123,7 +132,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26CAI54",
@@ -135,7 +145,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26CAI55",
@@ -147,7 +158,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SAI54",
@@ -159,7 +171,8 @@
       "credentials": "1234",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SAI51",
@@ -171,7 +184,8 @@
       "credentials": "sjc@2017",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SAI52",
@@ -183,7 +197,8 @@
       "credentials": "mohan123",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SAI53",
@@ -195,7 +210,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_06TBI01",
@@ -207,7 +223,8 @@
       "credentials": "8062",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_01TBI05",
@@ -219,7 +236,8 @@
       "credentials": "5167",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_10TBI01",
@@ -231,7 +249,8 @@
       "credentials": "2606",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26HBI51",
@@ -243,7 +262,8 @@
       "credentials": "1304",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_01FPB10",
@@ -255,7 +275,8 @@
       "credentials": "pauline",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_01FPB09",
@@ -267,7 +288,8 @@
       "credentials": "7271",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_01FPB12",
@@ -279,7 +301,8 @@
       "credentials": "esra",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_07FPB01",
@@ -291,7 +314,8 @@
       "credentials": "6334",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_07FPB02",
@@ -303,7 +327,8 @@
       "credentials": "8483",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_07FPB03",
@@ -315,7 +340,8 @@
       "credentials": "570",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_20FBO01",
@@ -327,7 +353,8 @@
       "credentials": "1971arul2",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_12FBO02",
@@ -339,7 +366,8 @@
       "credentials": "botany2012",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_18FBO01",
@@ -351,7 +379,8 @@
       "credentials": "1267",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_18FBO02",
@@ -363,7 +392,8 @@
       "credentials": "2345",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_19FBO01",
@@ -375,7 +405,8 @@
       "credentials": "Churchill",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_24FBO01",
@@ -387,7 +418,8 @@
       "credentials": "1234",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_23CBT53",
@@ -399,7 +431,8 @@
       "credentials": "1290",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_05TBT03",
@@ -411,7 +444,8 @@
       "credentials": "5045",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_23CBT51",
@@ -423,7 +457,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_23CBT52",
@@ -435,7 +470,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SBT51",
@@ -447,7 +483,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25CBT51",
@@ -459,7 +496,8 @@
       "credentials": "1234",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25CBT52",
@@ -471,7 +509,8 @@
       "credentials": "RavananBt52",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26CBT51",
@@ -483,7 +522,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_13TBA01",
@@ -495,7 +535,8 @@
       "credentials": "aalister",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_07TBU01",
@@ -507,7 +548,8 @@
       "credentials": "1969",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_19CBA51",
@@ -519,7 +561,8 @@
       "credentials": "9789",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_20CBU51",
@@ -531,7 +574,8 @@
       "credentials": "21111991",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SBU51",
@@ -543,7 +587,8 @@
       "credentials": "1988",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SBU53",
@@ -555,7 +600,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SBU52",
@@ -567,7 +613,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SBU54",
@@ -579,7 +626,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SCB51",
@@ -591,7 +639,8 @@
       "credentials": "ben@123",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25CCB51",
@@ -603,7 +652,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26CCB51",
@@ -615,7 +665,8 @@
       "credentials": "$123$",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26CCB52",
@@ -627,7 +678,8 @@
       "credentials": "1025",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_09TCM03",
@@ -639,7 +691,8 @@
       "credentials": "842",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_06TCM02",
@@ -651,7 +704,8 @@
       "credentials": "6825",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_09TCM02",
@@ -663,7 +717,8 @@
       "credentials": "2009",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_11TCC02",
@@ -675,7 +730,8 @@
       "credentials": "5683",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_12TCM06",
@@ -687,7 +743,8 @@
       "credentials": "5315",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_14TCC01",
@@ -699,7 +756,8 @@
       "credentials": "1872",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_15TCC02",
@@ -711,7 +769,8 @@
       "credentials": "6433",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_22CCC51",
@@ -723,7 +782,8 @@
       "credentials": "54321",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SCC51",
@@ -735,7 +795,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SCC52",
@@ -747,7 +808,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25CCC51",
@@ -759,7 +821,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SCC54",
@@ -771,7 +834,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SCC55",
@@ -783,7 +847,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26CCC51",
@@ -795,7 +860,8 @@
       "credentials": "5996",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26CCC52",
@@ -807,7 +873,8 @@
       "credentials": "120883",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26GCF02",
@@ -819,7 +886,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_22CCR51",
@@ -831,7 +899,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26CCF51",
@@ -843,7 +912,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25GCF01",
@@ -855,7 +925,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25GCF03",
@@ -867,7 +938,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_01FCH18",
@@ -879,7 +951,8 @@
       "credentials": "rijurose",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_06FCH19",
@@ -891,7 +964,8 @@
       "credentials": "joeltony",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_07FCH02",
@@ -903,7 +977,8 @@
       "credentials": "9308",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_07FCH01",
@@ -915,7 +990,8 @@
       "credentials": "8332",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_12FCH02",
@@ -927,7 +1003,8 @@
       "credentials": "jenipriscilla",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_16TCH01",
@@ -939,7 +1016,8 @@
       "credentials": "1985",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_12FCH01",
@@ -951,7 +1029,8 @@
       "credentials": "as123456789",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_12FCH03",
@@ -963,7 +1042,8 @@
       "credentials": "7611",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_13FCH01",
@@ -975,7 +1055,8 @@
       "credentials": "23745",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_14FCH01",
@@ -987,7 +1068,8 @@
       "credentials": "5395",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_16FCH01",
@@ -999,7 +1081,8 @@
       "credentials": "1986",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SCH52",
@@ -1011,7 +1094,8 @@
       "credentials": "Jansi1687",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_18FCH01",
@@ -1023,7 +1107,8 @@
       "credentials": "1234",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_19FCH01",
@@ -1035,7 +1120,8 @@
       "credentials": "5879",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_19FCH02",
@@ -1047,7 +1133,8 @@
       "credentials": "1531",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_21FCH01",
@@ -1059,7 +1146,8 @@
       "credentials": "1234",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SCH01",
@@ -1071,7 +1159,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_23FCH01",
@@ -1083,7 +1172,8 @@
       "credentials": "rjs01",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26FCH01",
@@ -1095,7 +1185,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26FCH02",
@@ -1107,7 +1198,8 @@
       "credentials": "8971",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26FCH03",
@@ -1119,7 +1211,8 @@
       "credentials": "Joiceswinton@20",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SCH51",
@@ -1131,7 +1224,8 @@
       "credentials": "2345",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_24CCH51",
@@ -1143,7 +1237,8 @@
       "credentials": "621910",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_01FCM03",
@@ -1155,7 +1250,8 @@
       "credentials": "AASS",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_07FCM01",
@@ -1167,7 +1263,8 @@
       "credentials": "7281",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_07FCM12",
@@ -1179,7 +1276,8 @@
       "credentials": "5993",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_12FCM01",
@@ -1191,7 +1289,8 @@
       "credentials": "7174",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_15FCM01",
@@ -1203,7 +1302,8 @@
       "credentials": "leeviji2",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_18FCO01",
@@ -1215,7 +1315,8 @@
       "credentials": "541517",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_18FCO02",
@@ -1227,7 +1328,8 @@
       "credentials": "1974",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_18FCO03",
@@ -1239,7 +1341,8 @@
       "credentials": "4421",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_19FCO01",
@@ -1251,7 +1354,8 @@
       "credentials": "Anancia10",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_21FCO01",
@@ -1263,7 +1367,8 @@
       "credentials": "7020",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26FCO01",
@@ -1275,7 +1380,8 @@
       "credentials": "Jesus12345#",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_08TCM06",
@@ -1287,7 +1393,8 @@
       "credentials": "05pco135",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_07TBU03",
@@ -1299,7 +1406,8 @@
       "credentials": "4735",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26FCO02",
@@ -1311,7 +1419,8 @@
       "credentials": "1034",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_18TCO01",
@@ -1323,7 +1432,8 @@
       "credentials": "815",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26FCO03",
@@ -1335,7 +1445,8 @@
       "credentials": "Vino",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_22CCO51",
@@ -1347,7 +1458,8 @@
       "credentials": "gopinath@2016",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_22CCO52",
@@ -1359,7 +1471,8 @@
       "credentials": "1248",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_23CCO51",
@@ -1371,7 +1484,8 @@
       "credentials": "igni2023",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_23CCO52",
@@ -1383,7 +1497,8 @@
       "credentials": "Berks@86",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_23CCO53",
@@ -1395,7 +1510,8 @@
       "credentials": "1234",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SCC53",
@@ -1407,7 +1523,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SCO51",
@@ -1419,7 +1536,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_23CCO54",
@@ -1431,7 +1549,8 @@
       "credentials": "8940818149",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SCO01",
@@ -1443,7 +1562,8 @@
       "credentials": "1234",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SCO52",
@@ -1455,7 +1575,8 @@
       "credentials": "1990",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_19SSC01",
@@ -1467,7 +1588,8 @@
       "credentials": "7867",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_24CCP51",
@@ -1479,7 +1601,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_24CCP52",
@@ -1491,7 +1614,8 @@
       "credentials": "9991",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SCP51",
@@ -1503,7 +1627,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_22CCR52",
@@ -1515,7 +1640,8 @@
       "credentials": "12345",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25CCR52",
@@ -1527,7 +1653,8 @@
       "credentials": "idiosyncrasy",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26CCR51",
@@ -1539,7 +1666,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26CCR52",
@@ -1551,7 +1679,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25GCR02",
@@ -1563,7 +1692,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26GCR01",
@@ -1575,7 +1705,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26GCR02",
@@ -1587,7 +1718,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_12FCS01",
@@ -1599,7 +1731,8 @@
       "credentials": "12fcs01",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_12FCS02",
@@ -1611,7 +1744,8 @@
       "credentials": "5521",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_16FCS01",
@@ -1623,7 +1757,8 @@
       "credentials": "4491",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_17FCS01",
@@ -1635,7 +1770,8 @@
       "credentials": "1973",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_21FCS01",
@@ -1647,7 +1783,8 @@
       "credentials": "1977",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_10TCS03",
@@ -1659,7 +1796,8 @@
       "credentials": "5960",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_12TCS04",
@@ -1671,7 +1809,8 @@
       "credentials": "ajp081983",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_23FCS01",
@@ -1683,7 +1822,8 @@
       "credentials": "AVJerald1984",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SCS52",
@@ -1695,7 +1835,8 @@
       "credentials": "2135",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_23CCS52",
@@ -1707,7 +1848,8 @@
       "credentials": "SMK_1416",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_23FCS02",
@@ -1719,7 +1861,8 @@
       "credentials": "redmi123",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_24FCS01",
@@ -1731,7 +1874,8 @@
       "credentials": "mothermaryjesus",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SCS54",
@@ -1743,7 +1887,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SCS53",
@@ -1755,7 +1900,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SCS01",
@@ -1767,7 +1913,8 @@
       "credentials": "Shree@123",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_23CCS53",
@@ -1779,7 +1926,8 @@
       "credentials": "2818",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_23CCS54",
@@ -1791,7 +1939,8 @@
       "credentials": "danijose",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_24CCS51",
@@ -1803,7 +1952,8 @@
       "credentials": "Ksubash@94",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SCS51",
@@ -1815,7 +1965,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25CCS51",
@@ -1827,7 +1978,8 @@
       "credentials": "1286",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25CCS53",
@@ -1839,7 +1991,8 @@
       "credentials": "8565",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26CCS51",
@@ -1851,7 +2004,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26CCS52",
@@ -1863,7 +2017,8 @@
       "credentials": "reshma",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26CCS53",
@@ -1875,7 +2030,8 @@
       "credentials": "jankum",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SCS55",
@@ -1887,7 +2043,8 @@
       "credentials": "selvi@2013",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SCS56",
@@ -1899,7 +2056,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_24FCS02",
@@ -1911,7 +2069,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_24FCS03",
@@ -1923,7 +2082,8 @@
       "credentials": "jesusmary",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25FCS01",
@@ -1935,7 +2095,8 @@
       "credentials": "1406",
       "invitationRole": "STAFF",
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_11TIT03",
@@ -1947,7 +2108,8 @@
       "credentials": "sandal.a",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_01TCS06",
@@ -1959,7 +2121,8 @@
       "credentials": "krmavjesus",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_11TIT04",
@@ -1971,7 +2134,8 @@
       "credentials": "sharonanto",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_12TIT02",
@@ -1983,7 +2147,8 @@
       "credentials": "bast2109",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_12TIT05",
@@ -1995,7 +2160,8 @@
       "credentials": "2356",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_10TIT02",
@@ -2007,7 +2173,8 @@
       "credentials": "1307",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_16TIT01",
@@ -2019,7 +2186,8 @@
       "credentials": "richard99",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SIT53",
@@ -2031,7 +2199,8 @@
       "credentials": "jeno@12",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SIT54",
@@ -2043,7 +2212,8 @@
       "credentials": "1357",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_16TIT02",
@@ -2055,7 +2225,8 @@
       "credentials": "1lee4u",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SIT52",
@@ -2067,7 +2238,8 @@
       "credentials": "JanetIT123@",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_23CIT51",
@@ -2079,7 +2251,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25CIT51",
@@ -2091,7 +2264,8 @@
       "credentials": "sjc1979",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26CIT51",
@@ -2103,7 +2277,8 @@
       "credentials": "1278",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26CIT52",
@@ -2115,7 +2290,8 @@
       "credentials": "sam",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25SIT56",
@@ -2127,7 +2303,8 @@
       "credentials": "2556",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SIT51",
@@ -2139,7 +2316,8 @@
       "credentials": "vinop",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_24CDS51",
@@ -2151,7 +2329,8 @@
       "credentials": "562",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_20CDS52",
@@ -2163,7 +2342,8 @@
       "credentials": "Suriya@1993",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_21CDS51",
@@ -2175,7 +2355,8 @@
       "credentials": "krish_87",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_21CDS52",
@@ -2187,7 +2368,8 @@
       "credentials": "Dorothy26",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25CDS51",
@@ -2199,7 +2381,8 @@
       "credentials": "1992",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_07FEC01",
@@ -2211,7 +2394,8 @@
       "credentials": "7768",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_01FEC07",
@@ -2223,7 +2407,8 @@
       "credentials": "8399",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_07FEC02",
@@ -2235,7 +2420,8 @@
       "credentials": "1522",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_12FEC01",
@@ -2247,7 +2433,8 @@
       "credentials": "micjen53",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_12FEC02",
@@ -2259,7 +2446,8 @@
       "credentials": "1997",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_14FEC01",
@@ -2271,7 +2459,8 @@
       "credentials": "6002",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_17FEC01",
@@ -2283,7 +2472,8 @@
       "credentials": "5423",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_17FEC02",
@@ -2295,7 +2485,8 @@
       "credentials": "7276",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_18FEC01",
@@ -2307,7 +2498,8 @@
       "credentials": "1609",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SEC01",
@@ -2319,7 +2511,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_19FEC01",
@@ -2331,7 +2524,8 @@
       "credentials": "9195",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SEL51",
@@ -2343,7 +2537,8 @@
       "credentials": "Maghi@2025",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_20CEL51",
@@ -2355,7 +2550,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_21CEL51",
@@ -2367,7 +2563,8 @@
       "credentials": "4990",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_18TEL01",
@@ -2379,7 +2576,8 @@
       "credentials": "1979",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_24CEL51",
@@ -2391,7 +2589,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_23CEL52",
@@ -2403,7 +2602,8 @@
       "credentials": "1221",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SEL53",
@@ -2415,7 +2615,8 @@
       "credentials": "5410",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SEL52",
@@ -2427,7 +2628,8 @@
       "credentials": "1234",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_24CEL52",
@@ -2439,7 +2641,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25SEL52",
@@ -2451,7 +2654,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25CEL51",
@@ -2463,7 +2667,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_06FEN24",
@@ -2475,7 +2680,8 @@
       "credentials": "2642",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SEN53",
@@ -2487,7 +2693,8 @@
       "credentials": "1234",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_06FEN21",
@@ -2499,7 +2706,8 @@
       "credentials": "3235",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_06FEN22",
@@ -2511,7 +2719,8 @@
       "credentials": "8828",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_07FEN04",
@@ -2523,7 +2732,8 @@
       "credentials": "indian",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_07FEN05",
@@ -2535,7 +2745,8 @@
       "credentials": "johnbritto",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_07FEN02",
@@ -2547,7 +2758,8 @@
       "credentials": "river",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_07FEN01",
@@ -2559,7 +2771,8 @@
       "credentials": "2930",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_07FEN03",
@@ -2571,7 +2784,8 @@
       "credentials": "4552",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_12FEN02",
@@ -2583,7 +2797,8 @@
       "credentials": "385",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_12FEN01",
@@ -2595,7 +2810,8 @@
       "credentials": "6774",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_13FEN01",
@@ -2607,7 +2823,8 @@
       "credentials": "theodore",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_13FEN02",
@@ -2619,7 +2836,8 @@
       "credentials": "jesus1mary",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_13FEN03",
@@ -2631,7 +2849,8 @@
       "credentials": "jesus123",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_13FEN04",
@@ -2643,7 +2862,8 @@
       "credentials": "7797",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_13FEN05",
@@ -2655,7 +2875,8 @@
       "credentials": "9090",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_16FEN01",
@@ -2667,7 +2888,8 @@
       "credentials": "5698",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_21FEN01",
@@ -2679,7 +2901,8 @@
       "credentials": "1086",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_08TEN02",
@@ -2691,7 +2914,8 @@
       "credentials": "5278",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_08TEN03",
@@ -2703,7 +2927,8 @@
       "credentials": "464",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_08TEN06",
@@ -2715,7 +2940,8 @@
       "credentials": "2709",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_09TEN03",
@@ -2727,7 +2953,8 @@
       "credentials": "1012",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_15TEN04",
@@ -2739,7 +2966,8 @@
       "credentials": "120",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25SEN54",
@@ -2751,7 +2979,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_16TEN03",
@@ -2763,7 +2992,8 @@
       "credentials": "1289",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_16TEN05",
@@ -2775,7 +3005,8 @@
       "credentials": "8921",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_23FEN01",
@@ -2787,7 +3018,8 @@
       "credentials": "thekingsday",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_22CEN51",
@@ -2799,7 +3031,8 @@
       "credentials": "PRASA@samy78",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_22CEN53",
@@ -2811,7 +3044,8 @@
       "credentials": "123456",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_22CEN54",
@@ -2823,7 +3057,8 @@
       "credentials": "1234",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_23FEN02",
@@ -2835,7 +3070,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25SEN52",
@@ -2847,7 +3083,8 @@
       "credentials": "1411",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_23CEN51",
@@ -2859,7 +3096,8 @@
       "credentials": "rani@123",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_24FEN01",
@@ -2871,7 +3109,8 @@
       "credentials": "Joseph@1",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_24CEN51",
@@ -2883,7 +3122,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25CEN51",
@@ -2895,7 +3135,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25SEN53",
@@ -2907,7 +3148,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25CEN52",
@@ -2919,7 +3161,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25CEN53",
@@ -2931,7 +3174,8 @@
       "credentials": "8159",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25CEN54",
@@ -2943,7 +3187,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SEN51",
@@ -2955,7 +3200,8 @@
       "credentials": "2002",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26CEN51",
@@ -2967,7 +3213,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SEN52",
@@ -2979,7 +3226,8 @@
       "credentials": "Aldi",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SHE01",
@@ -2991,7 +3239,8 @@
       "credentials": "822",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SHE03",
@@ -3003,7 +3252,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SHE05",
@@ -3015,7 +3265,8 @@
       "credentials": "9600",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25SHE07",
@@ -3027,7 +3278,8 @@
       "credentials": "595",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SHE02",
@@ -3039,7 +3291,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SHE06",
@@ -3051,7 +3304,8 @@
       "credentials": "8466",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25SHE08",
@@ -3063,7 +3317,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SHE04",
@@ -3075,7 +3330,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SHE07",
@@ -3087,7 +3343,8 @@
       "credentials": "1234",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SHE08",
@@ -3099,7 +3356,8 @@
       "credentials": "1234",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_18FFR01",
@@ -3110,8 +3368,9 @@
       "position": "AIDED",
       "credentials": "Krishna1986",
       "invitationRole": "STAFF",
-      "isMqc": false,
-      "isHod": false
+      "isMqc": true,
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_17FHN01",
@@ -3123,7 +3382,8 @@
       "credentials": "2378",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_12FHR01",
@@ -3135,7 +3395,8 @@
       "credentials": "7788",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_13FHR02",
@@ -3147,7 +3408,8 @@
       "credentials": "7771",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_03THR02",
@@ -3159,7 +3421,8 @@
       "credentials": "5654",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_12FHR02",
@@ -3171,7 +3434,8 @@
       "credentials": "4029",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_13FHR01",
@@ -3183,7 +3447,8 @@
       "credentials": "6793",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_13FHR03",
@@ -3195,7 +3460,8 @@
       "credentials": "5678",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_16THR01",
@@ -3207,7 +3473,8 @@
       "credentials": "5678",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26CHR51",
@@ -3219,7 +3486,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_18FHS01",
@@ -3231,7 +3499,8 @@
       "credentials": "1752",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_12FHS02",
@@ -3243,7 +3512,8 @@
       "credentials": "manierp1",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_12FHS03",
@@ -3255,7 +3525,8 @@
       "credentials": "kavinsaron",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_12FHS04",
@@ -3267,7 +3538,8 @@
       "credentials": "3827",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_21FHS01",
@@ -3279,7 +3551,8 @@
       "credentials": "9976",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SHS01",
@@ -3291,7 +3564,8 @@
       "credentials": "506",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26CHS51",
@@ -3303,7 +3577,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26CHS52",
@@ -3315,7 +3590,8 @@
       "credentials": "grajan@2117",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25SHS51",
@@ -3327,7 +3603,8 @@
       "credentials": "Vellai123#",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SHS51",
@@ -3339,7 +3616,8 @@
       "credentials": "@Amar04agape",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25SHS52",
@@ -3351,7 +3629,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_23FLB01",
@@ -3363,7 +3642,8 @@
       "credentials": "30590",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_01FMA15",
@@ -3375,7 +3655,8 @@
       "credentials": "6906",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_06FMA17",
@@ -3387,7 +3668,8 @@
       "credentials": "trichysjc",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_07FMA01",
@@ -3399,7 +3681,8 @@
       "credentials": "9346",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_07FMA02",
@@ -3411,7 +3694,8 @@
       "credentials": "7881",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_07FMA03",
@@ -3423,7 +3707,8 @@
       "credentials": "2123",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_12FMA01",
@@ -3435,7 +3720,8 @@
       "credentials": "1114",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_13FMA01",
@@ -3447,7 +3733,8 @@
       "credentials": "mother12",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_13FMA02",
@@ -3459,7 +3746,8 @@
       "credentials": "9394",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_13FMA03",
@@ -3471,7 +3759,8 @@
       "credentials": "9174",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_13FMA04",
@@ -3483,7 +3772,8 @@
       "credentials": "vairam",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_13FMA05",
@@ -3495,7 +3785,8 @@
       "credentials": "7313",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_18FMA01",
@@ -3507,7 +3798,8 @@
       "credentials": "1245",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_18FMA02",
@@ -3519,7 +3811,8 @@
       "credentials": "2315",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_19FMA01",
@@ -3531,7 +3824,8 @@
       "credentials": "3010",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_21FMA01",
@@ -3543,7 +3837,8 @@
       "credentials": "anbunish29@",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_22FMA01",
@@ -3555,7 +3850,8 @@
       "credentials": "5112",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_01TMA01",
@@ -3567,7 +3863,8 @@
       "credentials": "2879",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_02TMA11",
@@ -3579,7 +3876,8 @@
       "credentials": "2925",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_22CMA51",
@@ -3591,7 +3889,8 @@
       "credentials": "navis@2021",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_22CMA52",
@@ -3603,7 +3902,8 @@
       "credentials": "jkv",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_22CMA53",
@@ -3615,7 +3915,8 @@
       "credentials": "2253",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_22CMA54",
@@ -3627,7 +3928,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SMA52",
@@ -3639,7 +3941,8 @@
       "credentials": "Vishnu",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SMA51",
@@ -3651,7 +3954,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_23CMA51",
@@ -3663,7 +3967,8 @@
       "credentials": "jeffyjerry",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26HMA51",
@@ -3675,7 +3980,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25CPE51",
@@ -3687,7 +3993,8 @@
       "credentials": "1234",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_13FPE01",
@@ -3699,7 +4006,8 @@
       "credentials": "5793",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25CPE52",
@@ -3711,7 +4019,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SPE51",
@@ -3723,7 +4032,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_01FPH16",
@@ -3735,7 +4045,8 @@
       "credentials": "9340",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_01FPH18",
@@ -3747,7 +4058,8 @@
       "credentials": "3117",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_06FPH20",
@@ -3759,7 +4071,8 @@
       "credentials": "1316premtowers",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_07FPH02",
@@ -3771,7 +4084,8 @@
       "credentials": "4736",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_07FPH01",
@@ -3783,7 +4097,8 @@
       "credentials": "2602",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_12FPH01",
@@ -3795,7 +4110,8 @@
       "credentials": "8079",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_12FPH02",
@@ -3807,7 +4123,8 @@
       "credentials": "ponnu1980",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_15FPH01",
@@ -3819,7 +4136,8 @@
       "credentials": "7474",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_16FPH01",
@@ -3831,7 +4149,8 @@
       "credentials": "1234",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_16FPH02",
@@ -3843,7 +4162,8 @@
       "credentials": "asmnmk2016",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_18FPH01",
@@ -3855,7 +4175,8 @@
       "credentials": "2345",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_18FPH02",
@@ -3867,7 +4188,8 @@
       "credentials": "7890",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_21FPH01",
@@ -3879,7 +4201,8 @@
       "credentials": "2580",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_22FPH01",
@@ -3891,7 +4214,8 @@
       "credentials": "1278",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_07TPH01",
@@ -3903,7 +4227,8 @@
       "credentials": "lourdusl",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_10TPH06",
@@ -3915,7 +4240,8 @@
       "credentials": "6744",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_19CPH51",
@@ -3927,7 +4253,8 @@
       "credentials": "1930",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_19CPH52",
@@ -3939,7 +4266,8 @@
       "credentials": "7896",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_19CPH53",
@@ -3951,7 +4279,8 @@
       "credentials": "119",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_22CPH51",
@@ -3963,7 +4292,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_22CPH52",
@@ -3975,7 +4305,8 @@
       "credentials": "2309",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_22CPH53",
@@ -3987,7 +4318,8 @@
       "credentials": "rexrosario111",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_23FPH01",
@@ -3999,7 +4331,8 @@
       "credentials": "Thomas@17",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_23FPH02",
@@ -4011,7 +4344,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SPH51",
@@ -4023,7 +4357,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25FPH01",
@@ -4035,7 +4370,8 @@
       "credentials": "1234",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26FPH01",
@@ -4047,7 +4383,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26FPH02",
@@ -4059,7 +4396,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_19CPO01",
@@ -4071,7 +4409,8 @@
       "credentials": "1",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_13FSA01",
@@ -4083,7 +4422,8 @@
       "credentials": "shree",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_20CSH04",
@@ -4095,7 +4435,8 @@
       "credentials": "123",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_22CSH06",
@@ -4107,7 +4448,8 @@
       "credentials": "159",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_22CSH07",
@@ -4119,7 +4461,8 @@
       "credentials": "123",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_23CSH01",
@@ -4131,7 +4474,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25CSH01",
@@ -4143,7 +4487,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26CSH01",
@@ -4155,7 +4500,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SSD01",
@@ -4167,7 +4513,8 @@
       "credentials": "1234",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SSD02",
@@ -4179,7 +4526,8 @@
       "credentials": "1605",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_22CSD01",
@@ -4191,7 +4539,8 @@
       "credentials": "1234",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_24CSD01",
@@ -4203,7 +4552,8 @@
       "credentials": "Jose@2818",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25CSD01",
@@ -4215,7 +4565,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SSD03",
@@ -4227,7 +4578,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_15FST01",
@@ -4239,7 +4591,8 @@
       "credentials": "Viveka@2020#",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_16FST01",
@@ -4251,7 +4604,8 @@
       "credentials": "1979",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_16FST02",
@@ -4263,7 +4617,8 @@
       "credentials": "2011",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_18FST01",
@@ -4275,7 +4630,8 @@
       "credentials": "9198",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26FST01",
@@ -4287,7 +4643,8 @@
       "credentials": "Jose@1234",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SST51",
@@ -4299,7 +4656,8 @@
       "credentials": "Angel@0106",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_07FTA01",
@@ -4311,7 +4669,8 @@
       "credentials": "6724",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_01FTA11",
@@ -4323,7 +4682,8 @@
       "credentials": "2374",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_12FTA03",
@@ -4335,7 +4695,8 @@
       "credentials": "4502",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_12FTA04",
@@ -4347,7 +4708,8 @@
       "credentials": "6326",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_14FTA01",
@@ -4359,7 +4721,8 @@
       "credentials": "rajathi",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_14FTA02",
@@ -4371,7 +4734,8 @@
       "credentials": "6411",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_18FTA01",
@@ -4383,7 +4747,8 @@
       "credentials": "9588",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_21FTA01",
@@ -4395,7 +4760,8 @@
       "credentials": "1028",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_21FTA02",
@@ -4407,7 +4773,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_21FTA03",
@@ -4419,7 +4786,8 @@
       "credentials": "9495",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_22FTA01",
@@ -4431,7 +4799,8 @@
       "credentials": "1982",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_01TTA01",
@@ -4443,7 +4812,8 @@
       "credentials": "9714",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_10TTA02",
@@ -4455,7 +4825,8 @@
       "credentials": "3882",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_16CTA01",
@@ -4467,7 +4838,8 @@
       "credentials": "1245",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_16TTA05",
@@ -4479,7 +4851,8 @@
       "credentials": "6809",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_20CTA51",
@@ -4491,7 +4864,8 @@
       "credentials": "9159497172",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_20CTA52",
@@ -4503,7 +4877,8 @@
       "credentials": "1985",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_20CTA53",
@@ -4515,7 +4890,8 @@
       "credentials": "2053",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26STA51",
@@ -4527,7 +4903,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26STA01",
@@ -4539,7 +4916,8 @@
       "credentials": "2501",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26STA52",
@@ -4551,7 +4929,8 @@
       "credentials": "5625",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_24CTA52",
@@ -4563,7 +4942,8 @@
       "credentials": "2",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25STA53",
@@ -4575,7 +4955,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25CTA51",
@@ -4587,7 +4968,8 @@
       "credentials": "667",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25CTA52",
@@ -4599,7 +4981,8 @@
       "credentials": "1609",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25CTA53",
@@ -4611,7 +4994,8 @@
       "credentials": "405",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26CTA01",
@@ -4623,7 +5007,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26CTA51",
@@ -4635,7 +5020,8 @@
       "credentials": "971548",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26CTA52",
@@ -4647,7 +5033,8 @@
       "credentials": "1997",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_14TBV01",
@@ -4659,7 +5046,8 @@
       "credentials": "7840",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SVT06",
@@ -4671,7 +5059,8 @@
       "credentials": "4578",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SVT01",
@@ -4683,7 +5072,8 @@
       "credentials": "viscomre",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SVT05",
@@ -4695,7 +5085,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_21CVC51",
@@ -4707,7 +5098,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_24CVC51",
@@ -4719,7 +5111,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SVT03",
@@ -4731,7 +5124,8 @@
       "credentials": "Jawahar123",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26CVC51",
@@ -4743,7 +5137,8 @@
       "credentials": "6897",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26CVC51",
@@ -4755,7 +5150,8 @@
       "credentials": "6897",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SVT04",
@@ -4767,7 +5163,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SVC52",
@@ -4779,7 +5176,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SVT02",
@@ -4791,7 +5189,8 @@
       "credentials": "1999",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26SVC51",
@@ -4803,7 +5202,8 @@
       "credentials": "@#$%",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_26HVC51",
@@ -4815,7 +5215,8 @@
       "credentials": "isha@Shankar99",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     {
       "id": "fac_25SVT04",
@@ -4827,9 +5228,10 @@
       "credentials": "vel@3333",
       "invitationRole": "STAFF",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     }
   ],
   "total": 402,
-  "updatedAt": "2026-11-23T06:30:19.161Z"
+  "updatedAt": "2026-11-26T05:25:15.897Z"
 }

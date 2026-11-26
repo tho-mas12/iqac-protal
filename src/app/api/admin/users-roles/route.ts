@@ -64,6 +64,7 @@ export async function GET() {
       const custom = academicRoles.userDesignations[u.username] || academicRoles.userDesignations[uname] || {};
       const isMqc = custom.isMqc !== undefined ? custom.isMqc : u.role === 'ADMIN';
       const isHod = custom.isHod !== undefined ? custom.isHod : false;
+      const coursePlanEnabled = custom.coursePlanEnabled !== undefined ? custom.coursePlanEnabled : true;
 
       return {
         id: u.id,
@@ -78,6 +79,7 @@ export async function GET() {
         isActive: u.isActive,
         isMqc,
         isHod,
+        coursePlanEnabled,
         isDbUser: true,
       };
     });
@@ -88,6 +90,7 @@ export async function GET() {
       const custom = academicRoles.userDesignations[uname] || academicRoles.userDesignations[f.code] || {};
       const isMqc = custom.isMqc !== undefined ? custom.isMqc : Boolean(f.isMqc);
       const isHod = custom.isHod !== undefined ? custom.isHod : Boolean(f.isHod);
+      const coursePlanEnabled = custom.coursePlanEnabled !== undefined ? custom.coursePlanEnabled : (f.coursePlanEnabled !== undefined ? Boolean(f.coursePlanEnabled) : true);
 
       return {
         id: f.id,
@@ -102,6 +105,7 @@ export async function GET() {
         isActive: true,
         isMqc,
         isHod,
+        coursePlanEnabled,
         isDbUser: false,
       };
     });
@@ -122,6 +126,7 @@ export async function GET() {
       totalUsers: allCombined.length,
       totalMqc: allCombined.filter((u) => u.isMqc).length,
       totalHods: allCombined.filter((u) => u.isHod).length,
+      totalCoursePlanEnabled: allCombined.filter((u) => u.coursePlanEnabled !== false).length,
     });
   } catch (error: any) {
     console.error('Error fetching users and academic roles:', error);
@@ -188,7 +193,60 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true, message: `HOD status ${isHod ? 'assigned' : 'removed'}` });
     }
 
-    // 3. Change Invitation Portal Access Role (Staff upload vs Director review vs Admin)
+    // 3. Toggle Course Plan Access (Enables / Disables Course Plan module and pages for user)
+    if (action === 'toggle_course_plan') {
+      const { username, code, coursePlanEnabled } = body;
+      const uname = (username || code || '').toLowerCase();
+      if (!uname) return NextResponse.json({ error: 'User identifier required' }, { status: 400 });
+
+      academicRoles.userDesignations[uname] = {
+        ...(academicRoles.userDesignations[uname] || {}),
+        coursePlanEnabled,
+      };
+
+      const updatedFac = facultyList.map((f) => {
+        if (f.username.toLowerCase() === uname || f.code.toLowerCase() === uname) {
+          return { ...f, coursePlanEnabled };
+        }
+        return f;
+      });
+      saveFacultyDirectory(updatedFac);
+      saveAcademicRoles(academicRoles);
+
+      return NextResponse.json({
+        success: true,
+        message: `Course Plan access ${coursePlanEnabled ? 'ENABLED (Pages Visible)' : 'DISABLED (Pages Hidden)'}`,
+      });
+    }
+
+    // 3b. Bulk Toggle Course Plan Access for all users
+    if (action === 'bulk_toggle_course_plan') {
+      const { coursePlanEnabled } = body;
+      const enabled = Boolean(coursePlanEnabled);
+
+      for (const uname of Object.keys(academicRoles.userDesignations)) {
+        academicRoles.userDesignations[uname] = {
+          ...(academicRoles.userDesignations[uname] || {}),
+          coursePlanEnabled: enabled,
+        };
+      }
+      (academicRoles as any).coursePlanGlobalDefault = enabled;
+
+      const updatedFac = facultyList.map((f) => ({
+        ...f,
+        coursePlanEnabled: enabled,
+      }));
+
+      saveFacultyDirectory(updatedFac);
+      saveAcademicRoles(academicRoles);
+
+      return NextResponse.json({
+        success: true,
+        message: `Course Plan access successfully ${enabled ? 'ENABLED' : 'DISABLED'} for all users.`,
+      });
+    }
+
+    // 4. Change Invitation Portal Access Role (Staff upload vs Director review vs Admin)
     if (action === 'change_invitation_role') {
       const { username, code, invitationRole } = body;
       const uname = (username || code || '').toLowerCase();
@@ -213,15 +271,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true, message: `Invitation access role updated to ${invitationRole}` });
     }
 
-    // 4. Update / Reset Password
+    // 5. Update / Reset Password
     if (action === 'update_user') {
-      const { username, password, name, invitationRole, isMqc, isHod } = body;
+      const { username, password, name, invitationRole, isMqc, isHod, coursePlanEnabled } = body;
       const uname = (username || '').toLowerCase();
 
       academicRoles.userDesignations[uname] = {
         ...(academicRoles.userDesignations[uname] || {}),
         isMqc,
         isHod,
+        coursePlanEnabled: coursePlanEnabled !== undefined ? coursePlanEnabled : true,
       };
       saveAcademicRoles(academicRoles);
 
@@ -234,18 +293,19 @@ export async function POST(req: NextRequest) {
             invitationRole: invitationRole || f.invitationRole,
             isMqc,
             isHod,
+            coursePlanEnabled: coursePlanEnabled !== undefined ? coursePlanEnabled : (f.coursePlanEnabled !== undefined ? f.coursePlanEnabled : true),
           };
         }
         return f;
       });
       saveFacultyDirectory(updatedFac);
 
-      return NextResponse.json({ success: true, message: 'Faculty credentials updated' });
+      return NextResponse.json({ success: true, message: 'Faculty credentials and permissions updated' });
     }
 
-    // 5. Create New User
+    // 6. Create New User
     if (action === 'create_user') {
-      const { name, username, code, password, departmentName, shift, invitationRole, userType, isMqc, isHod } = body;
+      const { name, username, code, password, departmentName, shift, invitationRole, userType, isMqc, isHod, coursePlanEnabled } = body;
       const cleanUname = (username || code || '').trim().toUpperCase();
       if (!cleanUname || (!name && userType !== 'ADMIN')) {
         return NextResponse.json({ error: 'Name and User ID/Code are required' }, { status: 400 });
@@ -294,6 +354,7 @@ export async function POST(req: NextRequest) {
         invitationRole: invitationRole || 'STAFF',
         isMqc: Boolean(isMqc),
         isHod: Boolean(isHod),
+        coursePlanEnabled: coursePlanEnabled !== false,
       };
 
       facultyList.unshift(newFaculty);
@@ -302,6 +363,7 @@ export async function POST(req: NextRequest) {
       academicRoles.userDesignations[cleanUname] = {
         isMqc: Boolean(isMqc),
         isHod: Boolean(isHod),
+        coursePlanEnabled: coursePlanEnabled !== false,
       };
       saveAcademicRoles(academicRoles);
 

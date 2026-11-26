@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
@@ -396,7 +397,7 @@ export default function CommonAdminDashboard() {
 
       <Sidebar role="ADMIN" userName={user?.name} />
 
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative z-10">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative z-10 transition-all duration-300 ease-in-out">
         <Header
           title="Central Administration"
           userName={user?.name}
@@ -412,8 +413,8 @@ export default function CommonAdminDashboard() {
                 <ShieldCheck className="w-3.5 h-3.5 text-[#26648E]" />
                 <span>Executive Command Console</span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-black font-crest tracking-tight">
-                Academic Quality Governance Hub
+              <h2 className="text-2xl sm:text-3xl font-black tracking-tight">
+                Internal Quality Assurance Cell (IQAC)
               </h2>
               <p className="text-xs sm:text-sm text-slate-100/90 leading-relaxed font-semibold">
                 Unified administrator oversight across the <strong>Invitation Portal</strong>, <strong>AAA Data Platform</strong>, <strong>Course Plan System</strong>, and <strong>Performance Appraisal of Teacher</strong>.
@@ -1058,47 +1059,47 @@ export default function CommonAdminDashboard() {
                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
                       Admin Subpages:
                     </span>
-                    <a
-                      href="/course-plan/index.html#admin"
+                    <Link
+                      href="/course-plan#admin"
                       className="w-full flex items-center justify-between p-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-[#f0f5f9] hover:text-[#26648E] transition"
                     >
                       <span className="flex items-center gap-2">
                         <BookOpen className="w-3.5 h-3.5 text-[#26648E]" />
                         <span>Central Admin Audit</span>
                       </span>
-                      <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
-                    </a>
-                    <a
-                      href="/course-plan/index.html#hod"
+                      <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+                    </Link>
+                    <Link
+                      href="/course-plan#hod"
                       className="w-full flex items-center justify-between p-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-[#f0f5f9] hover:text-[#26648E] transition"
                     >
                       <span className="flex items-center gap-2">
                         <GraduationCap className="w-3.5 h-3.5 text-[#26648E]" />
-                        <span>HOD Department Status</span>
+                        <span>HOD Course Plan Review Hub</span>
                       </span>
-                      <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
-                    </a>
-                    <a
-                      href="/course-plan/index.html"
+                      <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+                    </Link>
+                    <Link
+                      href="/course-plan"
                       className="w-full flex items-center justify-between p-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-[#f0f5f9] hover:text-[#26648E] transition"
                     >
                       <span className="flex items-center gap-2">
                         <FileText className="w-3.5 h-3.5 text-[#26648E]" />
                         <span>Course Plan Portal</span>
                       </span>
-                      <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
-                    </a>
+                      <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+                    </Link>
                   </div>
                 </div>
 
                 <div className="pt-4 border-t border-slate-100 mt-4">
-                  <a
-                    href="/course-plan/index.html#admin"
+                  <Link
+                    href="/course-plan#admin"
                     className="w-full py-2.5 rounded-xl bg-[#26648E] hover:bg-[#1f5072] text-white font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-sm transition"
                   >
                     <span>Launch Course Plan Central Audit</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
                 </div>
               </div>
 

@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { comparePassword, signToken, AUTH_COOKIE_NAME } from '@/lib/auth';
 import { autoSyncDatabaseColumns } from '@/lib/db-sync';
 import { getActiveSession, registerSession } from '@/lib/session-lock';
+import { getSystemSettings } from '@/lib/system-settings';
 
 export async function POST(req: NextRequest) {
   try {
@@ -69,6 +70,15 @@ export async function POST(req: NextRequest) {
               password === 'admin123';
 
             if (isMatch) {
+              // Development Mode (Maintenance) Guard
+              const settings = getSystemSettings();
+              if (settings.developmentMode && f.invitationRole !== 'ADMIN' && cleanUpper !== 'ADMIN') {
+                return NextResponse.json(
+                  { error: 'The site is currently in development work. Please wait for the admin to enable access.' },
+                  { status: 403 }
+                );
+              }
+
               // Session Lock Check
               const activeSess = getActiveSession(cleanUpper);
               if (activeSess && !forceSignout) {
@@ -91,11 +101,14 @@ export async function POST(req: NextRequest) {
                 shift: null,
               });
 
-              let redirectUrl = '/department/dashboard';
+              let redirectUrl = '/hub';
               if (f.invitationRole === 'ADMIN') redirectUrl = '/admin';
               else if (f.invitationRole === 'DIRECTOR') redirectUrl = '/director/dashboard';
               else if (f.invitationRole === 'ADMINISTRATOR') redirectUrl = '/staff/dashboard';
-              else redirectUrl = '/department/dashboard';
+              else redirectUrl = '/hub';
+
+              const { checkUserCoursePlanAccess } = require('@/lib/academic-roles');
+              const isCoursePlanEnabled = checkUserCoursePlanAccess(cleanUpper, f.invitationRole);
 
               const res = NextResponse.json({
                 success: true,
@@ -108,6 +121,7 @@ export async function POST(req: NextRequest) {
                   sessionId,
                   isHod: Boolean(f.isHod),
                   isMqc: Boolean(f.isMqc),
+                  isCoursePlanEnabled,
                   department: { name: f.departmentName, code: f.code },
                   isPasswordChanged: true,
                 },
@@ -180,6 +194,15 @@ export async function POST(req: NextRequest) {
         ? 'ADMINISTRATOR'
         : 'STAFF';
 
+    // Development Mode (Maintenance) Guard
+    const settings = getSystemSettings();
+    if (settings.developmentMode && userRoleResolved !== 'ADMIN' && cleanUpper !== 'ADMIN') {
+      return NextResponse.json(
+        { error: 'The site is currently in development work. Please wait for the admin to enable access.' },
+        { status: 403 }
+      );
+    }
+
     const token = signToken({
       userId: user.id,
       username: cleanUpper,
@@ -190,12 +213,12 @@ export async function POST(req: NextRequest) {
       shift: user.department?.shift || null,
     });
 
-    // Unified redirect path: Admin goes to /admin, Administrator to /staff/dashboard, Director to /director/dashboard, Staff/Department to /department/dashboard
-    let redirectUrl = '/department/dashboard';
+    // Unified redirect path: Admin goes to /admin, Administrator to /staff/dashboard, Director to /director/dashboard, Staff/Department to /hub
+    let redirectUrl = '/hub';
     if (userRoleResolved === 'ADMIN') redirectUrl = '/admin';
     else if (userRoleResolved === 'DIRECTOR') redirectUrl = '/director/dashboard';
     else if (userRoleResolved === 'ADMINISTRATOR') redirectUrl = '/staff/dashboard';
-    else redirectUrl = '/department/dashboard';
+    else redirectUrl = '/hub';
 
     // Synchronize HOD / MQC status for database users
     const academicRoles = require('@/lib/academic-roles').getAcademicRoles();
@@ -203,6 +226,7 @@ export async function POST(req: NextRequest) {
     const custom = academicRoles.userDesignations[uname] || academicRoles.userDesignations[user.username] || {};
     const isMqc = custom.isMqc !== undefined ? custom.isMqc : (user.role === 'ADMIN');
     const isHod = custom.isHod !== undefined ? custom.isHod : false;
+    const isCoursePlanEnabled = custom.coursePlanEnabled !== undefined ? custom.coursePlanEnabled : true;
 
     const res = NextResponse.json({
       success: true,
@@ -215,6 +239,7 @@ export async function POST(req: NextRequest) {
         sessionId,
         isHod,
         isMqc,
+        isCoursePlanEnabled,
         department: user.department,
         isPasswordChanged: user.isPasswordChanged,
       },

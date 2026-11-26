@@ -12,7 +12,7 @@
 class FormBuilder {
   constructor(containerId) {
     this.container = document.getElementById(containerId);
-    this.activeCardId = null; // null = Cards Gallery View; 'part_a', 'att1', etc. = Active Attribute
+    this.activeCardId = null; // Default to Cards Gallery so all 11 attribute cards are shown
     this.activeSheetKey = null; // Key of active sheet within current card
     this.adminEditQuestionsMode = false; // Toggleable ONLY by Admin
     this.saveTimeout = null;
@@ -212,44 +212,51 @@ class FormBuilder {
   // ================= PROGRESS & COMPLETION CALCULATOR =================
   // Calculates: how many sheets in a card have finished (e.g., 4 / 11)
   getCompletionStats(card) {
-    const cardData = this.getCardData(card.id);
-    const totalSheets = card.sheets?.length || 0;
-    let finishedCount = 0;
+    try {
+      const cardData = this.getCardData(card.id) || {};
+      const totalSheets = card.sheets?.length || 0;
+      let finishedCount = 0;
 
-    (card.sheets || []).forEach(sheet => {
-      const sData = cardData[sheet.key];
-      let isFinished = false;
+      (card.sheets || []).forEach(sheet => {
+        const sData = cardData[sheet.key];
+        let isFinished = false;
 
-      if (sheet.type === 'profile') {
-        const prof = sData?.profile || {};
-        const facRows = sData?.facultyDetails || [];
-        const stuRows = sData?.studentDetails || [];
-        const hasProf = Boolean((prof.hodName && prof.hodName.trim()) || (prof.programmesOffered && prof.programmesOffered.trim()));
-        const hasFac = facRows.some(r => (Number(r.male) > 0 || Number(r.female) > 0));
-        const hasStu = stuRows.some(r => (Number(r.male) > 0 || Number(r.female) > 0));
-        if (hasProf || hasFac || hasStu) isFinished = true;
-      } else if (sheet.type === 'multi_table' || sheet.type === 'batch_table') {
-        if (sData && typeof sData === 'object') {
-          if (Array.isArray(sData)) {
-            isFinished = sData.some(row => Object.entries(row).some(([k, v]) => k !== 'sno' && k !== 's_no' && k !== 'sl_no' && String(v).trim() !== ''));
-          } else {
-            isFinished = Object.values(sData).some(arr => Array.isArray(arr) && arr.length > 0 && arr.some(r => Object.values(r).some(v => String(v).trim() !== '')));
+        if (sheet.type === 'profile') {
+          const prof = sData?.profile || {};
+          const rawFac = sData?.facultyDetails;
+          const facRows = Array.isArray(rawFac) ? rawFac : (Array.isArray(rawFac?.rows) ? rawFac.rows : (Array.isArray(sheet.facultyDetails?.rows) ? sheet.facultyDetails.rows : []));
+          const rawStu = sData?.studentDetails;
+          const stuRows = Array.isArray(rawStu) ? rawStu : (Array.isArray(rawStu?.rows) ? rawStu.rows : (Array.isArray(sheet.studentDetails?.rows) ? sheet.studentDetails.rows : []));
+          const hasProf = Boolean((prof.hodName && String(prof.hodName).trim()) || (prof.programmesOffered && String(prof.programmesOffered).trim()));
+          const hasFac = facRows.some(r => r && (Number(r.male) > 0 || Number(r.female) > 0));
+          const hasStu = stuRows.some(r => r && (Number(r.male) > 0 || Number(r.female) > 0));
+          if (hasProf || hasFac || hasStu) isFinished = true;
+        } else if (sheet.type === 'multi_table' || sheet.type === 'batch_table') {
+          if (sData && typeof sData === 'object') {
+            if (Array.isArray(sData)) {
+              isFinished = sData.some(row => row && typeof row === 'object' && Object.entries(row).some(([k, v]) => k !== 'sno' && k !== 's_no' && k !== 'sl_no' && String(v).trim() !== ''));
+            } else {
+              isFinished = Object.values(sData).some(arr => Array.isArray(arr) && arr.length > 0 && arr.some(r => r && typeof r === 'object' && Object.values(r).some(v => String(v).trim() !== '')));
+            }
+          }
+        } else {
+          // Standard table
+          if (Array.isArray(sData) && sData.length > 0) {
+            isFinished = sData.some(row => {
+              return row && typeof row === 'object' && Object.entries(row).some(([k, v]) => k !== 'sno' && k !== 's_no' && k !== 'sl_no' && String(v).trim() !== '');
+            });
           }
         }
-      } else {
-        // Standard table
-        if (Array.isArray(sData) && sData.length > 0) {
-          isFinished = sData.some(row => {
-            return Object.entries(row).some(([k, v]) => k !== 'sno' && k !== 's_no' && k !== 'sl_no' && String(v).trim() !== '');
-          });
-        }
-      }
 
-      if (isFinished) finishedCount++;
-    });
+        if (isFinished) finishedCount++;
+      });
 
-    const percentage = totalSheets > 0 ? Math.round((finishedCount / totalSheets) * 100) : 0;
-    return { finishedCount, totalSheets, percentage };
+      const percentage = totalSheets > 0 ? Math.round((finishedCount / totalSheets) * 100) : 0;
+      return { finishedCount, totalSheets, percentage };
+    } catch (e) {
+      console.warn('Error calculating completion stats for card:', card?.id, e);
+      return { finishedCount: 0, totalSheets: card?.sheets?.length || 0, percentage: 0 };
+    }
   }
 
   // ================= DROPDOWN OPTIONS DETECTOR =================
@@ -261,6 +268,11 @@ class FormBuilder {
     // EXCLUSION: Purpose of Collaboration (Sheet 9.12) must be a standard text input box, NOT a dropdown!
     if (lbl.includes('purpose of collaboration') || k.includes('purpose_of_collaboration') || lbl === 'purpose of collaboration') {
       return null;
+    }
+
+    // STRICT: PG / UG (Sheet 1.1 Courses offered: Strictly UG or PG dropdown, NO 'Other')
+    if (lbl.includes('pg / ug') || lbl.includes('pg/ug') || (lbl.includes('pg') && lbl.includes('ug'))) {
+      return ['', 'UG', 'PG'];
     }
 
     let opts = null;
@@ -340,7 +352,7 @@ class FormBuilder {
     }
 
     // 11. Level (International/National/State/Institutional/Regional/University)
-    else if (lbl === 'level' || (lbl.includes('international') && lbl.includes('national')) || k === 'level') {
+    else if ((lbl === 'level' || (lbl.includes('international') && lbl.includes('national')) || k === 'level') && !lbl.includes('ug') && !lbl.includes('pg')) {
       opts = ['', 'International', 'National', 'State', 'Regional', 'University', 'Institutional'];
     }
 
@@ -367,11 +379,6 @@ class FormBuilder {
     // 16. Status (Applied / Granted / Published / Registered)
     else if (lbl.includes('applied / granted') || lbl.includes('status (applied')) {
       opts = ['', 'Applied', 'Granted', 'Published', 'Registered'];
-    }
-
-    // 17. PG / UG
-    else if (lbl.includes('pg / ug') || lbl.includes('pg/ug')) {
-      opts = ['', 'UG', 'PG', 'PhD'];
     }
 
     // 18. Appointment Type (Aided/Coordinator/Secretary)
@@ -430,7 +437,11 @@ class FormBuilder {
   updateFacultyDetail(idx, field, value) {
     if (this.isSubmissionLocked()) return;
     const cardData = this.getCardData('part_a');
-    if (!cardData['PART-A']?.facultyDetails) return;
+    if (!cardData['PART-A']) cardData['PART-A'] = {};
+    if (!Array.isArray(cardData['PART-A'].facultyDetails)) {
+      const sheet = this.getActiveSheet();
+      cardData['PART-A'].facultyDetails = JSON.parse(JSON.stringify(sheet?.facultyDetails?.rows || []));
+    }
     if (cardData['PART-A'].facultyDetails[idx]) {
       cardData['PART-A'].facultyDetails[idx][field] = Number(value) || 0;
       this.triggerAutoSave();
@@ -443,7 +454,11 @@ class FormBuilder {
   updateStudentDetail(idx, field, value) {
     if (this.isSubmissionLocked()) return;
     const cardData = this.getCardData('part_a');
-    if (!cardData['PART-A']?.studentDetails) return;
+    if (!cardData['PART-A']) cardData['PART-A'] = {};
+    if (!Array.isArray(cardData['PART-A'].studentDetails)) {
+      const sheet = this.getActiveSheet();
+      cardData['PART-A'].studentDetails = JSON.parse(JSON.stringify(sheet?.studentDetails?.rows || []));
+    }
     if (cardData['PART-A'].studentDetails[idx]) {
       cardData['PART-A'].studentDetails[idx][field] = Number(value) || 0;
       this.triggerAutoSave();
@@ -836,6 +851,7 @@ class FormBuilder {
     const card = this.getActiveCard();
     if (!card) return;
 
+    const cards = this.getMasterSchema();
     const sheets = card.sheets || [];
     const activeSheet = this.getActiveSheet();
     const cardData = this.getCardData(card.id);
@@ -846,17 +862,17 @@ class FormBuilder {
     this.container.innerHTML = `
       <div class="space-y-4 w-full animate-fadeIn">
         
-        <!-- Clean Streamlined Header (No Nested Boxes) -->
+        <!-- Clean Streamlined Header -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-slate-200">
           <div class="flex items-center gap-3">
             <button 
               type="button" 
               onclick="formBuilder.backToCards()" 
-              class="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-[#26648E] border border-slate-300 font-bold text-xs flex items-center gap-1.5 transition shadow-2xs cursor-pointer shrink-0" 
+              class="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-100 text-[#26648E] border border-slate-300 font-black text-xs flex items-center gap-1.5 transition shadow-2xs cursor-pointer shrink-0" 
               title="Return to Attribute Cards Gallery"
             >
               <i data-lucide="arrow-left" class="w-4 h-4"></i>
-              <span>All Attributes</span>
+              <span>← All Attributes</span>
             </button>
             <div>
               <div class="flex items-center gap-2 mb-0.5">
@@ -870,6 +886,31 @@ class FormBuilder {
               </h2>
             </div>
           </div>
+        </div>
+
+        <!-- All Attributes Direct Selector Tabs -->
+        <div class="flex items-center gap-1.5 overflow-x-auto py-2 border-b border-slate-200 scrollbar-none w-full bg-slate-50 px-2 rounded-2xl">
+          <button 
+            type="button" 
+            onclick="formBuilder.backToCards()" 
+            class="px-3 py-1.5 rounded-xl text-xs font-black transition whitespace-nowrap shrink-0 cursor-pointer bg-slate-200 hover:bg-slate-300 text-slate-800 flex items-center gap-1"
+          >
+            <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
+            <span>All Cards</span>
+          </button>
+          ${cards.map(c => `
+            <button 
+              type="button" 
+              onclick="formBuilder.openCard('${c.id}')" 
+              class="px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap shrink-0 cursor-pointer ${
+                c.id === card.id 
+                  ? 'bg-[#26648E] text-white shadow-xs' 
+                  : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
+              }"
+            >
+              ${c.cardCode}
+            </button>
+          `).join('')}
         </div>
 
         <!-- Horizontal Sheets Navigation Tabs (Clean Pill Style, No Nested Box) -->
@@ -1063,6 +1104,7 @@ class FormBuilder {
             <input 
               type="date" 
               value="${toDate}" 
+              ${fromDate ? `min="${fromDate}"` : ''}
               ${isLocked ? 'disabled' : ''}
               onchange="formBuilder.handleDateRangeChange(this, 'to')"
               class="date-to-input w-full text-xs px-1.5 py-1 border border-slate-300 rounded font-mono bg-white focus:border-blue-500 focus:outline-none ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}"
@@ -1103,7 +1145,22 @@ class FormBuilder {
       `;
     }
 
-    // 5. Standard Text Input with Sentence Case (First Letter Capital) & NO placeholder
+    // 5. Strict Email Input (No automatic capitalization after @ or anywhere)
+    if (this.isEmailColumn(colLabel, colKey)) {
+      return `
+        <input 
+          type="email" 
+          value="${val !== undefined ? val : ''}" 
+          ${isLocked ? 'disabled' : ''}
+          oninput="this.value = this.value.toLowerCase().trim()"
+          onchange="${onchangeCode}" 
+          style="text-transform: lowercase;"
+          class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded hover:border-slate-400 focus:border-blue-500 focus:bg-white focus:outline-none transition bg-white text-slate-800 lowercase ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}"
+        />
+      `;
+    }
+
+    // 6. Standard Text Input with Sentence Case (First Letter Capital) & NO placeholder
     return `
       <input 
         type="text" 
@@ -1111,8 +1168,7 @@ class FormBuilder {
         ${isLocked ? 'disabled' : ''}
         oninput="this.value = this.value ? (this.value.charAt(0).toUpperCase() + this.value.slice(1)) : ''"
         onchange="${onchangeCode}" 
-        style="text-transform: capitalize;"
-        class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded hover:border-slate-400 focus:border-blue-500 focus:bg-white focus:outline-none transition bg-white text-slate-800 capitalize ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}"
+        class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded hover:border-slate-400 focus:border-blue-500 focus:bg-white focus:outline-none transition bg-white text-slate-800 ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}"
       />
     `;
   }
@@ -1121,9 +1177,24 @@ class FormBuilder {
   renderProfileSheet(sheet, sheetData, isEditQuestions) {
     const isLocked = this.isSubmissionLocked();
     const prof = sheetData?.profile || sheet.profileQuestions || {};
-    const facRows = sheetData?.facultyDetails || sheet.facultyDetails?.rows || [];
-    const stuRows = sheetData?.studentDetails || sheet.studentDetails?.rows || [];
+    const rawFac = sheetData?.facultyDetails;
+    const facRows = Array.isArray(rawFac) ? rawFac : (Array.isArray(rawFac?.rows) ? rawFac.rows : (Array.isArray(sheet.facultyDetails?.rows) ? sheet.facultyDetails.rows : []));
+    const rawStu = sheetData?.studentDetails;
+    const stuRows = Array.isArray(rawStu) ? rawStu : (Array.isArray(rawStu?.rows) ? rawStu.rows : (Array.isArray(sheet.studentDetails?.rows) ? sheet.studentDetails.rows : []));
     const defaultLevels = ['Undergraduate (UG)', 'Postgraduate (PG)', 'Ph.D. / Research'];
+
+    // Ensure sheetData has valid arrays attached so auto-save and updates work
+    if (sheetData) {
+      if (!Array.isArray(sheetData.facultyDetails)) {
+        sheetData.facultyDetails = JSON.parse(JSON.stringify(facRows));
+      }
+      if (!Array.isArray(sheetData.studentDetails)) {
+        sheetData.studentDetails = JSON.parse(JSON.stringify(stuRows));
+      }
+      if (!sheetData.profile) {
+        sheetData.profile = prof;
+      }
+    }
 
     return `
       <div class="space-y-6 w-full">
@@ -1194,9 +1265,13 @@ class FormBuilder {
                 </div>
               </div>
             </div>
-            <div class="md:col-span-2">
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Name of the Head / Coordinator</label>
-              <input type="text" ${isLocked ? 'disabled' : ''} value="${prof.hodName || ''}" onchange="formBuilder.updateProfileField('hodName', this.value)" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-white font-medium ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}" />
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Name of the Head</label>
+              <input type="text" ${isLocked ? 'disabled' : ''} value="${prof.hodName || ''}" onchange="formBuilder.updateProfileField('hodName', this.value)" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-white font-medium ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}" placeholder="Dr. / Prof. Name of the Head" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Name of the Coordinator (if) <span class="text-[10px] text-slate-400 font-normal">(Optional)</span></label>
+              <input type="text" ${isLocked ? 'disabled' : ''} value="${prof.coordinatorName || ''}" onchange="formBuilder.updateProfileField('coordinatorName', this.value)" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-white font-medium ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}" placeholder="Name of the Coordinator (Optional)" />
             </div>
           </div>
         </div>
@@ -1728,6 +1803,12 @@ class FormBuilder {
     );
   }
 
+  isEmailColumn(label, key = '') {
+    const lbl = (label || '').toLowerCase();
+    const k = (key || '').toLowerCase();
+    return k.includes('email') || lbl.includes('email') || k.includes('mail') || lbl.includes('mail');
+  }
+
   formatDateForInput(val) {
     if (!val || typeof val !== 'string') return '';
     let s = val.trim().replace(/^(from|to)[\s:]+/i, '').trim();
@@ -1791,8 +1872,29 @@ class FormBuilder {
     const colKey = container.getAttribute('data-col');
     const targetId = container.getAttribute('data-target');
 
-    const fromVal = (container.querySelector('.date-from-input')?.value || '').trim();
-    const toVal = (container.querySelector('.date-to-input')?.value || '').trim();
+    const fromInput = container.querySelector('.date-from-input');
+    const toInput = container.querySelector('.date-to-input');
+    const fromVal = (fromInput?.value || '').trim();
+    let toVal = (toInput?.value || '').trim();
+
+    // Dynamically set minimum allowed date for 'To' input
+    if (fromVal && toInput) {
+      toInput.min = fromVal;
+    }
+
+    // Validation: "To" date should be greater than "From" date
+    if (fromVal && toVal && toVal < fromVal) {
+      if (toInput) {
+        toInput.classList.add('border-red-500', 'bg-red-50', 'text-red-700');
+        toInput.value = '';
+      }
+      toVal = '';
+      if (window.showToast) {
+        window.showToast('Invalid Date Range: "To" date should be greater than "From" date.', 'error', 4500, 'Date Error');
+      }
+    } else if (toInput) {
+      toInput.classList.remove('border-red-500', 'bg-red-50', 'text-red-700');
+    }
 
     let combined = '';
     if (fromVal && toVal) {
@@ -1820,6 +1922,12 @@ class FormBuilder {
     if (this.isSubmissionLocked()) {
       window.showToast('Submissions are locked. Cannot edit data.', 'warning', 4000, 'Deadline Locked');
       return;
+    }
+    if (val1 && val2 && val2 < val1) {
+      if (window.showToast) {
+        window.showToast('Invalid Date Range: "To" date should be greater than "From" date.', 'error', 4500, 'Date Error');
+      }
+      val2 = '';
     }
     let combined = '';
     if (changedField === 'from') {
@@ -2568,6 +2676,9 @@ class FormBuilder {
       if (this.isNumericColumn(col.label, col.key)) {
         return '"10"';
       }
+      if (this.isEmailColumn(col.label, col.key)) {
+        return '"staff@institution.edu"';
+      }
       return '"Sample ' + (col.label || col.key).replace(/[^a-zA-Z0-9 ]/g, '').trim() + '"';
     }).join(',');
 
@@ -2851,6 +2962,21 @@ class FormBuilder {
               onkeydown="formBuilder.handleExcelCellKeyDown(event, ${rIdx}, '${col.key}')"
               class="excel-cell-input w-full px-2 py-1 text-xs text-slate-800 bg-transparent hover:bg-white focus:bg-white border border-transparent hover:border-slate-300 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-500 rounded outline-none transition font-medium" 
               placeholder="DD.MM.YYYY - DD.MM.YYYY"
+            />
+          </td>
+        `;
+      } else if (this.isEmailColumn(col.label, col.key)) {
+        rowHtml += `
+          <td class="px-1 py-0.5 border-r border-slate-200">
+            <input 
+              type="email" 
+              value="${cellVal}" 
+              data-row="${rIdx}" 
+              data-col="${col.key}" 
+              oninput="this.value = this.value.toLowerCase().trim(); formBuilder.updateExcelGridCounter()"
+              onkeydown="formBuilder.handleExcelCellKeyDown(event, ${rIdx}, '${col.key}')"
+              style="text-transform: lowercase;"
+              class="excel-cell-input w-full px-2 py-1 text-xs text-slate-800 bg-transparent hover:bg-white focus:bg-white border border-transparent hover:border-slate-300 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-500 rounded outline-none transition lowercase" 
             />
           </td>
         `;

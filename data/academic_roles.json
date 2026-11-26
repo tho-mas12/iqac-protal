@@ -20,49 +20,75 @@
     "thomas": {
       "designation": "Head of Department",
       "isMqc": true,
-      "isHod": true
+      "isHod": true,
+      "coursePlanEnabled": false
     },
     "english_shift1": {
-      "isHod": true
+      "isHod": true,
+      "coursePlanEnabled": false
     },
     "darwin": {
       "designation": "Staff Member",
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     "cs_shift1": {
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     "tho": {
       "designation": "Staff Member",
       "isMqc": true,
-      "isHod": false
+      "isHod": true,
+      "coursePlanEnabled": false
     },
     "admin": {
       "isMqc": true,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     "24ucs605": {
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     "ajay": {
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     "aro": {
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
     },
     "mm": {
       "isMqc": true,
-      "isHod": true
+      "isHod": true,
+      "coursePlanEnabled": false
     },
     "nn": {
       "isMqc": false,
-      "isHod": false
+      "isHod": false,
+      "coursePlanEnabled": false
+    },
+    "director": {
+      "coursePlanEnabled": false
+    },
+    "bba_shift2": {
+      "coursePlanEnabled": false
+    },
+    "sam": {
+      "isHod": false,
+      "coursePlanEnabled": false
+    },
+    "18ffr01": {
+      "isMqc": true,
+      "isHod": false,
+      "coursePlanEnabled": false
     }
   },
-  "updatedAt": "2026-11-23T06:30:19.163Z"
+  "updatedAt": "2026-11-26T05:25:15.899Z"
 }

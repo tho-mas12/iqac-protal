@@ -83,7 +83,7 @@ export default function AdminServerStatusPage() {
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <Header
-          title="Server & Storage Monitor"
+          title="Live Server Monitor"
           userName={user?.name}
           userRole="ADMIN"
         />

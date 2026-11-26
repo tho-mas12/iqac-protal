@@ -200,7 +200,7 @@ class CoursePlanApp {
     const hash = window.location.hash.replace(/^#/, '');
 
     if (path.endsWith('/login') || search.has('login') || hash === 'login') return { name: 'login' };
-    if (path.endsWith('/dashboard') || search.has('dashboard') || hash === 'dashboard') return { name: 'dashboard' };
+    if (path.endsWith('/dashboard') || search.has('dashboard') || hash === 'dashboard' || hash === 'my-plans') return { name: 'dashboard' };
     if (path.endsWith('/new') || path.endsWith('/create') || search.has('new') || hash === 'new') return { name: 'new' };
     if (path.endsWith('/edit') || search.has('edit')) return { name: 'edit', id: search.get('id') || search.get('edit') };
     if (path.endsWith('/view') || path.endsWith('/print') || search.has('view') || search.has('print')) return { name: 'view', id: search.get('id') || search.get('view') || search.get('print') };
@@ -274,32 +274,16 @@ class CoursePlanApp {
 
     // Dashboard views
     this.viewMode = 'dashboard';
-    if (this.currentUser.role === 'faculty') {
-      if (r.name === 'hod' && this.currentUser.is_hod) {
-        this.currentDashboardView = 'hod';
-      } else if (!this.currentDashboardView || this.currentDashboardView !== 'hod') {
-        this.currentDashboardView = 'faculty';
-        if (r.name !== 'dashboard') {
-          window.history.replaceState(null, '', '/course-plan/dashboard');
-        }
-      }
-      await this.fetchPlans();
-    } else if (this.currentUser.role === 'hod') {
-      if (r.name === 'dashboard' || this.currentDashboardView === 'faculty') {
-        this.currentDashboardView = 'faculty';
-      } else {
-        this.currentDashboardView = 'hod';
-        if (r.name !== 'hod') {
-          window.history.replaceState(null, '', '/course-plan/hod');
-        }
-      }
-      await this.fetchPlans();
-    } else if (this.currentUser.role === 'admin') {
-      if (r.name !== 'admin' && r.name !== 'dashboard') {
-        window.history.replaceState(null, '', '/course-plan/admin');
-      }
-      await this.fetchPlans();
+    const isHodUser = Boolean(this.currentUser.is_hod || this.currentUser.role === 'hod' || this.currentUser.role === 'admin');
+
+    if (r.name === 'hod' && isHodUser) {
+      this.currentDashboardView = 'hod';
+    } else if (r.name === 'admin' && this.currentUser.role === 'admin') {
+      this.currentDashboardView = 'admin';
+    } else {
+      this.currentDashboardView = 'faculty';
     }
+    await this.fetchPlans();
 
     this.render();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2768,8 +2752,53 @@ class CoursePlanApp {
   }
 
   async checkAuth() {
+    // 1. Unified Portal Single-Sign-On (SSO) integration
+    try {
+      let ssoUser = null;
+      try {
+        const ssoRaw = localStorage.getItem('IQAC_SSO_USER');
+        if (ssoRaw) ssoUser = JSON.parse(ssoRaw);
+      } catch (e) {}
+
+      if (!ssoUser && typeof window !== 'undefined' && window.parent && window.parent !== window) {
+        try {
+          const parentSso = window.parent.localStorage.getItem('IQAC_SSO_USER');
+          if (parentSso) ssoUser = JSON.parse(parentSso);
+        } catch (e) {}
+      }
+
+      if (ssoUser) {
+        const ssoRole = (ssoUser.role || '').toUpperCase();
+        const isAdmin = ssoRole === 'ADMIN';
+        const isHod = Boolean(ssoUser.isHod);
+        const deptName = ssoUser.department?.name || ssoUser.department || 'Computer Science';
+        const facultyName = ssoUser.name || ssoUser.code || 'Faculty Member';
+
+        this.currentUser = {
+          id: ssoUser.id || 1,
+          staff_code: ssoUser.code || 'STAFF',
+          display_name: facultyName,
+          faculty_name: facultyName,
+          role: isAdmin ? 'admin' : (isHod ? 'hod' : 'faculty'),
+          is_hod: isHod,
+          department_name: deptName,
+          hod_department: deptName,
+        };
+        this.selectedDept = deptName;
+        this.systemSettings = { submissions_enabled: true };
+        return;
+      }
+    } catch (err) {
+      console.warn('SSO check fallback:', err);
+    }
+
+    // 2. Native PHP backend session check
     try {
       const res = await fetch('api/course_plan.php?action=auth_check');
+      const ct = res.headers.get('content-type') || '';
+      if (!ct.includes('application/json')) {
+        return;
+      }
       const json = await res.json();
       if (json.settings) {
         this.systemSettings = json.settings;
@@ -2793,8 +2822,8 @@ class CoursePlanApp {
       if (this.currentUser && this.currentUser.role === 'admin') {
         if (this.adminFilter !== 'all') url += `&status=${encodeURIComponent(this.adminFilter)}`;
         if (this.adminDeptFilter !== 'all') url += `&department=${encodeURIComponent(this.adminDeptFilter)}`;
-      } else if (this.currentUser && (this.currentUser.role === 'faculty' || this.currentUser.role === 'hod')) {
-        if ((this.currentUser.is_hod || this.currentUser.role === 'hod') && this.currentDashboardView === 'hod') {
+      } else if (this.currentUser && this.currentUser.role === 'faculty') {
+        if (this.currentUser.is_hod && this.currentDashboardView === 'hod') {
           url += `&view=hod&department=${encodeURIComponent(this.currentUser.hod_department || this.currentUser.department_name)}`;
         } else {
           url += `&department=${encodeURIComponent(this.currentUser.department_name)}&faculty_name=${encodeURIComponent(this.currentUser.faculty_name)}`;
@@ -2803,9 +2832,10 @@ class CoursePlanApp {
         url += `&department=${encodeURIComponent(this.selectedDept)}`;
       }
       const res = await fetch(url);
-      const json = await res.json();
-      if (json.success) {
-        this.plans = json.data || [];
+      const ct = res.headers.get('content-type') || '';
+      if (ct.includes('application/json')) {
+        const json = await res.json();
+        this.plans = json.success ? (json.data || []) : [];
       } else {
         this.plans = [];
       }
@@ -2816,8 +2846,13 @@ class CoursePlanApp {
           const facName = this.currentUser.faculty_name || this.currentUser.display_name || '';
           const deptName = this.currentUser.department_name || this.selectedDept || '';
           const tlRes = await fetch(`api/course_plan.php?action=get_tl_practices&faculty_name=${encodeURIComponent(facName)}&department_name=${encodeURIComponent(deptName)}`);
-          const tlJson = await tlRes.json();
-          this.tlPracticesData = (tlJson.success && tlJson.data) ? tlJson.data : null;
+          const tlCt = tlRes.headers.get('content-type') || '';
+          if (tlCt.includes('application/json')) {
+            const tlJson = await tlRes.json();
+            this.tlPracticesData = (tlJson.success && tlJson.data) ? tlJson.data : null;
+          } else {
+            this.tlPracticesData = null;
+          }
         } catch (tle) {
           console.warn('Could not fetch TL practices status:', tle);
           this.tlPracticesData = null;
@@ -2848,10 +2883,10 @@ class CoursePlanApp {
     } else if (this.viewMode === 'print') {
       root.innerHTML = this.renderPrintHtml();
     } else {
-      // Dashboard view based on user role
-      if (this.currentUser.role === 'admin') {
+      // Dashboard view based on currentDashboardView
+      if (this.currentDashboardView === 'admin' && this.currentUser.role === 'admin') {
         root.innerHTML = this.renderAdminDashboardHtml();
-      } else if (this.currentDashboardView === 'hod' || (this.currentUser.role === 'hod' && this.currentDashboardView !== 'faculty')) {
+      } else if (this.currentDashboardView === 'hod' && (this.currentUser.is_hod || this.currentUser.role === 'hod' || this.currentUser.role === 'admin')) {
         root.innerHTML = this.renderHODDashboardHtml();
       } else {
         root.innerHTML = this.renderFacultyDashboardHtml();
@@ -2879,44 +2914,34 @@ class CoursePlanApp {
 
       authStatusEl.innerHTML = `
         <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+          <button 
+            type="button" 
+            onclick="coursePlanApp.navigateTo('/course-plan/dashboard')" 
+            class="px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition flex items-center gap-1 cursor-pointer shadow-2xs"
+          >
+            <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
+            <span>Dashboard</span>
+          </button>
           ${isHOD ? `
             <button 
               type="button" 
-              onclick="coursePlanApp.switchToFacultyDashboard()" 
-              class="px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold ${this.currentDashboardView === 'faculty' ? 'bg-indigo-600 text-white shadow-xs' : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200'} transition flex items-center gap-1 cursor-pointer"
-              title="My Teaching Course Plans (Fill & Edit)"
+              onclick="coursePlanApp.navigateTo('/course-plan/hod')" 
+              class="px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-300 transition flex items-center gap-1 cursor-pointer shadow-2xs"
             >
-              <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
-              <span>My Plans (Fill)</span>
+              <i data-lucide="award" class="w-3.5 h-3.5"></i>
+              <span>HOD Review Hub</span>
             </button>
-            <button 
-              type="button" 
-              onclick="coursePlanApp.switchToHODDashboard()" 
-              class="px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold ${this.currentDashboardView === 'hod' ? 'bg-amber-600 text-white shadow-xs' : 'bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-300'} transition flex items-center gap-1 cursor-pointer"
-              title="Review & approve department faculty course plans"
-            >
-              <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
-              <span>HOD Review</span>
-            </button>
-          ` : isFaculty ? `
-            <button 
-              type="button" 
-              onclick="coursePlanApp.navigateTo('/course-plan/dashboard')" 
-              class="px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition flex items-center gap-1 cursor-pointer shadow-2xs"
-            >
-              <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
-              <span>Dashboard</span>
-            </button>
-          ` : `
+          ` : ''}
+          ${this.currentUser.role === 'admin' ? `
             <button 
               type="button" 
               onclick="coursePlanApp.navigateTo('/course-plan/admin')" 
-              class="px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition flex items-center gap-1 cursor-pointer shadow-2xs"
+              class="px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 transition flex items-center gap-1 cursor-pointer shadow-2xs"
             >
-              <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
+              <i data-lucide="crown" class="w-3.5 h-3.5"></i>
               <span>Admin Hub</span>
             </button>
-          `}
+          ` : ''}
           <span class="px-2 sm:px-2.5 py-1 rounded-xl text-[11px] sm:text-xs font-bold ${roleBadge} flex items-center gap-1 max-w-[130px] sm:max-w-xs truncate" title="${this.escapeHtml(this.currentUser.display_name || this.currentUser.faculty_name || 'User')}">
             <i data-lucide="${roleIcon}" class="w-3.5 h-3.5 shrink-0"></i>
             <span class="truncate">${this.escapeHtml(this.currentUser.display_name || this.currentUser.faculty_name || 'User')}</span>
@@ -2930,13 +2955,6 @@ class CoursePlanApp {
             <i data-lucide="book-open" class="w-3.5 h-3.5 text-indigo-600"></i>
             <span>User Manual</span>
           </a>
-          <button 
-            type="button" 
-            onclick="coursePlanApp.logout()" 
-            class="px-2.5 sm:px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold rounded-xl text-[11px] sm:text-xs transition border border-rose-200 cursor-pointer"
-          >
-            Sign Out
-          </button>
         </div>
       `;
     } else {
@@ -2957,7 +2975,13 @@ class CoursePlanApp {
   async switchToHODDashboard() {
     this.currentDashboardView = 'hod';
     this.viewMode = 'dashboard';
-    window.history.pushState(null, '', '/course-plan/hod');
+    window.location.hash = 'hod';
+    if (window.parent && window.parent !== window) {
+      try {
+        window.parent.location.hash = 'hod';
+        window.parent.dispatchEvent(new CustomEvent('portal-hash-change', { detail: 'hod' }));
+      } catch (e) {}
+    }
     await this.fetchPlans();
     this.render();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2966,7 +2990,13 @@ class CoursePlanApp {
   async switchToFacultyDashboard() {
     this.currentDashboardView = 'faculty';
     this.viewMode = 'dashboard';
-    window.history.pushState(null, '', '/course-plan/dashboard');
+    window.location.hash = 'my-plans';
+    if (window.parent && window.parent !== window) {
+      try {
+        window.parent.location.hash = 'my-plans';
+        window.parent.dispatchEvent(new CustomEvent('portal-hash-change', { detail: 'my-plans' }));
+      } catch (e) {}
+    }
     await this.fetchPlans();
     this.render();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -3404,10 +3434,10 @@ class CoursePlanApp {
                 type="button" 
                 onclick="coursePlanApp.switchToHODDashboard()" 
                 class="px-5 py-3 bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-white font-black rounded-2xl text-xs sm:text-sm transition shadow-lg shadow-amber-500/25 flex items-center gap-2.5 cursor-pointer active:scale-95 border border-amber-400/40"
-                title="View department submissions, review and approve course plans as HOD"
+                title="Open HOD Course Plan Review Hub"
               >
                 <span class="w-6 h-6 rounded-full bg-white text-amber-950 flex items-center justify-center font-black text-xs shrink-0 shadow-sm leading-none">🏛️</span>
-                <span>View Department Status (HOD Dashboard)</span>
+                <span>HOD Course Plan Review Hub</span>
               </button>
             ` : ''}
 
@@ -3449,14 +3479,6 @@ class CoursePlanApp {
                   <i data-lucide="lock" class="w-3 h-3"></i> Step 1 First
                 </span>
               `))}
-            </button>
-            <button 
-              type="button" 
-              onclick="coursePlanApp.logout()" 
-              class="px-4 py-3 bg-white/10 hover:bg-white/20 text-white font-bold rounded-2xl text-xs transition border border-white/20 flex items-center gap-1.5 cursor-pointer"
-            >
-              <i data-lucide="log-out" class="w-4 h-4"></i>
-              <span>Sign Out</span>
             </button>
           </div>
         </div>
@@ -3798,15 +3820,6 @@ class CoursePlanApp {
           <div class="flex items-center gap-3 flex-wrap">
             <button 
               type="button" 
-              onclick="coursePlanApp.startNewCoursePlan()" 
-              class="px-4 py-2.5 bg-amber-400 hover:bg-amber-300 text-indigo-950 font-black rounded-xl text-xs transition shadow-sm flex items-center gap-2 cursor-pointer active:scale-95"
-              title="Create and fill a new course plan for your teaching courses"
-            >
-              <i data-lucide="plus-circle" class="w-4 h-4"></i>
-              <span>+ Create / Fill My Course Plan</span>
-            </button>
-            <button 
-              type="button" 
               onclick="coursePlanApp.switchToFacultyDashboard()" 
               class="px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-bold rounded-xl text-xs transition border border-indigo-400/40 flex items-center gap-2 cursor-pointer shadow-sm active:scale-95"
               title="Return to your personal course plans dashboard"
@@ -3821,14 +3834,6 @@ class CoursePlanApp {
             >
               <i data-lucide="refresh-cw" class="w-4 h-4"></i>
               <span>Refresh</span>
-            </button>
-            <button 
-              type="button" 
-              onclick="coursePlanApp.logout()" 
-              class="px-4 py-2.5 bg-red-500/20 hover:bg-red-500/30 text-red-200 font-bold rounded-xl text-xs transition border border-red-500/30 flex items-center gap-1.5 cursor-pointer"
-            >
-              <i data-lucide="log-out" class="w-4 h-4"></i>
-              <span>Sign Out</span>
             </button>
           </div>
         </div>

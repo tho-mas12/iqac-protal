@@ -440,7 +440,8 @@ class ExcelExporter {
           rows.push([{ value: 'Programmes Offered - UG', style: 'Header' }, { value: prof.programmes?.ug || '', style: 'Cell' }]);
           rows.push([{ value: 'Programmes Offered - PG', style: 'Header' }, { value: prof.programmes?.pg || '', style: 'Cell' }]);
           rows.push([{ value: 'Programmes Offered - PhD', style: 'Header' }, { value: prof.programmes?.phd || '', style: 'Cell' }]);
-          rows.push([{ value: 'Head of Department / Coordinator', style: 'Header' }, { value: prof.hodName || '', style: 'Cell' }]);
+          rows.push([{ value: 'Name of the Head', style: 'Header' }, { value: prof.hodName || '', style: 'Cell' }]);
+          rows.push([{ value: 'Name of the Coordinator (if)', style: 'Header' }, { value: prof.coordinatorName || '', style: 'Cell' }]);
           rows.push([]);
 
           // Faculty details
@@ -620,7 +621,8 @@ class ExcelExporter {
         rows.push([{ value: 'Programmes Offered - UG', style: 'Header' }, { value: prof.programmes?.ug || '', style: 'Cell' }]);
         rows.push([{ value: 'Programmes Offered - PG', style: 'Header' }, { value: prof.programmes?.pg || '', style: 'Cell' }]);
         rows.push([{ value: 'Programmes Offered - PhD', style: 'Header' }, { value: prof.programmes?.phd || '', style: 'Cell' }]);
-        rows.push([{ value: 'Head of Department / Coordinator', style: 'Header' }, { value: prof.hodName || '', style: 'Cell' }]);
+        rows.push([{ value: 'Name of the Head', style: 'Header' }, { value: prof.hodName || '', style: 'Cell' }]);
+        rows.push([{ value: 'Name of the Coordinator (if)', style: 'Header' }, { value: prof.coordinatorName || '', style: 'Cell' }]);
         rows.push([]);
 
         // Faculty details

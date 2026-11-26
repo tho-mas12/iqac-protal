@@ -9,12 +9,15 @@ interface HeaderProps {
   title: string;
   userName?: string;
   userRole?: string;
+  departmentName?: string;
+  shift?: string;
 }
 
-export default function Header({ title, userName, userRole }: HeaderProps) {
+export default function Header({ title, userName, userRole, departmentName, shift }: HeaderProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [timeString, setTimeString] = useState<string>('');
+  const [isSidebarHidden, setIsSidebarHidden] = useState<boolean>(false);
 
   const normalizedRole = (userRole || '').toUpperCase();
   const isAdmin = normalizedRole === 'ADMIN' || pathname.startsWith('/admin');
@@ -79,6 +82,22 @@ export default function Header({ title, userName, userRole }: HeaderProps) {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('IQAC_SIDEBAR_HIDDEN') === 'true';
+      setIsSidebarHidden(saved);
+
+      const handleSidebarState = (e: any) => {
+        if (e.detail && typeof e.detail.isHidden === 'boolean') {
+          setIsSidebarHidden(e.detail.isHidden);
+        }
+      };
+
+      window.addEventListener('iqac-sidebar-state', handleSidebarState);
+      return () => window.removeEventListener('iqac-sidebar-state', handleSidebarState);
+    }
+  }, []);
+
   const handleOpenMobileSidebar = () => {
     window.dispatchEvent(new CustomEvent('open-iqac-sidebar'));
   };
@@ -98,25 +117,47 @@ export default function Header({ title, userName, userRole }: HeaderProps) {
   };
 
   return (
-    <header className="h-16 sm:h-20 bg-white/95 backdrop-blur-md border-b border-[#4F8FC0]/25 px-4 sm:px-6 md:px-8 flex items-center justify-between sticky top-0 z-30 shadow-2xs">
+    <header className="h-16 sm:h-20 bg-white/95 backdrop-blur-md border-b border-[#4F8FC0]/25 px-4 sm:px-6 md:px-8 flex items-center justify-between sticky top-0 z-30 shadow-2xs gap-3 sm:gap-4">
       {/* Left side: Hamburger (Mobile) + Title + Role Badge */}
-      <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
-        {/* Mobile Hamburger Menu Button */}
+      <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 flex-1 overflow-hidden pr-2">
+        {/* Navbar Hide / Show Sidebar Toggle Button (Visible on Desktop & Mobile) */}
         <button
-          onClick={handleOpenMobileSidebar}
-          className="md:hidden p-2 rounded-xl text-slate-700 hover:bg-[#f0f5f9] hover:text-[#26648E] transition-colors shrink-0 cursor-pointer border border-[#4F8FC0]/30"
-          title="Open Menu"
+          onClick={() => {
+            if (typeof window !== 'undefined') {
+              if (window.innerWidth < 768) {
+                handleOpenMobileSidebar();
+              } else {
+                window.dispatchEvent(new CustomEvent('toggle-iqac-sidebar'));
+              }
+            }
+          }}
+          className={`p-2 sm:p-2.5 rounded-xl border transition-all duration-200 shrink-0 cursor-pointer flex items-center gap-2 active:scale-95 group z-40 ${
+            isSidebarHidden
+              ? 'menu-blink ring-2 ring-[#26648E] bg-[#FFE3B3] text-[#26648E] border-[#fedba0] shadow-md font-black'
+              : 'bg-white hover:bg-[#f0f5f9] text-[#26648E] hover:text-[#1f5072] border-[#4F8FC0]/30 shadow-xs hover:shadow-sm'
+          }`}
+          title={isSidebarHidden ? "Navbar is hidden — Click here to show full menu" : "Toggle Navigation Menu (Hide Sidebar for full page view)"}
+          aria-label="Toggle navigation menu"
         >
-          <Menu className="w-5 h-5 text-[#26648E]" />
+          <Menu className={`w-5 h-5 ${isSidebarHidden ? 'text-[#26648E] stroke-[2.5]' : 'text-[#26648E]'} group-hover:scale-110 transition-transform`} />
+          <span className={`text-xs font-black ${isSidebarHidden ? 'inline text-[#26648E]' : 'hidden sm:inline text-[#26648E]'}`}>
+            Menu
+          </span>
+          {isSidebarHidden && (
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-500 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-600"></span>
+            </span>
+          )}
         </button>
 
-        <div className="flex items-center gap-2.5 min-w-0">
-          <h1 className="text-base sm:text-xl md:text-2xl font-black text-[#26648E] font-crest tracking-tight truncate">
+        <div className="flex items-center gap-2 min-w-0 flex-1 overflow-hidden">
+          <h1 className="text-xs sm:text-sm md:text-base font-black text-[#26648E] font-crest tracking-tight truncate shrink min-w-0">
             {title}
           </h1>
 
           {userRole && (
-            <span className="hidden xs:inline-block text-[10px] sm:text-xs font-black px-2.5 py-0.5 rounded-full bg-[#FFE3B3] text-[#26648E] border border-[#fedba0] uppercase tracking-wider shrink-0 shadow-2xs">
+            <span className="hidden lg:inline-block text-[10px] font-black px-2 py-0.5 rounded-full bg-[#FFE3B3] text-[#26648E] border border-[#fedba0] uppercase tracking-wider shrink-0 shadow-2xs">
               {getDisplayRole(userRole)}
             </span>
           )}
@@ -137,8 +178,8 @@ export default function Header({ title, userName, userRole }: HeaderProps) {
           </Link>
         )}
 
-        {/* Real-time Clock (Visible on sm and above) */}
-        <div className="hidden lg:flex items-center gap-2 text-xs font-bold text-[#26648E] bg-[#f0f5f9] px-3 py-1.5 rounded-xl border border-[#4F8FC0]/25 shadow-2xs">
+        {/* Real-time Clock (Visible on xl and above) */}
+        <div className="hidden xl:flex items-center gap-2 text-xs font-bold text-[#26648E] bg-[#f0f5f9] px-3 py-1.5 rounded-xl border border-[#4F8FC0]/25 shadow-2xs">
           <Clock className="w-3.5 h-3.5 text-[#4F8FC0] animate-pulse" />
           <span>{timeString || 'Loading time...'}</span>
         </div>

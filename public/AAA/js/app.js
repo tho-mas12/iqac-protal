@@ -32,16 +32,50 @@ class App {
     this.refreshDeptDropdown();
     this.refreshYearSelectors();
 
-    // Default view: if admin, open Admin Dashboard; else open Department Attributes Hub
-    if (window.authManager && window.authManager.isAdmin()) {
-      this.switchView('admin');
-    } else {
-      this.switchView('form');
+    // Hash navigation listener
+    window.addEventListener('hashchange', () => {
+      this.handleHashRoute();
+    });
+
+    // Navigate to appropriate view based on hash or role
+    if (!this.handleHashRoute()) {
+      if (window.authManager && window.authManager.isAdmin()) {
+        this.switchView('admin');
+      } else {
+        this.switchView('form');
+      }
     }
+  }
+
+  handleHashRoute() {
+    const rawHash = (window.location.hash || '').replace('#', '').trim();
+    if (!rawHash) return false;
+
+    if (rawHash === 'form' || rawHash.startsWith('form') || rawHash.startsWith('att') || rawHash === 'part_a') {
+      this.switchView('form');
+      if (window.formBuilder) {
+        if (rawHash.startsWith('att') || rawHash === 'part_a' || rawHash.startsWith('form-')) {
+          const cardId = rawHash.replace('form-', '');
+          window.formBuilder.openCard(cardId);
+        }
+      }
+      return true;
+    }
+
+    if (['admin', 'dashboard', 'filter', 'dept-data'].includes(rawHash)) {
+      if (window.authManager && window.authManager.isAdmin()) {
+        this.switchView(rawHash);
+        return true;
+      }
+    }
+    return false;
   }
 
   onAuthChanged(user) {
     this.refreshDeptDropdown();
+    if (this.handleHashRoute()) {
+      return;
+    }
     if (user && user.role === 'admin') {
       this.switchView('admin');
     } else if (user && user.role === 'department') {

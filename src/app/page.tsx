@@ -11,7 +11,7 @@ export default async function HomePage() {
   switch (session.role) {
     case 'DEPARTMENT':
     case 'STAFF':
-      redirect('/department/dashboard');
+      redirect('/hub');
     case 'DIRECTOR':
       redirect('/director/dashboard');
     case 'ADMINISTRATOR':

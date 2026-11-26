@@ -153,6 +153,15 @@ export default function StaffCommonDashboard() {
     fetchData();
   }, []);
 
+  // Automatically swipe announcements every 5 seconds
+  useEffect(() => {
+    if (announcements.length <= 1) return;
+    const interval = setInterval(() => {
+      setActiveAnnIndex((prev) => (prev + 1) % announcements.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [announcements.length]);
+
   const remarksInvitations = invitations.filter(
     (inv) => inv.status === 'REMARKS' || (inv.remarks && inv.remarks.trim())
   );
@@ -160,6 +169,9 @@ export default function StaffCommonDashboard() {
   const currentAnnouncement = announcements.length > 0 ? announcements[activeAnnIndex] : null;
 
   const canAccessAaa = user?.role === 'ADMIN' || isMqcMember;
+  const isCoursePlanAllowed = Boolean(user && (user.role === 'ADMIN' || user.isCoursePlanEnabled === true));
+  const cardCols = (isCoursePlanAllowed ? 1 : 0) + 1 + (canAccessAaa ? 1 : 0);
+  const gridColsClass = cardCols === 3 ? 'md:grid-cols-3' : cardCols === 2 ? 'md:grid-cols-2' : 'md:grid-cols-1';
 
   return (
     <div className="flex h-screen bg-[#faf8f2] overflow-hidden font-sans selection:bg-[#4F8FC0]/20 selection:text-[#26648E]">
@@ -173,9 +185,12 @@ export default function StaffCommonDashboard() {
         userName={user?.name}
         departmentName={user?.department?.name}
         shift={user?.department?.shift}
+        isHod={isHod}
+        isMqc={canAccessAaa}
+        isCoursePlanEnabled={isCoursePlanAllowed}
       />
 
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative z-10">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative z-10 transition-all duration-300 ease-in-out">
         {/* Top Header */}
         <Header
           title="Staff & Faculty Quality Dashboard"
@@ -183,15 +198,59 @@ export default function StaffCommonDashboard() {
           userRole={user?.role || 'Staff'}
         />
 
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 scroll-smooth">
           
           {/* ========================================================== */}
-          {/* 1. TOP ANNOUNCEMENT BANNER FROM ADMIN (REQUESTED AT TOP)   */}
+          {/* 1. GREETING & INSTITUTIONAL CONTEXT BANNER (AT TOP)        */}
+          {/* ========================================================== */}
+          <div className="bg-white rounded-3xl p-5 sm:p-6 border border-[#4F8FC0]/25 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-300">
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#f0f5f9] text-[#26648E] text-[10px] font-black uppercase tracking-wider border border-[#4F8FC0]/20">
+                <Sparkles className="w-3 h-3 text-[#26648E]" />
+                <span>Academic Year 2026 – 2027 • Faculty Portal</span>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-black text-[#26648E] font-crest tracking-tight">
+                Welcome, {user?.name || 'Faculty Member'}!
+              </h2>
+              <p className="text-xs text-slate-500 font-semibold">
+                Department:{' '}
+                <strong className="text-slate-800">
+                  {user?.department?.name || 'Academic Department'}
+                </strong>{' '}
+                {user?.department?.shift ? `• ${user?.department.shift}` : ''}
+                {isHod ? ' • Head of Department (HOD)' : ''}
+                {isMqcMember ? ' • Designated MQC Member' : ''}
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 flex-wrap">
+              <Link
+                href="/department/upload"
+                className="px-4 py-2 rounded-xl bg-[#26648E] hover:bg-[#1f5072] text-white text-xs font-black flex items-center gap-1.5 shadow-sm transition active:scale-95"
+              >
+                <Upload className="w-3.5 h-3.5" />
+                <span>Upload Invitation</span>
+              </Link>
+
+              {isCoursePlanAllowed && (
+                <Link
+                  href="/course-plan#my-plans"
+                  className="px-4 py-2 rounded-xl bg-[#f0f5f9] hover:bg-slate-200 text-[#26648E] border border-[#4F8FC0]/30 text-xs font-black flex items-center gap-1.5 transition active:scale-95"
+                >
+                  <BookOpen className="w-3.5 h-3.5" />
+                  <span>Course Plans</span>
+                </Link>
+              )}
+            </div>
+          </div>
+
+          {/* ========================================================== */}
+          {/* 2. NOTICE ANNOUNCEMENT BANNER FROM ADMIN (BELOW WELCOME)   */}
           {/* ========================================================== */}
           {currentAnnouncement && (
-            <div className="rounded-2xl overflow-hidden shadow-md border border-[#4F8FC0]/30 transition-all">
+            <div className="rounded-2xl overflow-hidden shadow-md border border-[#4F8FC0]/30 transition-all duration-300">
               <div
-                className={`p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 ${
+                className={`p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-500 ${
                   currentAnnouncement.type === 'URGENT'
                     ? 'bg-gradient-to-r from-rose-900 via-rose-800 to-amber-900 text-white'
                     : currentAnnouncement.type === 'NOTICE'
@@ -201,7 +260,7 @@ export default function StaffCommonDashboard() {
                     : 'bg-gradient-to-r from-[#1f5072] via-[#26648E] to-[#4F8FC0] text-white'
                 }`}
               >
-                <div className="space-y-1.5 flex-1 min-w-0">
+                <div className="space-y-1.5 flex-1 min-w-0 transition-opacity duration-300">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span
                       className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full flex items-center gap-1 ${
@@ -263,48 +322,6 @@ export default function StaffCommonDashboard() {
               </div>
             </div>
           )}
-
-          {/* ========================================================== */}
-          {/* 2. GREETING & INSTITUTIONAL CONTEXT BANNER                 */}
-          {/* ========================================================== */}
-          <div className="bg-white rounded-3xl p-5 sm:p-6 border border-[#4F8FC0]/25 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="space-y-1">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#f0f5f9] text-[#26648E] text-[10px] font-black uppercase tracking-wider border border-[#4F8FC0]/20">
-                <Sparkles className="w-3 h-3 text-[#26648E]" />
-                <span>Academic Year 2026 – 2027 • Faculty Portal</span>
-              </div>
-              <h2 className="text-xl sm:text-2xl font-black text-[#26648E] font-crest tracking-tight">
-                Welcome, {user?.name || 'Faculty Member'}
-              </h2>
-              <p className="text-xs text-slate-500 font-semibold">
-                Department:{' '}
-                <strong className="text-slate-800">
-                  {user?.department?.name || 'Academic Department'}
-                </strong>{' '}
-                {user?.department?.shift ? `• ${user?.department.shift}` : ''}
-                {isHod ? ' • Head of Department (HOD)' : ''}
-                {isMqcMember ? ' • Designated MQC Member' : ''}
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2 flex-wrap">
-              <Link
-                href="/department/upload"
-                className="px-4 py-2 rounded-xl bg-[#26648E] hover:bg-[#1f5072] text-white text-xs font-black flex items-center gap-1.5 shadow-sm transition"
-              >
-                <Upload className="w-3.5 h-3.5" />
-                <span>Upload Invitation</span>
-              </Link>
-
-              <a
-                href="/course-plan/index.html#my-plans"
-                className="px-4 py-2 rounded-xl bg-[#f0f5f9] hover:bg-slate-200 text-[#26648E] border border-[#4F8FC0]/30 text-xs font-black flex items-center gap-1.5 transition"
-              >
-                <BookOpen className="w-3.5 h-3.5" />
-                <span>Course Plans</span>
-              </a>
-            </div>
-          </div>
 
           {/* ========================================================== */}
           {/* 3. KEY METRICS & ANALYSIS GRID (INVITATIONS & COURSE PLAN) */}
@@ -451,52 +468,54 @@ export default function StaffCommonDashboard() {
           {/* ========================================================== */}
           {/* 5. COURSE PLAN, APPRAISAL & AAA INTEGRATED ANALYSIS        */}
           {/* ========================================================== */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className={`grid grid-cols-1 ${gridColsClass} gap-5`}>
             
             {/* COURSE PLAN ANALYSIS CARD */}
-            <div className="academic-card p-5 space-y-3.5 flex flex-col justify-between">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                  <div className="flex items-center gap-2">
-                    <div className="p-2 rounded-xl bg-[#f0f5f9] text-[#26648E] border border-[#4F8FC0]/25">
-                      <BookOpen className="w-4 h-4" />
+            {isCoursePlanAllowed && (
+              <div className="academic-card p-5 space-y-3.5 flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                    <div className="flex items-center gap-2">
+                      <div className="p-2 rounded-xl bg-[#f0f5f9] text-[#26648E] border border-[#4F8FC0]/25">
+                        <BookOpen className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-black text-[#26648E]">Course Plan System</h4>
+                        <span className="text-[10px] text-slate-400 font-bold">Even Semester 2026–27</span>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="text-xs font-black text-[#26648E]">Course Plan System</h4>
-                      <span className="text-[10px] text-slate-400 font-bold">Even Semester 2026–27</span>
+                    <span className="text-[9px] px-2 py-0.5 rounded-full font-black bg-emerald-100 text-emerald-800">
+                      Active
+                    </span>
+                  </div>
+
+                  <p className="text-xs text-slate-600 font-medium leading-relaxed">
+                    Prepare your course syllabus units, lesson plan schedule, and learning outcomes for semester compliance.
+                  </p>
+
+                  <div className="space-y-1.5 text-xs text-slate-700 font-bold">
+                    <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50">
+                      <span className="text-slate-500 font-semibold">Department HOD Review:</span>
+                      <span className="text-[#26648E]">{isHod ? 'HOD Authorization Active' : 'HOD Monitored'}</span>
+                    </div>
+                    <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50">
+                      <span className="text-slate-500 font-semibold">Single Sign-On (SSO):</span>
+                      <span className="text-emerald-700">Authenticated (No Separate Login)</span>
                     </div>
                   </div>
-                  <span className="text-[9px] px-2 py-0.5 rounded-full font-black bg-emerald-100 text-emerald-800">
-                    Active
-                  </span>
                 </div>
 
-                <p className="text-xs text-slate-600 font-medium leading-relaxed">
-                  Prepare your course syllabus units, lesson plan schedule, and learning outcomes for semester compliance.
-                </p>
-
-                <div className="space-y-1.5 text-xs text-slate-700 font-bold">
-                  <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50">
-                    <span className="text-slate-500 font-semibold">Department HOD Review:</span>
-                    <span className="text-[#26648E]">{isHod ? 'HOD Authorization Active' : 'HOD Monitored'}</span>
-                  </div>
-                  <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50">
-                    <span className="text-slate-500 font-semibold">Single Sign-On (SSO):</span>
-                    <span className="text-emerald-700">Authenticated (No Separate Login)</span>
-                  </div>
+                <div className="pt-2 border-t border-slate-100">
+                  <Link
+                    href="/course-plan#my-plans"
+                    className="w-full py-2 rounded-xl bg-[#26648E] hover:bg-[#1f5072] text-white text-xs font-extrabold flex items-center justify-center gap-1.5 transition"
+                  >
+                    <span>Open My Course Plans</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
                 </div>
               </div>
-
-              <div className="pt-2 border-t border-slate-100">
-                <a
-                  href="/course-plan/index.html#my-plans"
-                  className="w-full py-2 rounded-xl bg-[#26648E] hover:bg-[#1f5072] text-white text-xs font-extrabold flex items-center justify-center gap-1.5 transition"
-                >
-                  <span>Open My Course Plans</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
-              </div>
-            </div>
+            )}
 
             {/* PERFORMANCE APPRAISAL STATUS CARD */}
             <div className="academic-card p-5 space-y-3.5 flex flex-col justify-between">
@@ -543,108 +562,53 @@ export default function StaffCommonDashboard() {
               </div>
             </div>
 
-            {/* AAA PLATFORM STATUS CARD */}
-            <div className="academic-card p-5 space-y-3.5 flex flex-col justify-between">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                  <div className="flex items-center gap-2">
-                    <div className="p-2 rounded-xl bg-[#e8f8f9] text-[#125e64] border border-[#53D2DC]/30">
-                      <BarChart3 className="w-4 h-4" />
+            {/* AAA PLATFORM STATUS CARD - EXCLUSIVE TO MQC MEMBERS AND ADMIN */}
+            {canAccessAaa && (
+              <div className="academic-card p-5 space-y-3.5 flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                    <div className="flex items-center gap-2">
+                      <div className="p-2 rounded-xl bg-[#e8f8f9] text-[#125e64] border border-[#53D2DC]/30">
+                        <BarChart3 className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-black text-[#26648E]">AAA Data Platform</h4>
+                        <span className="text-[10px] text-slate-400 font-bold">Audit 2026–2027</span>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="text-xs font-black text-[#26648E]">AAA Data Platform</h4>
-                      <span className="text-[10px] text-slate-400 font-bold">Audit 2026–2027</span>
-                    </div>
-                  </div>
-                  <span
-                    className={`text-[9px] px-2 py-0.5 rounded-full font-black uppercase ${
-                      canAccessAaa
-                        ? 'bg-emerald-100 text-emerald-800'
-                        : 'bg-amber-100 text-amber-800'
-                    }`}
-                  >
-                    {canAccessAaa ? 'Authorized' : 'MQC Only'}
-                  </span>
-                </div>
-
-                <p className="text-xs text-slate-600 font-medium leading-relaxed">
-                  Institutional academic audit platform encompassing comprehensive department quality evaluation metrics.
-                </p>
-
-                <div className="space-y-1.5 text-xs text-slate-700 font-bold">
-                  <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50">
-                    <span className="text-slate-500 font-semibold">MQC Member Status:</span>
-                    <span className={canAccessAaa ? 'text-emerald-700' : 'text-amber-800'}>
-                      {canAccessAaa ? 'Designated MQC Member' : 'General Faculty'}
+                    <span className="text-[9px] px-2 py-0.5 rounded-full font-black uppercase bg-emerald-100 text-emerald-800">
+                      Authorized
                     </span>
                   </div>
-                  <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50">
-                    <span className="text-slate-500 font-semibold">Audit Criteria:</span>
-                    <span className="text-[#26648E]">Evaluation Metrics Ready</span>
+
+                  <p className="text-xs text-slate-600 font-medium leading-relaxed">
+                    Institutional academic audit platform encompassing comprehensive department quality evaluation metrics.
+                  </p>
+
+                  <div className="space-y-1.5 text-xs text-slate-700 font-bold">
+                    <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50">
+                      <span className="text-slate-500 font-semibold">MQC Member Status:</span>
+                      <span className="text-emerald-700">Designated MQC Member</span>
+                    </div>
+                    <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50">
+                      <span className="text-slate-500 font-semibold">Audit Criteria:</span>
+                      <span className="text-[#26648E]">Evaluation Metrics Ready</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="pt-2 border-t border-slate-100">
-                {canAccessAaa ? (
-                  <a
-                    href="/AAA/index.html"
+                <div className="pt-2 border-t border-slate-100">
+                  <Link
+                    href="/aaa"
                     className="w-full py-2 rounded-xl bg-[#26648E] hover:bg-[#1f5072] text-white text-xs font-extrabold flex items-center justify-center gap-1.5 transition"
                   >
                     <span>Launch AAA Platform</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
-                ) : (
-                  <div className="w-full py-2 rounded-xl bg-slate-100 text-slate-500 text-xs font-bold flex items-center justify-center gap-1.5">
-                    <Lock className="w-3.5 h-3.5" />
-                    <span>Restricted to MQC Members</span>
-                  </div>
-                )}
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
               </div>
-            </div>
+            )}
 
-          </div>
-
-          {/* ========================================================== */}
-          {/* 6. OFFICIAL INSTRUCTIONS & QUALITY GUIDELINES              */}
-          {/* ========================================================== */}
-          <div className="p-5 rounded-2xl bg-white border border-[#4F8FC0]/20 space-y-3">
-            <div className="flex items-center gap-2">
-              <Info className="w-4 h-4 text-[#26648E]" />
-              <h4 className="text-xs font-black text-[#26648E] uppercase tracking-wider">
-                Official IQAC Faculty Guidelines &amp; Submission Protocols
-              </h4>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs text-slate-600 font-semibold">
-              <div className="p-3 rounded-xl bg-[#f0f5f9] border border-[#4F8FC0]/15 space-y-1">
-                <span className="text-[#26648E] font-black block">1. Advance Notice</span>
-                <p className="text-[11px] leading-snug">
-                  Upload invitations at least 3-5 working days prior to the event date to ensure timely review.
-                </p>
-              </div>
-
-              <div className="p-3 rounded-xl bg-[#f0f5f9] border border-[#4F8FC0]/15 space-y-1">
-                <span className="text-[#26648E] font-black block">2. Standard Branding</span>
-                <p className="text-[11px] leading-snug">
-                  Official St. Joseph's College crest and IQAC logo must appear on all brochures and circulars.
-                </p>
-              </div>
-
-              <div className="p-3 rounded-xl bg-[#f0f5f9] border border-[#4F8FC0]/15 space-y-1">
-                <span className="text-[#26648E] font-black block">3. Course Planning</span>
-                <p className="text-[11px] leading-snug">
-                  Complete Even Semester units and weekly lesson plans before commencement for HOD approval.
-                </p>
-              </div>
-
-              <div className="p-3 rounded-xl bg-[#f0f5f9] border border-[#4F8FC0]/15 space-y-1">
-                <span className="text-[#26648E] font-black block">4. Hard Copy Sign-off</span>
-                <p className="text-[11px] leading-snug">
-                  Submit approved physical circular to the IQAC office for web archive and final dispatch.
-                </p>
-              </div>
-            </div>
           </div>
 
         </main>

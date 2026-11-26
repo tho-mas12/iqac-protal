@@ -119,11 +119,11 @@ export default function PortalNavbar({
             {/* 1. Left: Brand & Institutional Crest */}
             <div className="flex items-center gap-3">
               <Link href={user?.role === 'ADMIN' ? '/admin' : '/hub'} className="flex items-center gap-3 group">
-                <div className="w-10 h-12 rounded-xl bg-gradient-to-b from-[#f0f5f9] via-white to-[#FFE3B3]/25 border border-[#4F8FC0]/30 flex items-center justify-center p-1 shadow-2xs group-hover:scale-105 transition-transform">
+                <div className="flex items-center justify-center group-hover:scale-105 transition-transform">
                   <Image
                     src={sjcLogo}
                     alt="St. Joseph's College"
-                    className="h-9 w-auto object-contain drop-shadow-xs"
+                    className="h-10 w-auto object-contain drop-shadow-xs"
                     priority
                   />
                 </div>
@@ -282,8 +282,8 @@ export default function PortalNavbar({
                       </span>
                     </div>
 
-                    <a
-                      href="/course-plan/index.html"
+                    <Link
+                      href="/course-plan"
                       onClick={() => setOpenDropdown(null)}
                       className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-[#f0f5f9] transition group"
                     >
@@ -299,10 +299,10 @@ export default function PortalNavbar({
                           All teaching faculty course schedule access
                         </div>
                       </div>
-                    </a>
+                    </Link>
 
-                    <a
-                      href="/course-plan/index.html#hod"
+                    <Link
+                      href="/course-plan#hod"
                       onClick={() => setOpenDropdown(null)}
                       className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-[#f0f5f9] transition group"
                     >
@@ -311,7 +311,7 @@ export default function PortalNavbar({
                       </div>
                       <div>
                         <div className="text-xs font-black text-slate-800 group-hover:text-[#26648E] flex items-center gap-1.5">
-                          <span>View Department Status (HOD)</span>
+                          <span>HOD Course Plan Review Hub</span>
                           <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#FFE3B3] text-[#26648E] font-bold">
                             HOD
                           </span>
@@ -320,10 +320,10 @@ export default function PortalNavbar({
                           Department-wide faculty syllabus progress &amp; sign-off
                         </div>
                       </div>
-                    </a>
+                    </Link>
 
-                    <a
-                      href="/course-plan/index.html#my-plans"
+                    <Link
+                      href="/course-plan#my-plans"
                       onClick={() => setOpenDropdown(null)}
                       className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-[#f0f5f9] transition group"
                     >
@@ -339,11 +339,11 @@ export default function PortalNavbar({
                           Manage course units, objectives &amp; lesson dates
                         </div>
                       </div>
-                    </a>
+                    </Link>
 
                     {user?.role === 'ADMIN' && (
-                      <a
-                        href="/course-plan/index.html#admin"
+                      <Link
+                        href="/course-plan#admin"
                         onClick={() => setOpenDropdown(null)}
                         className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-[#f0f5f9] transition group border-t border-slate-100 mt-1"
                       >
@@ -361,7 +361,7 @@ export default function PortalNavbar({
                             College-wide compliance &amp; submission overview
                           </div>
                         </div>
-                      </a>
+                      </Link>
                     )}
                   </div>
                 )}
@@ -611,27 +611,30 @@ export default function PortalNavbar({
               <span className="text-[10px] font-black uppercase text-[#26648E] tracking-wider block px-1">
                 Course Plan System
               </span>
-              <a
-                href="/course-plan/index.html"
+              <Link
+                href="/course-plan"
+                onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center gap-2.5 p-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-[#f0f5f9]"
               >
                 <LayoutDashboard className="w-4 h-4 text-[#26648E]" />
                 <span>Course Plan Dashboard</span>
-              </a>
-              <a
-                href="/course-plan/index.html#hod"
+              </Link>
+              <Link
+                href="/course-plan#hod"
+                onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center gap-2.5 p-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-[#f0f5f9]"
               >
                 <GraduationCap className="w-4 h-4 text-[#26648E]" />
-                <span>View Department Status (HOD)</span>
-              </a>
-              <a
-                href="/course-plan/index.html#my-plans"
+                <span>HOD Course Plan Review Hub</span>
+              </Link>
+              <Link
+                href="/course-plan#my-plans"
+                onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center gap-2.5 p-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-[#f0f5f9]"
               >
                 <BookOpen className="w-4 h-4 text-[#26648E]" />
                 <span>My Course Plans</span>
-              </a>
+              </Link>
             </div>
 
             {/* Mobile Section 3: AAA Audit */}

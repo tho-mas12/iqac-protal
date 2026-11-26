@@ -7,16 +7,16 @@ export const dynamic = 'force-dynamic';
 const SUBMISSION_FILE = path.join(process.cwd(), 'data', 'aaa_submissions.json');
 
 const DEFAULT_DEPARTMENTS = [
-  { id: 1, code: 'cs', name: 'PG & Research Department of Computer Science', school: 'School of Computing Sciences', hod_name: 'Dr. S. Albert Rabara', status: 'draft', is_locked: false },
-  { id: 2, code: 'commerce', name: 'PG & Research Department of Commerce', school: 'School of Management Studies', hod_name: 'Dr. F. R. Alexander Pravin Durai', status: 'draft', is_locked: false },
-  { id: 3, code: 'physics', name: 'PG & Research Department of Physics', school: 'School of Physical Sciences', hod_name: 'Dr. N. Lawrence', status: 'draft', is_locked: false },
-  { id: 4, code: 'chemistry', name: 'PG & Research Department of Chemistry', school: 'School of Chemical Sciences', hod_name: 'Dr. A. Rose Venis', status: 'draft', is_locked: false },
-  { id: 5, code: 'maths', name: 'PG & Research Department of Mathematics', school: 'School of Computing Sciences', hod_name: 'Dr. J. Maria Joseph', status: 'draft', is_locked: false },
-  { id: 6, code: 'history', name: 'Department of History', school: 'School of Social Sciences', hod_name: 'Dr. K. Lingammal', status: 'draft', is_locked: false },
-  { id: 7, code: 'english', name: 'Department of English', school: 'School of Languages', hod_name: 'Dr. V. L. Jayapaul', status: 'draft', is_locked: false },
-  { id: 8, code: 'economics', name: 'Department of Economics', school: 'School of Management Studies', hod_name: 'Dr. S. Sujatha', status: 'draft', is_locked: false },
-  { id: 9, code: 'bba', name: 'Department of Business Administration (BBA)', school: 'School of Management Studies', hod_name: 'Dr. P. Bastin Jerome', status: 'draft', is_locked: false },
-  { id: 10, code: 'botany', name: 'PG & Research Department of Botany', school: 'School of Biological Sciences', hod_name: 'Dr. S. Sahaya Sathish', status: 'draft', is_locked: false },
+  { id: 1, code: 'cs', name: 'PG & Research Department of Computer Science', school: 'School of Computing Sciences', hod_name: 'Dr. S. Albert Rabara', coordinator_name: '', status: 'draft', is_locked: false },
+  { id: 2, code: 'commerce', name: 'PG & Research Department of Commerce', school: 'School of Management Studies', hod_name: 'Dr. F. R. Alexander Pravin Durai', coordinator_name: '', status: 'draft', is_locked: false },
+  { id: 3, code: 'physics', name: 'PG & Research Department of Physics', school: 'School of Physical Sciences', hod_name: 'Dr. N. Lawrence', coordinator_name: '', status: 'draft', is_locked: false },
+  { id: 4, code: 'chemistry', name: 'PG & Research Department of Chemistry', school: 'School of Chemical Sciences', hod_name: 'Dr. A. Rose Venis', coordinator_name: '', status: 'draft', is_locked: false },
+  { id: 5, code: 'maths', name: 'PG & Research Department of Mathematics', school: 'School of Computing Sciences', hod_name: 'Dr. J. Maria Joseph', coordinator_name: '', status: 'draft', is_locked: false },
+  { id: 6, code: 'history', name: 'Department of History', school: 'School of Social Sciences', hod_name: 'Dr. K. Lingammal', coordinator_name: '', status: 'draft', is_locked: false },
+  { id: 7, code: 'english', name: 'Department of English', school: 'School of Languages', hod_name: 'Dr. V. L. Jayapaul', coordinator_name: '', status: 'draft', is_locked: false },
+  { id: 8, code: 'economics', name: 'Department of Economics', school: 'School of Management Studies', hod_name: 'Dr. S. Sujatha', coordinator_name: '', status: 'draft', is_locked: false },
+  { id: 9, code: 'bba', name: 'Department of Business Administration (BBA)', school: 'School of Management Studies', hod_name: 'Dr. P. Bastin Jerome', coordinator_name: '', status: 'draft', is_locked: false },
+  { id: 10, code: 'botany', name: 'PG & Research Department of Botany', school: 'School of Biological Sciences', hod_name: 'Dr. S. Sahaya Sathish', coordinator_name: '', status: 'draft', is_locked: false },
 ];
 
 export async function GET(req: NextRequest) {

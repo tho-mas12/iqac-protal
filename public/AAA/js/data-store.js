@@ -362,6 +362,8 @@ class DataStore {
                 collegeName: "St. Joseph's College (Autonomous)",
                 department: "",
                 hodName: "",
+        coordinatorName: "",
+                coordinatorName: "",
                 programmesOffered: ""
               },
               facultyDetails: (sheet.facultyDetails?.rows || []).map(r => ({
@@ -889,6 +891,7 @@ class DataStore {
         departmentName: deptName,
         school: "Academic School",
         hodName: "",
+        coordinatorName: "",
         auditDate: new Date().toISOString().split('T')[0],
         facultyCount: 0,
         studentCountUG: 0,

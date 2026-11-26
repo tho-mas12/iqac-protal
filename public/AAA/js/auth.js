@@ -17,25 +17,53 @@ class AuthManager {
   }
 
   init() {
-    // Check saved session in localStorage
-    const saved = localStorage.getItem('IQAC_AUTH_USER');
-    if (saved) {
+    // 1. Check IQAC Central Portal SSO Session first
+    const ssoRaw = localStorage.getItem('IQAC_SSO_USER');
+    if (ssoRaw) {
       try {
-        this.user = JSON.parse(saved);
+        const sso = JSON.parse(ssoRaw);
+        const r = (sso.invitationRole || sso.role || '').toUpperCase();
+        const isAdmin = (r === 'ADMIN');
+        
+        this.user = {
+          id: sso.id || 1,
+          username: (sso.username || 'staff').toLowerCase(),
+          display_name: sso.name || (sso.department ? sso.department.name : 'Staff Member'),
+          role: isAdmin ? 'admin' : 'department',
+          department_id: sso.department ? sso.department.id : 1,
+          department_name: sso.department ? sso.department.name : (sso.name || 'Department of Computer Science'),
+          department_code: (sso.department?.code || sso.username || 'CS').toLowerCase(),
+          is_locked: false
+        };
+        localStorage.setItem('IQAC_AUTH_USER', JSON.stringify(this.user));
       } catch (e) {
-        this.user = null;
+        console.error('Error parsing SSO user in AAA:', e);
       }
     }
 
-    // Default to admin for convenient immediate preview if not set
+    // 2. Check saved session in localStorage if SSO was not found
+    if (!this.user) {
+      const saved = localStorage.getItem('IQAC_AUTH_USER');
+      if (saved) {
+        try {
+          this.user = JSON.parse(saved);
+        } catch (e) {
+          this.user = null;
+        }
+      }
+    }
+
+    // 3. Default to department user for staff view (never force admin)
     if (!this.user) {
       this.user = {
         id: 1,
-        username: 'admin',
-        display_name: 'IQAC Administrator',
-        role: 'admin',
-        department_id: null,
-        department_name: 'All Departments'
+        username: 'cs',
+        display_name: 'Department of Computer Science',
+        role: 'department',
+        department_id: 1,
+        department_name: 'Department of Computer Science',
+        department_code: 'cs',
+        is_locked: false
       };
       localStorage.setItem('IQAC_AUTH_USER', JSON.stringify(this.user));
     }
@@ -160,13 +188,16 @@ class AuthManager {
   logout() {
     this.user = null;
     localStorage.removeItem('IQAC_AUTH_USER');
+    localStorage.removeItem('IQAC_SSO_USER');
     
     // Call server logout
     try { fetch('api/logout.php'); } catch (e) {}
 
-    // Open login modal
-    this.showLoginModal();
-    this.notify();
+    if (window.parent && window.parent !== window) {
+      window.parent.location.href = '/login';
+    } else {
+      window.location.href = '/login';
+    }
   }
 
   getUser() {
@@ -225,8 +256,7 @@ class AuthManager {
         else adminNavBtn.classList.add('hidden');
       }
       if (deptProfileNavBtn) {
-        if (isDept) deptProfileNavBtn.classList.remove('hidden');
-        else deptProfileNavBtn.classList.add('hidden');
+        deptProfileNavBtn.classList.add('hidden');
       }
 
       // Blinking Submission Deadline box in Noticeable Alert Color on Department side
@@ -244,21 +274,10 @@ class AuthManager {
         topbarDeadline.classList.toggle('hidden', isAdmin);
       }
 
-      // Department Info Account Icon in top right: removed in admin page login, shown only for department login
+      // Department Info Account Icon in top right: completely removed
       const topDeptAccountBtn = document.getElementById('top-dept-account-btn');
       if (topDeptAccountBtn) {
-        if (isAdmin) {
-          topDeptAccountBtn.classList.add('hidden');
-        } else {
-          topDeptAccountBtn.classList.remove('hidden');
-          const deptName = this.user.department_name || this.user.display_name || window.dataStore?.activeDepartment || 'Department';
-          if (topDeptDisplayName) topDeptDisplayName.textContent = deptName;
-          const subLbl = document.getElementById('top-dept-sub-label');
-          if (subLbl) subLbl.textContent = 'Dept Info';
-          const topIcon = document.getElementById('top-dept-icon');
-          if (topIcon) topIcon.setAttribute('data-lucide', 'user');
-        }
-        if (window.lucide) lucide.createIcons();
+        topDeptAccountBtn.classList.add('hidden');
       }
 
       if (deptSwitcher) {
@@ -299,12 +318,11 @@ class AuthManager {
   }
 
   showLoginModal() {
-    let modal = document.getElementById('auth-login-modal');
-    if (!modal) {
-      this.createLoginModal();
-      modal = document.getElementById('auth-login-modal');
+    if (window.parent && window.parent !== window) {
+      window.parent.location.href = '/login';
+      return;
     }
-    if (modal) modal.classList.remove('hidden');
+    window.location.href = '/login';
   }
 
   hideLoginModal() {

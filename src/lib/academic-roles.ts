@@ -7,7 +7,7 @@ const MQC_FILE_PATH = path.join(process.cwd(), 'data', 'mqc_members.json');
 export interface AcademicRolesData {
   mqcDepartments: string[]; // Department codes or User IDs that are MQC members
   hodUsers: string[];        // Usernames or Department codes designated as HOD
-  userDesignations: Record<string, { designation?: string; isMqc?: boolean; isHod?: boolean }>;
+  userDesignations: Record<string, { designation?: string; isMqc?: boolean; isHod?: boolean; coursePlanEnabled?: boolean }>;
   updatedAt: string;
 }
 
@@ -138,5 +138,42 @@ export function checkUserIsHod(username?: string | null, deptCode?: string | nul
     }
   } catch {}
 
+  return false;
+}
+
+export function checkUserCoursePlanAccess(username?: string | null, role?: string | null): boolean {
+  if (role === 'ADMIN') return true;
+  const roles = getAcademicRoles();
+  const uname = (username || '').trim().toLowerCase();
+  const unameUpper = uname.toUpperCase();
+
+  // 1. Explicit user designation in academic_roles.json has highest priority
+  if (uname && roles.userDesignations[uname]?.coursePlanEnabled !== undefined) {
+    return Boolean(roles.userDesignations[uname]?.coursePlanEnabled);
+  }
+  if (uname && roles.userDesignations[unameUpper]?.coursePlanEnabled !== undefined) {
+    return Boolean(roles.userDesignations[unameUpper]?.coursePlanEnabled);
+  }
+
+  // 2. Check faculty_directory.json if present
+  try {
+    const facPath = path.join(process.cwd(), 'data', 'faculty_directory.json');
+    if (fs.existsSync(facPath)) {
+      const facData = JSON.parse(fs.readFileSync(facPath, 'utf8'));
+      const f = (facData.faculty || []).find(
+        (x: any) => x.username?.toLowerCase() === uname || x.code?.toLowerCase() === uname
+      );
+      if (f && f.coursePlanEnabled !== undefined) {
+        return Boolean(f.coursePlanEnabled);
+      }
+    }
+  } catch {}
+
+  // 3. Check global default in academic_roles.json
+  if ((roles as any).coursePlanGlobalDefault !== undefined) {
+    return Boolean((roles as any).coursePlanGlobalDefault);
+  }
+
+  // Fallback to false if globally disabled
   return false;
 }

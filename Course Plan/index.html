@@ -8,20 +8,48 @@
   <meta http-equiv="Expires" content="0" />
   <base href="/course-plan/">
   <title>Course Plan 2026 - 2027 (Even) | IQAC - St. Joseph's College</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide Icons CDN -->
-  <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS: Local vendor script with fallback -->
+  <script src="vendor/tailwind.js"></script>
+  <script>
+    if (!window.tailwind) {
+      document.write('<script src="https://cdn.tailwindcss.com"><\/script>');
+    }
+  </script>
+  <!-- Lucide Icons: Local vendor script with fallback -->
+  <script src="vendor/lucide.min.js"></script>
+  <script>
+    if (!window.lucide) {
+      document.write('<script src="https://unpkg.com/lucide@latest"><\/script>');
+    }
+    if (window.self !== window.top) {
+      document.documentElement.classList.add('in-iframe');
+    }
+    window.addEventListener('DOMContentLoaded', function() {
+      if (window.self !== window.top) {
+        document.body.classList.add('in-iframe');
+        var hdr = document.querySelector('header');
+        if (hdr) hdr.style.setProperty('display', 'none', 'important');
+        var ftr = document.querySelector('footer');
+        if (ftr) ftr.style.setProperty('display', 'none', 'important');
+      }
+    });
+  </script>
   <style>
+    .in-iframe header,
+    .in-iframe footer,
+    body.in-iframe header,
+    body.in-iframe footer {
+      display: none !important;
+    }
     html {
       -webkit-tap-highlight-color: transparent;
       scroll-behavior: smooth;
     }
     body {
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       overflow-x: hidden;
     }
 
@@ -166,9 +194,20 @@
     </div>
 
     <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+      <!-- Return to User Common Dashboard -->
+      <a 
+        href="/hub" 
+        target="_top"
+        title="Back to User Common Dashboard" 
+        class="px-3 py-1.5 bg-[#26648E] hover:bg-[#1f5072] text-white rounded-xl text-xs font-black flex items-center gap-1.5 transition cursor-pointer shadow-2xs"
+      >
+        <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+        <span class="hidden sm:inline">Common Dashboard</span>
+      </a>
+
       <!-- Dynamic Auth Status / Logged-in Session Badge -->
       <div id="header-auth-section">
-        <!-- Shows user role badge and logout button when logged in -->
+        <!-- Shows user role badge and user manual button when logged in -->
       </div>
     </div>
   </header>

@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS `departments` (
   `name` varchar(150) NOT NULL,
   `school` varchar(100) DEFAULT NULL,
   `hod_name` varchar(100) DEFAULT NULL,
+  `coordinator_name` varchar(100) DEFAULT NULL,
   `status` enum('draft','in_progress','submitted','unlocked_for_edit','audited') NOT NULL DEFAULT 'draft',
   `audit_date` date DEFAULT NULL,
   `is_locked` tinyint(1) NOT NULL DEFAULT 0,

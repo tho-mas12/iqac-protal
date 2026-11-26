@@ -102,6 +102,14 @@ export async function GET() {
       };
     }
 
+    const { checkUserCoursePlanAccess } = require('@/lib/academic-roles');
+    const isCoursePlanEnabled = checkUserCoursePlanAccess(user.username, user.role);
+
+    user = {
+      ...user,
+      isCoursePlanEnabled,
+    };
+
     return NextResponse.json({ authenticated: true, user });
   } catch (error) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

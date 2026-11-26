@@ -200,11 +200,11 @@ class CoursePlanApp {
     const hash = window.location.hash.replace(/^#/, '');
 
     if (path.endsWith('/login') || search.has('login') || hash === 'login') return { name: 'login' };
-    if (path.endsWith('/dashboard') || search.has('dashboard') || hash === 'dashboard') return { name: 'dashboard' };
+    if (path.endsWith('/dashboard') || search.has('dashboard') || hash === 'dashboard' || hash === 'my-plans') return { name: 'dashboard' };
     if (path.endsWith('/new') || path.endsWith('/create') || search.has('new') || hash === 'new') return { name: 'new' };
     if (path.endsWith('/edit') || search.has('edit')) return { name: 'edit', id: search.get('id') || search.get('edit') };
     if (path.endsWith('/view') || path.endsWith('/print') || search.has('view') || search.has('print')) return { name: 'view', id: search.get('id') || search.get('view') || search.get('print') };
-    if (path.endsWith('/hod') || search.has('hod') || search.get('view') === 'hod' || hash === 'hod') return { name: 'hod' };
+    if (path.endsWith('/hod') || search.has('hod') || hash === 'hod') return { name: 'hod' };
     if (path.endsWith('/admin') || search.has('admin') || hash === 'admin') return { name: 'admin' };
 
     return { name: 'root' };
@@ -232,7 +232,11 @@ class CoursePlanApp {
     const r = this.getRoute();
 
     if (!this.currentUser) {
-      window.location.href = '/login';
+      this.viewMode = 'login';
+      if (r.name !== 'login') {
+        window.history.replaceState(null, '', '/course-plan/login');
+      }
+      this.render();
       return;
     }
 
@@ -270,27 +274,16 @@ class CoursePlanApp {
 
     // Dashboard views
     this.viewMode = 'dashboard';
-    if (this.currentUser.role === 'faculty') {
-      if (r.name === 'hod' && this.currentUser.is_hod) {
-        this.currentDashboardView = 'hod';
-      } else if (!this.currentDashboardView || this.currentDashboardView !== 'hod') {
-        this.currentDashboardView = 'faculty';
-        if (r.name !== 'dashboard') {
-          window.history.replaceState(null, '', '/course-plan/dashboard');
-        }
-      }
-      await this.fetchPlans();
-    } else if (this.currentUser.role === 'hod') {
-      if (r.name !== 'hod' && r.name !== 'dashboard') {
-        window.history.replaceState(null, '', '/course-plan/hod');
-      }
-      await this.fetchPlans();
-    } else if (this.currentUser.role === 'admin') {
-      if (r.name !== 'admin' && r.name !== 'dashboard') {
-        window.history.replaceState(null, '', '/course-plan/admin');
-      }
-      await this.fetchPlans();
+    const isHodUser = Boolean(this.currentUser.is_hod || this.currentUser.role === 'hod' || this.currentUser.role === 'admin');
+
+    if (r.name === 'hod' && isHodUser) {
+      this.currentDashboardView = 'hod';
+    } else if (r.name === 'admin' && this.currentUser.role === 'admin') {
+      this.currentDashboardView = 'admin';
+    } else {
+      this.currentDashboardView = 'faculty';
     }
+    await this.fetchPlans();
 
     this.render();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2207,7 +2200,97 @@ class CoursePlanApp {
         this.loadAnalyticsData();
       }
     }
+    if (tab === 'roles') {
+      if (!this.facultyRolesData && !this.facultyRolesLoading) {
+        this.loadFacultyRolesData();
+      }
+    }
     this.render();
+  }
+
+  async loadFacultyRolesData(force = false) {
+    if (this.facultyRolesData && !force) return this.facultyRolesData;
+    this.facultyRolesLoading = true;
+    try {
+      let url = 'api/course_plan.php?action=get_faculty_roles';
+      if (this.adminRolesDeptFilter && this.adminRolesDeptFilter !== 'ALL') {
+        url += `&department=${encodeURIComponent(this.adminRolesDeptFilter)}`;
+      }
+      const res = await fetch(url);
+      const json = await res.json();
+      if (json.success) {
+        this.facultyRolesData = json;
+      }
+    } catch (err) {
+      console.error('Failed to load faculty roles:', err);
+    } finally {
+      this.facultyRolesLoading = false;
+      if (this.adminTab === 'roles') {
+        this.render();
+      }
+    }
+    return this.facultyRolesData;
+  }
+
+  async setFacultyRole(facultyId, newRole, deptName) {
+    try {
+      const res = await fetch('api/course_plan.php?action=update_faculty_role', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          faculty_id: facultyId,
+          role: newRole,
+          department_name: deptName
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        // Optimistic local update
+        if (this.facultyRolesData && this.facultyRolesData.faculty) {
+          this.facultyRolesData.faculty = this.facultyRolesData.faculty.map(f => {
+            if (f.department_name === deptName) {
+              if (f.faculty_id === facultyId) {
+                return {
+                  ...f,
+                  role: newRole,
+                  is_head: newRole === 'HEAD' ? 1 : 0,
+                  is_mqc: newRole === 'MQC' ? 1 : 0
+                };
+              } else if (newRole === 'HEAD' && f.is_head == 1) {
+                return { ...f, role: 'FACULTY', is_head: 0 };
+              }
+            }
+            return f;
+          });
+        }
+        this.showToastNotification(data.message || 'Role updated successfully', 'success');
+        this.render();
+      } else {
+        alert(data.error || 'Failed to update faculty role');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Network error while updating faculty role');
+    }
+  }
+
+  showToastNotification(message, type = 'success') {
+    let toast = document.getElementById('cp-role-toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'cp-role-toast';
+      document.body.appendChild(toast);
+    }
+    const bgClass = type === 'success' ? 'bg-emerald-800' : 'bg-rose-800';
+    toast.className = `fixed bottom-6 right-6 z-50 ${bgClass} text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-white/20 flex items-center gap-3 animate-slideUp text-xs font-bold`;
+    toast.innerHTML = `
+      <i data-lucide="${type === 'success' ? 'check-circle' : 'alert-circle'}" class="w-4 h-4 text-emerald-300"></i>
+      <span>${message}</span>
+    `;
+    if (window.lucide) window.lucide.createIcons();
+    setTimeout(() => {
+      if (toast && toast.parentElement) toast.remove();
+    }, 4000);
   }
 
   async loadAnalyticsData(force = false) {
@@ -2669,8 +2752,53 @@ class CoursePlanApp {
   }
 
   async checkAuth() {
+    // 1. Unified Portal Single-Sign-On (SSO) integration
+    try {
+      let ssoUser = null;
+      try {
+        const ssoRaw = localStorage.getItem('IQAC_SSO_USER');
+        if (ssoRaw) ssoUser = JSON.parse(ssoRaw);
+      } catch (e) {}
+
+      if (!ssoUser && typeof window !== 'undefined' && window.parent && window.parent !== window) {
+        try {
+          const parentSso = window.parent.localStorage.getItem('IQAC_SSO_USER');
+          if (parentSso) ssoUser = JSON.parse(parentSso);
+        } catch (e) {}
+      }
+
+      if (ssoUser) {
+        const ssoRole = (ssoUser.role || '').toUpperCase();
+        const isAdmin = ssoRole === 'ADMIN';
+        const isHod = Boolean(ssoUser.isHod);
+        const deptName = ssoUser.department?.name || ssoUser.department || 'Computer Science';
+        const facultyName = ssoUser.name || ssoUser.code || 'Faculty Member';
+
+        this.currentUser = {
+          id: ssoUser.id || 1,
+          staff_code: ssoUser.code || 'STAFF',
+          display_name: facultyName,
+          faculty_name: facultyName,
+          role: isAdmin ? 'admin' : (isHod ? 'hod' : 'faculty'),
+          is_hod: isHod,
+          department_name: deptName,
+          hod_department: deptName,
+        };
+        this.selectedDept = deptName;
+        this.systemSettings = { submissions_enabled: true };
+        return;
+      }
+    } catch (err) {
+      console.warn('SSO check fallback:', err);
+    }
+
+    // 2. Native PHP backend session check
     try {
       const res = await fetch('api/course_plan.php?action=auth_check');
+      const ct = res.headers.get('content-type') || '';
+      if (!ct.includes('application/json')) {
+        return;
+      }
       const json = await res.json();
       if (json.settings) {
         this.systemSettings = json.settings;
@@ -2686,89 +2814,6 @@ class CoursePlanApp {
     } catch (e) {
       this.currentUser = null;
     }
-
-    // Single Sign-On (SSO) fallback from IQAC Central Portal
-    if (!this.currentUser && typeof localStorage !== 'undefined') {
-      const ssoRaw = localStorage.getItem('IQAC_SSO_USER');
-      if (ssoRaw) {
-        try {
-          const sso = JSON.parse(ssoRaw);
-          const roleLower = (sso.role || '').toLowerCase();
-          if (roleLower === 'administrator') {
-            window.location.href = '/staff/dashboard';
-            return;
-          }
-          if (roleLower === 'director') {
-            window.location.href = '/director/dashboard';
-            return;
-          }
-
-          const isHod = Boolean(sso.isHod || sso.is_hod || roleLower === 'hod');
-          const deptName = sso.department?.name || sso.department_name || 'Computer Science';
-          this.currentUser = {
-            id: sso.id || 1,
-            username: sso.username || 'admin',
-            name: sso.name || 'IQAC Faculty',
-            faculty_name: sso.name || 'IQAC Faculty',
-            role: roleLower === 'admin' ? 'admin' : (isHod ? 'hod' : 'faculty'),
-            is_hod: isHod,
-            isHod: isHod,
-            department_name: deptName,
-            hod_department: deptName
-          };
-          if (this.currentUser.department_name) {
-            this.selectedDept = this.currentUser.department_name;
-          }
-        } catch (e) {}
-      }
-    }
-
-    // Secondary fallback: query central /api/auth/me endpoint if localStorage was not populated
-    if (!this.currentUser) {
-      try {
-        const meRes = await fetch('/api/auth/me');
-        if (meRes.ok) {
-          const meData = await meRes.json();
-          if (meData && meData.user) {
-            const u = meData.user;
-            const roleLower = (u.role || '').toLowerCase();
-            if (roleLower === 'administrator') {
-              window.location.href = '/staff/dashboard';
-              return;
-            }
-            if (roleLower === 'director') {
-              window.location.href = '/director/dashboard';
-              return;
-            }
-
-            const isHod = Boolean(u.isHod || roleLower === 'hod');
-            const deptName = u.department?.name || 'Computer Science';
-            this.currentUser = {
-              id: u.id || 1,
-              username: u.username || 'admin',
-              name: u.name || 'IQAC Faculty',
-              faculty_name: u.name || 'IQAC Faculty',
-              role: roleLower === 'admin' ? 'admin' : (isHod ? 'hod' : 'faculty'),
-              is_hod: isHod,
-              isHod: isHod,
-              department_name: deptName,
-              hod_department: deptName
-            };
-            if (this.currentUser.department_name) {
-              this.selectedDept = this.currentUser.department_name;
-            }
-            localStorage.setItem('IQAC_SSO_USER', JSON.stringify({
-              id: u.id,
-              username: u.username,
-              name: u.name,
-              role: u.role,
-              isHod,
-              department: u.department,
-            }));
-          }
-        }
-      } catch (err) {}
-    }
   }
 
   async fetchPlans() {
@@ -2777,19 +2822,20 @@ class CoursePlanApp {
       if (this.currentUser && this.currentUser.role === 'admin') {
         if (this.adminFilter !== 'all') url += `&status=${encodeURIComponent(this.adminFilter)}`;
         if (this.adminDeptFilter !== 'all') url += `&department=${encodeURIComponent(this.adminDeptFilter)}`;
-      } else if (this.currentUser && (this.currentUser.role === 'faculty' || this.currentUser.role === 'hod')) {
-        if ((this.currentUser.is_hod || this.currentUser.role === 'hod') && (this.currentDashboardView === 'hod' || window.location.hash.includes('hod') || window.location.search.includes('hod'))) {
+      } else if (this.currentUser && this.currentUser.role === 'faculty') {
+        if (this.currentUser.is_hod && this.currentDashboardView === 'hod') {
           url += `&view=hod&department=${encodeURIComponent(this.currentUser.hod_department || this.currentUser.department_name)}`;
         } else {
-          url += `&department=${encodeURIComponent(this.currentUser.department_name)}&faculty_name=${encodeURIComponent(this.currentUser.faculty_name || this.currentUser.name)}`;
+          url += `&department=${encodeURIComponent(this.currentUser.department_name)}&faculty_name=${encodeURIComponent(this.currentUser.faculty_name)}`;
         }
       } else {
         url += `&department=${encodeURIComponent(this.selectedDept)}`;
       }
       const res = await fetch(url);
-      const json = await res.json();
-      if (json.success) {
-        this.plans = json.data || [];
+      const ct = res.headers.get('content-type') || '';
+      if (ct.includes('application/json')) {
+        const json = await res.json();
+        this.plans = json.success ? (json.data || []) : [];
       } else {
         this.plans = [];
       }
@@ -2800,8 +2846,13 @@ class CoursePlanApp {
           const facName = this.currentUser.faculty_name || this.currentUser.display_name || '';
           const deptName = this.currentUser.department_name || this.selectedDept || '';
           const tlRes = await fetch(`api/course_plan.php?action=get_tl_practices&faculty_name=${encodeURIComponent(facName)}&department_name=${encodeURIComponent(deptName)}`);
-          const tlJson = await tlRes.json();
-          this.tlPracticesData = (tlJson.success && tlJson.data) ? tlJson.data : null;
+          const tlCt = tlRes.headers.get('content-type') || '';
+          if (tlCt.includes('application/json')) {
+            const tlJson = await tlRes.json();
+            this.tlPracticesData = (tlJson.success && tlJson.data) ? tlJson.data : null;
+          } else {
+            this.tlPracticesData = null;
+          }
         } catch (tle) {
           console.warn('Could not fetch TL practices status:', tle);
           this.tlPracticesData = null;
@@ -2832,10 +2883,10 @@ class CoursePlanApp {
     } else if (this.viewMode === 'print') {
       root.innerHTML = this.renderPrintHtml();
     } else {
-      // Dashboard view based on user role
-      if (this.currentUser.role === 'admin') {
+      // Dashboard view based on currentDashboardView
+      if (this.currentDashboardView === 'admin' && this.currentUser.role === 'admin') {
         root.innerHTML = this.renderAdminDashboardHtml();
-      } else if (this.currentUser.role === 'hod' || (this.currentUser.is_hod && this.currentDashboardView === 'hod')) {
+      } else if (this.currentDashboardView === 'hod' && (this.currentUser.is_hod || this.currentUser.role === 'hod' || this.currentUser.role === 'admin')) {
         root.innerHTML = this.renderHODDashboardHtml();
       } else {
         root.innerHTML = this.renderFacultyDashboardHtml();
@@ -2863,34 +2914,34 @@ class CoursePlanApp {
 
       authStatusEl.innerHTML = `
         <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-          ${isFaculty ? `
-            <button 
-              type="button" 
-              onclick="coursePlanApp.navigateTo('/course-plan/dashboard')" 
-              class="px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition flex items-center gap-1 cursor-pointer shadow-2xs"
-            >
-              <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
-              <span>Dashboard</span>
-            </button>
-          ` : isHOD ? `
+          <button 
+            type="button" 
+            onclick="coursePlanApp.navigateTo('/course-plan/dashboard')" 
+            class="px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition flex items-center gap-1 cursor-pointer shadow-2xs"
+          >
+            <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
+            <span>Dashboard</span>
+          </button>
+          ${isHOD ? `
             <button 
               type="button" 
               onclick="coursePlanApp.navigateTo('/course-plan/hod')" 
-              class="px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition flex items-center gap-1 cursor-pointer shadow-2xs"
+              class="px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-300 transition flex items-center gap-1 cursor-pointer shadow-2xs"
             >
-              <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
-              <span>HOD Portal</span>
+              <i data-lucide="award" class="w-3.5 h-3.5"></i>
+              <span>HOD Review Hub</span>
             </button>
-          ` : `
+          ` : ''}
+          ${this.currentUser.role === 'admin' ? `
             <button 
               type="button" 
               onclick="coursePlanApp.navigateTo('/course-plan/admin')" 
-              class="px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition flex items-center gap-1 cursor-pointer shadow-2xs"
+              class="px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 transition flex items-center gap-1 cursor-pointer shadow-2xs"
             >
-              <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
+              <i data-lucide="crown" class="w-3.5 h-3.5"></i>
               <span>Admin Hub</span>
             </button>
-          `}
+          ` : ''}
           <span class="px-2 sm:px-2.5 py-1 rounded-xl text-[11px] sm:text-xs font-bold ${roleBadge} flex items-center gap-1 max-w-[130px] sm:max-w-xs truncate" title="${this.escapeHtml(this.currentUser.display_name || this.currentUser.faculty_name || 'User')}">
             <i data-lucide="${roleIcon}" class="w-3.5 h-3.5 shrink-0"></i>
             <span class="truncate">${this.escapeHtml(this.currentUser.display_name || this.currentUser.faculty_name || 'User')}</span>
@@ -2904,13 +2955,6 @@ class CoursePlanApp {
             <i data-lucide="book-open" class="w-3.5 h-3.5 text-indigo-600"></i>
             <span>User Manual</span>
           </a>
-          <button 
-            type="button" 
-            onclick="coursePlanApp.logout()" 
-            class="px-2.5 sm:px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold rounded-xl text-[11px] sm:text-xs transition border border-rose-200 cursor-pointer"
-          >
-            Sign Out
-          </button>
         </div>
       `;
     } else {
@@ -2931,7 +2975,13 @@ class CoursePlanApp {
   async switchToHODDashboard() {
     this.currentDashboardView = 'hod';
     this.viewMode = 'dashboard';
-    window.history.pushState(null, '', '/course-plan/hod');
+    window.location.hash = 'hod';
+    if (window.parent && window.parent !== window) {
+      try {
+        window.parent.location.hash = 'hod';
+        window.parent.dispatchEvent(new CustomEvent('portal-hash-change', { detail: 'hod' }));
+      } catch (e) {}
+    }
     await this.fetchPlans();
     this.render();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2940,7 +2990,13 @@ class CoursePlanApp {
   async switchToFacultyDashboard() {
     this.currentDashboardView = 'faculty';
     this.viewMode = 'dashboard';
-    window.history.pushState(null, '', '/course-plan/dashboard');
+    window.location.hash = 'my-plans';
+    if (window.parent && window.parent !== window) {
+      try {
+        window.parent.location.hash = 'my-plans';
+        window.parent.dispatchEvent(new CustomEvent('portal-hash-change', { detail: 'my-plans' }));
+      } catch (e) {}
+    }
     await this.fetchPlans();
     this.render();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -3378,10 +3434,10 @@ class CoursePlanApp {
                 type="button" 
                 onclick="coursePlanApp.switchToHODDashboard()" 
                 class="px-5 py-3 bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-white font-black rounded-2xl text-xs sm:text-sm transition shadow-lg shadow-amber-500/25 flex items-center gap-2.5 cursor-pointer active:scale-95 border border-amber-400/40"
-                title="View department submissions, review and approve course plans as HOD"
+                title="Open HOD Course Plan Review Hub"
               >
                 <span class="w-6 h-6 rounded-full bg-white text-amber-950 flex items-center justify-center font-black text-xs shrink-0 shadow-sm leading-none">🏛️</span>
-                <span>View Department Status (HOD Dashboard)</span>
+                <span>HOD Course Plan Review Hub</span>
               </button>
             ` : ''}
 
@@ -3423,14 +3479,6 @@ class CoursePlanApp {
                   <i data-lucide="lock" class="w-3 h-3"></i> Step 1 First
                 </span>
               `))}
-            </button>
-            <button 
-              type="button" 
-              onclick="coursePlanApp.logout()" 
-              class="px-4 py-3 bg-white/10 hover:bg-white/20 text-white font-bold rounded-2xl text-xs transition border border-white/20 flex items-center gap-1.5 cursor-pointer"
-            >
-              <i data-lucide="log-out" class="w-4 h-4"></i>
-              <span>Sign Out</span>
             </button>
           </div>
         </div>
@@ -3786,14 +3834,6 @@ class CoursePlanApp {
             >
               <i data-lucide="refresh-cw" class="w-4 h-4"></i>
               <span>Refresh</span>
-            </button>
-            <button 
-              type="button" 
-              onclick="coursePlanApp.logout()" 
-              class="px-4 py-2.5 bg-red-500/20 hover:bg-red-500/30 text-red-200 font-bold rounded-xl text-xs transition border border-red-500/30 flex items-center gap-1.5 cursor-pointer"
-            >
-              <i data-lucide="log-out" class="w-4 h-4"></i>
-              <span>Sign Out</span>
             </button>
           </div>
         </div>
@@ -4324,6 +4364,14 @@ class CoursePlanApp {
             >
               <i data-lucide="file-text" class="w-4 h-4"></i>
               <span>5. 🏛️ Institutional Report</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="coursePlanApp.switchAdminTab('roles')" 
+              class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${this.adminTab === 'roles' ? 'bg-amber-600 text-white shadow-sm' : 'bg-amber-50 text-amber-900 hover:bg-amber-100 border border-amber-200'}"
+            >
+              <i data-lucide="shield-check" class="w-4 h-4"></i>
+              <span>6. 👥 Assign Roles (Head & MQC)</span>
             </button>
           </div>
 
@@ -5170,6 +5218,265 @@ class CoursePlanApp {
             ` : ''}
           </div>
         ` : ''}
+
+        <!-- ================= 7. ASSIGN FACULTY ROLES (HEAD & MQC MUTUALLY EXCLUSIVE) ================= -->
+        ${this.adminTab === 'roles' ? this.renderFacultyRolesHtml() : ''}
+      </div>
+    `;
+  }
+
+  // ================= 3C. FACULTY ROLES ASSIGNMENT (HEAD & MQC) =================
+  renderFacultyRolesHtml() {
+    if (this.facultyRolesLoading) {
+      return `
+        <div class="bg-white rounded-2xl border border-slate-200 p-12 text-center space-y-3">
+          <div class="inline-block w-8 h-8 border-4 border-amber-600 border-t-transparent rounded-full animate-spin"></div>
+          <div class="text-sm font-bold text-slate-700">Loading Faculty Roles & Department Assignments...</div>
+        </div>
+      `;
+    }
+
+    const data = this.facultyRolesData || { faculty: [], departments: [] };
+    const facultyList = data.faculty || [];
+    const depts = data.departments || [];
+
+    const selectedDept = this.adminRolesDeptFilter || 'ALL';
+    const searchTerm = (this.adminRolesSearch || '').toLowerCase().trim();
+    const roleFilter = this.adminRolesFilter || 'ALL';
+
+    const filteredFaculty = facultyList.filter(f => {
+      const matchDept = selectedDept === 'ALL' || f.department_name === selectedDept;
+      const matchSearch = !searchTerm || 
+        (f.faculty_name && f.faculty_name.toLowerCase().includes(searchTerm)) ||
+        (f.faculty_id && f.faculty_id.toLowerCase().includes(searchTerm)) ||
+        (f.faculty_email && f.faculty_email.toLowerCase().includes(searchTerm));
+      const matchRole = roleFilter === 'ALL' ||
+        (roleFilter === 'HEAD' && f.is_head == 1) ||
+        (roleFilter === 'MQC' && f.is_mqc == 1) ||
+        (roleFilter === 'FACULTY' && f.is_head != 1 && f.is_mqc != 1);
+      return matchDept && matchSearch && matchRole;
+    });
+
+    const totalHeads = facultyList.filter(f => f.is_head == 1).length;
+    const totalMqcs = facultyList.filter(f => f.is_mqc == 1).length;
+    const totalFaculty = facultyList.length;
+
+    return `
+      <div class="space-y-6">
+        <!-- Banner & Instruction -->
+        <div class="bg-gradient-to-r from-amber-900 via-orange-950 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+          <div class="relative z-10 space-y-2">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 text-[11px] font-black uppercase tracking-wider">
+              <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+              <span>Role Delegation & Access Governance</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-black tracking-tight text-white">
+              Academic Department Role Segregation (HOD & MQC)
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-300 font-medium max-w-3xl leading-relaxed">
+              Designate Department Heads and Micro Quality Cell (MQC) Coordinators for each academic department. 
+              <strong>Rule:</strong> In any department, each member is a <em>Faculty</em> by default. 
+              A faculty member can be designated as either <strong>Head (HOD)</strong> or <strong>MQC</strong>, but <u>never both simultaneously</u>.
+            </p>
+          </div>
+        </div>
+
+        <!-- Metrics KPI Strip -->
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
+            <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Total Faculty Members</div>
+            <div class="text-2xl font-black text-slate-900">${totalFaculty}</div>
+            <div class="text-[11px] text-slate-400 font-medium mt-1">Across all 34 departments</div>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-amber-200 bg-amber-50/30 shadow-2xs">
+            <div class="text-[11px] font-bold text-amber-800 uppercase tracking-wider mb-1">Designated Heads (HODs)</div>
+            <div class="text-2xl font-black text-amber-900">${totalHeads} of ${depts.length}</div>
+            <div class="text-[11px] text-amber-700 font-medium mt-1">Can review & approve Course Plans</div>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-emerald-200 bg-emerald-50/30 shadow-2xs">
+            <div class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mb-1">Designated MQC Coordinators</div>
+            <div class="text-2xl font-black text-emerald-900">${totalMqcs} of ${depts.length}</div>
+            <div class="text-[11px] text-emerald-700 font-medium mt-1">Authorized for AAA Data Container</div>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-indigo-200 bg-indigo-50/30 shadow-2xs">
+            <div class="text-[11px] font-bold text-indigo-800 uppercase tracking-wider mb-1">Mutual Exclusivity Status</div>
+            <div class="text-2xl font-black text-indigo-900">Enforced</div>
+            <div class="text-[11px] text-indigo-700 font-medium mt-1">Head ≠ MQC (Strict 1-Role Policy)</div>
+          </div>
+        </div>
+
+        <!-- Filters & Search Toolbar -->
+        <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3.5">
+          <div class="flex items-center gap-3 flex-wrap flex-1">
+            <!-- Department Dropdown -->
+            <div class="min-w-[220px]">
+              <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">Filter by Department</label>
+              <select 
+                class="w-full text-xs font-bold border border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:bg-white focus:border-amber-600 focus:outline-none"
+                onchange="coursePlanApp.adminRolesDeptFilter = this.value; coursePlanApp.loadFacultyRolesData(true);"
+              >
+                <option value="ALL" ${selectedDept === 'ALL' ? 'selected' : ''}>All Academic Departments (${depts.length})</option>
+                ${depts.map(d => `
+                  <option value="${d.department_name}" ${selectedDept === d.department_name ? 'selected' : ''}>
+                    ${d.department_name} (${d.total_faculty} Faculty) ${d.has_head ? '• HOD: ' + d.head_name : ''}
+                  </option>
+                `).join('')}
+              </select>
+            </div>
+
+            <!-- Role Filter Pills -->
+            <div>
+              <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">Filter by Role</label>
+              <div class="flex items-center gap-1.5">
+                <button 
+                  type="button" 
+                  onclick="coursePlanApp.adminRolesFilter = 'ALL'; coursePlanApp.render();" 
+                  class="px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${roleFilter === 'ALL' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}"
+                >
+                  All (${facultyList.length})
+                </button>
+                <button 
+                  type="button" 
+                  onclick="coursePlanApp.adminRolesFilter = 'HEAD'; coursePlanApp.render();" 
+                  class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer ${roleFilter === 'HEAD' ? 'bg-amber-600 text-white' : 'bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200'}"
+                >
+                  🏛️ Heads (${totalHeads})
+                </button>
+                <button 
+                  type="button" 
+                  onclick="coursePlanApp.adminRolesFilter = 'MQC'; coursePlanApp.render();" 
+                  class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer ${roleFilter === 'MQC' ? 'bg-emerald-600 text-white' : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200'}"
+                >
+                  📊 MQCs (${totalMqcs})
+                </button>
+                <button 
+                  type="button" 
+                  onclick="coursePlanApp.adminRolesFilter = 'FACULTY'; coursePlanApp.render();" 
+                  class="px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${roleFilter === 'FACULTY' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}"
+                >
+                  🎓 Standard Faculty
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Search Input -->
+          <div class="w-full md:w-64">
+            <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">Search Staff</label>
+            <div class="relative">
+              <input 
+                type="text" 
+                placeholder="Search by name or code (e.g. 24CAI51)..." 
+                value="${this.adminRolesSearch || ''}"
+                oninput="coursePlanApp.adminRolesSearch = this.value; coursePlanApp.render();"
+                class="w-full text-xs font-medium pl-8 pr-3 py-2 border border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:border-amber-600 focus:outline-none"
+              />
+              <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Faculty Role Table -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="bg-slate-50/80 border-b border-slate-200 text-[11px] font-black uppercase tracking-wider text-slate-600">
+                  <th class="py-3 px-4 w-12 text-center">#</th>
+                  <th class="py-3 px-4">Staff Code</th>
+                  <th class="py-3 px-4">Faculty Member</th>
+                  <th class="py-3 px-4">Department</th>
+                  <th class="py-3 px-4 text-center">Active Status</th>
+                  <th class="py-3 px-4 text-right">Assign Role (Mutually Exclusive)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                ${filteredFaculty.length === 0 ? `
+                  <tr>
+                    <td colspan="6" class="p-8 text-center text-slate-400 font-bold">
+                      No faculty members found matching your search and filter criteria.
+                    </td>
+                  </tr>
+                ` : filteredFaculty.map((f, idx) => {
+                  const isHead = f.is_head == 1 || f.role === 'HEAD';
+                  const isMqc = f.is_mqc == 1 || f.role === 'MQC';
+                  const safeDeptName = (f.department_name || '').replace(/'/g, "\\'");
+                  const safeFacId = f.faculty_id || '';
+                  return `
+                    <tr class="hover:bg-amber-50/30 transition ${isHead ? 'bg-amber-50/20' : (isMqc ? 'bg-emerald-50/20' : '')}">
+                      <td class="py-3.5 px-4 text-center text-slate-400 font-mono font-bold">${idx + 1}</td>
+                      <td class="py-3.5 px-4 font-mono font-extrabold text-slate-900">
+                        <span class="px-2 py-0.5 rounded-lg bg-slate-100 border border-slate-200 text-slate-800">
+                          ${f.faculty_id || 'N/A'}
+                        </span>
+                      </td>
+                      <td class="py-3.5 px-4">
+                        <div class="font-extrabold text-slate-900">${f.faculty_name}</div>
+                        ${f.faculty_email ? `<div class="text-[11px] text-slate-400 font-mono">${f.faculty_email}</div>` : ''}
+                      </td>
+                      <td class="py-3.5 px-4 font-semibold text-slate-700">
+                        ${f.department_name}
+                      </td>
+                      <td class="py-3.5 px-4 text-center">
+                        ${isHead ? `
+                          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-100 border border-amber-300 text-amber-900 font-black text-[11px] shadow-xs">
+                            <span>🏛️</span>
+                            <span>Head of Department</span>
+                          </span>
+                        ` : (isMqc ? `
+                          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-900 font-black text-[11px] shadow-xs">
+                            <span>📊</span>
+                            <span>MQC Coordinator</span>
+                          </span>
+                        ` : `
+                          <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 font-bold text-[10px]">
+                            <span>🎓</span>
+                            <span>Faculty Member</span>
+                          </span>
+                        `)}
+                      </td>
+                      <td class="py-3.5 px-4 text-right">
+                        <div class="inline-flex items-center p-1 bg-slate-100 rounded-xl border border-slate-200 gap-1">
+                          <!-- Standard Faculty button -->
+                          <button 
+                            type="button" 
+                            onclick="coursePlanApp.setFacultyRole('${safeFacId}', 'FACULTY', '${safeDeptName}')"
+                            class="px-2.5 py-1 rounded-lg text-[11px] font-black transition cursor-pointer ${(!isHead && !isMqc) ? 'bg-white text-slate-900 shadow-xs border border-slate-200' : 'text-slate-500 hover:text-slate-900'}"
+                            title="Reset to Standard Faculty"
+                          >
+                            Faculty
+                          </button>
+                          
+                          <!-- Head (HOD) button -->
+                          <button 
+                            type="button" 
+                            onclick="coursePlanApp.setFacultyRole('${safeFacId}', 'HEAD', '${safeDeptName}')"
+                            class="px-2.5 py-1 rounded-lg text-[11px] font-black transition cursor-pointer flex items-center gap-1 ${isHead ? 'bg-amber-600 text-white shadow-xs' : 'text-amber-800 hover:bg-amber-100'}"
+                            title="Designate as Department Head (Disallows MQC)"
+                          >
+                            <span>🏛️</span>
+                            <span>Head</span>
+                          </button>
+
+                          <!-- MQC button -->
+                          <button 
+                            type="button" 
+                            onclick="coursePlanApp.setFacultyRole('${safeFacId}', 'MQC', '${safeDeptName}')"
+                            class="px-2.5 py-1 rounded-lg text-[11px] font-black transition cursor-pointer flex items-center gap-1 ${isMqc ? 'bg-emerald-600 text-white shadow-xs' : 'text-emerald-800 hover:bg-emerald-100'}"
+                            title="Designate as MQC Coordinator (Disallows Head)"
+                          >
+                            <span>📊</span>
+                            <span>MQC</span>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     `;
   }
@@ -10881,16 +11188,14 @@ class CoursePlanApp {
 
   async logout() {
     try {
-      if (typeof localStorage !== 'undefined') {
-        localStorage.removeItem('IQAC_SSO_USER');
-        localStorage.removeItem('IQAC_AUTH_USER');
-      }
-      await fetch('api/course_plan.php?action=logout').catch(() => {});
-      await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
-    } finally {
+      await fetch('api/course_plan.php?action=logout');
       this.currentUser = null;
       this.plans = [];
-      window.location.href = '/login';
+      this.navigateTo('/course-plan/login');
+    } catch (e) {
+      this.currentUser = null;
+      this.plans = [];
+      this.navigateTo('/course-plan/login');
     }
   }
 }

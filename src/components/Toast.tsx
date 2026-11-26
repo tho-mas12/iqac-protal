@@ -81,7 +81,7 @@ export default function Toast({ toast, onClose }: ToastProps) {
   const Icon = config.icon;
 
   return (
-    <div className="fixed top-5 right-5 z-[9999] max-w-md w-[calc(100vw-2.5rem)] animate-in slide-in-from-top-4 sm:slide-in-from-right-4 fade-in duration-300">
+    <div className="fixed bottom-5 right-5 z-[9999] max-w-md w-[calc(100vw-2.5rem)] animate-in slide-in-from-bottom-4 sm:slide-in-from-right-4 fade-in duration-300">
       <div
         className={`relative overflow-hidden rounded-2xl border shadow-2xl backdrop-blur-xl p-4 flex items-start gap-3.5 ${config.bg}`}
       >

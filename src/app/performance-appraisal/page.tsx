@@ -21,6 +21,8 @@ import {
 } from 'lucide-react';
 import sjcLogo from '../../../public/sjc-logo.png';
 import Toast, { ToastMessage } from '@/components/Toast';
+import Sidebar from '@/components/Sidebar';
+import Header from '@/components/Header';
 
 export default function PerformanceAppraisalPage() {
   const router = useRouter();
@@ -134,64 +136,40 @@ export default function PerformanceAppraisalPage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#faf8f2] flex flex-col font-sans selection:bg-[#4F8FC0]/20 selection:text-[#26648E]">
-      {/* Arctic Frost Aura Background Layers */}
-      <div className="aura-layer-1" aria-hidden="true" />
-      <div className="aura-layer-2" aria-hidden="true" />
+    <div className="flex min-h-screen bg-[#f8fafc]">
+      <Sidebar
+        role={(user?.invitationRole || user?.role || 'STAFF') as any}
+        userName={user?.name}
+        departmentName={user?.department?.name}
+        shift={user?.department?.shift}
+        isHod={user?.isHod}
+        isMqc={user?.isMqc}
+      />
+      <div className="flex-1 flex flex-col min-w-0">
+        <Header
+          title="Performance Appraisal of Teacher • 2026–2027"
+          userName={user?.name}
+          userRole={user?.invitationRole || user?.role || 'Staff'}
+          departmentName={user?.department?.name}
+          shift={user?.department?.shift}
+        />
 
-      {/* Top Header */}
-      <header className="relative z-10 w-full border-b border-[#4F8FC0]/25 bg-white/90 backdrop-blur-md sticky top-0 px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-2xs">
-        <div className="flex items-center gap-3">
-          <Link
-            href="/hub"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#26648E] hover:bg-[#1f5072] text-white text-xs font-black transition shadow-xs"
-            title="Back to Common Dashboard"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Common Dashboard</span>
-          </Link>
-          <div className="w-10 h-12 rounded-xl bg-gradient-to-b from-[#f0f5f9] via-white to-[#FFE3B3]/25 border border-[#4F8FC0]/30 flex items-center justify-center p-1 shadow-2xs">
-            <Image
-              src={sjcLogo}
-              alt="St. Joseph's College"
-              className="h-9 w-auto object-contain drop-shadow-xs"
-              priority
-            />
+        {/* Action subheader */}
+        <div className="px-4 sm:px-8 py-2.5 bg-white border-b border-slate-200 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-slate-700">Self-Appraisal Academic Audit</span>
           </div>
-          <div>
-            <h1 className="text-sm sm:text-base font-black text-[#26648E] font-crest tracking-tight leading-tight">
-              Performance Appraisal of Teacher • 2026–2027
-            </h1>
-            <p className="text-[10px] sm:text-[11px] font-extrabold text-[#4F8FC0] tracking-wide uppercase">
-              Internal Quality Assurance Cell (IQAC) • Faculty Self-Appraisal
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3">
-          {user && (
-            <div className="hidden sm:flex flex-col text-right">
-              <span className="text-xs font-black text-[#26648E] leading-tight">
-                {user.name}
-              </span>
-              <span className="text-[10px] font-bold text-slate-500 uppercase">
-                {user.department?.name || 'Faculty Member'}
-              </span>
-            </div>
-          )}
-
           <button
             onClick={handleSaveDraft}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#4F8FC0]/30 bg-white hover:bg-[#f0f5f9] text-[#26648E] text-xs font-bold transition shadow-2xs cursor-pointer"
           >
             <Save className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Save Draft</span>
+            <span>Save Draft</span>
           </button>
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="relative z-10 flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-7">
+        {/* Main Content */}
+        <main className="relative z-10 flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-7">
         {/* Banner */}
         <div className="academic-card p-6 sm:p-7 space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -398,12 +376,13 @@ export default function PerformanceAppraisalPage() {
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="relative z-10 w-full py-4 text-center text-xs font-semibold text-slate-500 border-t border-[#4F8FC0]/20 bg-white/70 backdrop-blur-xs">
-        <p>© 2026 Internal Quality Assurance Cell (IQAC), St. Joseph&apos;s College (Autonomous). Powered by FrontierWox Tech.</p>
-      </footer>
+        {/* Footer */}
+        <footer className="relative z-10 w-full py-4 text-center text-xs font-semibold text-slate-500 border-t border-[#4F8FC0]/20 bg-white/70 backdrop-blur-xs">
+          <p>© 2026 Internal Quality Assurance Cell (IQAC), St. Joseph&apos;s College (Autonomous). Powered by FrontierWox Tech.</p>
+        </footer>
 
-      {toast && <Toast toast={toast} onClose={() => setToast(null)} />}
+        {toast && <Toast toast={toast} onClose={() => setToast(null)} />}
+      </div>
     </div>
   );
 }
