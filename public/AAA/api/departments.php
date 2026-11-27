@@ -10,6 +10,7 @@ try {
     $pdo = getDBConnection();
 
     if ($method === 'GET') {
+        requireAuth();
         // Return list of all departments with status and summary metrics
         $stmt = $pdo->query("
             SELECT d.*, 

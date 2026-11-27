@@ -5,6 +5,55 @@ import { autoSyncDatabaseColumns } from '@/lib/db-sync';
 import { getActiveSession, registerSession } from '@/lib/session-lock';
 import { getSystemSettings } from '@/lib/system-settings';
 
+// In-Memory Rate Limiter to prevent brute-force attacks on credentials
+interface AttemptRecord {
+  count: number;
+  firstAttempt: number;
+  blockedUntil: number;
+}
+const loginAttempts = new Map<string, AttemptRecord>();
+
+function getClientIp(req: NextRequest): string {
+  const forwarded = req.headers.get('x-forwarded-for');
+  if (forwarded) return forwarded.split(',')[0].trim();
+  const realIp = req.headers.get('x-real-ip');
+  if (realIp) return realIp.trim();
+  return 'unknown';
+}
+
+function checkRateLimit(key: string): { blocked: boolean; retryAfter?: number } {
+  const now = Date.now();
+  const rec = loginAttempts.get(key);
+  if (!rec) return { blocked: false };
+
+  if (rec.blockedUntil > now) {
+    return { blocked: true, retryAfter: Math.ceil((rec.blockedUntil - now) / 1000) };
+  }
+
+  // If time window (15 mins) expired, reset
+  if (now - rec.firstAttempt > 15 * 60 * 1000) {
+    loginAttempts.delete(key);
+    return { blocked: false };
+  }
+
+  return { blocked: false };
+}
+
+function recordFailedAttempt(key: string) {
+  const now = Date.now();
+  const rec = loginAttempts.get(key) || { count: 0, firstAttempt: now, blockedUntil: 0 };
+  rec.count += 1;
+  // If 5 failed attempts within 15 minutes, lock for 15 minutes
+  if (rec.count >= 5) {
+    rec.blockedUntil = now + 15 * 60 * 1000;
+  }
+  loginAttempts.set(key, rec);
+}
+
+function resetAttempts(key: string) {
+  loginAttempts.delete(key);
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { username, password, forceSignout } = await req.json();
@@ -18,6 +67,18 @@ export async function POST(req: NextRequest) {
 
     const cleanUpper = username.trim().toUpperCase();
     const cleanLower = username.trim().toLowerCase();
+
+    // Check rate limit per IP + username
+    const clientIp = getClientIp(req);
+    const rateLimitKey = `${clientIp}_${cleanUpper}`;
+    const rateCheck = checkRateLimit(rateLimitKey);
+    if (rateCheck.blocked) {
+      const minutesLeft = Math.ceil((rateCheck.retryAfter || 60) / 60);
+      return NextResponse.json(
+        { error: `Too many failed login attempts. Please wait ${minutesLeft} minute(s) before trying again.` },
+        { status: 429 }
+      );
+    }
 
     // Automatically ensure columns exist
     await autoSyncDatabaseColumns();
@@ -143,6 +204,7 @@ export async function POST(req: NextRequest) {
                 maxAge: 60 * 60 * 24 * 7,
               });
 
+              resetAttempts(rateLimitKey);
               return res;
             }
           }
@@ -151,6 +213,7 @@ export async function POST(req: NextRequest) {
         console.error('Faculty check error:', fErr);
       }
 
+      recordFailedAttempt(rateLimitKey);
       return NextResponse.json(
         { error: 'Invalid username or password' },
         { status: 401 }
@@ -167,6 +230,7 @@ export async function POST(req: NextRequest) {
 
     const isMatch = await comparePassword(password, user.password);
     if (!isMatch) {
+      recordFailedAttempt(rateLimitKey);
       return NextResponse.json(
         { error: 'Invalid username or password' },
         { status: 401 }
@@ -262,14 +326,12 @@ export async function POST(req: NextRequest) {
       maxAge: 60 * 60 * 24 * 7, // 7 days
     });
 
+    resetAttempts(rateLimitKey);
     return res;
   } catch (error: any) {
     console.error('Login error:', error);
-    const errorMessage = error?.message?.includes('database') || error?.message?.includes('Authentication failed') || error?.message?.includes('connect')
-      ? `Database Connection Error: ${error.message}`
-      : 'An unexpected server error occurred';
     return NextResponse.json(
-      { error: errorMessage },
+      { error: 'An unexpected authentication error occurred. Please try again shortly.' },
       { status: 500 }
     );
   }

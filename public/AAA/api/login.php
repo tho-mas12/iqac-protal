@@ -24,14 +24,10 @@ try {
     $stmt->execute([':username' => $username]);
     $user = $stmt->fetch();
 
-    // Verify password (supports bcrypt hash or direct demo matching)
+    // Verify password strictly using bcrypt hash
     $isValid = false;
-    if ($user) {
+    if ($user && !empty($user['password_hash'])) {
         if (password_verify($password, $user['password_hash'])) {
-            $isValid = true;
-        } elseif ($username === 'admin' && $password === 'admin123') {
-            $isValid = true;
-        } elseif ($password === ($username . '123')) {
             $isValid = true;
         }
     }

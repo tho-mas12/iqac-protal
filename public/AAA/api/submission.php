@@ -12,17 +12,21 @@ try {
     $pdo = getDBConnection();
 
     if ($method === 'GET') {
+        $user = requireAuth();
+
         // Optional trigger to backfill all audit_submissions into individual metric tables
         if (isset($_GET['action']) && $_GET['action'] === 'backfill') {
+            requireAuth('admin');
             $backfillResults = MetricSyncEngine::backfillAllSubmissions($pdo);
             sendJsonResponse(['success' => true, 'message' => 'Backfill completed across metric tables', 'results' => $backfillResults]);
         }
 
         $deptParam = isset($_GET['dept_id']) ? trim($_GET['dept_id']) : (isset($_GET['code']) ? trim($_GET['code']) : null);
 
-        // If not specified, use authenticated user's department
-        if (!$deptParam) {
-            $user = getAuthUser();
+        // Strict RBAC: Department users can only access their own department data
+        if ($user && $user['role'] === 'department' && !empty($user['department_id'])) {
+            $deptParam = $user['department_id'];
+        } elseif (!$deptParam) {
             if ($user && !empty($user['department_id'])) {
                 $deptParam = $user['department_id'];
             } elseif ($user && !empty($user['department_code'])) {
@@ -30,7 +34,7 @@ try {
             }
         }
 
-        // Default to department 1 (Computer Science) if still null
+        // Default to department 1 if still null for admin
         if (!$deptParam) {
             $deptParam = 1;
         }
@@ -87,10 +91,10 @@ try {
         $isFinalSubmit = !empty($input['is_final_submit']);
         $academicYear = !empty($input['academic_year']) ? trim($input['academic_year']) : '2026 - 2027';
 
-        // Check authentication
-        $user = getAuthUser();
-        if ($user && $user['role'] === 'department' && !empty($user['department_id'])) {
-            $deptParam = $user['department_id']; // enforce own department
+        // Enforce Authentication & Role-Based Access Control
+        $user = requireAuth();
+        if ($user['role'] === 'department' && !empty($user['department_id'])) {
+            $deptParam = $user['department_id']; // enforce own department strictly
         }
 
         if (!$deptParam || !$auditData) {

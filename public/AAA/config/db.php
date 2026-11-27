@@ -8,11 +8,12 @@
 // ==============================================================
 // EDIT THESE 4 VALUES TO MATCH YOUR CPANEL MYSQL CREDENTIALS
 // ==============================================================
-define('DB_HOST', '127.0.0.1');
-define('DB_NAME', 'iqac_aaa');         // Target Database on phpMyAdmin (URL: db=iqac_aaa)
-define('DB_USER', 'iqac_user');        // Target Database user
-define('DB_PASS', 'sjcIQAC-portal26'); // Target Database password
+define('DB_HOST', getenv('DB_HOST') ?: '127.0.0.1');
+define('DB_NAME', getenv('DB_NAME') ?: 'iqac_aaa');
+define('DB_USER', getenv('DB_USER') ?: 'iqac_user');
+define('DB_PASS', getenv('DB_PASS') ?: 'sjcIQAC-portal26');
 define('DB_CHARSET', 'utf8mb4');
+define('JWT_SECRET', getenv('JWT_SECRET') ?: 'sjciqac-portal-secret-key-super-secure-2026');
 
 // Start session if not started
 if (session_status() === PHP_SESSION_NONE) {
@@ -38,8 +39,7 @@ function getDBConnection() {
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
-                'error' => 'Database connection failed: ' . $e->getMessage(),
-                'hint' => 'Please check config/db.php credentials or run install.php first.'
+                'error' => 'Database connection failed. Please contact the administrator.'
             ]);
             exit;
         }
@@ -53,17 +53,71 @@ function getDBConnection() {
 function sendJsonResponse($data, $statusCode = 200) {
     http_response_code($statusCode);
     header('Content-Type: application/json; charset=utf-8');
-    header('Access-Control-Allow-Origin: *');
+    
+    // Secure CORS: restrict to host origin
+    $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+    if ($origin && (strpos($origin, 'frontierwox.in') !== false || strpos($origin, 'localhost') !== false || strpos($origin, '127.0.0.1') !== false)) {
+        header("Access-Control-Allow-Origin: $origin");
+        header('Access-Control-Allow-Credentials: true');
+    }
     header('Access-Control-Allow-Headers: Content-Type, Authorization');
     echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     exit;
 }
 
 /**
- * Get Authenticated User from session
+ * Base64URL decode helper for JWT
+ */
+function base64UrlDecode($data) {
+    $remainder = strlen($data) % 4;
+    if ($remainder) {
+        $padlen = 4 - $remainder;
+        $data .= str_repeat('=', $padlen);
+    }
+    return base64_decode(strtr($data, '-_', '+/'));
+}
+
+/**
+ * Get Authenticated User from session or JWT cookie
  */
 function getAuthUser() {
-    return isset($_SESSION['user']) ? $_SESSION['user'] : null;
+    if (isset($_SESSION['user']) && !empty($_SESSION['user']['username'])) {
+        return $_SESSION['user'];
+    }
+
+    // Verify central portal SSO JWT token from cookie
+    if (!empty($_COOKIE['iqac_token'])) {
+        $jwt = trim($_COOKIE['iqac_token']);
+        $tokenParts = explode('.', $jwt);
+        if (count($tokenParts) === 3) {
+            $headerJson = base64UrlDecode($tokenParts[0]);
+            $payloadJson = base64UrlDecode($tokenParts[1]);
+            $signatureProvided = base64UrlDecode($tokenParts[2]);
+
+            // Cryptographically verify HMAC-SHA256 signature
+            $headerAndPayload = $tokenParts[0] . '.' . $tokenParts[1];
+            $signatureExpected = hash_hmac('sha256', $headerAndPayload, JWT_SECRET, true);
+
+            if (hash_equals($signatureExpected, $signatureProvided)) {
+                $payload = json_decode($payloadJson, true);
+                if ($payload && (!isset($payload['exp']) || $payload['exp'] > time())) {
+                    $rawRole = strtoupper($payload['role'] ?? '');
+                    $isAdmin = ($rawRole === 'ADMIN' || $rawRole === 'ADMINISTRATOR');
+
+                    $_SESSION['user'] = [
+                        'id' => $payload['userId'] ?? 1,
+                        'username' => strtolower($payload['username'] ?? 'user'),
+                        'role' => $isAdmin ? 'admin' : 'department',
+                        'department_id' => $payload['departmentId'] ?? null,
+                        'display_name' => $payload['name'] ?? ($payload['username'] ?? 'User')
+                    ];
+                    return $_SESSION['user'];
+                }
+            }
+        }
+    }
+
+    return null;
 }
 
 /**
