@@ -57,7 +57,24 @@ function resetAttempts(key: string) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { username, password, forceSignout } = await req.json();
+    let body: any = {};
+    try {
+      const rawText = await req.text();
+      try {
+        body = JSON.parse(rawText);
+      } catch {
+        // Handle unescaped backslashes or invalid escapes from client input
+        const sanitized = rawText.replace(/\\(?!["\\/bfnrtu])/g, '\\\\');
+        body = JSON.parse(sanitized);
+      }
+    } catch (parseErr) {
+      return NextResponse.json(
+        { error: 'Invalid login request format. Please re-enter your credentials.' },
+        { status: 400 }
+      );
+    }
+
+    const { username, password, forceSignout } = body;
 
     if (!username || !password) {
       return NextResponse.json(
@@ -66,8 +83,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const cleanUpper = username.trim().toUpperCase();
-    const cleanLower = username.trim().toLowerCase();
+    const cleanUpper = String(username).trim().toUpperCase();
+    const cleanLower = String(username).trim().toLowerCase();
 
     // Check rate limit per IP + username
     const clientIp = getClientIp(req);
@@ -81,8 +98,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Automatically ensure columns exist
-    await autoSyncDatabaseColumns();
+    // Automatically ensure columns exist without blocking on failures
+    try {
+      await autoSyncDatabaseColumns();
+    } catch (syncErr) {
+      console.warn('[Login] autoSyncDatabaseColumns warning:', syncErr);
+    }
 
     let user;
     try {
@@ -96,17 +117,20 @@ export async function POST(req: NextRequest) {
         include: { department: true },
       });
     } catch (dbErr: any) {
-      // If column still missing, attempt emergency DDL sync and retry
-      await autoSyncDatabaseColumns();
-      user = await prisma.user.findFirst({
-        where: {
-          OR: [
-            { username: cleanUpper },
-            { username: cleanLower },
-          ],
-        },
-        include: { department: true },
-      });
+      try {
+        await autoSyncDatabaseColumns();
+        user = await prisma.user.findFirst({
+          where: {
+            OR: [
+              { username: cleanUpper },
+              { username: cleanLower },
+            ],
+          },
+          include: { department: true },
+        });
+      } catch (retryErr) {
+        console.error('[Login] Database query error on retry:', retryErr);
+      }
     }
 
     // Fallback: Check in faculty_directory.json (seeded from Faculty_ERP_Credentials.csv)

@@ -35,7 +35,12 @@ export default function LoginPage() {
         }),
       });
 
-      const data = await res.json();
+      let data: any = {};
+      try {
+        data = await res.json();
+      } catch {
+        data = { error: 'Server communication error. Please try again.' };
+      }
 
       if (data.sessionConflict) {
         setConflictMessage(data.message || 'This account is currently active on another device or browser.');
@@ -45,7 +50,7 @@ export default function LoginPage() {
       }
 
       if (!res.ok) {
-        throw new Error(data.error || 'Login failed');
+        throw new Error(data.error || 'Invalid username or password');
       }
 
       setSessionConflictModal(false);
