@@ -116,6 +116,8 @@ class App {
   onDataUpdated(data) {
     if (!data) return;
 
+    this.refreshDeptSelectors();
+
     // Update active department indicators
     const label = document.getElementById('active-dept-label');
     if (label && data.departmentInfo) {
@@ -321,12 +323,61 @@ class App {
       if (window.lucide) lucide.createIcons({ root: topContainer });
     }
 
+    this.refreshDeptSelectors();
+
     // Inside Department Data page if open
     const deptDataSel = document.getElementById('dept-data-active-year-selector');
     if (deptDataSel) {
       deptDataSel.innerHTML = years.map(y => `
         <option value="${y}" ${y === activeYear ? 'selected' : ''}>${y}</option>
       `).join('') + '<option value="__NEW__">+ Add New Year...</option><option value="__DELETE__">🗑️ Delete Active Year...</option>';
+    }
+  }
+
+  refreshDeptSelectors() {
+    if (!window.dataStore) return;
+    const activeDept = window.dataStore.activeDepartment || window.dataStore.getDepartmentList()[0] || 'PG & Research Department of Computer Science';
+    const depts = window.dataStore.getDepartmentList() || [];
+    const isAdmin = window.authManager && window.authManager.isAdmin();
+
+    const topDeptContainer = document.getElementById('topbar-dept-container');
+    if (topDeptContainer) {
+      if (isAdmin && depts.length > 0) {
+        topDeptContainer.innerHTML = `
+          <div class="flex items-center gap-1.5 bg-blue-50 px-2.5 py-1 rounded-xl border border-blue-200/90 shadow-2xs">
+            <i data-lucide="building-2" class="w-3.5 h-3.5 text-[#26648E] shrink-0"></i>
+            <span class="text-xs font-black text-[#26648E] hidden sm:inline">Dept:</span>
+            <select 
+              id="topbar-active-dept-select"
+              onchange="app.onGlobalDeptChange(this.value)"
+              class="text-xs font-bold text-[#26648E] bg-transparent outline-none cursor-pointer max-w-[200px] truncate"
+              title="Switch Active Department across all college departments"
+            >
+              ${depts.map(d => `<option value="${d}" ${d === activeDept ? 'selected' : ''}>${d}</option>`).join('')}
+            </select>
+          </div>
+        `;
+      } else {
+        topDeptContainer.innerHTML = `
+          <div class="flex items-center gap-1.5 bg-blue-50 px-2.5 py-1 rounded-xl border border-blue-200/90 shadow-2xs select-none">
+            <i data-lucide="building-2" class="w-3.5 h-3.5 text-[#26648E] shrink-0"></i>
+            <span class="text-xs font-bold text-[#26648E] max-w-[220px] truncate" title="${activeDept}">${activeDept}</span>
+          </div>
+        `;
+      }
+      if (window.lucide) lucide.createIcons({ root: topDeptContainer });
+    }
+  }
+
+  onGlobalDeptChange(deptName) {
+    if (!deptName || !window.dataStore) return;
+    window.dataStore.switchDepartment(deptName);
+    this.refreshDeptSelectors();
+    if (window.formBuilder) {
+      window.formBuilder.departmentName = deptName;
+      if (this.currentView === 'form') {
+        this.switchView('form');
+      }
     }
   }
 
