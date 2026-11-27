@@ -158,9 +158,41 @@ try {
         // Synchronize row-level records directly into individual metric_* MySQL tables
         $syncedTables = [];
         try {
-            $syncedTables = MetricSyncEngine::syncAuditData($pdo, $deptId, $deptRow['name'], $academicYear, $auditData);
+            $submittedBy = $user['username'] ?? ($user['name'] ?? ($deptRow['code'] ?? 'system'));
+            $syncedTables = MetricSyncEngine::syncAuditData($pdo, $deptId, $deptRow['name'], $academicYear, $auditData, $submittedBy);
         } catch (Exception $syncErr) {
             error_log("MetricSyncEngine error: " . $syncErr->getMessage());
+        }
+
+        // Record in Portal ActionLog
+        try {
+            $logActionType = $isFinalSubmit ? 'UPDATE' : 'UPDATE';
+            $logDetails = ($isFinalSubmit ? 'Final audit report submitted to IQAC' : 'Draft audit data saved') . " for Department {$deptRow['name']} ({$deptRow['code']}) for Academic Year {$academicYear}.";
+            $clientIp = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? ($_SERVER['REMOTE_ADDR'] ?? '127.0.0.1');
+            if (strpos($clientIp, ',') !== false) {
+                $clientIp = trim(explode(',', $clientIp)[0]);
+            }
+            $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'Browser';
+            $logId = 'log_' . bin2hex(random_bytes(10));
+            $logStmt = $pdo->prepare("
+                INSERT INTO `iqac_portal`.`ActionLog` 
+                (id, timestamp, actorId, username, role, action, module, targetId, targetName, details, ipAddress, userAgent, createdAt)
+                VALUES (:id, NOW(3), :actorId, :username, :role, :action, 'AAA', :targetId, :targetName, :details, :ip, :ua, NOW(3))
+            ");
+            $logStmt->execute([
+                ':id'         => $logId,
+                ':actorId'    => $user['id'] ?? null,
+                ':username'   => strtoupper($submittedBy),
+                ':role'       => strtoupper($user['role'] ?? 'DEPARTMENT'),
+                ':action'     => $logActionType,
+                ':targetId'   => (string)$deptId,
+                ':targetName' => $deptRow['name'],
+                ':details'    => $logDetails,
+                ':ip'         => $clientIp,
+                ':ua'         => $userAgent,
+            ]);
+        } catch (Exception $logErr) {
+            error_log("Failed to insert into ActionLog: " . $logErr->getMessage());
         }
 
         sendJsonResponse([

@@ -37,6 +37,7 @@ import {
   Clock,
   Activity,
   Settings,
+  History,
 } from 'lucide-react';
 import sjcLogo from '../../public/sjc-logo.png';
 
@@ -272,6 +273,7 @@ export default function Sidebar({ role, userName, departmentName, shift, isHod, 
     { label: 'Common Dashboard', href: '/admin', icon: LayoutDashboard },
     { label: 'Access Control', href: '/admin/users-roles', icon: ShieldCheck, badge: 'Access' },
     { label: 'Appraisal Questions', href: '/admin/appraisal-questions', icon: ClipboardList, badge: 'Appraisal' },
+    { label: 'Action Logs', href: '/admin/action-logs', icon: History, badge: 'Audit' },
     { label: 'Live Server Monitor', href: '/admin/server-status', icon: Activity, badge: 'Live' },
     { label: 'System Settings', href: '/admin/settings', icon: Settings, badge: 'System' },
   ];

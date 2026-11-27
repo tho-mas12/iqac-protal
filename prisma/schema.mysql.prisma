@@ -108,3 +108,24 @@ model SystemSettings {
   announcementText          String?  @db.Text
   updatedAt                 DateTime @updatedAt
 }
+
+model ActionLog {
+  id          String   @id @default(cuid())
+  timestamp   DateTime @default(now())
+  actorId     String?
+  username    String
+  role        String   @default("USER")
+  action      String   // CREATE, READ, UPDATE, DELETE, LOGIN, LOGOUT, EXPORT
+  module      String   // AAA, COURSE_PLAN, INVITATIONS, USERS, SETTINGS, AUTH, GENERAL
+  targetId    String?
+  targetName  String?
+  details     String?  @db.Text
+  ipAddress   String?
+  userAgent   String?  @db.Text
+  createdAt   DateTime @default(now())
+
+  @@index([username])
+  @@index([action])
+  @@index([module])
+  @@index([timestamp])
+}

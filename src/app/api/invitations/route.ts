@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
 import { uploadFileToDrive } from '@/lib/drive';
 import { sendWhatsAppNotification } from '@/lib/whatsapp';
+import { logAction } from '@/lib/action-logger';
 
 export async function GET(req: NextRequest) {
   try {
@@ -290,6 +291,18 @@ export async function POST(req: NextRequest) {
     } catch (e) {
       console.error('[WhatsApp Trigger Warning]', e);
     }
+
+    await logAction({
+      req,
+      username: session.username,
+      role: session.role,
+      actorId: session.userId,
+      action: 'CREATE',
+      module: 'INVITATIONS',
+      targetId: updatedInvitation.id,
+      targetName: updatedInvitation.programTitle,
+      details: `Created new invitation "${updatedInvitation.programTitle}" for Department ${department.name} (${shift}).`,
+    });
 
     return NextResponse.json({
       success: true,

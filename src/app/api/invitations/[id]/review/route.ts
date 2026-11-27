@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
+import { logAction } from '@/lib/action-logger';
 
 export async function POST(
   req: NextRequest,
@@ -47,6 +48,18 @@ export async function POST(
         },
       });
 
+      await logAction({
+        req,
+        username: session.username,
+        role: session.role,
+        actorId: session.userId,
+        action: 'UPDATE',
+        module: 'INVITATIONS',
+        targetId: updated.id,
+        targetName: updated.programTitle,
+        details: `Director approved invitation "${updated.programTitle}". Notes: ${directorRemarks || 'None'}`,
+      });
+
       return NextResponse.json({
         success: true,
         message: 'Invitation approved successfully!',
@@ -76,6 +89,18 @@ export async function POST(
             },
           },
         },
+      });
+
+      await logAction({
+        req,
+        username: session.username,
+        role: session.role,
+        actorId: session.userId,
+        action: 'UPDATE',
+        module: 'INVITATIONS',
+        targetId: updated.id,
+        targetName: updated.programTitle,
+        details: `Director requested revisions for "${updated.programTitle}". Remarks: ${directorRemarks.trim()}`,
       });
 
       return NextResponse.json({

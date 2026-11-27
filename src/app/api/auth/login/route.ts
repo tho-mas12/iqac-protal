@@ -4,6 +4,7 @@ import { comparePassword, signToken, AUTH_COOKIE_NAME } from '@/lib/auth';
 import { autoSyncDatabaseColumns } from '@/lib/db-sync';
 import { getActiveSession, registerSession } from '@/lib/session-lock';
 import { getSystemSettings } from '@/lib/system-settings';
+import { logAction } from '@/lib/action-logger';
 
 // In-Memory Rate Limiter to prevent brute-force attacks on credentials
 interface AttemptRecord {
@@ -204,6 +205,18 @@ export async function POST(req: NextRequest) {
                 maxAge: 60 * 60 * 24 * 7,
               });
 
+              await logAction({
+                req,
+                username: cleanUpper,
+                role: f.invitationRole || 'STAFF',
+                actorId: f.id,
+                action: 'LOGIN',
+                module: 'AUTH',
+                targetId: f.id,
+                targetName: f.name,
+                details: `Faculty "${cleanUpper}" (${f.name}) logged in successfully via faculty directory.`,
+              });
+
               resetAttempts(rateLimitKey);
               return res;
             }
@@ -324,6 +337,18 @@ export async function POST(req: NextRequest) {
       sameSite: 'lax',
       path: '/',
       maxAge: 60 * 60 * 24 * 7, // 7 days
+    });
+
+    await logAction({
+      req,
+      username: cleanUpper,
+      role: userRoleResolved,
+      actorId: user.id,
+      action: 'LOGIN',
+      module: 'AUTH',
+      targetId: user.id,
+      targetName: user.name,
+      details: `User "${cleanUpper}" logged in successfully as ${userRoleResolved}.`,
     });
 
     resetAttempts(rateLimitKey);

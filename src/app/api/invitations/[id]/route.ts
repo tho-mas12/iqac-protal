@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
+import { logAction } from '@/lib/action-logger';
 
 export async function GET(
   req: NextRequest,
@@ -33,6 +34,18 @@ export async function GET(
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
+    await logAction({
+      req,
+      username: session.username,
+      role: session.role,
+      actorId: session.userId,
+      action: 'READ',
+      module: 'INVITATIONS',
+      targetId: invitation.id,
+      targetName: invitation.programTitle,
+      details: `Viewed invitation details for "${invitation.programTitle}".`,
+    });
+
     return NextResponse.json({ success: true, invitation });
   } catch (error: any) {
     return NextResponse.json({ error: 'Failed to fetch invitation details' }, { status: 500 });
@@ -61,6 +74,18 @@ export async function DELETE(
     }
 
     await prisma.invitation.delete({ where: { id } });
+
+    await logAction({
+      req,
+      username: session.username,
+      role: session.role,
+      actorId: session.userId,
+      action: 'DELETE',
+      module: 'INVITATIONS',
+      targetId: inv.id,
+      targetName: inv.programTitle,
+      details: `Deleted invitation "${inv.programTitle}".`,
+    });
 
     return NextResponse.json({ success: true, message: 'Invitation removed successfully' });
   } catch (error: any) {

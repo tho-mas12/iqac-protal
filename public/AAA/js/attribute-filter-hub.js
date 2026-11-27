@@ -522,6 +522,7 @@ class AttributeFilterHub {
                 <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200 text-[11px]">
                   <th class="p-3 w-12 text-center">#</th>
                   <th class="p-3 whitespace-nowrap min-w-[160px]">Department</th>
+                  <th class="p-3 whitespace-nowrap min-w-[130px]">Submitted By</th>
                   ${columns.map(col => `
                     <th class="p-3 whitespace-nowrap min-w-[140px]">${col.label}</th>
                   `).join('')}
@@ -534,6 +535,11 @@ class AttributeFilterHub {
                     <td class="p-3">
                       <span class="px-2.5 py-1 rounded-lg text-[11px] font-black uppercase tracking-wider bg-blue-100 text-blue-900 border border-blue-200 whitespace-nowrap">
                         ${rec.deptName.replace('PG & Research Department of ', '').replace('Department of ', '')}
+                      </span>
+                    </td>
+                    <td class="p-3 whitespace-nowrap">
+                      <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                        ${rec.rowData.submitted_by || rec.rowData.submittedBy || '—'}
                       </span>
                     </td>
                     ${columns.map(col => {
@@ -567,6 +573,7 @@ class AttributeFilterHub {
               <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200 text-[11px]">
                 <th class="p-3 w-12 text-center">#</th>
                 <th class="p-3 min-w-[160px]">Department</th>
+                <th class="p-3 min-w-[120px]">Submitted By</th>
                 <th class="p-3 min-w-[120px]">Attribute</th>
                 <th class="p-3 min-w-[120px]">Sheet</th>
                 <th class="p-3 min-w-[260px]">Primary Title / Activity</th>
@@ -591,6 +598,11 @@ class AttributeFilterHub {
                     <td class="p-3">
                       <span class="px-2.5 py-1 rounded-lg text-[11px] font-black uppercase tracking-wider bg-blue-100 text-blue-900 border border-blue-200 whitespace-nowrap">
                         ${rec.deptName.replace('PG & Research Department of ', '').replace('Department of ', '')}
+                      </span>
+                    </td>
+                    <td class="p-3 whitespace-nowrap">
+                      <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                        ${r.submitted_by || r.submittedBy || '—'}
                       </span>
                     </td>
                     <td class="p-3 font-semibold text-slate-800 whitespace-nowrap">

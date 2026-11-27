@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSystemSettings, saveSystemSettings } from '@/lib/system-settings';
 import { getCurrentUser } from '@/lib/auth';
+import { logAction } from '@/lib/action-logger';
 
 export async function GET(req: NextRequest) {
   try {
@@ -91,6 +92,17 @@ export async function POST(req: NextRequest) {
     }
 
     const updated = saveSystemSettings(updates);
+
+    await logAction({
+      req,
+      username: user.username,
+      role: user.role,
+      actorId: user.userId,
+      action: 'UPDATE',
+      module: 'SETTINGS',
+      details: `Updated system settings: activeYear=${updated.activeYear}, developmentMode=${updated.developmentMode}.`,
+    });
+
     return NextResponse.json({
       success: true,
       settings: updated,

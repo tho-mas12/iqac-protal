@@ -497,6 +497,8 @@ class FormBuilder {
         ? String(cardData[sheetKey].length + 1) 
         : '';
     });
+    const currentUsername = window.authManager?.currentUser?.username || JSON.parse(localStorage.getItem('IQAC_SSO_USER') || '{}')?.username || '';
+    if (currentUsername) newRow.submitted_by = currentUsername;
     cardData[sheetKey].push(newRow);
     this.triggerAutoSave();
     this.render(window.dataStore?.data);
@@ -547,9 +549,11 @@ class FormBuilder {
 
     const sec = (sheet.sections || []).find(s => s.id === sectionId);
     const newRow = {};
-    (sec?.columns || []).forEach(col => {
+    ((sec && sec.columns) || []).forEach(col => {
       newRow[col.key] = col.key === 'sno' ? String(cardData[sheetKey][sectionId].length + 1) : '';
     });
+    const currentUsername = window.authManager?.currentUser?.username || JSON.parse(localStorage.getItem('IQAC_SSO_USER') || '{}')?.username || '';
+    if (currentUsername) newRow.submitted_by = currentUsername;
     cardData[sheetKey][sectionId].push(newRow);
     this.triggerAutoSave();
     this.render(window.dataStore?.data);
@@ -596,6 +600,8 @@ class FormBuilder {
     (sheet.columns || []).forEach(col => {
       newRow[col.key] = col.key === 'sno' ? String(cardData[sheetKey][batchId].length + 1) : '';
     });
+    const currentUsername = window.authManager?.currentUser?.username || JSON.parse(localStorage.getItem('IQAC_SSO_USER') || '{}')?.username || '';
+    if (currentUsername) newRow.submitted_by = currentUsername;
     cardData[sheetKey][batchId].push(newRow);
     this.triggerAutoSave();
     this.render(window.dataStore?.data);
@@ -1448,13 +1454,14 @@ class FormBuilder {
                     `}
                   </th>
                 `).join('')}
+                <th class="p-2.5 font-bold text-slate-700 w-28 text-center whitespace-nowrap">Submitted By</th>
                 <th class="p-2.5 font-bold text-slate-700 w-12 text-center">Action</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
               ${rows.length === 0 ? `
                 <tr>
-                  <td colspan="${columns.length + 1}" class="p-8 text-center text-slate-400 font-medium">
+                  <td colspan="${columns.length + 2}" class="p-8 text-center text-slate-400 font-medium">
                     No data rows entered yet. Click <strong>+ Add Data Row</strong> above to begin filling this sheet.
                   </td>
                 </tr>
@@ -1469,6 +1476,12 @@ class FormBuilder {
                       </td>
                     `;
                   }).join('')}
+                  <td class="p-1.5 text-center whitespace-nowrap">
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold bg-slate-100 text-slate-700 border border-slate-200" title="Submitted By">
+                      <i data-lucide="user" class="w-3 h-3 text-slate-400"></i>
+                      <span>${row.submitted_by || row.submittedBy || window.authManager?.currentUser?.username || JSON.parse(localStorage.getItem('IQAC_SSO_USER') || '{}')?.username || '—'}</span>
+                    </span>
+                  </td>
                   <td class="p-1.5 text-center">
                     <button type="button" onclick="formBuilder.deleteTableRow('${sheet.key}', ${rIdx})" title="Delete Row" class="p-1.5 text-slate-400 hover:text-red-600 rounded hover:bg-red-50 transition">
                       <i data-lucide="trash-2" class="w-4 h-4"></i>
@@ -1558,13 +1571,14 @@ class FormBuilder {
                           `}
                         </th>
                       `).join('')}
+                      <th class="p-2.5 font-bold text-slate-700 w-28 text-center whitespace-nowrap">Submitted By</th>
                       <th class="p-2.5 font-bold text-slate-700 w-12 text-center">Action</th>
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-slate-100">
                     ${rows.length === 0 ? `
                       <tr>
-                        <td colspan="${columns.length + 1}" class="p-8 text-center text-slate-400 font-medium">
+                        <td colspan="${columns.length + 2}" class="p-8 text-center text-slate-400 font-medium">
                           No records in this section yet. Click <strong>+ Add Row</strong> to enter data.
                         </td>
                       </tr>
@@ -1579,6 +1593,12 @@ class FormBuilder {
                             </td>
                           `;
                         }).join('')}
+                        <td class="p-1.5 text-center whitespace-nowrap">
+                          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold bg-slate-100 text-slate-700 border border-slate-200" title="Submitted By">
+                            <i data-lucide="user" class="w-3 h-3 text-slate-400"></i>
+                            <span>${row.submitted_by || row.submittedBy || window.authManager?.currentUser?.username || JSON.parse(localStorage.getItem('IQAC_SSO_USER') || '{}')?.username || '—'}</span>
+                          </span>
+                        </td>
                         <td class="p-1.5 text-center">
                           <button type="button" onclick="formBuilder.deleteMultiTableRow('${sheet.key}', '${sec.id}', ${rIdx})" title="Delete Row" class="p-1.5 text-slate-400 hover:text-red-600 rounded hover:bg-red-50 transition">
                             <i data-lucide="trash-2" class="w-4 h-4"></i>
@@ -1670,13 +1690,14 @@ class FormBuilder {
                           `}
                         </th>
                       `).join('')}
+                      <th class="p-2.5 font-bold text-slate-700 w-28 text-center whitespace-nowrap">Submitted By</th>
                       <th class="p-2.5 font-bold text-slate-700 w-12 text-center">Action</th>
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-slate-100">
                     ${rows.length === 0 ? `
                       <tr>
-                        <td colspan="${columns.length + 1}" class="p-8 text-center text-slate-400 font-medium">
+                        <td colspan="${columns.length + 2}" class="p-8 text-center text-slate-400 font-medium">
                           No students added for ${bat.name} yet. Click <strong>+ Add Student</strong> to add entries.
                         </td>
                       </tr>
@@ -1691,6 +1712,12 @@ class FormBuilder {
                             </td>
                           `;
                         }).join('')}
+                        <td class="p-1.5 text-center whitespace-nowrap">
+                          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold bg-slate-100 text-slate-700 border border-slate-200" title="Submitted By">
+                            <i data-lucide="user" class="w-3 h-3 text-slate-400"></i>
+                            <span>${row.submitted_by || row.submittedBy || window.authManager?.currentUser?.username || JSON.parse(localStorage.getItem('IQAC_SSO_USER') || '{}')?.username || '—'}</span>
+                          </span>
+                        </td>
                         <td class="p-1.5 text-center">
                           <button type="button" onclick="formBuilder.deleteBatchTableRow('${sheet.key}', '${bat.id}', ${rIdx})" title="Delete Row" class="p-1.5 text-slate-400 hover:text-red-600 rounded hover:bg-red-50 transition">
                             <i data-lucide="trash-2" class="w-4 h-4"></i>

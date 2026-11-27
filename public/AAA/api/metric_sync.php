@@ -162,14 +162,18 @@ class MetricSyncEngine {
     /**
      * Main sync function: syncs entire submission data into all metric_* tables
      */
-    public static function syncAuditData($pdo, $deptId, $deptName, $academicYear, $auditData) {
+    public static function syncAuditData($pdo, $deptId, $deptName, $academicYear, $auditData, $submittedBy = null) {
         if (!$auditData || !is_array($auditData)) return false;
+
+        if (!$submittedBy) {
+            $submittedBy = $auditData['submitted_by'] ?? ($auditData['submittedBy'] ?? ($auditData['username'] ?? $deptName));
+        }
 
         $sheetMap = self::getSheetTableMap();
         $syncedTables = [];
 
         // 1. Sync PART-A Faculty & Students
-        self::syncPartA($pdo, $deptId, $deptName, $academicYear, $auditData);
+        self::syncPartA($pdo, $deptId, $deptName, $academicYear, $auditData, $submittedBy);
 
         // 2. Extract sheets from attributeFormData or direct keys
         $formData = $auditData['attributeFormData'] ?? [];
@@ -195,7 +199,8 @@ class MetricSyncEngine {
                                     $deptName,
                                     $academicYear,
                                     $subRows,
-                                    (strpos($subKey, 'batch') !== false) ? ($subKey === 'ug_batch' ? 'Undergraduate (UG)' : 'Postgraduate (PG)') : null
+                                    (strpos($subKey, 'batch') !== false) ? ($subKey === 'ug_batch' ? 'Undergraduate (UG)' : 'Postgraduate (PG)') : null,
+                                    $submittedBy
                                 );
                                 $syncedTables[$targetInfo['table']] = true;
                             }
@@ -205,7 +210,7 @@ class MetricSyncEngine {
                     // Standard table array of rows
                     $targetInfo = $sheetMap[$sheetKey] ?? null;
                     if ($targetInfo) {
-                        self::insertRowsIntoTable($pdo, $targetInfo['table'], $deptId, $deptName, $academicYear, $sheetContent);
+                        self::insertRowsIntoTable($pdo, $targetInfo['table'], $deptId, $deptName, $academicYear, $sheetContent, null, $submittedBy);
                         $syncedTables[$targetInfo['table']] = true;
                     }
                 }
@@ -218,7 +223,7 @@ class MetricSyncEngine {
     /**
      * Sync PART-A Profile Data (Faculty Details & Student Details)
      */
-    private static function syncPartA($pdo, $deptId, $deptName, $academicYear, $auditData) {
+    private static function syncPartA($pdo, $deptId, $deptName, $academicYear, $auditData, $submittedBy = null) {
         $partAData = null;
         if (isset($auditData['attributeFormData']['part_a']['PART-A'])) {
             $partAData = $auditData['attributeFormData']['part_a']['PART-A'];
@@ -228,6 +233,8 @@ class MetricSyncEngine {
 
         if (!$partAData || !is_array($partAData)) return;
 
+        $author = $submittedBy ?: ($auditData['submitted_by'] ?? ($auditData['username'] ?? $deptName));
+
         // 1. Faculty Details -> metric_part_a_faculty
         $facultyRows = $partAData['facultyDetails']['rows'] ?? ($partAData['facultyDetails'] ?? []);
         if (is_array($facultyRows) && !empty($facultyRows)) {
@@ -235,16 +242,18 @@ class MetricSyncEngine {
                 ->execute([':dept_id' => $deptId, ':year' => $academicYear]);
 
             $stmt = $pdo->prepare("
-                INSERT INTO `metric_part_a_faculty` (department_id, department_name, academic_year, cadre_category, male, female)
-                VALUES (:dept_id, :dept_name, :year, :cadre, :male, :female)
+                INSERT INTO `metric_part_a_faculty` (department_id, department_name, submitted_by, academic_year, cadre_category, male, female)
+                VALUES (:dept_id, :dept_name, :sub_by, :year, :cadre, :male, :female)
             ");
 
             foreach ($facultyRows as $f) {
                 $cadre = $f['label'] ?? ($f['cadre'] ?? ($f['category'] ?? ''));
                 if (!$cadre) continue;
+                $rowSub = $f['submitted_by'] ?? ($f['submittedBy'] ?? $author);
                 $stmt->execute([
                     ':dept_id'   => $deptId,
                     ':dept_name' => $deptName,
+                    ':sub_by'    => $rowSub,
                     ':year'      => $academicYear,
                     ':cadre'     => $cadre,
                     ':male'      => (int)($f['male'] ?? 0),
@@ -260,16 +269,18 @@ class MetricSyncEngine {
                 ->execute([':dept_id' => $deptId, ':year' => $academicYear]);
 
             $stmt = $pdo->prepare("
-                INSERT INTO `metric_part_a_students` (department_id, department_name, academic_year, programme_level, male, female, other_gender, other_states, other_countries)
-                VALUES (:dept_id, :dept_name, :year, :programme, :male, :female, :og, :os, :oc)
+                INSERT INTO `metric_part_a_students` (department_id, department_name, submitted_by, academic_year, programme_level, male, female, other_gender, other_states, other_countries)
+                VALUES (:dept_id, :dept_name, :sub_by, :year, :programme, :male, :female, :og, :os, :oc)
             ");
 
             foreach ($studentRows as $s) {
                 $prog = $s['programme'] ?? ($s['level'] ?? '');
                 if (!$prog) continue;
+                $rowSub = $s['submitted_by'] ?? ($s['submittedBy'] ?? $author);
                 $stmt->execute([
                     ':dept_id'   => $deptId,
                     ':dept_name' => $deptName,
+                    ':sub_by'    => $rowSub,
                     ':year'      => $academicYear,
                     ':programme' => $prog,
                     ':male'      => (int)($s['male'] ?? 0),
@@ -285,7 +296,7 @@ class MetricSyncEngine {
     /**
      * Generic Table Inserter for any metric_* table
      */
-    private static function insertRowsIntoTable($pdo, $tableName, $deptId, $deptName, $academicYear, $rows, $batchName = null) {
+    private static function insertRowsIntoTable($pdo, $tableName, $deptId, $deptName, $academicYear, $rows, $batchName = null, $submittedBy = null) {
         if (!is_array($rows) || empty($rows)) return;
 
         $dbCols = self::getTableColumns($pdo, $tableName);
@@ -324,6 +335,9 @@ class MetricSyncEngine {
                     $params[":$col"] = $academicYear;
                 } elseif ($col === 'batch_name' && $batchName) {
                     $params[":$col"] = $batchName;
+                } elseif ($col === 'submitted_by') {
+                    $rowSub = $row['submitted_by'] ?? ($row['submittedBy'] ?? null);
+                    $params[":$col"] = $rowSub ?: ($submittedBy ?: $deptName);
                 } else {
                     $val = self::matchValueForColumn($row, $col);
                     $params[":$col"] = ($val !== null && $val !== '') ? (string)$val : null;

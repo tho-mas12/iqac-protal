@@ -4,6 +4,7 @@ import path from 'path';
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser, hashPassword } from '@/lib/auth';
 import { getAcademicRoles, saveAcademicRoles } from '@/lib/academic-roles';
+import { logAction } from '@/lib/action-logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -300,6 +301,18 @@ export async function POST(req: NextRequest) {
       });
       saveFacultyDirectory(updatedFac);
 
+      await logAction({
+        req,
+        username: session.username,
+        role: session.role,
+        actorId: session.userId,
+        action: 'UPDATE',
+        module: 'USERS',
+        targetId: uname,
+        targetName: uname,
+        details: `Updated user credentials / permissions for "${uname}".`,
+      });
+
       return NextResponse.json({ success: true, message: 'Faculty credentials and permissions updated' });
     }
 
@@ -367,6 +380,18 @@ export async function POST(req: NextRequest) {
       };
       saveAcademicRoles(academicRoles);
 
+      await logAction({
+        req,
+        username: session.username,
+        role: session.role,
+        actorId: session.userId,
+        action: 'CREATE',
+        module: 'USERS',
+        targetId: cleanUname,
+        targetName: name,
+        details: `Created new user "${cleanUname}" (${name}) with role ${invitationRole || 'STAFF'}.`,
+      });
+
       return NextResponse.json({ success: true, user: newFaculty, message: 'User created successfully' });
     }
 
@@ -378,6 +403,19 @@ export async function POST(req: NextRequest) {
         (f: any) => f.id !== id && f.username.toLowerCase() !== cleanUname
       );
       saveFacultyDirectory(updatedFac);
+
+      await logAction({
+        req,
+        username: session.username,
+        role: session.role,
+        actorId: session.userId,
+        action: 'DELETE',
+        module: 'USERS',
+        targetId: id || cleanUname,
+        targetName: cleanUname,
+        details: `Deleted user "${cleanUname}".`,
+      });
+
       return NextResponse.json({ success: true, message: 'User removed successfully' });
     }
 
