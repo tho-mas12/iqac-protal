@@ -1,5 +1,3 @@
-// IQAC AAA 2026-2027 - Master Schema for PART-A and Attributes 1 to 10
-// Official St. Joseph's College Autonomous NAAC / AAA Master Data Structure
 window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
   {
     "id": "part_a",
@@ -35,47 +33,48 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           ],
           "rows": [
             {
-              "label": "Total No. of Teaching Faculty",
+              "label": "Faculty (Aided)",
               "male": 0,
               "female": 0
             },
             {
-              "label": "No. of Faculty (Aided)",
+              "label": "Faculty (Management / Coordinator-Appointed)",
               "male": 0,
               "female": 0
             },
             {
-              "label": "No. of Faculty (Coordinator-Appointed)",
+              "label": "Faculty (Secretary-Appointed)",
               "male": 0,
               "female": 0
             },
             {
-              "label": "No. of Faculty (Secretary-Appointed)",
+              "label": "Total Teaching Faculty",
+              "male": 0,
+              "female": 0,
+              "isAutoTotal": true
+            },
+            {
+              "label": "Professor of Practice",
               "male": 0,
               "female": 0
             },
             {
-              "label": "No. of Professor of Practice",
+              "label": "Faculty (Hourly Basis)",
               "male": 0,
               "female": 0
             },
             {
-              "label": "No. of Faculty (Hourly Basis)",
+              "label": "Faculty from Other States",
               "male": 0,
               "female": 0
             },
             {
-              "label": "No. of Faculty from Other States",
+              "label": "Faculty Graduating from Other States",
               "male": 0,
               "female": 0
             },
             {
-              "label": "No. of Faculty Graduating from Other States",
-              "male": 0,
-              "female": 0
-            },
-            {
-              "label": "No. of Academic Support Staff (Technical) and Non-teaching Staff",
+              "label": "Academic Support Staff (Technical) and Non-teaching Staff",
               "male": 0,
               "female": 0
             }
@@ -87,6 +86,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
             "Male",
             "Female",
             "Other Gender",
+            "Total",
             "Other States",
             "Other Countries"
           ],
@@ -444,7 +444,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "datesFromTo",
-            "label": "Date From – To DD.MM.YYYY",
+            "label": "Date From \u2013 To DD.MM.YYYY",
             "width": "w-36"
           },
           {
@@ -751,7 +751,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "stipend",
-            "label": "Stipend, if any (₹)",
+            "label": "Stipend, if any (\u20b9)",
             "width": "w-28"
           }
         ],
@@ -1176,7 +1176,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "date_from_to_dd_mm_yyyy_dd_mm_",
-            "label": "Date  From – To                                (DD.MM.YYYY - DD.MM.YYYY)",
+            "label": "Date  From \u2013 To                                (DD.MM.YYYY - DD.MM.YYYY)",
             "width": "w-52"
           }
         ],
@@ -1339,7 +1339,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "date_from_to_dd_mm_yyyy_dd_mm_",
-            "label": "Date  From – To                                (DD.MM.YYYY - DD.MM.YYYY)",
+            "label": "Date  From \u2013 To                                (DD.MM.YYYY - DD.MM.YYYY)",
             "width": "w-52"
           }
         ],
@@ -1390,7 +1390,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "date_from_to_dd_mm_yyyy_dd_mm_",
-            "label": "Date  From – To                                (DD.MM.YYYY - DD.MM.YYYY)",
+            "label": "Date  From \u2013 To                                (DD.MM.YYYY - DD.MM.YYYY)",
             "width": "w-52"
           }
         ],
@@ -1431,7 +1431,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "amount_received_in",
-            "label": "Amount Received  (in ₹)",
+            "label": "Amount Received  (in \u20b9)",
             "width": "w-52"
           },
           {
@@ -1451,7 +1451,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "date_from_to_dd_mm_yyyy_dd_mm_",
-            "label": "Date  From – To                                (DD.MM.YYYY - DD.MM.YYYY)",
+            "label": "Date  From \u2013 To                                (DD.MM.YYYY - DD.MM.YYYY)",
             "width": "w-52"
           }
         ],
@@ -1712,7 +1712,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "amount_inr",
-            "label": "Amount (₹)",
+            "label": "Amount (\u20b9)",
             "width": "w-32"
           }
         ],
@@ -1825,7 +1825,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "financial_contribution_inr",
-            "label": "Financial Contribution (₹), if any",
+            "label": "Financial Contribution (\u20b9), if any",
             "width": "w-36"
           },
           {
@@ -1881,7 +1881,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "amount_received_in_rupees",
-            "label": "Amount Received in Rupees (₹)",
+            "label": "Amount Received in Rupees (\u20b9)",
             "width": "w-52"
           }
         ],
@@ -1932,7 +1932,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "amount",
-            "label": "Amount (₹)",
+            "label": "Amount (\u20b9)",
             "width": "w-32"
           }
         ],
@@ -1978,7 +1978,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "amount",
-            "label": "Amount (₹)",
+            "label": "Amount (\u20b9)",
             "width": "w-32"
           }
         ],
@@ -2009,7 +2009,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "resource_person_s_name_designa",
-            "label": "Resource Person’s Name, Designation, Affiliation and Complete Address",
+            "label": "Resource Person\u2019s Name, Designation, Affiliation and Complete Address",
             "width": "w-52"
           },
           {
@@ -2513,7 +2513,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "resource_person_details",
-            "label": "Resource Person’s Name, Designation, Affiliation and Complete Address",
+            "label": "Resource Person\u2019s Name, Designation, Affiliation and Complete Address",
             "width": "w-64"
           },
           {
@@ -2523,7 +2523,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "date_from_to",
-            "label": "Date From – To",
+            "label": "Date From \u2013 To",
             "width": "w-44"
           },
           {
@@ -2579,7 +2579,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "resource_person_s_name_designa",
-            "label": "Resource Person’s Name, Designation, Affiliation and Complete Address",
+            "label": "Resource Person\u2019s Name, Designation, Affiliation and Complete Address",
             "width": "w-52"
           },
           {
@@ -2809,7 +2809,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "amount",
-            "label": "Amount (₹)",
+            "label": "Amount (\u20b9)",
             "width": "w-32"
           },
           {
@@ -2845,7 +2845,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "amount_in_rupees",
-            "label": "Amount in Rupees (₹)",
+            "label": "Amount in Rupees (\u20b9)",
             "width": "w-52"
           },
           {
@@ -2896,7 +2896,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "amount_received_from_managemen",
-            "label": "Amount Received from Management (₹)",
+            "label": "Amount Received from Management (\u20b9)",
             "width": "w-52"
           },
           {
@@ -2937,7 +2937,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "amount_received_from_managemen",
-            "label": "Amount Received from Management (₹)",
+            "label": "Amount Received from Management (\u20b9)",
             "width": "w-52"
           },
           {
@@ -2962,7 +2962,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "date_of_event_from_to",
-            "label": "Date of Event FROM–TO",
+            "label": "Date of Event FROM\u2013TO",
             "width": "w-52"
           }
         ],
@@ -3033,7 +3033,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
       {
         "key": "8_8_2",
         "sheetName": "8.2",
-        "title": "8.2 – Students’ Participation and Awards in External Cultural, Sports and Extra-Curricular Events",
+        "title": "8.2 \u2013 Students\u2019 Participation and Awards in External Cultural, Sports and Extra-Curricular Events",
         "badge": "Attribute 8 - 8.2",
         "instruction": "",
         "type": "table",
@@ -3099,7 +3099,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
       {
         "key": "8_8_3",
         "sheetName": "8.3",
-        "title": "8.3 – Students’ Participation and Awards in External Academic and Co-Curricular Events",
+        "title": "8.3 \u2013 Students\u2019 Participation and Awards in External Academic and Co-Curricular Events",
         "badge": "Attribute 8 - 8.3",
         "instruction": "",
         "type": "table",
@@ -3136,7 +3136,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "date_from_to",
-            "label": "DATE From – To",
+            "label": "DATE From \u2013 To",
             "width": "w-32"
           },
           {
@@ -3407,7 +3407,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "revenue_generated",
-            "label": "Revenue Generated (₹)",
+            "label": "Revenue Generated (\u20b9)",
             "width": "w-52"
           },
           {
@@ -3448,12 +3448,12 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "date_from_to_dd_mm_yyyy_dd_mm_",
-            "label": "Date FROM – TO (DD.MM.YYYY – DD.MM.YYYY)",
+            "label": "Date FROM \u2013 TO (DD.MM.YYYY \u2013 DD.MM.YYYY)",
             "width": "w-52"
           },
           {
             "key": "revenue_generated",
-            "label": "Revenue Generated (₹)",
+            "label": "Revenue Generated (\u20b9)",
             "width": "w-52"
           },
           {
@@ -3509,7 +3509,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "funds_received",
-            "label": "Funds Received (₹)",
+            "label": "Funds Received (\u20b9)",
             "width": "w-52"
           },
           {
@@ -3926,7 +3926,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "date_from_to",
-            "label": "Date From – To",
+            "label": "Date From \u2013 To",
             "width": "w-44"
           },
           {
@@ -3959,7 +3959,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
         "sheetName": "10.1",
         "title": "10.1 Institutional Values, Green Initiatives, CSR & Outreach Projects",
         "badge": "Attribute 10 - 10.1",
-        "instruction": "Sustainability (Green initiatives) – Outcomes",
+        "instruction": "Sustainability (Green initiatives) \u2013 Outcomes",
         "type": "table",
         "columns": [
           {
@@ -3999,7 +3999,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "place_of_activity_full_address",
-            "label": "Place of Activity – Full Address",
+            "label": "Place of Activity \u2013 Full Address",
             "width": "w-52"
           },
           {
@@ -4014,7 +4014,7 @@ window.ALL_ATTRIBUTES_CARDS_SCHEMA = [
           },
           {
             "key": "date_from_to",
-            "label": "Date FROM–TO",
+            "label": "Date FROM\u2013TO",
             "width": "w-32"
           }
         ],

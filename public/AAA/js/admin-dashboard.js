@@ -6,7 +6,7 @@ class AdminDashboard {
     this.departments = [];
     this.overview = {};
     this.statusFilter = 'all';
-    this.activeTab = 'access_control'; // 'sub_control', 'overview', 'attribute_matrix', 'faculty_tracker'
+    this.activeTab = 'attr1_editor'; // Default to Master Questionnaire & Attribute Cards Manager
     this.selectedAttributeForMatrix = 'att9'; // Default to Research
     this.facultySearchQuery = '';
     this.facultyDeptFilter = 'all';
@@ -351,12 +351,8 @@ class AdminDashboard {
 
         <!-- Admin Module Navigation Tabs -->
         <div class="bg-white p-2 rounded-xl border border-slate-200 shadow-sm flex flex-wrap items-center gap-2">
-          ${this.renderAdminNavTab('access_control', 'Department & Admin Access Hub', 'key')}
-          ${this.renderAdminNavTab('sub_control', 'Department Submissions & Control', 'check-square')}
-          ${this.renderAdminNavTab('overview', 'Institutional Overview & Macro KPIs', 'bar-chart-3')}
-          ${this.renderAdminNavTab('attribute_matrix', 'Dept-Wise Attribute Analytics & Charts', 'table-properties')}
-          ${this.renderAdminNavTab('faculty_tracker', 'Faculty-Wise Contribution Tracker', 'users')}
           ${this.renderAdminNavTab('attr1_editor', 'Attribute Cards & Questionnaire Editor (Admin)', 'layout-grid')}
+          ${this.renderAdminNavTab('overview', 'Institutional Overview & Macro KPIs', 'bar-chart-3')}
         </div>
 
         <!-- Active Admin View Content -->
@@ -387,22 +383,12 @@ class AdminDashboard {
 
   renderActiveTabContent() {
     switch (this.activeTab) {
-      case 'dept_data':
-        return this.renderDepartmentDataTab();
-      case 'access_control':
-        return this.renderAccessManagementTab();
-      case 'sub_control':
-        return this.renderSubmissionsControlTab();
-      case 'overview':
-        return this.renderOverviewTab();
-      case 'attribute_matrix':
-        return this.renderAttributeMatrixTab();
-      case 'faculty_tracker':
-        return this.renderFacultyTrackerTab();
       case 'attr1_editor':
         return this.renderAttribute1EditorTab();
+      case 'overview':
+        return this.renderOverviewTab();
       default:
-        return this.renderSubmissionsControlTab();
+        return this.renderAttribute1EditorTab();
     }
   }
 
@@ -1491,11 +1477,14 @@ class AdminDashboard {
     }
   }
 
-  // TAB 5: ATTRIBUTE CARDS & QUESTIONNAIRE TEMPLATE MANAGER (ADMIN ONLY)
+  // TAB: ATTRIBUTE CARDS & QUESTIONNAIRE TEMPLATE MANAGER (ADMIN ONLY)
   renderAttribute1EditorTab() {
     const cards = window.dataStore && typeof window.dataStore.getAllCardsSchema === 'function'
       ? window.dataStore.getAllCardsSchema()
       : (window.ALL_ATTRIBUTES_CARDS_SCHEMA || []);
+
+    const firstCard = cards[0] || {};
+    const firstSheets = firstCard.sheets || [];
 
     return `
       <div class="space-y-6">
@@ -1512,7 +1501,7 @@ class AdminDashboard {
               Master Questionnaire & Attribute Cards Manager
             </h2>
             <p class="text-xs text-amber-950 font-medium mt-1">
-              Rule: Question text, instructions, and column headers are exclusively editable by Admin. Department accounts can only fill data into these cards.
+              Configure attributes and metrics: Add questions, configure input types (Input Box, Dropdown, Calendar, Numbers Only), and customize headings.
             </p>
           </div>
           <div class="flex items-center gap-2">
@@ -1521,6 +1510,76 @@ class AdminDashboard {
               <span>View Attribute Cards Gallery</span>
             </button>
           </div>
+        </div>
+
+        <!-- Add Question to Attribute & Metric Builder Box -->
+        <div class="bg-white rounded-2xl border-2 border-amber-300 p-6 shadow-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center font-bold">
+                <i data-lucide="plus-circle" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h3 class="text-sm font-black text-slate-900">Add Question to Attribute & Metric</h3>
+                <p class="text-[11px] text-slate-500 font-medium">Add new fields with custom input types (Text, Dropdown, Calendar Date, Numbers Only)</p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-amber-50 text-amber-800 border border-amber-200 uppercase">
+              Admin Schema Tool
+            </span>
+          </div>
+
+          <form onsubmit="adminDashboard.handleAddQuestionSubmit(event)" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <!-- Target Attribute Card -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Target Attribute</label>
+                <select id="add-q-card" onchange="adminDashboard.onAddQuestionCardChange(this.value)" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-white font-semibold text-slate-800 focus:border-amber-500 focus:outline-none">
+                  ${cards.map(c => `<option value="${c.id}">${c.cardCode} - ${c.cardTitle}</option>`).join('')}
+                </select>
+              </div>
+
+              <!-- Target Metric -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Target Metric</label>
+                <select id="add-q-metric" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-white font-semibold text-slate-800 focus:border-amber-500 focus:outline-none">
+                  ${firstSheets.map(s => `<option value="${s.key}">Metric ${s.sheetName || s.key} - ${s.title?.slice(0, 45) || ''}</option>`).join('')}
+                </select>
+              </div>
+
+              <!-- Question Title -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Question Title / Column Name</label>
+                <input type="text" id="add-q-title" required placeholder="e.g. Funding Agency / Organization" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-white font-medium text-slate-800 focus:border-amber-500 focus:outline-none" />
+              </div>
+
+              <!-- Input Field Type -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Input Field Type</label>
+                <select id="add-q-type" onchange="adminDashboard.onFieldTypeChange(this.value)" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-white font-semibold text-slate-800 focus:border-amber-500 focus:outline-none">
+                  <option value="text">Input Box (Standard Text)</option>
+                  <option value="select">Drop Down (Predefined Options)</option>
+                  <option value="date">Calendar (Academic Year Date Picker)</option>
+                  <option value="number">Only Number (Strict Numeric Input)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Dynamic Options row for Drop Down -->
+            <div id="add-q-options-container" class="hidden">
+              <label class="block text-xs font-bold text-slate-700 mb-1">Dropdown Options (Comma-separated)</label>
+              <input type="text" id="add-q-options" placeholder="e.g. Government, Non-Government, Corporate, Self-Funded, Other" class="w-full text-xs px-3 py-2 border border-purple-300 rounded-lg bg-purple-50/50 font-medium text-slate-800 focus:border-purple-500 focus:outline-none" />
+              <p class="text-[10px] text-slate-400 mt-1">Separate each dropdown choice with a comma. The "Other" specify option is supported automatically.</p>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex items-center justify-end gap-3 pt-2">
+              <button type="submit" class="px-5 py-2.5 bg-[#26648E] hover:bg-[#1b4b6d] text-white font-black rounded-xl text-xs transition shadow-md shadow-[#26648E]/20 flex items-center gap-1.5 cursor-pointer">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                <span>Add Question to Metric</span>
+              </button>
+            </div>
+          </form>
         </div>
 
         <!-- Attribute Cards Grid -->
@@ -1537,7 +1596,7 @@ class AdminDashboard {
                       ${card.cardCode}
                     </span>
                     <span class="text-[10px] text-slate-400 font-semibold">
-                      ${sheetCount} ${sheetCount === 1 ? 'Sheet' : 'Sheets'}
+                      ${sheetCount} ${sheetCount === 1 ? 'Metric' : 'Metrics'}
                     </span>
                   </div>
                   <h3 class="text-sm font-bold text-slate-800 line-clamp-2 flex items-center gap-1.5">
@@ -1549,12 +1608,12 @@ class AdminDashboard {
                   </p>
                 </div>
 
-                <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
-                  <span class="text-[11px] text-emerald-700 font-semibold flex items-center gap-1">
-                    <i data-lucide="check" class="w-3 h-3 text-emerald-600"></i> Standardized
-                  </span>
-                  <button type="button" onclick="formBuilder.openCard('${card.id}'); formBuilder.adminEditQuestionsMode = true; app.switchView('form');" class="text-xs px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold rounded-lg transition flex items-center gap-1">
-                    <i data-lucide="edit-3" class="w-3 h-3"></i> Edit Questions
+                <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                  <button type="button" onclick="adminDashboard.selectCardForQuestionAdd('${card.id}')" class="text-xs px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg transition flex items-center gap-1 cursor-pointer">
+                    <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-blue-600"></i> + Add Question
+                  </button>
+                  <button type="button" onclick="formBuilder.openCard('${card.id}'); formBuilder.adminEditQuestionsMode = true; app.switchView('form');" class="text-xs px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold rounded-lg transition flex items-center gap-1 cursor-pointer">
+                    <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> Edit Questions
                   </button>
                 </div>
               </div>
@@ -1563,6 +1622,115 @@ class AdminDashboard {
         </div>
       </div>
     `;
+  }
+
+  onAddQuestionCardChange(cardId) {
+    const cards = window.dataStore && typeof window.dataStore.getAllCardsSchema === 'function'
+      ? window.dataStore.getAllCardsSchema()
+      : (window.ALL_ATTRIBUTES_CARDS_SCHEMA || []);
+    const card = cards.find(c => c.id === cardId);
+    const metricSelect = document.getElementById('add-q-metric');
+    if (!metricSelect || !card) return;
+    const sheets = card.sheets || [];
+    metricSelect.innerHTML = sheets.map(s => {
+      const name = (s.sheetName || s.key || '').replace(/^Sheet\s*/i, 'Metric ');
+      return `<option value="${s.key}">${name} - ${s.title?.slice(0, 45) || ''}</option>`;
+    }).join('');
+  }
+
+  onFieldTypeChange(type) {
+    const optsWrap = document.getElementById('add-q-options-container');
+    if (optsWrap) {
+      if (type === 'select') {
+        optsWrap.classList.remove('hidden');
+      } else {
+        optsWrap.classList.add('hidden');
+      }
+    }
+  }
+
+  selectCardForQuestionAdd(cardId) {
+    const cardSelect = document.getElementById('add-q-card');
+    if (cardSelect) {
+      cardSelect.value = cardId;
+      this.onAddQuestionCardChange(cardId);
+      const titleInput = document.getElementById('add-q-title');
+      if (titleInput) {
+        titleInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        titleInput.focus();
+      }
+    }
+  }
+
+  handleAddQuestionSubmit(e) {
+    e.preventDefault();
+    const cardId = document.getElementById('add-q-card')?.value;
+    const metricKey = document.getElementById('add-q-metric')?.value;
+    const title = document.getElementById('add-q-title')?.value?.trim();
+    const fieldType = document.getElementById('add-q-type')?.value;
+    const rawOptions = document.getElementById('add-q-options')?.value?.trim();
+
+    if (!cardId || !metricKey || !title) {
+      if (window.showToast) window.showToast('Please specify Card, Metric, and Question Title.', 'warning', 3500, 'Missing Input');
+      return;
+    }
+
+    this.addQuestionToSchema(cardId, metricKey, title, fieldType, rawOptions);
+  }
+
+  addQuestionToSchema(cardId, metricKey, title, fieldType, rawOptions) {
+    const cards = window.dataStore && typeof window.dataStore.getAllCardsSchema === 'function'
+      ? window.dataStore.getAllCardsSchema()
+      : (window.ALL_ATTRIBUTES_CARDS_SCHEMA || []);
+
+    const card = cards.find(c => c.id === cardId);
+    if (!card) return;
+    const sheet = (card.sheets || []).find(s => s.key === metricKey);
+    if (!sheet) return;
+
+    // Generate unique column key
+    const slug = title.toLowerCase().replace(/[^a-z0-9]/g, '_').replace(/_+/g, '_').slice(0, 24);
+    const colKey = `col_${slug}_${Date.now().toString().slice(-4)}`;
+
+    const newCol = {
+      key: colKey,
+      label: title,
+      type: fieldType || 'text'
+    };
+
+    if (fieldType === 'select' && rawOptions) {
+      newCol.options = rawOptions.split(',').map(o => o.trim()).filter(Boolean);
+    }
+
+    // Insert column into sheet
+    if (!Array.isArray(sheet.columns)) {
+      sheet.columns = [];
+    }
+    sheet.columns.push(newCol);
+
+    // Save to master schema in localStorage
+    try {
+      localStorage.setItem('IQAC_AAA_MASTER_CARDS_SCHEMA', JSON.stringify(cards));
+      if (cardId === 'att1') {
+        localStorage.setItem('IQAC_AAA_ATTR1_SCHEMA', JSON.stringify(card));
+      }
+      if (window.ALL_ATTRIBUTES_CARDS_SCHEMA) {
+        window.ALL_ATTRIBUTES_CARDS_SCHEMA = cards;
+      }
+    } catch (err) {
+      console.warn('Failed to save updated schema to localStorage:', err);
+    }
+
+    if (window.showToast) {
+      window.showToast(`Question "${title}" (${fieldType}) added successfully to Metric ${sheet.sheetName || sheet.key}!`, 'success', 4500, 'Question Added');
+    }
+
+    // Reset title input
+    const titleInput = document.getElementById('add-q-title');
+    if (titleInput) titleInput.value = '';
+
+    // Re-render
+    this.render();
   }
 
 

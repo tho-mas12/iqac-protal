@@ -85,13 +85,7 @@
         <!-- 3. Admin & Access Hub -->
         <button id="nav-btn-admin" type="button" onclick="app.switchView('admin')" class="hidden w-full text-left px-3.5 py-2.5 rounded-xl flex items-center gap-2.5 transition text-xs font-semibold text-slate-700 hover:text-[#26648E] hover:bg-white bg-white/80 border border-slate-200 shadow-2xs">
           <i data-lucide="shield-check" class="w-4 h-4 text-[#26648E]"></i>
-          <span>Admin & Access Hub</span>
-        </button>
-
-        <!-- 4. College Analytics (15m Dashboard) -->
-        <button id="nav-btn-dashboard" type="button" onclick="app.switchView('dashboard')" class="hidden w-full text-left px-3.5 py-2.5 rounded-xl flex items-center gap-2.5 transition text-xs font-semibold text-slate-700 hover:text-[#26648E] hover:bg-white bg-white/80 border border-slate-200 shadow-2xs">
-          <i data-lucide="bar-chart-3" class="w-4 h-4 text-emerald-600"></i>
-          <span>College Analytics (15m)</span>
+          <span>Admin Hub & Questionnaire</span>
         </button>
       </div>
 
@@ -195,16 +189,6 @@
             <i data-lucide="filter" class="w-3.5 h-3.5 text-[#4F8FC0]"></i>
             <span>Data Filter</span>
           </button>
-
-          <button 
-            id="topnav-btn-dashboard" 
-            type="button" 
-            onclick="app.switchView('dashboard')" 
-            class="hidden px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition cursor-pointer text-slate-700 hover:text-[#26648E] hover:bg-white/80"
-          >
-            <i data-lucide="bar-chart-3" class="w-3.5 h-3.5 text-emerald-600"></i>
-            <span>Analytics</span>
-          </button>
         </nav>
       </div>
 
@@ -230,11 +214,6 @@
       <!-- VIEW 1: Form View (Attribute Cards Gallery & Sheet Forms) -->
       <section id="view-form">
         <div id="form-container" class="w-full"></div>
-      </section>
-
-      <!-- VIEW 2: 15m Panel Dashboard & KPIs -->
-      <section id="view-dashboard" class="hidden">
-        <div id="dashboard-container" class="space-y-6"></div>
       </section>
 
       <!-- VIEW 3: Cross-Department Attribute Data Filter Hub -->

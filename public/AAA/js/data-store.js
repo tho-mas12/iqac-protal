@@ -85,14 +85,31 @@ class DataStore {
       this.saveDepartmentList(deptList);
     }
 
-    let activeDeptName = localStorage.getItem(ACTIVE_DEPT_KEY) || deptList[0];
+    // Check SSO user session first: if authenticated as a department user, their department is strictly authoritative!
+    let ssoDeptName = null;
+    let ssoDeptId = null;
+    try {
+      const ssoRaw = localStorage.getItem('IQAC_SSO_USER');
+      if (ssoRaw) {
+        const sso = JSON.parse(ssoRaw);
+        const r = (sso.invitationRole || sso.role || '').toUpperCase();
+        const isCentralRole = (r === 'ADMIN' || r === 'DIRECTOR' || r === 'ADMINISTRATOR');
+        if (!isCentralRole && sso.department?.name) {
+          ssoDeptName = sso.department.name;
+          ssoDeptId = sso.department.id;
+        }
+      }
+    } catch (e) {}
+
+    let activeDeptName = ssoDeptName || localStorage.getItem(ACTIVE_DEPT_KEY) || deptList[0];
+    localStorage.setItem(ACTIVE_DEPT_KEY, activeDeptName);
 
     // Priority 1: Check server MySQL database for existing saved submission
     try {
       const authUser = window.authManager?.user;
-      const targetDeptId = (authUser && authUser.role === 'department' && authUser.department_id) 
+      const targetDeptId = ssoDeptId || ((authUser && authUser.role === 'department' && authUser.department_id) 
         ? authUser.department_id 
-        : this.getDepartmentId(activeDeptName);
+        : this.getDepartmentId(activeDeptName));
       
       const serverLoaded = await this.loadDepartmentFromServer(targetDeptId);
       if (serverLoaded) {
@@ -662,8 +679,63 @@ class DataStore {
     return found ? found.code : 'cs';
   }
 
+  // Deduplicate all metric rows across attribute tables before saving to database
+  deduplicateSubmissionData(data) {
+    if (!data || !data.attributeFormData) return data;
+    const cards = data.attributeFormData;
+    for (const cardId in cards) {
+      const card = cards[cardId];
+      if (!card || typeof card !== 'object') continue;
+      for (const sheetKey in card) {
+        const val = card[sheetKey];
+        if (Array.isArray(val)) {
+          card[sheetKey] = this.deduplicateRowArray(val);
+        } else if (val && typeof val === 'object') {
+          for (const subKey in val) {
+            if (Array.isArray(val[subKey])) {
+              val[subKey] = this.deduplicateRowArray(val[subKey]);
+            }
+          }
+        }
+      }
+    }
+    return data;
+  }
+
+  deduplicateRowArray(rows) {
+    if (!Array.isArray(rows) || rows.length <= 1) return rows;
+    const seen = new Set();
+    const result = [];
+    rows.forEach(r => {
+      if (!r || typeof r !== 'object') return;
+      // Filter out sno, submitted_by, id to compute content signature
+      const nonMetaEntries = Object.entries(r).filter(([k]) => k !== 'sno' && k !== 's_no' && k !== 'sl_no' && k !== 'submitted_by' && k !== 'id');
+      const hasAnyContent = nonMetaEntries.some(([, v]) => String(v || '').trim() !== '');
+      if (!hasAnyContent) {
+        if (result.length === 0) result.push(r);
+        return;
+      }
+      const signature = nonMetaEntries
+        .map(([k, v]) => `${k}:${String(v || '').trim().toLowerCase()}`)
+        .sort()
+        .join('|');
+      if (!seen.has(signature)) {
+        seen.add(signature);
+        result.push(r);
+      }
+    });
+    // Re-index serial numbers
+    result.forEach((r, idx) => {
+      if (r.sno !== undefined) r.sno = String(idx + 1);
+      if (r.s_no !== undefined) r.s_no = String(idx + 1);
+      if (r.sl_no !== undefined) r.sl_no = String(idx + 1);
+    });
+    return result;
+  }
+
   async saveToServer(isFinalSubmit = false) {
     if (!this.data || !this.data.departmentInfo) return;
+    this.deduplicateSubmissionData(this.data);
     const deptId = this.getDepartmentId();
     const deptCode = this.getDepartmentCode();
     const deptName = this.data.departmentInfo.departmentName || this.activeDepartment;

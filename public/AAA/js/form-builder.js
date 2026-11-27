@@ -139,6 +139,9 @@ class FormBuilder {
 
   // Trigger auto-save
   triggerAutoSave() {
+    if (!this._dirtyMetrics) this._dirtyMetrics = {};
+    if (this.activeSheetKey) this._dirtyMetrics[this.activeSheetKey] = true;
+
     if (this.saveTimeout) clearTimeout(this.saveTimeout);
     const els = document.querySelectorAll('.card-save-indicator');
     els.forEach(el => {
@@ -153,19 +156,60 @@ class FormBuilder {
     }, 350);
   }
 
-  // Dedicated Save Sheet Data method
+  // Determine traffic-light metric status:
+  // 'empty' = light red (no data entered in metric)
+  // 'unsaved' = light yellow (data entered but not yet saved)
+  // 'saved' = light green (data entered and saved)
+  getMetricStatus(sheet, cardData) {
+    if (!sheet || !cardData) return 'empty';
+    const sData = cardData[sheet.key];
+    let hasData = false;
+
+    if (sheet.type === 'profile') {
+      const prof = sData?.profile || {};
+      const fac = sData?.facultyDetails || [];
+      const stu = sData?.studentDetails || [];
+      const hasProf = Boolean(prof.hodName || prof.coordinatorName || (prof.programmes && (prof.programmes.ug || prof.programmes.pg || prof.programmes.phd)));
+      const hasFac = Array.isArray(fac) && fac.some(r => (Number(r.male) > 0 || Number(r.female) > 0));
+      const hasStu = Array.isArray(stu) && stu.some(r => (Number(r.male) > 0 || Number(r.female) > 0 || Number(r.otherGender) > 0 || Number(r.otherStates) > 0 || Number(r.otherCountries) > 0));
+      hasData = hasProf || hasFac || hasStu;
+    } else if (sheet.type === 'multi_table') {
+      if (sData && typeof sData === 'object') {
+        hasData = Object.values(sData).some(sec => Array.isArray(sec) && sec.length > 0 && sec.some(row => Object.entries(row).some(([k, v]) => k !== 'sno' && k !== 'submitted_by' && String(v || '').trim() !== '')));
+      }
+    } else if (sheet.type === 'batch_table') {
+      if (sData && typeof sData === 'object') {
+        hasData = Object.values(sData).some(bat => Array.isArray(bat) && bat.length > 0 && bat.some(row => Object.entries(row).some(([k, v]) => k !== 'sno' && k !== 'submitted_by' && String(v || '').trim() !== '')));
+      }
+    } else {
+      if (Array.isArray(sData) && sData.length > 0) {
+        hasData = sData.some(row => {
+          return Object.entries(row).some(([k, v]) => k !== 'sno' && k !== 's_no' && k !== 'sl_no' && k !== 'submitted_by' && String(v || '').trim() !== '');
+        });
+      }
+    }
+
+    if (!hasData) return 'empty'; // Light Red: No data entered
+    if (this._dirtyMetrics && this._dirtyMetrics[sheet.key]) return 'unsaved'; // Light Yellow: Entered but not saved
+    return 'saved'; // Light Green: Entered and saved
+  }
+
+  // Dedicated Save Metric Data method
   saveCurrentSheetData(sheetKey) {
     if (this.isSubmissionLocked()) {
       window.showToast('The submission deadline has expired. Records are locked in read-only mode.', 'warning', 4000, 'Deadline Locked');
       return;
+    }
+    if (this._dirtyMetrics) {
+      delete this._dirtyMetrics[sheetKey || this.activeSheetKey];
     }
     if (window.dataStore) {
       window.dataStore.saveCurrentData();
     }
     this.showSaveIndicator();
     const sheet = this.getActiveSheet();
-    const sheetName = sheet ? (sheet.sheetName || sheet.key) : (sheetKey || 'Sheet');
-    window.showToast(`Data for ${sheetName} saved successfully!`, 'success', 3500, 'Sheet Saved');
+    const metricName = sheet ? ((sheet.sheetName || sheet.key).replace(/^Sheet\s*/i, 'Metric ')) : (sheetKey || 'Metric');
+    window.showToast(`Data for ${metricName} saved successfully!`, 'success', 3500, 'Metric Saved');
     this.render(window.dataStore ? window.dataStore.data : null);
   }
 
@@ -442,12 +486,34 @@ class FormBuilder {
       const sheet = this.getActiveSheet();
       cardData['PART-A'].facultyDetails = JSON.parse(JSON.stringify(sheet?.facultyDetails?.rows || []));
     }
-    if (cardData['PART-A'].facultyDetails[idx]) {
-      cardData['PART-A'].facultyDetails[idx][field] = Number(value) || 0;
-      this.triggerAutoSave();
-      const row = cardData['PART-A'].facultyDetails[idx];
+    const fac = cardData['PART-A'].facultyDetails;
+    if (fac[idx]) {
+      fac[idx][field] = Number(value) || 0;
+      
+      const row = fac[idx];
       const totalEl = document.getElementById(`fac-total-${idx}`);
       if (totalEl) totalEl.textContent = (Number(row.male) || 0) + (Number(row.female) || 0);
+
+      // Total Teaching Faculty (Row 3) is automatically calculated from the top 3 rows (Row 0: Aided, Row 1: Management/Coordinator, Row 2: Secretary)
+      if (idx === 0 || idx === 1 || idx === 2) {
+        const row0 = fac[0] || {};
+        const row1 = fac[1] || {};
+        const row2 = fac[2] || {};
+        const tMale = (Number(row0.male) || 0) + (Number(row1.male) || 0) + (Number(row2.male) || 0);
+        const tFemale = (Number(row0.female) || 0) + (Number(row1.female) || 0) + (Number(row2.female) || 0);
+        if (fac[3]) {
+          fac[3].male = tMale;
+          fac[3].female = tFemale;
+        }
+        const elMale3 = document.getElementById('fac-male-3');
+        if (elMale3) elMale3.value = tMale;
+        const elFemale3 = document.getElementById('fac-female-3');
+        if (elFemale3) elFemale3.value = tFemale;
+        const elTotal3 = document.getElementById('fac-total-3');
+        if (elTotal3) elTotal3.textContent = tMale + tFemale;
+      }
+
+      this.triggerAutoSave();
     }
   }
 
@@ -919,44 +985,94 @@ class FormBuilder {
           `).join('')}
         </div>
 
-        <!-- Horizontal Sheets Navigation Tabs (Clean Pill Style, No Nested Box) -->
+        <!-- Horizontal Metrics Navigation Tabs with Live Traffic Light Status & Top-Right Legend -->
         ${sheets.length > 1 ? `
-          <div class="flex items-center gap-1.5 overflow-x-auto py-1 scrollbar-none w-full">
-            ${sheets.map(s => {
-              const isActive = s.key === this.activeSheetKey;
-              const sData = cardData[s.key];
-              let rowCount = 0;
-              if (Array.isArray(sData)) rowCount = sData.length;
-              else if (sData && typeof sData === 'object') {
-                Object.values(sData).forEach(v => { if (Array.isArray(v)) rowCount += v.length; });
-              }
+          <div class="space-y-2 w-full pt-1 pb-1">
+            <!-- Header bar with Metrics Title & Top-Right Status Legend -->
+            <div class="flex items-center justify-between gap-3 flex-wrap w-full px-1">
+              <div class="text-xs font-black uppercase text-slate-500 tracking-wider flex items-center gap-1.5">
+                <i data-lucide="layers" class="w-3.5 h-3.5 text-[#26648E]"></i>
+                <span>Metrics in this Attribute (${sheets.length})</span>
+              </div>
+              <!-- Status Legend details positioned above top right in metrics -->
+              <div class="flex items-center gap-2 sm:gap-2.5 flex-wrap text-[11px] font-bold">
+                <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-red-50 text-red-700 border border-red-200 shadow-2xs" title="Metric with no data entered yet">
+                  <span class="w-2.5 h-2.5 rounded-full bg-red-500 shrink-0"></span>
+                  <span>Not Entered</span>
+                </span>
+                <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-300 shadow-2xs" title="Metric with newly entered data that has not been saved yet">
+                  <span class="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0"></span>
+                  <span>Entered (Unsaved)</span>
+                </span>
+                <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-300 shadow-2xs" title="Metric with data safely saved to database">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></span>
+                  <span>Entered & Saved</span>
+                </span>
+              </div>
+            </div>
 
-              return `
-                <button 
-                  type="button" 
-                  onclick="formBuilder.switchSheet('${s.key}')" 
-                  class="px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 whitespace-nowrap transition cursor-pointer text-xs ${
-                    isActive 
-                      ? 'bg-[#26648E] text-white font-black shadow-xs' 
-                      : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 font-semibold'
-                  }"
-                >
-                  <i data-lucide="${s.type === 'profile' ? 'user-check' : 'table'}" class="w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-blue-600'}"></i>
-                  <span>${s.sheetName || s.key}</span>
-                  ${rowCount > 0 ? `
-                    <span class="px-1.5 py-0.2 rounded-full text-[10px] ${isActive ? 'bg-white/20 text-white font-bold' : 'bg-slate-100 text-slate-600 border border-slate-200 font-bold'}">
-                      ${rowCount}
-                    </span>
-                  ` : ''}
-                </button>
-              `;
-            }).join('')}
+            <!-- Metric Buttons Pill Row -->
+            <div class="flex items-center gap-2 overflow-x-auto py-1 scrollbar-none w-full">
+              ${sheets.map(s => {
+                const isActive = s.key === this.activeSheetKey;
+                const status = this.getMetricStatus(s, cardData);
+                const sData = cardData[s.key];
+                let rowCount = 0;
+                if (Array.isArray(sData)) rowCount = sData.length;
+                else if (sData && typeof sData === 'object') {
+                  Object.values(sData).forEach(v => { if (Array.isArray(v)) rowCount += v.length; });
+                }
+
+                // Traffic light color coding:
+                // Light Red: Not entered
+                // Light Yellow: Entered but not saved (draft/dirty)
+                // Light Green: Entered and saved
+                let colorClasses = '';
+                let dotColor = '';
+                if (status === 'empty') {
+                  colorClasses = isActive 
+                    ? 'bg-red-600 text-white font-black shadow-sm ring-2 ring-red-400' 
+                    : 'bg-red-50 hover:bg-red-100 text-red-700 border border-red-300 font-semibold';
+                  dotColor = isActive ? 'bg-white' : 'bg-red-500';
+                } else if (status === 'unsaved') {
+                  colorClasses = isActive 
+                    ? 'bg-amber-500 text-slate-950 font-black shadow-sm ring-2 ring-amber-400' 
+                    : 'bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-semibold';
+                  dotColor = isActive ? 'bg-slate-950' : 'bg-amber-500';
+                } else {
+                  colorClasses = isActive 
+                    ? 'bg-emerald-600 text-white font-black shadow-sm ring-2 ring-emerald-400' 
+                    : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-semibold';
+                  dotColor = isActive ? 'bg-white' : 'bg-emerald-500';
+                }
+
+                const displayName = (s.sheetName || s.key || '').replace(/^Sheet\s*/i, 'Metric ');
+                const labelText = displayName.startsWith('Metric') ? displayName : `Metric ${displayName}`;
+
+                return `
+                  <button 
+                    type="button" 
+                    onclick="formBuilder.switchSheet('${s.key}')" 
+                    class="px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 whitespace-nowrap transition cursor-pointer text-xs ${colorClasses}"
+                    title="${labelText} - Status: ${status === 'empty' ? 'Not Entered' : status === 'unsaved' ? 'Entered (Unsaved)' : 'Entered & Saved'}"
+                  >
+                    <span class="w-2 h-2 rounded-full ${dotColor} shrink-0"></span>
+                    <span>${labelText}</span>
+                    ${rowCount > 0 ? `
+                      <span class="px-1.5 py-0.2 rounded-full text-[10px] ${isActive ? 'bg-black/20 text-white font-bold' : 'bg-white/80 text-slate-700 border border-slate-300 font-bold'}">
+                        ${rowCount}
+                      </span>
+                    ` : ''}
+                  </button>
+                `;
+              }).join('')}
+            </div>
           </div>
         ` : ''}
 
-        <!-- Active Sheet Content (Clean Table View Without Stacked Nested Wrapper Boxes) -->
+        <!-- Active Metric Content -->
         <div class="w-full">
-          ${activeSheet ? this.renderActiveSheetContent(activeSheet, cardData[activeSheet.key], isAdmin) : '<div class="text-slate-500">No sheet selected.</div>'}
+          ${activeSheet ? this.renderActiveSheetContent(activeSheet, cardData[activeSheet.key], isAdmin) : '<div class="text-slate-500">No metric selected.</div>'}
         </div>
 
         <!-- Bottom Action Bar (Review & Save All Down Here) -->
@@ -964,13 +1080,13 @@ class FormBuilder {
           <div class="flex items-center gap-2">
             ${sheets.length > 1 ? `
               <button type="button" onclick="formBuilder.navigateSheet(-1)" class="px-3.5 py-2 bg-white hover:bg-slate-100 text-slate-700 font-bold border border-slate-300 rounded-xl transition flex items-center gap-1.5 shadow-2xs text-xs cursor-pointer">
-                <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Prev Sheet
+                <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Prev Metric
               </button>
               <span class="text-xs text-slate-500 font-medium px-2">
-                ${activeSheet?.sheetName || ''} (${sheets.findIndex(s => s.key === activeSheet?.key) + 1} of ${sheets.length})
+                ${(activeSheet?.sheetName || '').replace(/^Sheet\s*/i, 'Metric ')} (${sheets.findIndex(s => s.key === activeSheet?.key) + 1} of ${sheets.length})
               </span>
               <button type="button" onclick="formBuilder.navigateSheet(1)" class="px-3.5 py-2 bg-[#26648E] hover:bg-[#1b4b6d] text-white font-bold rounded-xl transition flex items-center gap-1.5 shadow-2xs text-xs cursor-pointer">
-                Next Sheet <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                Next Metric <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
               </button>
             ` : ''}
           </div>
@@ -1090,7 +1206,15 @@ class FormBuilder {
       `;
     }
 
-    // 2. Split Date Range (From - To) Calendar Inputs
+    // Academic Year Date Boundary calculation (June 1 of Start Year to May 31 of End Year)
+    const activeYearStr = (window.dataStore && typeof window.dataStore.getActiveYear === 'function') 
+      ? window.dataStore.getActiveYear() 
+      : (localStorage.getItem('IQAC_ACTIVE_YEAR') || '2026 - 2027');
+    const [startYearPart, endYearPart] = activeYearStr.split('-').map(s => s.trim());
+    const academicMinDate = `${startYearPart || '2026'}-06-01`;
+    const academicMaxDate = `${endYearPart || '2027'}-05-31`;
+
+    // 2. Split Date Range (From - To) Calendar Inputs with Active Academic Year Bounds
     if (this.isDateRangeColumn(colLabel, colKey)) {
       const [fromDate, toDate] = this.parseDateRange(val);
       return `
@@ -1100,6 +1224,8 @@ class FormBuilder {
             <input 
               type="date" 
               value="${fromDate}" 
+              min="${academicMinDate}"
+              max="${academicMaxDate}"
               ${isLocked ? 'disabled' : ''}
               onchange="formBuilder.handleDateRangeChange(this, 'from')"
               class="date-from-input w-full text-xs px-1.5 py-1 border border-slate-300 rounded font-mono bg-white focus:border-blue-500 focus:outline-none ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}"
@@ -1110,7 +1236,8 @@ class FormBuilder {
             <input 
               type="date" 
               value="${toDate}" 
-              ${fromDate ? `min="${fromDate}"` : ''}
+              min="${fromDate || academicMinDate}"
+              max="${academicMaxDate}"
               ${isLocked ? 'disabled' : ''}
               onchange="formBuilder.handleDateRangeChange(this, 'to')"
               class="date-to-input w-full text-xs px-1.5 py-1 border border-slate-300 rounded font-mono bg-white focus:border-blue-500 focus:outline-none ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}"
@@ -1120,15 +1247,17 @@ class FormBuilder {
       `;
     }
 
-    // 3. Single Date Calendar Picker
+    // 3. Single Date Calendar Picker with Active Academic Year Bounds
     if (this.isDateColumn(colLabel, colKey)) {
       const dateVal = this.formatDateForInput(val);
       return `
         <input 
           type="date" 
           value="${dateVal}" 
+          min="${academicMinDate}"
+          max="${academicMaxDate}"
           ${isLocked ? 'disabled' : ''}
-          onchange="${onchangeCode}" 
+          onchange="if (this.value && (this.value < '${academicMinDate}' || this.value > '${academicMaxDate}')) { if (window.showToast) window.showToast('Date must be within active academic year ${activeYearStr} (${academicMinDate} to ${academicMaxDate})', 'error', 4500, 'Invalid Academic Date'); this.value = ''; } else { ${onchangeCode}; }" 
           class="w-full text-xs px-2 py-1.5 border border-slate-300 rounded font-mono bg-white hover:border-slate-400 focus:border-blue-500 focus:outline-none transition text-slate-800 ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}"
         />
       `;
@@ -1242,17 +1371,9 @@ class FormBuilder {
             Department Profile Information
           </h4>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
+            <div class="md:col-span-2">
               <label class="block text-xs font-semibold text-slate-600 mb-1">Department</label>
-              <input type="text" ${isLocked ? 'disabled' : ''} value="${prof.department || ''}" onchange="formBuilder.updateProfileField('department', this.value)" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-white font-medium ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}" />
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Shift</label>
-              <select ${isLocked ? 'disabled' : ''} onchange="formBuilder.updateProfileField('shift', this.value)" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-white font-semibold ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}">
-                <option value="Shift I" ${prof.shift === 'Shift I' ? 'selected' : ''}>Shift I</option>
-                <option value="Shift II" ${prof.shift === 'Shift II' ? 'selected' : ''}>Shift II</option>
-                <option value="Shift I & Shift II" ${prof.shift === 'Shift I & Shift II' || !prof.shift ? 'selected' : ''}>Shift I & Shift II (Both)</option>
-              </select>
+              <input type="text" disabled readonly value="${this.escapeHtml(this.departmentName || window.dataStore?.activeDepartment || prof.department || '')}" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-slate-100 font-bold text-slate-800 cursor-not-allowed select-none shadow-xs" />
             </div>
             <div class="md:col-span-2">
               <label class="block text-xs font-semibold text-slate-600 mb-1">Programmes Offered (UG, PG, PhD)</label>
@@ -1276,7 +1397,7 @@ class FormBuilder {
               <input type="text" ${isLocked ? 'disabled' : ''} value="${prof.hodName || ''}" onchange="formBuilder.updateProfileField('hodName', this.value)" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-white font-medium ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}" placeholder="Dr. / Prof. Name of the Head" />
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Name of the Coordinator (if) <span class="text-[10px] text-slate-400 font-normal">(Optional)</span></label>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Name of the Coordinator <span class="text-[10px] text-slate-400 font-normal">(Optional)</span></label>
               <input type="text" ${isLocked ? 'disabled' : ''} value="${prof.coordinatorName || ''}" onchange="formBuilder.updateProfileField('coordinatorName', this.value)" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-white font-medium ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}" placeholder="Name of the Coordinator (Optional)" />
             </div>
           </div>
@@ -1299,24 +1420,75 @@ class FormBuilder {
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-100">
-                ${facRows.map((fr, idx) => {
-                  const m = Number(fr.male) || 0;
-                  const f = Number(fr.female) || 0;
-                  return `
-                    <tr class="hover:bg-slate-50/80">
-                      <td class="p-2.5 font-medium text-slate-800">${fr.label}</td>
-                      <td class="p-2 text-center">
-                        <input type="number" min="0" ${isLocked ? 'disabled' : ''} value="${m}" onchange="formBuilder.updateFacultyDetail(${idx}, 'male', this.value)" class="w-20 text-center text-xs p-1.5 border border-slate-300 rounded font-semibold text-blue-700 ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}" />
-                      </td>
-                      <td class="p-2 text-center">
-                        <input type="number" min="0" ${isLocked ? 'disabled' : ''} value="${f}" onchange="formBuilder.updateFacultyDetail(${idx}, 'female', this.value)" class="w-20 text-center text-xs p-1.5 border border-slate-300 rounded font-semibold text-purple-700 ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}" />
-                      </td>
-                      <td id="fac-total-${idx}" class="p-2.5 text-center font-bold text-slate-900 bg-slate-50">
-                        ${m + f}
-                      </td>
-                    </tr>
-                  `;
-                }).join('')}
+                ${(() => {
+                  const cleanFac = Array.isArray(facRows) ? JSON.parse(JSON.stringify(facRows)) : [];
+                  while (cleanFac.length < 9) cleanFac.push({ label: '', male: 0, female: 0 });
+
+                  // Strip all "No. of " from all labels
+                  cleanFac.forEach(r => {
+                    if (r.label) {
+                      r.label = r.label.replace(/^Total\s+No\.\s+of\s+/i, 'Total ').replace(/^No\.\s+of\s+/i, '');
+                    }
+                  });
+
+                  cleanFac[0].label = cleanFac[0].label || 'Faculty (Aided)';
+                  cleanFac[1].label = cleanFac[1].label || 'Faculty (Management / Coordinator-Appointed)';
+                  cleanFac[2].label = cleanFac[2].label || 'Faculty (Secretary-Appointed)';
+                  cleanFac[3].label = 'Total Teaching Faculty';
+                  cleanFac[3].isAutoTotal = true;
+
+                  // Auto sum row 3 from rows 0, 1, 2
+                  const r0m = Number(cleanFac[0].male) || 0;
+                  const r0f = Number(cleanFac[0].female) || 0;
+                  const r1m = Number(cleanFac[1].male) || 0;
+                  const r1f = Number(cleanFac[1].female) || 0;
+                  const r2m = Number(cleanFac[2].male) || 0;
+                  const r2f = Number(cleanFac[2].female) || 0;
+                  cleanFac[3].male = r0m + r1m + r2m;
+                  cleanFac[3].female = r0f + r1f + r2f;
+
+                  return cleanFac.map((fr, idx) => {
+                    const m = Number(fr.male) || 0;
+                    const f = Number(fr.female) || 0;
+                    const isTotalRow = idx === 3 || fr.isAutoTotal;
+
+                    if (isTotalRow) {
+                      return `
+                        <tr class="bg-amber-50/80 border-y-2 border-amber-300 font-bold">
+                          <td class="p-2.5 font-black text-amber-950 flex items-center gap-1.5">
+                            <i data-lucide="calculator" class="w-3.5 h-3.5 text-amber-700"></i>
+                            <span>Total Teaching Faculty</span>
+                            <span class="text-[10px] text-amber-700 font-semibold">(Auto Sum: Aided + Management + Secretary)</span>
+                          </td>
+                          <td class="p-2 text-center">
+                            <input type="number" id="fac-male-${idx}" disabled readonly value="${m}" class="w-20 text-center text-xs p-1.5 border border-amber-300 rounded font-black text-amber-900 bg-amber-100/70 cursor-not-allowed select-none shadow-2xs" />
+                          </td>
+                          <td class="p-2 text-center">
+                            <input type="number" id="fac-female-${idx}" disabled readonly value="${f}" class="w-20 text-center text-xs p-1.5 border border-amber-300 rounded font-black text-amber-900 bg-amber-100/70 cursor-not-allowed select-none shadow-2xs" />
+                          </td>
+                          <td id="fac-total-${idx}" class="p-2.5 text-center font-black text-amber-950 bg-amber-200/80 border-l border-amber-300">
+                            ${m + f}
+                          </td>
+                        </tr>
+                      `;
+                    }
+
+                    return `
+                      <tr class="hover:bg-slate-50/80">
+                        <td class="p-2.5 font-medium text-slate-800">${fr.label}</td>
+                        <td class="p-2 text-center">
+                          <input type="number" min="0" ${isLocked ? 'disabled' : ''} value="${m}" onchange="formBuilder.updateFacultyDetail(${idx}, 'male', this.value)" class="w-20 text-center text-xs p-1.5 border border-slate-300 rounded font-semibold text-blue-700 ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}" />
+                        </td>
+                        <td class="p-2 text-center">
+                          <input type="number" min="0" ${isLocked ? 'disabled' : ''} value="${f}" onchange="formBuilder.updateFacultyDetail(${idx}, 'female', this.value)" class="w-20 text-center text-xs p-1.5 border border-slate-300 rounded font-semibold text-purple-700 ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}" />
+                        </td>
+                        <td id="fac-total-${idx}" class="p-2.5 text-center font-bold text-slate-900 bg-slate-50">
+                          ${m + f}
+                        </td>
+                      </tr>
+                    `;
+                  }).join('');
+                })()}
               </tbody>
             </table>
           </div>
@@ -1326,7 +1498,7 @@ class FormBuilder {
         <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 w-full">
           <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700 mb-3 flex items-center gap-2">
             <i data-lucide="graduation-cap" class="w-4 h-4 text-purple-600"></i>
-            Student Details (Total No. of Students)
+            Student Details (Total Students)
           </h4>
           <div class="overflow-x-auto rounded-lg border border-slate-200 bg-white w-full">
             <table class="w-full text-left text-xs border-collapse">
@@ -1336,9 +1508,9 @@ class FormBuilder {
                   <th class="p-2.5 w-24 text-center">Male</th>
                   <th class="p-2.5 w-24 text-center">Female</th>
                   <th class="p-2.5 w-24 text-center">Other Gender</th>
+                  <th class="p-2.5 w-24 text-center bg-blue-100/70 font-black text-blue-950 border-x border-blue-200">Total</th>
                   <th class="p-2.5 w-24 text-center">Other States</th>
                   <th class="p-2.5 w-24 text-center">Other Countries</th>
-                  <th class="p-2.5 w-24 text-center bg-slate-200/50">Total</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-100">
@@ -1366,14 +1538,14 @@ class FormBuilder {
                       <td class="p-2 text-center">
                         <input type="number" min="0" ${isLocked ? 'disabled' : ''} value="${og}" onchange="formBuilder.updateStudentDetail(${idx}, 'otherGender', this.value)" class="w-20 text-center text-xs p-1.5 border border-slate-300 rounded ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}" />
                       </td>
+                      <td id="stu-total-${idx}" class="p-2.5 text-center font-black text-blue-950 bg-blue-50/80 border-x border-blue-200">
+                        ${m + f + og}
+                      </td>
                       <td class="p-2 text-center">
                         <input type="number" min="0" ${isLocked ? 'disabled' : ''} value="${os}" onchange="formBuilder.updateStudentDetail(${idx}, 'otherStates', this.value)" class="w-20 text-center text-xs p-1.5 border border-slate-300 rounded ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}" />
                       </td>
                       <td class="p-2 text-center">
                         <input type="number" min="0" ${isLocked ? 'disabled' : ''} value="${oc}" onchange="formBuilder.updateStudentDetail(${idx}, 'otherCountries', this.value)" class="w-20 text-center text-xs p-1.5 border border-slate-300 rounded ${isLocked ? 'opacity-60 cursor-not-allowed bg-slate-100' : ''}" />
-                      </td>
-                      <td id="stu-total-${idx}" class="p-2.5 text-center font-bold text-slate-900 bg-slate-50">
-                        ${m + f + og}
                       </td>
                     </tr>
                   `;
@@ -1904,6 +2076,22 @@ class FormBuilder {
     const fromVal = (fromInput?.value || '').trim();
     let toVal = (toInput?.value || '').trim();
 
+    // Academic Year Bounds Check
+    const activeYearStr = (window.dataStore && typeof window.dataStore.getActiveYear === 'function') 
+      ? window.dataStore.getActiveYear() 
+      : (localStorage.getItem('IQAC_ACTIVE_YEAR') || '2026 - 2027');
+    const [startYearPart, endYearPart] = activeYearStr.split('-').map(s => s.trim());
+    const academicMinDate = `${startYearPart || '2026'}-06-01`;
+    const academicMaxDate = `${endYearPart || '2027'}-05-31`;
+
+    if (inputEl.value && (inputEl.value < academicMinDate || inputEl.value > academicMaxDate)) {
+      if (window.showToast) {
+        window.showToast(`Date must fall within academic year ${activeYearStr} (${academicMinDate} to ${academicMaxDate}).`, 'error', 4500, 'Invalid Academic Date');
+      }
+      inputEl.value = '';
+      return;
+    }
+
     // Dynamically set minimum allowed date for 'To' input
     if (fromVal && toInput) {
       toInput.min = fromVal;
@@ -2192,21 +2380,39 @@ class FormBuilder {
     if (window.lucide) lucide.createIcons({ root: modal });
   }
 
-  // Render individual sheet in clean document print format
+  // Render individual metric in clean document print format
   renderSheetPrintPreview(sheet, sheetData) {
     if (sheet.type === 'profile') {
       const prof = sheetData?.profile || sheet.profileQuestions || {};
-      const facRows = sheetData?.facultyDetails || sheet.facultyDetails?.rows || [];
+      const rawFac = sheetData?.facultyDetails || sheet.facultyDetails?.rows || [];
       const stuRows = sheetData?.studentDetails || sheet.studentDetails?.rows || [];
+
+      // Clean & normalize faculty details for review
+      const cleanFac = Array.isArray(rawFac) ? JSON.parse(JSON.stringify(rawFac)) : [];
+      while (cleanFac.length < 9) cleanFac.push({ label: '', male: 0, female: 0 });
+      cleanFac.forEach(r => {
+        if (r.label) r.label = r.label.replace(/^Total\s+No\.\s+of\s+/i, 'Total ').replace(/^No\.\s+of\s+/i, '');
+      });
+      cleanFac[0].label = cleanFac[0].label || 'Faculty (Aided)';
+      cleanFac[1].label = cleanFac[1].label || 'Faculty (Management / Coordinator-Appointed)';
+      cleanFac[2].label = cleanFac[2].label || 'Faculty (Secretary-Appointed)';
+      cleanFac[3].label = 'Total Teaching Faculty';
+      cleanFac[3].isAutoTotal = true;
+      const r0m = Number(cleanFac[0].male) || 0;
+      const r0f = Number(cleanFac[0].female) || 0;
+      const r1m = Number(cleanFac[1].male) || 0;
+      const r1f = Number(cleanFac[1].female) || 0;
+      const r2m = Number(cleanFac[2].male) || 0;
+      const r2f = Number(cleanFac[2].female) || 0;
+      cleanFac[3].male = r0m + r1m + r2m;
+      cleanFac[3].female = r0f + r1f + r2f;
 
       return `
         <div class="space-y-4">
-          <!-- Profile Grid -->
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 p-3.5 bg-slate-50 rounded-xl border border-slate-200">
-            <div><span class="text-slate-400 block text-[10px] uppercase font-bold">Department</span><strong class="text-slate-800">${prof.department || '-'}</strong></div>
-            <div><span class="text-slate-400 block text-[10px] uppercase font-bold">Shift</span><strong class="text-slate-800">${prof.shift || '-'}</strong></div>
-            <div><span class="text-slate-400 block text-[10px] uppercase font-bold">HOD Name</span><strong class="text-slate-800">${prof.hodName || '-'}</strong></div>
-            <div><span class="text-slate-400 block text-[10px] uppercase font-bold">Coordinator</span><strong class="text-slate-800">${prof.coordinatorName || '-'}</strong></div>
+          <!-- Profile Grid: Department & Shift removed here as Department is prominently shown in the top header -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+            <div><span class="text-slate-400 block text-[10px] uppercase font-bold">Name of the Head</span><strong class="text-slate-800">${prof.hodName || '-'}</strong></div>
+            <div><span class="text-slate-400 block text-[10px] uppercase font-bold">Name of the Coordinator (Optional)</span><strong class="text-slate-800">${prof.coordinatorName || '-'}</strong></div>
           </div>
 
           <!-- Faculty Cadres Table -->
@@ -2223,21 +2429,26 @@ class FormBuilder {
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
-                  ${facRows.map(r => `
-                    <tr>
-                      <td class="p-2 font-medium">${r.label || r.cadre || '-'}</td>
-                      <td class="p-2 text-right font-mono">${r.male ?? 0}</td>
-                      <td class="p-2 text-right font-mono">${r.female ?? 0}</td>
-                      <td class="p-2 text-right font-mono font-bold">${(Number(r.male)||0) + (Number(r.female)||0)}</td>
-                    </tr>
-                  `).join('')}
+                  ${cleanFac.map((r, idx) => {
+                    const isTotalRow = idx === 3 || r.isAutoTotal;
+                    const m = Number(r.male) || 0;
+                    const f = Number(r.female) || 0;
+                    return `
+                      <tr class="${isTotalRow ? 'bg-amber-50/80 font-black text-amber-950 border-y-2 border-amber-300' : ''}">
+                        <td class="p-2 ${isTotalRow ? 'font-black text-amber-950' : 'font-medium'}">${r.label || r.cadre || '-'}</td>
+                        <td class="p-2 text-right font-mono">${m}</td>
+                        <td class="p-2 text-right font-mono">${f}</td>
+                        <td class="p-2 text-right font-mono font-bold ${isTotalRow ? 'bg-amber-200/80' : ''}">${m + f}</td>
+                      </tr>
+                    `;
+                  }).join('')}
                 </tbody>
               </table>
             </div>
           </div>
 
           ${stuRows.length > 0 ? `
-            <!-- Student Details Table -->
+            <!-- Student Details Table (Total placed directly after Other Gender) -->
             <div class="space-y-1 mt-3">
               <h5 class="text-xs font-black text-slate-700 uppercase tracking-wider">Student Details</h5>
               <div class="overflow-x-auto rounded-xl border border-slate-200">
@@ -2248,24 +2459,29 @@ class FormBuilder {
                       <th class="p-2 text-right">Male</th>
                       <th class="p-2 text-right">Female</th>
                       <th class="p-2 text-right">Other Gender</th>
+                      <th class="p-2 text-right bg-blue-100/70 font-black text-blue-950 border-x border-blue-200">Total</th>
                       <th class="p-2 text-right">Other States</th>
                       <th class="p-2 text-right">Other Countries</th>
-                      <th class="p-2 text-right">Total</th>
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-slate-100">
                     ${stuRows.map((r, idx) => {
                       const defaultLevels = ['Undergraduate (UG)', 'Postgraduate (PG)', 'Ph.D. / Research'];
                       const lvl = (r.programme && r.programme !== 0 && r.programme !== '0') ? r.programme : (defaultLevels[idx] || 'Level ' + (idx + 1));
+                      const m = Number(r.male) || 0;
+                      const f = Number(r.female) || 0;
+                      const og = Number(r.otherGender) || 0;
+                      const os = Number(r.otherStates) || 0;
+                      const oc = Number(r.otherCountries) || 0;
                       return `
                       <tr>
                         <td class="p-2 font-medium">${lvl}</td>
-                        <td class="p-2 text-right font-mono">${r.male ?? 0}</td>
-                        <td class="p-2 text-right font-mono">${r.female ?? 0}</td>
-                        <td class="p-2 text-right font-mono">${r.otherGender ?? 0}</td>
-                        <td class="p-2 text-right font-mono">${r.otherStates ?? 0}</td>
-                        <td class="p-2 text-right font-mono">${r.otherCountries ?? 0}</td>
-                        <td class="p-2 text-right font-mono font-bold">${(Number(r.male)||0) + (Number(r.female)||0) + (Number(r.otherGender)||0)}</td>
+                        <td class="p-2 text-right font-mono">${m}</td>
+                        <td class="p-2 text-right font-mono">${f}</td>
+                        <td class="p-2 text-right font-mono">${og}</td>
+                        <td class="p-2 text-right font-mono font-black text-blue-950 bg-blue-50/80 border-x border-blue-200">${m + f + og}</td>
+                        <td class="p-2 text-right font-mono">${os}</td>
+                        <td class="p-2 text-right font-mono">${oc}</td>
                       </tr>
                     `;
                     }).join('')}
@@ -2288,7 +2504,7 @@ class FormBuilder {
       const columns = sheet.columns || [];
 
       if (!rows || rows.length === 0) {
-        return '<div class="p-3 bg-slate-50 rounded-lg text-slate-400 italic text-center">No records entered for this sheet.</div>';
+        return '<div class="p-3 bg-slate-50 rounded-lg text-slate-400 italic text-center">No records entered for this metric.</div>';
       }
 
       return `

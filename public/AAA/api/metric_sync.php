@@ -322,7 +322,33 @@ class MetricSyncEngine {
         $insertSql = "INSERT INTO `$tableName` ($colListSql) VALUES ($paramListSql)";
         $stmt = $pdo->prepare($insertSql);
 
+        // Deduplicate incoming rows by content signature
+        $seenSignatures = [];
+        $uniqueRows = [];
         foreach ($rows as $row) {
+            if (!is_array($row)) continue;
+            $contentOnly = [];
+            foreach ($row as $k => $v) {
+                if (!in_array($k, ['sno', 's_no', 'sl_no', 'submitted_by', 'submittedBy', 'id'])) {
+                    $contentOnly[$k] = trim((string)($v ?? ''));
+                }
+            }
+            // Discard completely empty blank placeholder rows
+            $hasAnyValue = false;
+            foreach ($contentOnly as $v) {
+                if ($v !== '') { $hasAnyValue = true; break; }
+            }
+            if (!$hasAnyValue) continue;
+
+            ksort($contentOnly);
+            $sig = md5(json_encode($contentOnly));
+            if (!isset($seenSignatures[$sig])) {
+                $seenSignatures[$sig] = true;
+                $uniqueRows[] = $row;
+            }
+        }
+
+        foreach ($uniqueRows as $row) {
             if (!is_array($row)) continue;
 
             $params = [];

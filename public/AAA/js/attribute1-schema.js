@@ -1,7 +1,4 @@
-// IQAC AAA February 2027 - Attribute 1 Questionnaire & Sheet Schema
-// Extracted 1:1 from Templates_AAA_2026-2027/AAA_February 2027_Attribute 1/AAA_February 2027_Attribute I_Template.xlsx
-
-window.DEFAULT_ATTRIBUTE1_SCHEMA = [
+window.ATTRIBUTE_1_CARDS_SCHEMA = [
   {
     "key": "PART-A",
     "sheetName": "PART-A",
@@ -297,9 +294,9 @@ window.DEFAULT_ATTRIBUTE1_SCHEMA = [
             "focus": "Skill",
             "multidisciplinary": "Yes",
             "durationHours": "30",
-            "datesFromTo": "01.07.2026 – 15.07.2026",
+            "datesFromTo": "01.07.2026 \u2013 15.07.2026",
             "industryCollab": "No",
-            "staffOrExperts": "Dr. A. Vimal Jerald, Assistant Professor, Department of Computer Science, St. Joseph’s College (Autonomous), Tiruchirappalli – 620002",
+            "staffOrExperts": "Dr. A. Vimal Jerald, Assistant Professor, Department of Computer Science, St. Joseph\u2019s College (Autonomous), Tiruchirappalli \u2013 620002",
             "enrolled": "80",
             "completed": "75"
           },
@@ -316,16 +313,16 @@ window.DEFAULT_ATTRIBUTE1_SCHEMA = [
             "focus": "Both",
             "multidisciplinary": "Yes",
             "durationHours": "40",
-            "datesFromTo": "15.07.2026 – 30.07.2026",
+            "datesFromTo": "15.07.2026 \u2013 30.07.2026",
             "industryCollab": "Yes",
-            "staffOrExperts": "Dr. R. Lenin, Associate Professor, Department of Computer Science, St. Joseph’s College (Autonomous), Tiruchirappalli – 620002; Mr. Arun Kumar, Senior AI Engineer, ABC Technologies Pvt. Ltd., 25 Anna Salai, Chennai – 600002",
+            "staffOrExperts": "Dr. R. Lenin, Associate Professor, Department of Computer Science, St. Joseph\u2019s College (Autonomous), Tiruchirappalli \u2013 620002; Mr. Arun Kumar, Senior AI Engineer, ABC Technologies Pvt. Ltd., 25 Anna Salai, Chennai \u2013 600002",
             "enrolled": "60",
             "completed": "55"
           },
           {
             "sno": "3",
             "nature": "CC",
-            "collaboratingAgency": "ABC Technologies Pvt. Ltd., 25 Anna Salai, Chennai – 600002, Tamil Nadu",
+            "collaboratingAgency": "ABC Technologies Pvt. Ltd., 25 Anna Salai, Chennai \u2013 600002, Tamil Nadu",
             "courseCode": "CC-FS01",
             "courseTitle": "Full Stack Web Development",
             "creditsAssigned": "3",
@@ -335,9 +332,9 @@ window.DEFAULT_ATTRIBUTE1_SCHEMA = [
             "focus": "Skill",
             "multidisciplinary": "Yes",
             "durationHours": "60",
-            "datesFromTo": "01.08.2026 – 20.08.2026",
+            "datesFromTo": "01.08.2026 \u2013 20.08.2026",
             "industryCollab": "Yes",
-            "staffOrExperts": "Mr. G. Novin Senetra Roy, Assistant Professor, Department of Computer Science, St. Joseph’s College (Autonomous); Ms. Priya Joseph, Senior Software Developer, ABC Technologies Pvt. Ltd.",
+            "staffOrExperts": "Mr. G. Novin Senetra Roy, Assistant Professor, Department of Computer Science, St. Joseph\u2019s College (Autonomous); Ms. Priya Joseph, Senior Software Developer, ABC Technologies Pvt. Ltd.",
             "enrolled": "50",
             "completed": "45"
           },
@@ -354,9 +351,9 @@ window.DEFAULT_ATTRIBUTE1_SCHEMA = [
             "focus": "Knowledge",
             "multidisciplinary": "Yes",
             "durationHours": "20",
-            "datesFromTo": "05.08.2026 – 12.08.2026",
+            "datesFromTo": "05.08.2026 \u2013 12.08.2026",
             "industryCollab": "No",
-            "staffOrExperts": "Dr. S. Thulasi Bharathi, Assistant Professor, Department of Commerce, St. Joseph’s College (Autonomous), Tiruchirappalli – 620002",
+            "staffOrExperts": "Dr. S. Thulasi Bharathi, Assistant Professor, Department of Commerce, St. Joseph\u2019s College (Autonomous), Tiruchirappalli \u2013 620002",
             "enrolled": "100",
             "completed": "96"
           }
@@ -413,9 +410,9 @@ window.DEFAULT_ATTRIBUTE1_SCHEMA = [
             "regNo": "26UCS101",
             "studentName": "Arun Kumar",
             "courseTitle": "Certificate Course in Full Stack Web Development",
-            "agencyDetails": "ABC Technologies Pvt. Ltd., 25 Anna Salai, Chennai – 600002, Tamil Nadu",
+            "agencyDetails": "ABC Technologies Pvt. Ltd., 25 Anna Salai, Chennai \u2013 600002, Tamil Nadu",
             "mode": "Offline",
-            "datesFromTo": "01.07.2026 – 15.07.2026",
+            "datesFromTo": "01.07.2026 \u2013 15.07.2026",
             "credits": "2"
           },
           {
@@ -423,9 +420,9 @@ window.DEFAULT_ATTRIBUTE1_SCHEMA = [
             "regNo": "26UCS115",
             "studentName": "Priya Joseph",
             "courseTitle": "Certificate Course in Data Analytics",
-            "agencyDetails": "XYZ Analytics Solutions, 18 MG Road, Bengaluru – 560001, Karnataka",
+            "agencyDetails": "XYZ Analytics Solutions, 18 MG Road, Bengaluru \u2013 560001, Karnataka",
             "mode": "Blended",
-            "datesFromTo": "10.07.2026 – 25.07.2026",
+            "datesFromTo": "10.07.2026 \u2013 25.07.2026",
             "credits": "3"
           }
         ]
@@ -534,7 +531,7 @@ window.DEFAULT_ATTRIBUTE1_SCHEMA = [
       },
       {
         "key": "datesFromTo",
-        "label": "Date From – To DD.MM.YYYY",
+        "label": "Date From \u2013 To DD.MM.YYYY",
         "width": "w-36"
       },
       {
@@ -892,7 +889,7 @@ window.DEFAULT_ATTRIBUTE1_SCHEMA = [
       },
       {
         "key": "stipend",
-        "label": "Stipend, if any (₹)",
+        "label": "Stipend, if any (\u20b9)",
         "width": "w-28"
       }
     ],
@@ -902,10 +899,10 @@ window.DEFAULT_ATTRIBUTE1_SCHEMA = [
         "className": "III B.Com.",
         "regNo": "24UCO115",
         "studentName": "Priya Joseph",
-        "activityType": "Project – Financial Data Analysis",
-        "agencyDetails": "XYZ Financial Services, 45 MG Road, Bengaluru – 560001, Karnataka",
+        "activityType": "Project \u2013 Financial Data Analysis",
+        "agencyDetails": "XYZ Financial Services, 45 MG Road, Bengaluru \u2013 560001, Karnataka",
         "durationDays": "20",
-        "datesFromTo": "10.06.2026 – 29.06.2026",
+        "datesFromTo": "10.06.2026 \u2013 29.06.2026",
         "skillsAcquired": "Excel, Data Analysis, Financial Reporting",
         "stipend": "-"
       },
@@ -914,10 +911,10 @@ window.DEFAULT_ATTRIBUTE1_SCHEMA = [
         "className": "II B.A. English",
         "regNo": "25UEN208",
         "studentName": "David Paul",
-        "activityType": "Internship – Content Writing",
-        "agencyDetails": "Creative Media Solutions, 18 College Road, Tiruchirappalli – 620002, Tamil Nadu",
+        "activityType": "Internship \u2013 Content Writing",
+        "agencyDetails": "Creative Media Solutions, 18 College Road, Tiruchirappalli \u2013 620002, Tamil Nadu",
         "durationDays": "15",
-        "datesFromTo": "15.07.2026 – 29.07.2026",
+        "datesFromTo": "15.07.2026 \u2013 29.07.2026",
         "skillsAcquired": "Content Writing, Editing, Communication",
         "stipend": "3000"
       }

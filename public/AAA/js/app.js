@@ -2,7 +2,7 @@
 
 class App {
   constructor() {
-    this.currentView = 'dashboard'; // default to dashboard
+    this.currentView = 'form'; // default to form
   }
 
   async init() {
@@ -189,6 +189,9 @@ class App {
   }
 
   switchView(viewName) {
+    if (viewName === 'dashboard') {
+      viewName = (window.authManager && window.authManager.isAdmin()) ? 'admin' : 'form';
+    }
     const isAdmin = window.authManager && window.authManager.isAdmin();
     // Restrict department users strictly to Attribute Forms and Department Info
     if (!isAdmin && viewName !== 'form' && viewName !== 'dept-profile') {
