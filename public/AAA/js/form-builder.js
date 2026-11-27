@@ -827,7 +827,7 @@ class FormBuilder {
                     
                     <span class="text-xs font-bold ${isAllFinished ? 'text-emerald-700' : 'text-slate-500'} flex items-center gap-1.5">
                       <i data-lucide="${isAllFinished ? 'check-circle' : 'file-spreadsheet'}" class="w-3.5 h-3.5 ${isAllFinished ? 'text-emerald-600' : 'text-slate-400'}"></i>
-                      <span>${finishedCount} / ${totalSheets} Sheets</span>
+                      <span>${finishedCount} / ${totalSheets} Metrics</span>
                     </span>
                   </div>
 
@@ -848,7 +848,7 @@ class FormBuilder {
                     </div>
                     <div class="flex justify-between items-center text-[10px] text-slate-500 font-semibold">
                       <span>${percentage}% Finished</span>
-                      <span>${totalSheets} Total ${totalSheets === 1 ? 'Sheet' : 'Sheets'}</span>
+                      <span>${totalSheets} Total ${totalSheets === 1 ? 'Metric' : 'Metrics'}</span>
                     </div>
                   </div>
                 </div>
@@ -951,7 +951,7 @@ class FormBuilder {
                 <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-[#FFE3B3] text-[#26648E]">
                   ${card.cardCode}
                 </span>
-                <span class="text-xs text-slate-500 font-bold">${finishedCount} of ${totalSheets} Sheets Finished</span>
+                <span class="text-xs text-slate-500 font-bold">${finishedCount} of ${totalSheets} Metrics Finished</span>
               </div>
               <h2 class="text-xl font-black tracking-tight text-slate-900">
                 ${card.cardTitle}
@@ -1421,31 +1421,42 @@ class FormBuilder {
               </thead>
               <tbody class="divide-y divide-slate-100">
                 ${(() => {
-                  const cleanFac = Array.isArray(facRows) ? JSON.parse(JSON.stringify(facRows)) : [];
-                  while (cleanFac.length < 9) cleanFac.push({ label: '', male: 0, female: 0 });
+                  const getRowByCadre = (matcher) => {
+                    const found = (Array.isArray(facRows) ? facRows : []).find(matcher);
+                    return found ? { ...found } : { male: 0, female: 0 };
+                  };
 
-                  // Strip all "No. of " from all labels
-                  cleanFac.forEach(r => {
-                    if (r.label) {
-                      r.label = r.label.replace(/^Total\s+No\.\s+of\s+/i, 'Total ').replace(/^No\.\s+of\s+/i, '');
-                    }
-                  });
+                  const aided = getRowByCadre(r => /aided/i.test(r.label) && !/secretary/i.test(r.label));
+                  const coord = getRowByCadre(r => (/coordinator/i.test(r.label) || /management/i.test(r.label)) && !/aided/i.test(r.label));
+                  const sec = getRowByCadre(r => /secretary/i.test(r.label));
+                  const pop = getRowByCadre(r => /practice/i.test(r.label));
+                  const hourly = getRowByCadre(r => /hourly/i.test(r.label));
+                  const otherStates = getRowByCadre(r => /from other states/i.test(r.label) && !/graduating/i.test(r.label));
+                  const gradStates = getRowByCadre(r => /graduating from other states/i.test(r.label));
+                  const support = getRowByCadre(r => /support/i.test(r.label) || /non-teaching/i.test(r.label));
 
-                  cleanFac[0].label = cleanFac[0].label || 'Faculty (Aided)';
-                  cleanFac[1].label = cleanFac[1].label || 'Faculty (Management / Coordinator-Appointed)';
-                  cleanFac[2].label = cleanFac[2].label || 'Faculty (Secretary-Appointed)';
-                  cleanFac[3].label = 'Total Teaching Faculty';
-                  cleanFac[3].isAutoTotal = true;
+                  const r0m = Number(aided.male) || 0;
+                  const r0f = Number(aided.female) || 0;
+                  const r1m = Number(coord.male) || 0;
+                  const r1f = Number(coord.female) || 0;
+                  const r2m = Number(sec.male) || 0;
+                  const r2f = Number(sec.female) || 0;
 
-                  // Auto sum row 3 from rows 0, 1, 2
-                  const r0m = Number(cleanFac[0].male) || 0;
-                  const r0f = Number(cleanFac[0].female) || 0;
-                  const r1m = Number(cleanFac[1].male) || 0;
-                  const r1f = Number(cleanFac[1].female) || 0;
-                  const r2m = Number(cleanFac[2].male) || 0;
-                  const r2f = Number(cleanFac[2].female) || 0;
-                  cleanFac[3].male = r0m + r1m + r2m;
-                  cleanFac[3].female = r0f + r1f + r2f;
+                  const cleanFac = [
+                    { label: 'Faculty (Aided)', male: r0m, female: r0f },
+                    { label: 'Faculty (Management / Coordinator-Appointed)', male: r1m, female: r1f },
+                    { label: 'Faculty (Secretary-Appointed)', male: r2m, female: r2f },
+                    { label: 'Total Teaching Faculty', male: r0m + r1m + r2m, female: r0f + r1f + r2f, isAutoTotal: true },
+                    { label: 'Professor of Practice', male: Number(pop.male) || 0, female: Number(pop.female) || 0 },
+                    { label: 'Faculty (Hourly Basis)', male: Number(hourly.male) || 0, female: Number(hourly.female) || 0 },
+                    { label: 'Faculty from Other States', male: Number(otherStates.male) || 0, female: Number(otherStates.female) || 0 },
+                    { label: 'Faculty Graduating from Other States', male: Number(gradStates.male) || 0, female: Number(gradStates.female) || 0 },
+                    { label: 'Academic Support Staff (Technical) and Non-teaching Staff', male: Number(support.male) || 0, female: Number(support.female) || 0 }
+                  ];
+
+                  if (cardData && cardData['PART-A']) {
+                    cardData['PART-A'].facultyDetails = cleanFac;
+                  }
 
                   return cleanFac.map((fr, idx) => {
                     const m = Number(fr.male) || 0;
@@ -1582,7 +1593,7 @@ class FormBuilder {
             ` : `
               <div class="flex items-center gap-2 mb-1">
                 <span class="px-2.5 py-0.5 rounded-lg text-xs font-black bg-[#26648E]/10 text-[#26648E] border border-[#26648E]/20">
-                  Sheet ${sheet.sheetName || sheet.key}
+                  Metric ${(sheet.sheetName || sheet.key || '').replace(/^Sheet\s*/i, '')}
                 </span>
                 ${sheet.note ? `<span class="px-2.5 py-0.5 rounded-lg text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300">${sheet.note}</span>` : ''}
               </div>
@@ -1634,7 +1645,7 @@ class FormBuilder {
               ${rows.length === 0 ? `
                 <tr>
                   <td colspan="${columns.length + 2}" class="p-8 text-center text-slate-400 font-medium">
-                    No data rows entered yet. Click <strong>+ Add Data Row</strong> above to begin filling this sheet.
+                    No data rows entered yet. Click <strong>+ Add Data Row</strong> above to begin filling this metric.
                   </td>
                 </tr>
               ` : rows.map((row, rIdx) => `
@@ -1689,7 +1700,7 @@ class FormBuilder {
             ` : `
               <div class="flex items-center gap-2 mb-1">
                 <span class="px-2.5 py-0.5 rounded-lg text-xs font-black bg-[#26648E]/10 text-[#26648E] border border-[#26648E]/20">
-                  Sheet ${sheet.sheetName || sheet.key}
+                  Metric ${(sheet.sheetName || sheet.key || '').replace(/^Sheet\s*/i, '')}
                 </span>
                 ${sheet.note ? `<span class="px-2.5 py-0.5 rounded-lg text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300">${sheet.note}</span>` : ''}
               </div>
@@ -1809,7 +1820,7 @@ class FormBuilder {
             ` : `
               <div class="flex items-center gap-2 mb-1">
                 <span class="px-2.5 py-0.5 rounded-lg text-xs font-black bg-[#26648E]/10 text-[#26648E] border border-[#26648E]/20">
-                  Sheet ${sheet.sheetName || sheet.key}
+                  Metric ${(sheet.sheetName || sheet.key || '').replace(/^Sheet\s*/i, '')}
                 </span>
                 ${sheet.note ? `<span class="px-2.5 py-0.5 rounded-lg text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300">${sheet.note}</span>` : ''}
               </div>
@@ -2388,24 +2399,38 @@ class FormBuilder {
       const stuRows = sheetData?.studentDetails || sheet.studentDetails?.rows || [];
 
       // Clean & normalize faculty details for review
-      const cleanFac = Array.isArray(rawFac) ? JSON.parse(JSON.stringify(rawFac)) : [];
-      while (cleanFac.length < 9) cleanFac.push({ label: '', male: 0, female: 0 });
-      cleanFac.forEach(r => {
-        if (r.label) r.label = r.label.replace(/^Total\s+No\.\s+of\s+/i, 'Total ').replace(/^No\.\s+of\s+/i, '');
-      });
-      cleanFac[0].label = cleanFac[0].label || 'Faculty (Aided)';
-      cleanFac[1].label = cleanFac[1].label || 'Faculty (Management / Coordinator-Appointed)';
-      cleanFac[2].label = cleanFac[2].label || 'Faculty (Secretary-Appointed)';
-      cleanFac[3].label = 'Total Teaching Faculty';
-      cleanFac[3].isAutoTotal = true;
-      const r0m = Number(cleanFac[0].male) || 0;
-      const r0f = Number(cleanFac[0].female) || 0;
-      const r1m = Number(cleanFac[1].male) || 0;
-      const r1f = Number(cleanFac[1].female) || 0;
-      const r2m = Number(cleanFac[2].male) || 0;
-      const r2f = Number(cleanFac[2].female) || 0;
-      cleanFac[3].male = r0m + r1m + r2m;
-      cleanFac[3].female = r0f + r1f + r2f;
+      const getRowByCadre = (matcher) => {
+        const found = (Array.isArray(rawFac) ? rawFac : []).find(matcher);
+        return found ? { ...found } : { male: 0, female: 0 };
+      };
+
+      const aided = getRowByCadre(r => /aided/i.test(r.label) && !/secretary/i.test(r.label));
+      const coord = getRowByCadre(r => (/coordinator/i.test(r.label) || /management/i.test(r.label)) && !/aided/i.test(r.label));
+      const sec = getRowByCadre(r => /secretary/i.test(r.label));
+      const pop = getRowByCadre(r => /practice/i.test(r.label));
+      const hourly = getRowByCadre(r => /hourly/i.test(r.label));
+      const otherStates = getRowByCadre(r => /from other states/i.test(r.label) && !/graduating/i.test(r.label));
+      const gradStates = getRowByCadre(r => /graduating from other states/i.test(r.label));
+      const support = getRowByCadre(r => /support/i.test(r.label) || /non-teaching/i.test(r.label));
+
+      const r0m = Number(aided.male) || 0;
+      const r0f = Number(aided.female) || 0;
+      const r1m = Number(coord.male) || 0;
+      const r1f = Number(coord.female) || 0;
+      const r2m = Number(sec.male) || 0;
+      const r2f = Number(sec.female) || 0;
+
+      const cleanFac = [
+        { label: 'Faculty (Aided)', male: r0m, female: r0f },
+        { label: 'Faculty (Management / Coordinator-Appointed)', male: r1m, female: r1f },
+        { label: 'Faculty (Secretary-Appointed)', male: r2m, female: r2f },
+        { label: 'Total Teaching Faculty', male: r0m + r1m + r2m, female: r0f + r1f + r2f, isAutoTotal: true },
+        { label: 'Professor of Practice', male: Number(pop.male) || 0, female: Number(pop.female) || 0 },
+        { label: 'Faculty (Hourly Basis)', male: Number(hourly.male) || 0, female: Number(hourly.female) || 0 },
+        { label: 'Faculty from Other States', male: Number(otherStates.male) || 0, female: Number(otherStates.female) || 0 },
+        { label: 'Faculty Graduating from Other States', male: Number(gradStates.male) || 0, female: Number(gradStates.female) || 0 },
+        { label: 'Academic Support Staff (Technical) and Non-teaching Staff', male: Number(support.male) || 0, female: Number(support.female) || 0 }
+      ];
 
       return `
         <div class="space-y-4">

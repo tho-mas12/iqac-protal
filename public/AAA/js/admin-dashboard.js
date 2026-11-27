@@ -2653,7 +2653,7 @@ class AdminDashboard {
                   </div>
                 ` : `
                   <div class="text-xs text-slate-400 py-3 text-center italic">
-                    ${rows.length === 0 ? 'No records entered by this department for this sheet yet.' : 'Profile data saved in standard departmental records.'}
+                    ${rows.length === 0 ? 'No records entered by this department for this metric yet.' : 'Profile data saved in standard departmental records.'}
                   </div>
                 `}
               </div>
@@ -2860,7 +2860,7 @@ class AdminDashboard {
                         ${card.cardCode}
                       </span>
                       <span class="text-[11px] font-bold ${isDone ? 'text-emerald-700' : (filledSheets > 0 ? 'text-blue-700' : 'text-slate-400')}">
-                        ${filledSheets} / ${totalSheets} Sheets
+                        ${filledSheets} / ${totalSheets} Metrics
                       </span>
                     </div>
 
