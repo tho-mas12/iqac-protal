@@ -16,12 +16,13 @@ class AdminDashboard {
 
   async loadData() {
     try {
-      const resp = await fetch('api/departments.php');
+      const activeYear = window.dataStore ? window.dataStore.getActiveYear() : '2026 - 2027';
+      const resp = await fetch('/api/aaa/departments?year=' + encodeURIComponent(activeYear));
       if (resp.ok) {
         const result = await resp.json();
         if (result.success) {
           this.departments = result.departments || [];
-          this.overview = result.overview || {};
+          this.overview = result.overview || result.summary || {};
           this.syncLocalLockStates();
           this.render();
           return;
@@ -2542,7 +2543,7 @@ class AdminDashboard {
 
     if (!deptData) {
       try {
-        const resp = await fetch(`api/submission.php?dept_id=${encodeURIComponent(deptObj?.id || deptName)}`);
+        const resp = await fetch(`/api/aaa/submission?dept_name=${encodeURIComponent(deptName)}&dept_id=${encodeURIComponent(deptObj?.id || deptName)}&year=${encodeURIComponent(activeYear)}`);
         if (resp.ok) {
           const res = await resp.json();
           if (res.success && res.data) {

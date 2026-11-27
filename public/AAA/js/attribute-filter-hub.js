@@ -78,13 +78,17 @@ class AttributeFilterHub {
       ? deptList
       : deptList.filter(d => d === this.selectedDepartment);
 
+    const activeYear = window.dataStore ? window.dataStore.getActiveYear() : '2026 - 2027';
+
     targetDepts.forEach(deptName => {
       // Load departmental audit data
       let deptData = null;
       if (window.dataStore && window.dataStore.activeDepartment === deptName && window.dataStore.data) {
         deptData = window.dataStore.data;
       } else {
-        const stored = (typeof localStorage !== 'undefined' && typeof localStorage.getItem === 'function') ? localStorage.getItem('IQAC_AAA_DATA_' + deptName) : null;
+        const stored = (typeof localStorage !== 'undefined' && typeof localStorage.getItem === 'function') 
+          ? (localStorage.getItem('IQAC_AAA_DATA_' + activeYear + '_' + deptName) || localStorage.getItem('IQAC_AAA_DATA_' + deptName))
+          : null;
         if (stored) {
           try { deptData = JSON.parse(stored); } catch (e) {}
         }

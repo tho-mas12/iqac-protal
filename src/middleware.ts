@@ -25,9 +25,12 @@ export function middleware(request: NextRequest) {
     pathname.startsWith('/_next') ||
     pathname.startsWith('/api/auth/login') ||
     pathname.startsWith('/api/auth/logout') ||
+    pathname.startsWith('/api/aaa') ||
+    pathname.startsWith('/AAA') ||
+    pathname === '/aaa' ||
     pathname === '/login' ||
     pathname === '/favicon.ico' ||
-    /\.(png|jpg|jpeg|gif|svg|ico|css|js|woff|woff2|ttf|json)$/i.test(pathname)
+    /\.(png|jpg|jpeg|gif|svg|ico|css|js|woff|woff2|ttf|json|php)$/i.test(pathname)
   ) {
     const response = NextResponse.next();
     response.headers.set('X-Content-Type-Options', 'nosniff');

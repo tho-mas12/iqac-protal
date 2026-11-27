@@ -79,9 +79,33 @@ class DataStore {
       localStorage.setItem(YEARS_LIST_KEY, JSON.stringify(['2024 - 2025', '2025 - 2026', '2026 - 2027', '2027 - 2028', '2028 - 2029', '2029 - 2030']));
       localStorage.setItem(PURGE_FLAG, 'completed');
     }
+
+    // Dynamic Database Fetch: load all real departments from MySQL backend
+    try {
+      const dRes = await fetch('/api/aaa/departments?year=' + encodeURIComponent(this.getActiveYear()));
+      if (dRes.ok) {
+        const dJson = await dRes.json();
+        if (dJson.success && Array.isArray(dJson.departmentNames) && dJson.departmentNames.length > 0) {
+          this.saveDepartmentList(dJson.departmentNames);
+          if (dJson.departments) {
+            localStorage.setItem('IQAC_USERS_DB', JSON.stringify({ departments: dJson.departments }));
+          }
+        }
+      }
+    } catch (err) {
+      console.warn('Could not fetch remote departments list from MySQL:', err);
+    }
+
     let deptList = this.getDepartmentList();
     if (!deptList || deptList.length === 0) {
-      deptList = ['PG & Research Department of Computer Science', 'PG & Research Department of Commerce'];
+      deptList = [
+        'Artificial Intelligence', 'Biochemistry', 'Biotechnology', 'Botany',
+        'Business Administration', 'Chemistry', 'Commerce', 'Computer Science',
+        'Counselling Psychology', 'Data Science', 'Economics', 'Electronic',
+        'English', 'French', 'Hindi', 'History', 'Human Resource Management',
+        'Information Technology', 'Mathematics', 'Physics', 'Sanskrit',
+        'Statistics', 'Tamil', 'Visual Communication'
+      ];
       this.saveDepartmentList(deptList);
     }
 
@@ -741,8 +765,15 @@ class DataStore {
     const deptName = this.data.departmentInfo.departmentName || this.activeDepartment;
     const academicYear = this.getActiveYear();
 
+    let ssoUser = null;
     try {
-      const resp = await fetch('api/submission.php', {
+      const ssoRaw = localStorage.getItem('IQAC_SSO_USER');
+      if (ssoRaw) ssoUser = JSON.parse(ssoRaw);
+    } catch (e) {}
+    const submittedBy = ssoUser?.username || 'STAFF';
+
+    try {
+      const resp = await fetch('/api/aaa/submission', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -751,7 +782,8 @@ class DataStore {
           department_name: deptName,
           academic_year: academicYear,
           data: this.data,
-          is_final_submit: isFinalSubmit
+          is_final_submit: isFinalSubmit,
+          submitted_by: submittedBy
         })
       });
       const res = await resp.json();
@@ -781,7 +813,8 @@ class DataStore {
   async loadDepartmentFromServer(deptIdOrCode) {
     if (!deptIdOrCode) return false;
     try {
-      const resp = await fetch(`api/submission.php?dept_id=${encodeURIComponent(deptIdOrCode)}`);
+      const academicYear = this.getActiveYear();
+      const resp = await fetch(`/api/aaa/submission?dept_name=${encodeURIComponent(deptIdOrCode)}&dept_id=${encodeURIComponent(deptIdOrCode)}&year=${encodeURIComponent(academicYear)}`);
       if (resp.ok) {
         const res = await resp.json();
         if (res.success && res.data) {
@@ -791,8 +824,7 @@ class DataStore {
             this.activeDepartment = res.department_name;
             localStorage.setItem(ACTIVE_DEPT_KEY, res.department_name);
           }
-          const activeYear = this.getActiveYear();
-          localStorage.setItem(STORAGE_KEY_PREFIX + activeYear + '_' + this.activeDepartment, JSON.stringify(this.data));
+          localStorage.setItem(STORAGE_KEY_PREFIX + academicYear + '_' + this.activeDepartment, JSON.stringify(this.data));
           localStorage.setItem(STORAGE_KEY_PREFIX + this.activeDepartment, JSON.stringify(this.data));
           this.notify();
           return true;

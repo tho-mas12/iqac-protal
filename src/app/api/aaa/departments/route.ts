@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
 import fs from 'fs';
 import path from 'path';
 
@@ -6,57 +7,98 @@ export const dynamic = 'force-dynamic';
 
 const SUBMISSION_FILE = path.join(process.cwd(), 'data', 'aaa_submissions.json');
 
-const DEFAULT_DEPARTMENTS = [
-  { id: 1, code: 'cs', name: 'PG & Research Department of Computer Science', school: 'School of Computing Sciences', hod_name: 'Dr. S. Albert Rabara', coordinator_name: '', status: 'draft', is_locked: false },
-  { id: 2, code: 'commerce', name: 'PG & Research Department of Commerce', school: 'School of Management Studies', hod_name: 'Dr. F. R. Alexander Pravin Durai', coordinator_name: '', status: 'draft', is_locked: false },
-  { id: 3, code: 'physics', name: 'PG & Research Department of Physics', school: 'School of Physical Sciences', hod_name: 'Dr. N. Lawrence', coordinator_name: '', status: 'draft', is_locked: false },
-  { id: 4, code: 'chemistry', name: 'PG & Research Department of Chemistry', school: 'School of Chemical Sciences', hod_name: 'Dr. A. Rose Venis', coordinator_name: '', status: 'draft', is_locked: false },
-  { id: 5, code: 'maths', name: 'PG & Research Department of Mathematics', school: 'School of Computing Sciences', hod_name: 'Dr. J. Maria Joseph', coordinator_name: '', status: 'draft', is_locked: false },
-  { id: 6, code: 'history', name: 'Department of History', school: 'School of Social Sciences', hod_name: 'Dr. K. Lingammal', coordinator_name: '', status: 'draft', is_locked: false },
-  { id: 7, code: 'english', name: 'Department of English', school: 'School of Languages', hod_name: 'Dr. V. L. Jayapaul', coordinator_name: '', status: 'draft', is_locked: false },
-  { id: 8, code: 'economics', name: 'Department of Economics', school: 'School of Management Studies', hod_name: 'Dr. S. Sujatha', coordinator_name: '', status: 'draft', is_locked: false },
-  { id: 9, code: 'bba', name: 'Department of Business Administration (BBA)', school: 'School of Management Studies', hod_name: 'Dr. P. Bastin Jerome', coordinator_name: '', status: 'draft', is_locked: false },
-  { id: 10, code: 'botany', name: 'PG & Research Department of Botany', school: 'School of Biological Sciences', hod_name: 'Dr. S. Sahaya Sathish', coordinator_name: '', status: 'draft', is_locked: false },
-];
-
 export async function GET(req: NextRequest) {
   try {
-    let submissions: Record<string, any> = {};
+    const { searchParams } = new URL(req.url);
+    const academicYear = searchParams.get('year') || '2026 - 2027';
+
+    // 1. Fetch all real departments from MySQL
+    let dbDepts: any[] = [];
+    try {
+      dbDepts = await prisma.department.findMany({
+        where: { isActive: true },
+        orderBy: [{ name: 'asc' }, { shift: 'asc' }],
+      });
+    } catch (dbErr) {
+      console.error('[AAA Departments] DB fetch error:', dbErr);
+    }
+
+    // 2. Fetch all submissions from MySQL for this academic year
+    let dbSubmissions: any[] = [];
+    try {
+      dbSubmissions = await prisma.aAASubmission.findMany({
+        where: { academicYear },
+      });
+    } catch (subErr) {
+      // Table might still be syncing
+      console.warn('[AAA Departments] AAASubmission query error:', subErr);
+    }
+
+    // 3. Fallback: file submissions
+    let fileSubmissions: Record<string, any> = {};
     if (fs.existsSync(SUBMISSION_FILE)) {
       try {
-        submissions = JSON.parse(fs.readFileSync(SUBMISSION_FILE, 'utf8'));
+        fileSubmissions = JSON.parse(fs.readFileSync(SUBMISSION_FILE, 'utf8'));
       } catch (e) {}
     }
 
-    const depts = DEFAULT_DEPARTMENTS.map(d => {
-      const sub = submissions[`${d.id}_2026 - 2027`];
+    // Map dbSubmissions into a lookup map
+    const subMap = new Map<string, any>();
+    for (const sub of dbSubmissions) {
+      if (sub.departmentName) subMap.set(sub.departmentName.toLowerCase(), sub);
+      if (sub.departmentCode) subMap.set(sub.departmentCode.toLowerCase(), sub);
+    }
+
+    // Build rich list of departments
+    const departments = dbDepts.map((d, index) => {
+      const sub = subMap.get(d.name.toLowerCase()) || 
+                  subMap.get(d.code.toLowerCase()) ||
+                  fileSubmissions[`${d.name}_${academicYear}`] ||
+                  fileSubmissions[`${d.id}_${academicYear}`];
+
+      const isFinal = Boolean(sub?.isFinalSubmit ?? sub?.is_final_submit);
+      const hasData = Boolean(sub);
+
       return {
-        ...d,
-        status: sub?.is_final_submit ? 'submitted' : (sub ? 'in_progress' : d.status),
-        is_locked: Boolean(sub?.is_final_submit),
-        last_updated: sub?.updated_at || '-',
-        submitted_at: sub?.submitted_at || null,
+        id: d.id,
+        numId: index + 1,
+        code: d.code,
+        name: d.name,
+        shift: d.shift || 'Shift I',
+        school: d.shift === 'Shift II' ? 'Shift II Programmes' : 'Shift I Programmes',
+        hod_name: '',
+        coordinator_name: '',
+        status: isFinal ? 'submitted' : (hasData ? 'in_progress' : 'draft'),
+        is_locked: isFinal,
+        last_updated: sub?.updatedAt ? new Date(sub.updatedAt).toLocaleString() : (sub?.updated_at || '-'),
+        submitted_at: sub?.submittedAt || sub?.submitted_at || null,
+        submitted_by: sub?.submittedBy || null,
         pubs: 0,
         grants: 0,
         patents: 0,
         vacCc: 0,
-        moocPct: '0%'
+        moocPct: '0%',
       };
     });
 
+    // Unique department names for filters and dropdowns
+    const departmentNames = Array.from(new Set(dbDepts.map(d => d.name).filter(Boolean))).sort();
+
     return NextResponse.json({
       success: true,
-      departments: depts,
+      departments,
+      departmentNames,
+      academic_year: academicYear,
       summary: {
-        totalPubs: 0,
-        totalGrants: 0,
-        totalPatents: 0,
-        totalVacCc: 0,
-        submittedCount: depts.filter(d => d.status === 'submitted').length,
-        auditedCount: 0
-      }
+        total_departments: departments.length,
+        submitted_count: departments.filter(d => d.status === 'submitted').length,
+        in_progress_count: departments.filter(d => d.status === 'in_progress').length,
+        draft_count: departments.filter(d => d.status === 'draft').length,
+        locked_count: departments.filter(d => d.is_locked).length,
+      },
     });
   } catch (err: any) {
+    console.error('Error fetching AAA departments:', err);
     return NextResponse.json({ error: err.message || 'Failed to fetch departments' }, { status: 500 });
   }
 }

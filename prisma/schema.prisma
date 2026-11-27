@@ -129,3 +129,41 @@ model ActionLog {
   @@index([module])
   @@index([timestamp])
 }
+
+model AAASubmission {
+  id              String    @id @default(cuid())
+  departmentId    String?
+  departmentCode  String?
+  departmentName  String
+  shift           String?
+  academicYear    String    @default("2026 - 2027")
+  dataJson        String    @db.LongText
+  isFinalSubmit   Boolean   @default(false)
+  submittedBy     String?
+  submittedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@unique([departmentName, academicYear])
+  @@index([departmentName])
+  @@index([academicYear])
+  @@index([isFinalSubmit])
+}
+
+model AAAMetricRecord {
+  id              String   @id @default(cuid())
+  departmentName  String
+  departmentCode  String?
+  academicYear    String   @default("2026 - 2027")
+  attributeId     String
+  metricKey       String
+  metricTitle     String?
+  dataJson        String   @db.LongText
+  submittedBy     String?
+  updatedAt       DateTime @updatedAt
+
+  @@unique([departmentName, academicYear, metricKey])
+  @@index([departmentName])
+  @@index([academicYear])
+  @@index([metricKey])
+}

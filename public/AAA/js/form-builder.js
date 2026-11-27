@@ -325,8 +325,13 @@ class FormBuilder {
 
   // ================= DROPDOWN OPTIONS DETECTOR =================
   // Detects if a column requires a dropdown, e.g. (VAC / CC), (Online/Offline), YES/NO, etc.
+  // Rule:
+  // 1. If column label has bracket (...) with / or ,, make that question a dropdown with those options.
+  // 2. If the bracket contains 'etc.' or 'etc', include 'Other' as an option with a custom input box.
+  // 3. In all other dropdowns, 'Other' is removed.
   getDropdownOptions(label, key = '') {
-    const lbl = (label || '').trim().toLowerCase();
+    const rawLabel = (label || '').trim();
+    const lbl = rawLabel.toLowerCase();
     const k = (key || '').toLowerCase();
 
     // EXCLUSION: Purpose of Collaboration (Sheet 9.12) must be a standard text input box, NOT a dropdown!
@@ -334,19 +339,40 @@ class FormBuilder {
       return null;
     }
 
-    // STRICT: PG / UG (Sheet 1.1 Courses offered: Strictly UG or PG dropdown, NO 'Other')
-    if (lbl.includes('pg / ug') || lbl.includes('pg/ug') || (lbl.includes('pg') && lbl.includes('ug'))) {
-      return ['', 'UG', 'PG'];
+    // 1. Dynamic Bracket Detection for Options: (Option A / Option B) or (Option A, Option B, etc.)
+    const bracketMatch = rawLabel.match(/\(([^)]+)\)/);
+    if (bracketMatch) {
+      const inner = bracketMatch[1].trim();
+      const innerLower = inner.toLowerCase();
+      const isDateOrNumberNote = /^(optional|if any|dd\/mm\/yyyy|inr|lakhs|percentage|number|nos|in rs|in lakhs)\b/i.test(innerLower);
+
+      if (!isDateOrNumberNote && (inner.includes('/') || inner.includes(','))) {
+        const hasEtc = /\betc\.?\b/i.test(innerLower);
+        const parts = inner.split(/[\/,]/).map(s => s.trim()).filter(Boolean);
+        const cleanParts = parts.filter(s => !/^\s*etc\.?\s*$/i.test(s) && !/^\s*other(s)?\s*$/i.test(s));
+
+        if (cleanParts.length >= 2) {
+          const finalOpts = ['', ...cleanParts];
+          if (hasEtc) {
+            finalOpts.push('Other');
+          }
+          return finalOpts;
+        }
+      }
     }
 
+    // 2. Predefined Categories (strictly without 'Other' unless label includes etc.)
     let opts = null;
 
-    // 0. Part of the MoU/Linkage (Sheet 1.4, 1.5, 1.6)
-    if (k === 'moulinkage' || lbl.includes('mou/linkage') || lbl.includes('mou / linkage') || (lbl.includes('part of the') && (lbl.includes('mou') || lbl.includes('linkage')))) {
+    // PG / UG (Sheet 1.1)
+    if (lbl.includes('pg / ug') || lbl.includes('pg/ug') || (lbl.includes('pg') && lbl.includes('ug'))) {
+      opts = ['', 'UG', 'PG'];
+    }
+    // Part of the MoU/Linkage (Sheet 1.4, 1.5, 1.6)
+    else if (k === 'moulinkage' || lbl.includes('mou/linkage') || lbl.includes('mou / linkage') || (lbl.includes('part of the') && (lbl.includes('mou') || lbl.includes('linkage')))) {
       opts = ['', 'MoU', 'Linkage', 'None'];
     }
-
-    // 1. SDG Goal Dropdown (All 17 UN Sustainable Development Goals)
+    // SDG Goal Dropdown (All 17 UN Sustainable Development Goals)
     else if (k === 'sdggoal' || lbl.includes('sdg goal') || lbl.includes('sdg') || lbl.includes('sustainable development')) {
       opts = [
         '',
@@ -369,113 +395,95 @@ class FormBuilder {
         'Goal 17: Partnerships for the Goals'
       ];
     }
-
-    // 2. VAC / CC
+    // VAC / CC
     else if (lbl.includes('vac / cc') || lbl.includes('vac/cc') || lbl.includes('(vac / cc)')) {
       opts = ['', 'VAC', 'CC'];
     }
-
-    // 3. Existing / New Facility (Sheet 3.1)
+    // Existing / New Facility (Sheet 3.1)
     else if (lbl.includes('existing / new facility') || lbl.includes('existing/new facility') || k === 'existing_new_facility') {
       opts = ['', 'Existing Facility', 'New Facility'];
     }
-
-    // 4. Mentor Category (Sheet 9.13)
+    // Mentor Category (Sheet 9.13)
     else if (lbl.includes('mentor category') || k === 'mentor_category') {
       opts = ['', 'Alumni', 'Entrepreneur', 'Faculty Mentor', 'Researcher', 'Industry Professional', 'Local Community Personal'];
     }
-
-    // 5. Type of Programme (Sheet 6.1)
+    // Type of Programme (Sheet 6.1)
     else if (lbl.includes('type of programme') || lbl.includes('type of program') || k === 'type_of_programme') {
       opts = ['', 'FDP', 'Seminar', 'Conference', 'Workshop', 'Webinar', 'Guest Lecture', 'Vocational Training', 'Placement Training'];
     }
-
-    // 6. Mode (Online / Offline / Blended)
+    // Mode (Online / Offline / Blended)
     else if (lbl.includes('mode') || (lbl.includes('online') && lbl.includes('offline'))) {
       opts = ['', 'Offline', 'Online', 'Blended'];
     }
-
-    // 7. YES / NO (excluding MoU/Linkage)
+    // YES / NO (excluding MoU/Linkage)
     else if (lbl.includes('yes/no') || lbl.includes('yes / no') || lbl.includes('mention yes/no') || lbl.includes('iks based') || lbl.includes('multidisciplinary') || lbl.includes('industry collab') || lbl.includes('mention yes if') || lbl.includes('whether part of csr') || lbl.includes('is csr') || lbl.includes('hands on')) {
       opts = ['', 'YES', 'NO'];
     }
-
-    // 8. Focus: SKILL, KNOWLEDGE, BOTH
+    // Focus: SKILL, KNOWLEDGE, BOTH
     else if (lbl.includes('skill, knowledge, both') || (lbl.includes('skill') && lbl.includes('knowledge') && lbl.includes('both'))) {
       opts = ['', 'SKILL', 'KNOWLEDGE', 'BOTH'];
     }
-
-    // 9. Status: Completed / Ongoing
+    // Status: Completed / Ongoing
     else if (lbl.includes('completed/ongoing') || lbl.includes('completed / ongoing')) {
       opts = ['', 'Completed', 'Ongoing'];
     }
-
-    // 10. Registered / Completed
+    // Registered / Completed
     else if (lbl.includes('registered / completed') || lbl.includes('registered/completed')) {
       opts = ['', 'Registered', 'Completed'];
     }
-
-    // 11. Level (International/National/State/Institutional/Regional/University)
+    // Level (International/National/State/Institutional/Regional/University)
     else if ((lbl === 'level' || (lbl.includes('international') && lbl.includes('national')) || k === 'level') && !lbl.includes('ug') && !lbl.includes('pg')) {
       opts = ['', 'International', 'National', 'State', 'Regional', 'University', 'Institutional'];
     }
-
-    // 12. Shift (I/II)
+    // Shift (I/II)
     else if (lbl.includes('shift (i/ii)') || k === 'shift') {
       opts = ['', 'Shift I', 'Shift II'];
     }
-
-    // 13. Government / Non-Government
+    // Government / Non-Government
     else if (lbl.includes('government/non-government') || lbl.includes('government / non-government')) {
       opts = ['', 'Government', 'Non-Government'];
     }
-
-    // 14. Books / Journal
+    // Books / Journal
     else if (lbl.includes('books/jounal') || lbl.includes('books/journal') || lbl.includes('books / journal')) {
       opts = ['', 'Books', 'Journal'];
     }
-
-    // 15. Gender
+    // Gender
     else if (k === 'gender' || lbl === 'gender') {
       opts = ['', 'Male', 'Female'];
     }
-
-    // 16. Status (Applied / Granted / Published / Registered)
+    // Status (Applied / Granted / Published / Registered)
     else if (lbl.includes('applied / granted') || lbl.includes('status (applied')) {
       opts = ['', 'Applied', 'Granted', 'Published', 'Registered'];
     }
-
-    // 18. Appointment Type (Aided/Coordinator/Secretary)
+    // Appointment Type (Aided/Coordinator/Secretary)
     else if (lbl.includes('aided/coordinator/secretary') || lbl.includes('appointment type')) {
       opts = ['', 'Aided', 'Coordinator', 'Secretary', 'Professor of Practice', 'Hourly Basis'];
     }
-
-    // 19. Stakeholder Type
+    // Stakeholder Type
     else if (lbl.includes('type of stakeholder') || lbl.includes('teachers/alumni/employers')) {
       opts = ['', 'Teachers', 'Alumni', 'Employers', 'Industry', 'Entrepreneurs', 'Students'];
     }
-
-    // 20. Nature of Place
+    // Nature of Place
     else if (lbl.includes('nature of the place') || lbl.includes('industry/company/institution')) {
       opts = ['', 'Industry', 'Company', 'Institution', 'Educational Institution', 'Government Organization', 'NGO'];
     }
-
-    // 21. Competitive Exams
+    // Competitive Exams
     else if (lbl.includes('competitive exam') || lbl.includes('net/ set/ gate')) {
-      opts = ['', 'NET', 'SET', 'GATE', 'CAT', 'UPSC', 'TNPSC', 'JAM', 'Others'];
+      opts = ['', 'NET', 'SET', 'GATE', 'CAT', 'UPSC', 'TNPSC', 'JAM'];
     }
-
-    // 22. Internship / Project (Sheet 1.8) - Only the activity type dropdown, NOT the title column
+    // Internship / Project (Sheet 1.8)
     else if (!lbl.includes('title') && (k === 'activitytype' || lbl === 'internship / project' || lbl === 'internship/project' || (lbl.includes('internship') && lbl.includes('project') && !lbl.includes('title') && !lbl.includes('name and address')))) {
       opts = ['', 'Internship', 'Project', 'Both Internship & Project'];
     }
 
     if (opts && Array.isArray(opts)) {
-      // Ensure 'Other' is always available as the dynamic custom-input option
-      if (!opts.some(o => o && o.toLowerCase() === 'other')) {
-        opts.push('Other');
+      // Strictly remove 'Other' and 'Others' from all dropdowns unless label contains 'etc.'
+      const hasEtc = /\betc\.?\b/i.test(lbl);
+      const cleanOpts = opts.filter(o => o && o.toLowerCase() !== 'other' && o.toLowerCase() !== 'others');
+      if (hasEtc) {
+        cleanOpts.push('Other');
       }
-      return opts;
+      return cleanOpts;
     }
 
     return null;
