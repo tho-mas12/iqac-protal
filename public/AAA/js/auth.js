@@ -53,19 +53,18 @@ class AuthManager {
       }
     }
 
-    // 3. Default to department user for staff view (never force admin)
+    // 3. Require central portal login (never allow unauthenticated fallback)
     if (!this.user) {
-      this.user = {
-        id: 1,
-        username: 'cs',
-        display_name: 'Department of Computer Science',
-        role: 'department',
-        department_id: 1,
-        department_name: 'Department of Computer Science',
-        department_code: 'cs',
-        is_locked: false
-      };
-      localStorage.setItem('IQAC_AUTH_USER', JSON.stringify(this.user));
+      try {
+        if (window.top && window.top.location && window.top !== window) {
+          window.top.location.href = '/login';
+        } else {
+          window.location.href = '/login';
+        }
+      } catch (e) {
+        window.location.href = '/login';
+      }
+      return;
     }
 
     this.updateUI();
