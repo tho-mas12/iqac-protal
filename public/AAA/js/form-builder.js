@@ -303,6 +303,26 @@ class FormBuilder {
     }
   }
 
+  // ================= ATTRIBUTE CARD TRAFFIC LIGHT STATUS =================
+  // Rule:
+  // - All metrics green (saved) -> 'green'
+  // - All metrics red (empty / no data) -> 'red'
+  // - Mixed (some green, yellow, or red) -> 'yellow'
+  getAttributeCardStatus(card) {
+    if (!card) return 'red';
+    const cardData = this.getCardData(card.id) || {};
+    const sheets = card.sheets || [];
+    if (sheets.length === 0) return 'red';
+
+    const statuses = sheets.map(s => this.getMetricStatus(s, cardData));
+    const allGreen = statuses.every(st => st === 'saved');
+    const allRed = statuses.every(st => st === 'empty');
+
+    if (allGreen) return 'green';
+    if (allRed) return 'red';
+    return 'yellow'; // Mixed green, yellow, and/or red
+  }
+
   // ================= DROPDOWN OPTIONS DETECTOR =================
   // Detects if a column requires a dropdown, e.g. (VAC / CC), (Online/Offline), YES/NO, etc.
   getDropdownOptions(label, key = '') {
@@ -800,40 +820,93 @@ class FormBuilder {
     const isSubmitted = submissionStatus.status === 'submitted' || Boolean(submissionStatus.is_locked);
 
     this.container.innerHTML = `
-      <div class="w-full space-y-8 animate-fadeIn">
+      <div class="w-full space-y-6 animate-fadeIn">
         
+        <!-- Attribute Cards Traffic Light Status Legend Bar -->
+        <div class="flex flex-wrap items-center justify-between gap-3 p-3.5 bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-xs">
+          <div class="flex items-center gap-2">
+            <i data-lucide="layout-grid" class="w-4 h-4 text-[#26648E]"></i>
+            <span class="text-xs font-black text-slate-800 uppercase tracking-wider">Attribute Cards Overview</span>
+          </div>
+          <div class="flex flex-wrap items-center gap-3 text-xs font-bold">
+            <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-300">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+              All Metrics Saved (Green)
+            </span>
+            <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-900 border border-amber-300">
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+              In Progress / Mixed (Yellow)
+            </span>
+            <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-red-50 text-red-800 border border-red-300">
+              <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+              No Metrics Entered (Red)
+            </span>
+          </div>
+        </div>
+
         <!-- Full-Page Wide Cards Grid (Simple, Clean, Micro-Animated) -->
         <div id="cards-grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full">
           ${cards.map(card => {
             const isPartA = card.id === 'part_a';
             const { finishedCount, totalSheets, percentage } = this.getCompletionStats(card);
-            const isAllFinished = totalSheets > 0 && finishedCount === totalSheets;
+            const cardStatus = this.getAttributeCardStatus(card);
+            const trafficClass = `card-traffic-${cardStatus}`;
+
+            let headerBadge = '';
+            let statusBadge = '';
+            let progressBg = '';
+            let actionBtnClass = '';
+            let statusText = '';
+            let statusIcon = '';
+
+            if (cardStatus === 'green') {
+              headerBadge = 'bg-emerald-100 text-emerald-900 border border-emerald-300';
+              statusBadge = 'text-emerald-800 bg-emerald-100/60 px-2 py-0.5 rounded-md border border-emerald-300';
+              progressBg = 'bg-emerald-500';
+              actionBtnClass = 'bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold';
+              statusText = 'All Metrics Saved';
+              statusIcon = 'check-circle';
+            } else if (cardStatus === 'red') {
+              headerBadge = 'bg-red-100 text-red-900 border border-red-300';
+              statusBadge = 'text-red-800 bg-red-100/60 px-2 py-0.5 rounded-md border border-red-300';
+              progressBg = 'bg-red-400';
+              actionBtnClass = 'bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-700 hover:to-rose-800 text-white font-bold';
+              statusText = 'No Metrics Entered';
+              statusIcon = 'alert-circle';
+            } else {
+              headerBadge = 'bg-amber-100 text-amber-950 border border-amber-300';
+              statusBadge = 'text-amber-900 bg-amber-100/60 px-2 py-0.5 rounded-md border border-amber-300';
+              progressBg = 'bg-gradient-to-r from-amber-400 to-amber-500';
+              actionBtnClass = 'bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-bold';
+              statusText = `${finishedCount} of ${totalSheets} Saved`;
+              statusIcon = 'clock';
+            }
 
             return `
               <div 
                 onclick="formBuilder.openCard('${card.id}')"
-                class="arctic-card flex flex-col justify-between overflow-hidden group cursor-pointer"
+                class="arctic-card ${trafficClass} flex flex-col justify-between overflow-hidden group cursor-pointer"
               >
                 <div class="p-6 space-y-4">
                   <!-- Header: Code & Completion Badges -->
                   <div class="flex items-center justify-between gap-2">
-                    <span class="px-2.5 py-1 rounded-lg text-[11px] font-black uppercase tracking-wider ${
-                      isPartA 
-                        ? 'bg-amber-100 text-amber-900 border border-amber-200' 
-                        : 'bg-blue-50 text-[#1e40af] border border-blue-200/80'
-                    }">
+                    <span class="px-2.5 py-1 rounded-lg text-[11px] font-black uppercase tracking-wider ${headerBadge}">
                       ${card.cardCode}
                     </span>
                     
-                    <span class="text-xs font-bold ${isAllFinished ? 'text-emerald-700' : 'text-slate-500'} flex items-center gap-1.5">
-                      <i data-lucide="${isAllFinished ? 'check-circle' : 'file-spreadsheet'}" class="w-3.5 h-3.5 ${isAllFinished ? 'text-emerald-600' : 'text-slate-400'}"></i>
+                    <span class="text-xs font-bold flex items-center gap-1.5 ${statusBadge}">
+                      <i data-lucide="${statusIcon}" class="w-3.5 h-3.5"></i>
                       <span>${finishedCount} / ${totalSheets} Metrics</span>
                     </span>
                   </div>
 
                   <!-- Attribute Title & Icon -->
                   <div class="flex items-start gap-3 pt-1">
-                    <div class="w-10 h-10 rounded-xl ${isPartA ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-blue-50 text-[#1e40af] border border-blue-200/60'} flex items-center justify-center font-bold shrink-0 shadow-2xs group-hover:scale-105 transition-transform duration-200">
+                    <div class="w-10 h-10 rounded-xl ${
+                      cardStatus === 'green' ? 'bg-emerald-100 text-emerald-700 border border-emerald-300' :
+                      cardStatus === 'red' ? 'bg-red-100 text-red-700 border border-red-300' :
+                      'bg-amber-100 text-amber-800 border border-amber-300'
+                    } flex items-center justify-center font-bold shrink-0 shadow-2xs group-hover:scale-105 transition-transform duration-200">
                       <i data-lucide="${card.icon || 'file-text'}" class="w-5 h-5"></i>
                     </div>
                     <h3 class="text-base font-bold text-slate-900 group-hover:text-[#1e40af] transition-colors leading-snug line-clamp-2">
@@ -844,7 +917,7 @@ class FormBuilder {
                   <!-- Sleek Progress Bar -->
                   <div class="space-y-1.5 pt-2">
                     <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200/70">
-                      <div class="h-full ${isAllFinished ? 'bg-emerald-500' : 'bg-gradient-to-r from-[#26648E] to-[#2563eb]'} transition-all duration-300 rounded-full" style="width: ${percentage}%"></div>
+                      <div class="h-full ${progressBg} transition-all duration-300 rounded-full" style="width: ${percentage}%"></div>
                     </div>
                     <div class="flex justify-between items-center text-[10px] text-slate-500 font-semibold">
                       <span>${percentage}% Finished</span>
@@ -854,13 +927,22 @@ class FormBuilder {
                 </div>
 
                 <!-- Footer Action Bar -->
-                <div class="px-6 py-3.5 bg-slate-50/70 border-t border-slate-100/90 flex items-center justify-between">
-                  <span class="text-[11px] font-bold ${isAllFinished ? 'text-emerald-700' : (finishedCount > 0 ? 'text-blue-700' : 'text-slate-400')}">
-                    ${isAllFinished ? 'Completed' : (finishedCount > 0 ? `${finishedCount} of ${totalSheets} filled` : 'Pending entry')}
+                <div class="px-6 py-3.5 bg-white/60 border-t border-slate-200/60 flex items-center justify-between">
+                  <span class="text-[11px] font-bold flex items-center gap-1.5 ${
+                    cardStatus === 'green' ? 'text-emerald-700' :
+                    cardStatus === 'red' ? 'text-red-700' :
+                    'text-amber-800'
+                  }">
+                    <span class="w-2 h-2 rounded-full ${
+                      cardStatus === 'green' ? 'bg-emerald-500' :
+                      cardStatus === 'red' ? 'bg-red-500' :
+                      'bg-amber-500'
+                    }"></span>
+                    ${statusText}
                   </span>
 
                   <span 
-                    class="px-3.5 py-1.5 ${isPartA ? 'bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-white font-bold' : 'bg-gradient-to-r from-[#26648E] to-[#1e40af] hover:from-[#1b4b6d] hover:to-[#1e3a8a] text-white font-bold'} text-xs rounded-xl shadow-xs transition-all flex items-center gap-1.5 group-hover:shadow-md group-hover:translate-x-0.5"
+                    class="px-3.5 py-1.5 ${actionBtnClass} text-xs rounded-xl shadow-xs transition-all flex items-center gap-1.5 group-hover:shadow-md group-hover:translate-x-0.5"
                   >
                     <span>${isPartA ? 'Open Profile' : 'Fill Attribute'}</span>
                     <i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>

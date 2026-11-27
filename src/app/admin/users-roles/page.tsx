@@ -56,6 +56,8 @@ export default function AccessControlPage() {
   const [newUserCode, setNewUserCode] = useState('');
   const [newUserPassword, setNewUserPassword] = useState('sjciqac');
   const [newUserDept, setNewUserDept] = useState('Computer Science');
+  const [isOtherDept, setIsOtherDept] = useState(false);
+  const [customDeptName, setCustomDeptName] = useState('');
   const [newUserShift, setNewUserShift] = useState('Shift I');
   const [newUserInvRole, setNewUserInvRole] = useState<'STAFF' | 'ADMINISTRATOR' | 'DIRECTOR'>('STAFF');
   const [newUserMqc, setNewUserMqc] = useState(false);
@@ -314,7 +316,15 @@ export default function AccessControlPage() {
         setToast({ type: 'error', message: 'Full Name and User ID/ERP Code are required' });
         return;
       }
+      if (isOtherDept && !customDeptName.trim()) {
+        setToast({ type: 'error', message: 'Please specify the new department name' });
+        return;
+      }
     }
+
+    const finalDept = newUserType === 'ADMIN' 
+      ? 'Central Administration' 
+      : (isOtherDept ? customDeptName.trim() : newUserDept);
 
     try {
       setSubmitting(true);
@@ -328,7 +338,7 @@ export default function AccessControlPage() {
           username: cleanCode,
           code: cleanCode,
           password: newUserPassword || (newUserType === 'ADMIN' ? 'admin123' : 'sjciqac'),
-          departmentName: newUserType === 'ADMIN' ? 'Central Administration' : newUserDept,
+          departmentName: finalDept,
           shift: newUserShift,
           invitationRole: newUserType === 'ADMIN' ? 'ADMIN' : newUserInvRole,
           isMqc: newUserType === 'ADMIN' ? true : newUserMqc,
@@ -341,11 +351,19 @@ export default function AccessControlPage() {
       if (!res.ok) throw new Error(data.error || 'Failed to create user');
 
       setToast({ type: 'success', message: `${newUserType === 'ADMIN' ? 'Admin' : 'User'} "${cleanCode}" added successfully!` });
+      if (isOtherDept && customDeptName.trim()) {
+        if (!departmentNames.includes(customDeptName.trim())) {
+          setDepartmentNames(prev => [...prev, customDeptName.trim()].sort());
+        }
+        setNewUserDept(customDeptName.trim());
+      }
       setIsAddUserOpen(false);
       setNewUserName('');
       setNewUserCode('');
       setNewUserPassword('sjciqac');
       setNewUserType('USER');
+      setIsOtherDept(false);
+      setCustomDeptName('');
       setNewUserCoursePlan(true);
       fetchData();
     } catch (err: any) {
@@ -969,20 +987,43 @@ export default function AccessControlPage() {
                   <div>
                     <label className="block text-xs font-bold text-slate-700 mb-1">Department</label>
                     <select
-                      value={newUserDept}
-                      onChange={(e) => setNewUserDept(e.target.value)}
+                      value={isOtherDept ? 'OTHER' : newUserDept}
+                      onChange={(e) => {
+                        if (e.target.value === 'OTHER') {
+                          setIsOtherDept(true);
+                        } else {
+                          setIsOtherDept(false);
+                          setNewUserDept(e.target.value);
+                        }
+                      }}
                       className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-[#26648E] bg-white font-medium"
                     >
-                      {departmentNames.length > 0 ? (
-                        departmentNames.map((d) => (
-                          <option key={d} value={d}>
-                            {d}
-                          </option>
-                        ))
-                      ) : (
-                        <option value="Computer Science">Computer Science</option>
-                      )}
+                      {departmentNames.map((d) => (
+                        <option key={d} value={d}>
+                          {d}
+                        </option>
+                      ))}
+                      <option value="OTHER" className="font-bold text-[#26648E]">
+                        + Other / Add New Department...
+                      </option>
                     </select>
+
+                    {isOtherDept && (
+                      <div className="mt-2 space-y-1">
+                        <input
+                          type="text"
+                          placeholder="Enter new department name..."
+                          value={customDeptName}
+                          onChange={(e) => setCustomDeptName(e.target.value)}
+                          className="w-full px-3 py-2 text-xs border border-blue-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#26648E] bg-blue-50/40 font-medium text-slate-800"
+                          required
+                          autoFocus
+                        />
+                        <p className="text-[10px] text-slate-500 font-medium">
+                          ✨ This department will be permanently saved and appear in the dropdown.
+                        </p>
+                      </div>
+                    )}
                   </div>
 
                   <div>

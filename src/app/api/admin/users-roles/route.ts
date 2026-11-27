@@ -116,7 +116,10 @@ export async function GET() {
 
     // Extract unique department names for filtering
     const allDeptNames = Array.from(
-      new Set(allCombined.map((u) => u.departmentName).filter(Boolean))
+      new Set([
+        ...dbDepartments.map((d) => d.name),
+        ...allCombined.map((u) => u.departmentName).filter(Boolean),
+      ])
     ).sort();
 
     return NextResponse.json({
@@ -353,6 +356,31 @@ export async function POST(req: NextRequest) {
         });
 
         return NextResponse.json({ success: true, user: adminUser, message: `Admin account "${cleanUname}" created successfully` });
+      }
+
+      // If a department is specified, ensure it is persisted in prisma.department so it shows in future dropdowns
+      if (departmentName && departmentName !== 'Central Administration') {
+        try {
+          const existingDept = await prisma.department.findFirst({
+            where: { name: departmentName.trim() },
+          });
+          if (!existingDept) {
+            const cleanDeptCode = departmentName
+              .trim()
+              .replace(/[^a-zA-Z0-9]/g, '_')
+              .toUpperCase()
+              .slice(0, 15);
+            await prisma.department.create({
+              data: {
+                name: departmentName.trim(),
+                code: cleanDeptCode,
+                shift: shift || 'Shift I',
+              },
+            });
+          }
+        } catch (deptErr) {
+          console.error('Error auto-persisting department in database:', deptErr);
+        }
       }
 
       const newFaculty = {

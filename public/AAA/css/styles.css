@@ -68,6 +68,40 @@ body {
   box-shadow: 0 16px 32px -8px rgba(38, 100, 142, 0.16), 0 6px 14px -3px rgba(38, 100, 142, 0.08);
 }
 
+/* Attribute Card Traffic Light Status Colors */
+.card-traffic-green {
+  background: rgba(240, 253, 244, 0.92) !important;
+  border: 1.5px solid #34d399 !important;
+  box-shadow: 0 4px 14px -2px rgba(16, 185, 129, 0.12) !important;
+}
+.card-traffic-green:hover {
+  background: #ecfdf5 !important;
+  border-color: #059669 !important;
+  box-shadow: 0 16px 32px -8px rgba(16, 185, 129, 0.22), 0 6px 14px -3px rgba(16, 185, 129, 0.12) !important;
+}
+
+.card-traffic-yellow {
+  background: rgba(254, 252, 232, 0.92) !important;
+  border: 1.5px solid #fbbf24 !important;
+  box-shadow: 0 4px 14px -2px rgba(245, 158, 11, 0.12) !important;
+}
+.card-traffic-yellow:hover {
+  background: #fef9c3 !important;
+  border-color: #d97706 !important;
+  box-shadow: 0 16px 32px -8px rgba(245, 158, 11, 0.22), 0 6px 14px -3px rgba(245, 158, 11, 0.12) !important;
+}
+
+.card-traffic-red {
+  background: rgba(254, 242, 242, 0.92) !important;
+  border: 1.5px solid #f87171 !important;
+  box-shadow: 0 4px 14px -2px rgba(239, 68, 68, 0.12) !important;
+}
+.card-traffic-red:hover {
+  background: #fee2e2 !important;
+  border-color: #dc2626 !important;
+  box-shadow: 0 16px 32px -8px rgba(239, 68, 68, 0.22), 0 6px 14px -3px rgba(239, 68, 68, 0.12) !important;
+}
+
 /* IQAC Annual Academic Audit (AAA) 2026-2027 - Academic Palette Theme */
 :root {
   --color-primary: #26648E;    /* Deep Classic Ocean / Academic Blue */
