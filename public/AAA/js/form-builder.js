@@ -1454,8 +1454,8 @@ class FormBuilder {
                     { label: 'Academic Support Staff (Technical) and Non-teaching Staff', male: Number(support.male) || 0, female: Number(support.female) || 0 }
                   ];
 
-                  if (cardData && cardData['PART-A']) {
-                    cardData['PART-A'].facultyDetails = cleanFac;
+                  if (sheetData) {
+                    sheetData.facultyDetails = cleanFac;
                   }
 
                   return cleanFac.map((fr, idx) => {
